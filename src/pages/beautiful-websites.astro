@@ -1,0 +1,41 @@
+---
+import LayoutList from "../layouts/LayoutList.astro";
+import { contentfulClient } from "../lib/contentful";
+import fetchWebsiteData from "../lib/fetchWebsiteData";
+import { trimText } from "../lib/helpers";
+
+interface Websites {
+  contentTypeId: "beautiful-websites";
+  fields: {
+    websites: string[];
+  };
+}
+
+const entries = await contentfulClient.getEntries<Websites>({
+  content_type: "beautiful-websites",
+});
+
+const websitesURLs = entries.items[0].fields.websites as string[];
+const websitesData = await Promise.all(
+  websitesURLs.map((url) => fetchWebsiteData(url))
+);
+---
+
+<LayoutList title="beautiful websites">
+  <main class="p-4 w-full h-full">
+    <div class="flex flex-col gap-4">
+      {
+        websitesData.map((data, index) => (
+          <a href={websitesURLs[index]}>
+            <div class="card group overflow-hidden bg-darkslate-500 shadow-lg rounded-lg p-6 border border-darkslate-100 hover:border-primary-500 align-start flex items-center gap-4 justify-start relative w-full transition duration-75 ease-in-out">
+              <img src={data.favicon} alt="Favicon" width="16" height="16" />
+              <h2 class="text-gray-50 overflow-hidden text-ellipsis w-full">
+                {trimText(data.title)}
+              </h2>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </main>
+</LayoutList>

@@ -1,15 +1,32 @@
 ---
-import Card from "./Card.astro";
+import Icon from "astro-icon";
+import Card from "./Card/index.astro";
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-3" title="About me">
-  <p class="text-sm font-light">
-    I'm a software developer specializing in <b>front-end</b> technologies, with
-    a strong foundation in both enterprise and open-source software development projects.
-    Based in Italy, I now thrive as a freelancer, taking on challenges with tools
-    like <b>Solidjs</b>, <b>JavaScript</b>, <b>Node.js</b>, <b>React.js</b>, and
-    other cutting-edge web technologies. My passion doesn't stop at what I know:
-    I'm committed to leveraging the best technology and methodology for each
-    unique problem, ensuring solutions that are both innovative and effective.
-  </p>
+  <div class="flex flex-col gap-2">
+    <p class="text-sm font-light">
+      Hi, I'm Gianmarco, a front-end software developer from Italy.
+      <br>
+      My primary tools of choice includes:
+      <ul class="list-disc list-inside">
+        <li role="link">JavaScript</li>
+        <li role="link">React</li>
+        <li role="link">Solidjs</li>
+        <li role="link">Astro</li>
+        <li role="link">svelte</li>
+        <li role="link">Nodejs</li>
+      </ul>
+    </p>
+    <p class="text-sm font-light">
+      Beyond coding, I'm passionate about design and 3D modeling and traveling.
+      An unusual hobby of mine is collecting vintage passports, they're
+      interesting pieces of history to me.
+    </p>
+    <p class="text-sm font-light">
+      While I have some preferred tools, I always choose the best one for the
+      job, even if it's not on my usual list. My goal is to find the right
+      solution for each project.
+    </p>
+  </div>
 </Card>

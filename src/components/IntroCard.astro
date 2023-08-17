@@ -1,6 +1,7 @@
 ---
-import Card from "./Card.astro";
+import Card from "./Card/index.astro";
 import Button from "./Button.astro";
+import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon";
 ---
 
@@ -16,8 +17,16 @@ import { Icon } from "astro-icon";
         </p>
       </div>
       <div class="flex gap-4">
-        <Button><Icon name="ri:github-fill" class="h-6" /></Button>
-        <Button><Icon name="ri:linkedin-box-fill" class="h-6" /></Button>
+        <a href={LINKS.github} aria-label="github profile" target="_blank">
+          <Button>
+            <Icon name="ri:github-fill" class="h-6" />
+          </Button>
+        </a>
+        <a href={LINKS.linkedin} aria-label="linkeding profile" target="_blank">
+          <Button>
+            <Icon name="ri:linkedin-box-fill" class="h-6" />
+          </Button>
+        </a>
       </div>
     </div>
     <img

@@ -1,16 +1,12 @@
 ---
 import { Icon } from "astro-icon";
+import Content from "./Content.astro";
 
 interface Props {
   title?: string;
   body?: string;
-  colSpan?:
-    | "md:col-span-1"
-    | "md:col-span-2"
-    | "md:col-span-3"
-    | "md:col-span-4";
-
-  rowSpan?: "md:row-span-1" | "md:row-span-2" | "md:row-span-3";
+  colSpan?: string;
+  rowSpan?: string;
   href?: string;
 }
 
@@ -22,18 +18,21 @@ const { title, body, colSpan, rowSpan, href } = Astro.props;
     colSpan || "md:col-span-2"
   } ${rowSpan || ""}`}
 >
-  <a href={href} class="h-full w-full">
-    {
-      href && (
+  {
+    href ? (
+      <a href={href} class="h-full w-full ddd">
         <Icon
           name="ri:arrow-right-up-line"
           class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100"
         />
-      )
-    }
-
-    {title && <h2 class="text-xl font-bold m-0">{title}</h2>}
-    {body && <p class="m-0 font-light text-base">{body}</p>}
-    <slot />
-  </a>
+        <Content title={title} body={body}>
+          <slot />
+        </Content>
+      </a>
+    ) : (
+      <Content title={title} body={body}>
+        <slot />
+      </Content>
+    )
+  }
 </div>
