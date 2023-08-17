@@ -1,0 +1,37 @@
+---
+import Card from "./Card.astro";
+import Button from "./Button.astro";
+import { Icon } from "astro-icon";
+---
+
+<Card colSpan="md:col-span-1" rowSpan="md:row-span-2">
+  <div class="h-full">
+    <header class="flex items-center">
+      <h1 class="text-white text-xl font-bold">
+        Let's start working together!
+      </h1>
+    </header>
+    <address class="flex flex-col mt-4">
+      <h6 class="text-gray-500 whitespace-nowrap">Contact Details</h6>
+      <h4>cavallogianmarco@gmail.com</h4>
+      <h4>Italy</h4>
+    </address>
+    <div class="flex flex-col mt-4 w-fit">
+      <h6 class="text-gray-500 whitespace-nowrap">Socials</h6>
+      <ul>
+        <a href="https://www.linkedin.com/in/gianmarco-cavallo/" target="_blank">
+          <li>Linkedin</li>
+        </a>
+        <a href="https://github.com/Ladvace" target="_blank">
+          <li>Github</li>
+        </a>
+        <a href="https://ladvace.medium.com/" target="_blank">
+          <li>Medium</li>
+        </a>
+        <a href="https://discordapp.com/users/163300027618295808" target="_blank">
+          <li>Discord</li>
+        </a>
+      </ul>
+    </div>
+  </div>
+</Card>

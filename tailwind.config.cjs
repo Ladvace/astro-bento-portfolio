@@ -5,6 +5,10 @@ module.exports = {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
   theme: {
     extend: {
+      boxShadow: {
+        custom: `2px 2px theme("colors.primary.500")`,
+        "custom-hover": `1px 1px theme("colors.primary.500")`,
+      },
       fontFamily: {
         sans: ["CabinetGrotesk", "Satoshi", ...defaultTheme.fontFamily.sans],
       },
@@ -15,6 +19,18 @@ module.exports = {
         "4-minmax": "repeat(4, minmax(150px, 1fr))",
       },
       colors: {
+        gray: {
+          50: "#FAFAFA",
+          100: "#F5F5F5",
+          200: "#E5E5E5",
+          300: "#D4D4D4",
+          400: "#A3A3A3",
+          500: "#737373",
+          600: "#525252",
+          700: "#404040",
+          800: "#262626",
+          900: "#171717",
+        },
         darkslate: {
           50: "#3D3D3D",
           100: "#2C2C2C",
@@ -41,5 +57,5 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: ["tailwindcss ,autoprefixer"],
 };

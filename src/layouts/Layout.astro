@@ -16,7 +16,7 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="bg-darkslate-700">
+  <body class="bg-darkslate-700 md:h-screen flex justify-center items-center">
     <slot />
   </body>
 </html>
@@ -49,5 +49,9 @@ const { title } = Astro.props;
   }
   p {
     font-family: "Satoshi";
+  }
+
+  b {
+    font-weight: 700 !important;
   }
 </style>

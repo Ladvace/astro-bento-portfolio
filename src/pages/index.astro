@@ -1,52 +1,55 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
+import IntroCard from "../components/IntroCard.astro";
+import ContactsCard from "../components/ContactsCard.astro";
+import BeautifulWebsitesCard from "../components/BeautifulWebsitesCard.astro";
+import AboutMe from "../components/AboutMe.astro";
 ---
 
 <script>
-  import { animate, stagger } from "motion";
+  import { animate, stagger, spring } from "motion";
   const cards = document.querySelectorAll(".card");
 
   animate(
-  cards,
+    cards,
     { y: ["40%", "0%"], opacity: [0, 1] },
-    { duration: 0.4, delay: stagger(0.3) }
+    {
+      duration: 0.4,
+      delay: stagger(0.3),
+      easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
+    }
   );
 </script>
 
 <Layout title="Welcome to Astro.">
   <main
-    class="text-white min-h-screen grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3 lg:gap-4 auto-rows-250 max-w-6xl overflow-hidden p-2 md:p-6 relative w-full"
+    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 md:h-screen lg:grid-cols-4 lg:gap-4 auto-rows-250 md:max-h-[800px]"
   >
-    <Card
-      colSpan="md:col-span-3"
-      title="Hi, I am Gianmarco"
-      body="Learn how Astro works and explore the official API docs."
-    />
+    <IntroCard />
+    <AboutMe />
+    <ContactsCard />
+    <BeautifulWebsitesCard />
     <Card
       colSpan="md:col-span-1"
-      title="Integrations"
-      body="Supercharge your project with new frameworks and libraries."
-    />
-    <Card
-      title="Themes"
-      body="Explore a galaxy of community-built starter themes."
-    />
-    <Card
-      title="Community"
+      rowSpan="md:row-span-1"
+      href="/blog"
+      title="Blog"
       body="Come say hi to our amazing Discord community. ❤️"
     />
+    <Card
+      colSpan="md:col-span-2"
+      rowSpan="md:row-span-1"
+      title="My Stack"
+      body="Come say hi to our amazing Discord community. ❤️"
+    />
+    <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
+      <p class="text-xs">
+        © 2023 · Crafted with ♥️ using <a
+          href="https://astro.build/"
+          target="_blank">Astro</a
+        > by Gianmarco.
+      </p>
+    </Card>
   </main>
 </Layout>
-
-<style>
-  main {
-    margin: auto;
-    padding: 1rem;
-    width: 800px;
-    max-width: calc(100% - 2rem);
-    color: white;
-    font-size: 20px;
-    line-height: 1.6;
-  }
-</style>
