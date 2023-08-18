@@ -54,6 +54,15 @@ function Tooltip(props: Props) {
         onMouseUp={() => {
           setIsVisible(false);
         }}
+        onTouchStart={() => {
+          setIsVisible(!isVisible());
+          if (isVisible()) {
+            setClickCount((count) => count + 1);
+          }
+        }}
+        onTouchEnd={() => {
+          setIsVisible(false);
+        }}
       >
         {props.children}
       </div>
