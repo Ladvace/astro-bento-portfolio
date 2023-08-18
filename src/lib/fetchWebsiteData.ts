@@ -4,7 +4,7 @@ import cheerio from 'cheerio';
 
 interface WebsiteData {
   title: string;
-  favicon: string;
+  favicon: string | undefined;
 }
 
 async function fetchWebsiteData(url: string): Promise<WebsiteData> {

@@ -1,0 +1,11 @@
+.tooltip {
+  @apply relative inline-block cursor-pointer p-2 bg-blue-500 text-white rounded;
+}
+
+.tooltiptext {
+  @apply absolute top-0 left-full ml-3 p-2 bg-black text-white rounded opacity-0 transition-all transform translate-y-1/2;
+}
+
+.tooltip:hover .tooltiptext {
+  @apply opacity-100 transform translate-y-0;
+}

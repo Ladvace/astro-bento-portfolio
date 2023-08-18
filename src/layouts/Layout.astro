@@ -1,20 +1,40 @@
 ---
+import Img from "../../public/me.png";
 interface Props {
   title: string;
+  description: string;
 }
 
-const { title } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon"type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="/favicon/sitemap-index.xml" />
+    <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gianmarco.xyz" />
+    <meta
+      property="og:image"
+      content="https://gianmarco.xyz/me.png"
+    />
+    <!-- Basic Twitter Card tags -->
+    <meta name="twitter:card" content="https://gianmarco.xyz/me.png" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="twitter:image"
+      content="https://gianmarco.xyz/me.png"
+    />
   </head>
   <body class="bg-darkslate-700 md:h-screen flex justify-center items-center">
     <slot />

@@ -3,6 +3,7 @@ import Card from "./Card/index.astro";
 import Button from "./Button.astro";
 import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon";
+import Tooltip from "./Tooltip/index";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-2">
@@ -27,11 +28,16 @@ import { Icon } from "astro-icon";
             <Icon name="ri:linkedin-box-fill" class="h-6" />
           </Button>
         </a>
+        <Tooltip client:visible>
+          <Button>
+            <Icon name="ri:emotion-laugh-line" class="h-6" />
+          </Button>
+        </Tooltip>
       </div>
     </div>
     <img
       src="/me.png"
-      class="w-auto max-h-[300px] select-none"
+      class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] md:relative md:right-auto md:bottom-auto md:z-auto"
       alt="memoji of gianmarco"
     />
   </div>
