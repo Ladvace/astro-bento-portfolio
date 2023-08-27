@@ -19,17 +19,17 @@ import Tooltip from "./Tooltip/index";
       </div>
       <div class="flex gap-4">
         <a href={LINKS.github} aria-label="github profile" target="_blank">
-          <Button>
+          <Button aria-label="github profile">
             <Icon name="ri:github-fill" class="h-6" />
           </Button>
         </a>
         <a href={LINKS.linkedin} aria-label="linkeding profile" target="_blank">
-          <Button>
+          <Button aria-label="linkedin profile">
             <Icon name="ri:linkedin-box-fill" class="h-6" />
           </Button>
         </a>
         <Tooltip client:visible>
-          <Button>
+          <Button aria-label="easter egg btn">
             <Icon name="ri:emotion-laugh-line" class="h-6" />
           </Button>
         </Tooltip>

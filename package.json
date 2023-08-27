@@ -12,7 +12,7 @@
   "dependencies": {
     "@astrojs/netlify": "^2.6.0",
     "@astrojs/sitemap": "^2.0.2",
-    "@astrojs/solid-js": "^2.2.0",
+    "@astrojs/solid-js": "^2.2.1",
     "@astrojs/tailwind": "^4.0.0",
     "@contentful/rich-text-html-renderer": "^16.1.1",
     "@types/cheerio": "^0.22.31",

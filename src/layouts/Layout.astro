@@ -30,6 +30,10 @@ const { title, description } = Astro.props;
     <meta name="twitter:image" content="https://gianmarco.xyz/me.png" />
   </head>
   <body class="bg-darkslate-700 md:h-screen flex justify-center items-center">
+    <div
+      class="loaderRef bg-darkslate-700 text-neutral-50 text-3xl font-black uppercase flex justify-center items-center w-screen h-screen z-50 fixed top-0 bottom-0 right-0 left-0"
+    >
+    </div>
     <slot />
   </body>
 </html>

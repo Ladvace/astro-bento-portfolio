@@ -9,18 +9,34 @@ import Now from "../components/Now.astro";
 ---
 
 <script>
-  import { animate, stagger, spring } from "motion";
+  import {
+    animate,
+    stagger,
+    spring,
+    timeline,
+    TimelineDefinition,
+  } from "motion";
   const cards = document.querySelectorAll(".card");
 
-  animate(
-    cards,
-    { y: ["40%", "0%"], opacity: [0, 1] },
-    {
-      duration: 0.4,
-      delay: stagger(0.3),
-      easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
-    }
-  );
+  const sequence = [
+    [
+      ".loaderRef",
+      { opacity: 0, pointerEvents: "none" },
+      { easing: "ease-out" },
+    ],
+    [
+      cards,
+      { y: ["40%", "0%"], opacity: [0, 1] },
+      {
+        at: "-0.1",
+        duration: 0.4,
+        delay: stagger(0.3),
+        easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
+      },
+    ],
+  ];
+
+  timeline(sequence as TimelineDefinition);
 </script>
 
 <Layout
