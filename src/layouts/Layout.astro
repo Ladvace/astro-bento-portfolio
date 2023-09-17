@@ -22,12 +22,12 @@ const { title, description } = Astro.props;
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gianmarco.xyz" />
-    <meta property="og:image" content="https://gianmarco.xyz/me.png" />
+    <meta property="og:image" content="https://gianmarco.xyz/me.webp" />
     <!-- Basic Twitter Card tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://gianmarco.xyz/me.png" />
+    <meta name="twitter:image" content="https://gianmarco.xyz/me.webp" />
   </head>
   <body class="bg-darkslate-700 md:h-screen flex justify-center items-center">
     <div
@@ -56,16 +56,19 @@ const { title, description } = Astro.props;
     font-weight: 100 1000;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: "CabinetGrotesk";
+  body {
+    margin: 0;
+    font-family: "Satoshi", sans-serif;
+
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  p {
-    font-family: "Satoshi";
+
+  h1,
+  h2 {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    font-family: "Cabinet Grotesk", sans-serif;
   }
 
   b {

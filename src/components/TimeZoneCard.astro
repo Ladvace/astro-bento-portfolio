@@ -1,0 +1,26 @@
+---
+import { getCurrentTimeInItaly, formatTimeForItaly } from "../lib/helpers";
+import Card from "./Card/index.astro";
+---
+
+<script>
+  import { formatTimeForItaly } from "../lib/helpers";
+
+  function updateClock() {
+    const timeDisplay = document.getElementById("timeDisplay");
+    if (timeDisplay) {
+      timeDisplay.textContent = formatTimeForItaly(new Date());
+    }
+  }
+
+  setInterval(updateClock, 1000);
+</script>
+
+<Card colSpan="lg:col-span-2" rowSpan="md:row-span-1" title="Time zone">
+  <h4
+    id="timeDisplay"
+    class="text-5xl w-full h-[calc(100%-28px)] font-serif flex justify-center items-center"
+  >
+    {formatTimeForItaly(getCurrentTimeInItaly())}
+  </h4>
+</Card>
