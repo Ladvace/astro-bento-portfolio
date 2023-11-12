@@ -4,23 +4,36 @@ import Card from "./Card/index.astro";
 ---
 
 <script>
+  import { onCleanup, onMount } from "solid-js";
   import { formatTimeForItaly } from "../lib/helpers";
+
+  let interval: ReturnType<typeof setInterval>;
 
   function updateClock() {
     const timeDisplay = document.getElementById("timeDisplay");
+    const now = new Date();
+
     if (timeDisplay) {
-      timeDisplay.textContent = formatTimeForItaly(new Date());
+      timeDisplay.textContent = formatTimeForItaly(now);
+      timeDisplay.setAttribute("datetime", now.toISOString());
     }
   }
 
-  setInterval(updateClock, 1000);
+  onMount(() => {
+    interval = setInterval(updateClock, 1000);
+  });
+
+  onCleanup(() => {
+    clearInterval(interval);
+  });
 </script>
 
 <Card colSpan="lg:col-span-2" rowSpan="md:row-span-1" title="Time zone">
-  <h4
+  <time
+    datetime=""
     id="timeDisplay"
     class="text-5xl w-full h-[calc(100%-28px)] font-serif flex justify-center items-center"
   >
     {formatTimeForItaly(getCurrentTimeInItaly())}
-  </h4>
+  </time>
 </Card>
