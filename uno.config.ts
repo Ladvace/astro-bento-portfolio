@@ -4,8 +4,8 @@ import { defineConfig, presetUno, presetWebFonts } from "unocss";
 export default defineConfig({
   theme: {
     boxShadow: {
-      custom: `2px 2px theme("colors.primary.500")`,
-      "custom-hover": `1px 1px theme("colors.primary.500")`,
+      custom: `2px 2px #E63946`,
+      "custom-hover": `1px 1px #E63946`,
     },
     fontFamily: {
       sans: ["CabinetGrotesk", "Satoshi"],
