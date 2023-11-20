@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@unocss/astro": "^0.57.3",
+    "@unocss/postcss": "^0.57.5",
     "@unocss/preset-uno": "^0.57.3",
     "@unocss/reset": "^0.57.3",
     "unocss": "^0.57.3"

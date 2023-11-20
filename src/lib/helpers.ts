@@ -29,5 +29,4 @@ export function formatTimeForItaly(date: Date): string {
   formattedTime += " CET";
 
   return formattedTime;
-}
-``;
+};
