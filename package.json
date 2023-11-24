@@ -17,10 +17,12 @@
     "astro-icon": "^0.8.1",
     "astro-robots-txt": "^1.0.0",
     "autoprefixer": "^10.4.16",
+    "d3": "^7.8.5",
     "motion": "^10.16.4",
     "solid-js": "^1.8.5"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@unocss/astro": "^0.57.3",
     "@unocss/postcss": "^0.57.5",
     "@unocss/preset-uno": "^0.57.3",
