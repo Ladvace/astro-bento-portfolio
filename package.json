@@ -1,7 +1,7 @@
 {
-  "name": "astro-portfolio-2-0",
+  "name": "astro-bento-portfolio",
   "type": "module",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -11,20 +11,25 @@
   },
   "dependencies": {
     "@astrojs/netlify": "^3.0.4",
+    "@astrojs/rss": "^3.0.0",
     "@astrojs/sitemap": "^3.0.3",
     "@astrojs/solid-js": "^3.0.2",
-    "astro": "^3.5.3",
+    "astro": "^3.6.3",
     "astro-icon": "^0.8.1",
     "astro-robots-txt": "^1.0.0",
-    "autoprefixer": "^10.4.16",
-    "motion": "^10.16.4",
-    "solid-js": "^1.8.5"
+    "mdast-util-to-string": "^4.0.0",
+    "reading-time": "^1.5.0",
+    "solid-js": "^1.8.6"
   },
   "devDependencies": {
-    "@unocss/astro": "^0.57.3",
-    "@unocss/postcss": "^0.57.5",
-    "@unocss/preset-uno": "^0.57.3",
-    "@unocss/reset": "^0.57.3",
-    "unocss": "^0.57.3"
+    "motion": "^10.16.4",
+    "autoprefixer": "^10.4.16",
+    "@unocss/astro": "^0.57.7",
+    "@unocss/postcss": "^0.57.7",
+    "@unocss/preset-uno": "^0.57.7",
+    "@unocss/reset": "^0.57.7",
+    "markdown-it": "^13.0.2",
+    "sanitize-html": "^2.11.0",
+    "unocss": "^0.57.7"
   }
 }

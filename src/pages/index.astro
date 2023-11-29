@@ -10,14 +10,11 @@ import Now from "../components/Now.astro";
 
 <script>
   import { stagger, spring, timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../lib/constants";
   const cards = document.querySelectorAll(".card");
 
   const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-out" },
-    ],
+    loaderAnimation,
     [
       cards,
       { y: ["40%", "0%"], opacity: [0, 1] },
@@ -48,7 +45,7 @@ import Now from "../components/Now.astro";
       colSpan="md:col-span-1"
       rowSpan="md:row-span-1"
       title="Blog"
-      body="Currently WIP"
+      href="/blog"
     />
     <Now />
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">

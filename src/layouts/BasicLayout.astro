@@ -7,7 +7,7 @@ interface Props {
 const { title, description } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -28,8 +28,12 @@ const { title, description } = Astro.props;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://gianmarco.xyz/me.webp" />
+
+    <link rel="preconnect" href="https://cdn.fontshare.com" />
   </head>
-  <body class="bg-darkslate-700 md:h-screen flex justify-center items-center">
+  <body class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center">
+   
+    <slot name="loader"/>
     <slot />
   </body>
 </html>
@@ -52,13 +56,19 @@ const { title, description } = Astro.props;
     font-weight: 100 1000;
   }
 
+  body {
+    margin: 0;
+    font-family: "Satoshi", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    font-family: "CabinetGrotesk";
+    font-family: "Cabinet Grotesk", sans-serif;
   }
   p {
     font-family: "Satoshi";
