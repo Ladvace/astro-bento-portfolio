@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   description: string;
+  page?: "travel";
 }
 
-const { title, description } = Astro.props;
+const { title, description, page } = Astro.props;
 ---
 
 <!doctype html>
@@ -26,12 +27,22 @@ const { title, description } = Astro.props;
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gianmarco.xyz" />
-    <meta property="og:image" content="https://gianmarco.xyz/me.webp" />
+    <meta
+      property="og:image"
+      content={page === "travel"
+        ? "https://gianmarco.xyz/globe_preview.webp"
+        : "https://gianmarco.xyz/me.webp"}
+    />
     <!-- Basic Twitter Card tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://gianmarco.xyz/me.webp" />
+    <meta
+      name="twitter:image"
+      content={page === "travel"
+        ? "https://gianmarco.xyz/globe_preview.webp"
+        : "https://gianmarco.xyz/me.webp"}
+    />
 
     <link rel="preconnect" href="https://cdn.fontshare.com" />
   </head>

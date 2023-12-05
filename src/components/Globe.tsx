@@ -59,8 +59,8 @@ const GlobeComponent = () => {
       .data(worldData.features)
       .enter()
       .append("path")
-      .attr("d", (d) => pathGenerator(d as any))
-      .attr("fill", (d) =>
+      .attr("d", (d: any) => pathGenerator(d as any))
+      .attr("fill", (d: { properties: { name: string } }) =>
         visitedCountries.includes(d.properties.name) ? "#E63946" : "white"
       )
       .style("stroke", "black")
@@ -71,14 +71,12 @@ const GlobeComponent = () => {
       const rotate = projection.rotate();
       const k = sensitivity / projection.scale();
       projection.rotate([rotate[0] - 1 * k, rotate[1]]);
-      svg.selectAll("path").attr("d", (d) => pathGenerator(d as any));
+      svg.selectAll("path").attr("d", (d: any) => pathGenerator(d as any));
     }, 200);
   });
 
   return (
     <div class="flex flex-col text-white justify-center items-center w-full h-full">
-      {/* <h1 class="text-5xl font-bold mb-4">Countries I visited</h1> */}
-
       <div class="w-full" ref={mapContainer}></div>
     </div>
   );

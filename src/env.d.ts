@@ -1,3 +1,4 @@
+/// <reference path="../.astro/types.d.ts" />
 /// <reference types="astro/client" />
 interface ImportMetaEnv {
   readonly CONTENTFUL_SPACE_ID: string;
