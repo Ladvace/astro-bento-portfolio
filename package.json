@@ -10,26 +10,26 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^3.0.4",
-    "@astrojs/rss": "^3.0.0",
+    "@astrojs/netlify": "^3.1.1",
+    "@astrojs/rss": "^4.0.1",
     "@astrojs/sitemap": "^3.0.3",
     "@astrojs/solid-js": "^3.0.2",
-    "astro": "^3.6.3",
-    "astro-icon": "^0.8.1",
+    "astro": "^4.0.5",
+    "astro-icon": "^0.8.2",
     "astro-robots-txt": "^1.0.0",
     "mdast-util-to-string": "^4.0.0",
     "reading-time": "^1.5.0",
-    "solid-js": "^1.8.6"
+    "solid-js": "^1.8.7"
   },
   "devDependencies": {
     "motion": "^10.16.4",
     "autoprefixer": "^10.4.16",
-    "@unocss/astro": "^0.57.7",
-    "@unocss/postcss": "^0.57.7",
-    "@unocss/preset-uno": "^0.57.7",
-    "@unocss/reset": "^0.57.7",
-    "markdown-it": "^13.0.2",
+    "@unocss/astro": "^0.58.0",
+    "@unocss/postcss": "^0.58.0",
+    "@unocss/preset-uno": "^0.58.0",
+    "@unocss/reset": "^0.58.0",
+    "markdown-it": "^14.0.0",
     "sanitize-html": "^2.11.0",
-    "unocss": "^0.57.7"
+    "unocss": "^0.58.0"
   }
 }
