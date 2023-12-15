@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/axios.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from './utils.js';\nimport bind from './helpers/bind.js';\nimport Axios from './core/Axios.js';\nimport mergeConfig from './core/mergeConfig.js';\nimport defaults from './defaults/index.js';\nimport formDataToJSON from './helpers/formDataToJSON.js';\nimport CanceledError from './cancel/CanceledError.js';\nimport CancelToken from './cancel/CancelToken.js';\nimport isCancel from './cancel/isCancel.js';\nimport {VERSION} from './env/data.js';\nimport toFormData from './helpers/toFormData.js';\nimport AxiosError from './core/AxiosError.js';\nimport spread from './helpers/spread.js';\nimport isAxiosError from './helpers/isAxiosError.js';\nimport AxiosHeaders from \"./core/AxiosHeaders.js\";\nimport adapters from './adapters/adapters.js';\nimport HttpStatusCode from './helpers/HttpStatusCode.js';\n\n/**\n * Create an instance of Axios\n *\n * @param {Object} defaultConfig The default config for the instance\n *\n * @returns {Axios} A new instance of Axios\n */\nfunction createInstance(defaultConfig) {\n  const context = new Axios(defaultConfig);\n  const instance = bind(Axios.prototype.request, context);\n\n  // Copy axios.prototype to instance\n  utils.extend(instance, Axios.prototype, context, {allOwnKeys: true});\n\n  // Copy context to instance\n  utils.extend(instance, context, null, {allOwnKeys: true});\n\n  // Factory for creating new instances\n  instance.create = function create(instanceConfig) {\n    return createInstance(mergeConfig(defaultConfig, instanceConfig));\n  };\n\n  return instance;\n}\n\n// Create the default instance to be exported\nconst axios = createInstance(defaults);\n\n// Expose Axios class to allow class inheritance\naxios.Axios = Axios;\n\n// Expose Cancel & CancelToken\naxios.CanceledError = CanceledError;\naxios.CancelToken = CancelToken;\naxios.isCancel = isCancel;\naxios.VERSION = VERSION;\naxios.toFormData = toFormData;\n\n// Expose AxiosError class\naxios.AxiosError = AxiosError;\n\n// alias for CanceledError for backward compatibility\naxios.Cancel = axios.CanceledError;\n\n// Expose all/spread\naxios.all = function all(promises) {\n  return Promise.all(promises);\n};\n\naxios.spread = spread;\n\n// Expose isAxiosError\naxios.isAxiosError = isAxiosError;\n\n// Expose mergeConfig\naxios.mergeConfig = mergeConfig;\n\naxios.AxiosHeaders = AxiosHeaders;\n\naxios.formToJSON = thing => formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);\n\naxios.getAdapter = adapters.getAdapter;\n\naxios.HttpStatusCode = HttpStatusCode;\n\naxios.default = axios;\n\n// this module should only have a default export\nexport default axios\n",
+      "start": 1702568943422,
+      "end": 1702568943455,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943455,
+      "end": 1702568943455,
+      "order": "normal"
+    }
+  ]
+}

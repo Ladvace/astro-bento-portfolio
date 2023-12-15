@@ -1,0 +1,261 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@unhead/vue/dist/shared/vue.f36acd1f.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { ref, watchEffect, watch, getCurrentInstance, onBeforeUnmount, onDeactivated, onActivated } from 'vue';\nimport { i as injectHead, r as resolveUnrefHeadInput } from './vue.cf295fb1.mjs';\n\nfunction useHead(input, options = {}) {\n  const head = options.head || injectHead();\n  if (head) {\n    if (!head.ssr)\n      return clientUseHead(head, input, options);\n    return head.push(input, options);\n  }\n}\nfunction clientUseHead(head, input, options = {}) {\n  const deactivated = ref(false);\n  const resolvedInput = ref({});\n  watchEffect(() => {\n    resolvedInput.value = deactivated.value ? {} : resolveUnrefHeadInput(input);\n  });\n  const entry = head.push(resolvedInput.value, options);\n  watch(resolvedInput, (e) => {\n    entry.patch(e);\n  });\n  const vm = getCurrentInstance();\n  if (vm) {\n    onBeforeUnmount(() => {\n      entry.dispose();\n    });\n    onDeactivated(() => {\n      deactivated.value = true;\n    });\n    onActivated(() => {\n      deactivated.value = false;\n    });\n  }\n  return entry;\n}\n\nexport { useHead as u };\n",
+      "start": 1702568944255,
+      "end": 1702568944340,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "result": "import { ref, watchEffect, watch, getCurrentInstance, onBeforeUnmount, onDeactivated, onActivated } from 'vue';\nimport { i as injectHead, r as resolveUnrefHeadInput } from './vue.cf295fb1.mjs';\n\nfunction useHead(input, options = {}) {\n  const head = options.head || injectHead();\n  if (head) {\n    if (!head.ssr)\n      return clientUseHead(head, input, options);\n    return head.push(input, options);\n  }\n}\nfunction clientUseHead(head, input, options = {}) {\n  const deactivated = ref(false);\n  const resolvedInput = ref({});\n  watchEffect(() => {\n    resolvedInput.value = deactivated.value ? {} : resolveUnrefHeadInput(input);\n  });\n  const entry = head.push(resolvedInput.value, options);\n  watch(resolvedInput, (e) => {\n    entry.patch(e);\n  });\n  const vm = getCurrentInstance();\n  if (vm) {\n     /*#__PURE__*/ false && onBeforeUnmount(() => {\n      entry.dispose();\n    });\n     /*#__PURE__*/ false && onDeactivated(() => {\n      deactivated.value = true;\n    });\n     /*#__PURE__*/ false && onActivated(() => {\n      deactivated.value = false;\n    });\n  }\n  return entry;\n}\n\nexport { useHead as u };\n",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "post",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/G,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjF;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACb,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrC,CAAC,CAAC,CAAC;AACH,CAAC;AACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACjC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACrB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChF,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACxD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACnB,CAAC,CAAC,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACX,2CAAmB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC3B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACtB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,yCAAiB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,uCAAe,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACf,CAAC;AACD;AACA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;"
+      }
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568944340,
+      "end": 1702568944340,
+      "order": "normal"
+    }
+  ]
+}

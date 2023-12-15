@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/helpers/parseHeaders.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from './../utils.js';\n\n// RawAxiosHeaders whose duplicates are ignored by node\n// c.f. https://nodejs.org/api/http.html#http_message_headers\nconst ignoreDuplicateOf = utils.toObjectSet([\n  'age', 'authorization', 'content-length', 'content-type', 'etag',\n  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',\n  'last-modified', 'location', 'max-forwards', 'proxy-authorization',\n  'referer', 'retry-after', 'user-agent'\n]);\n\n/**\n * Parse headers into an object\n *\n * ```\n * Date: Wed, 27 Aug 2014 08:58:49 GMT\n * Content-Type: application/json\n * Connection: keep-alive\n * Transfer-Encoding: chunked\n * ```\n *\n * @param {String} rawHeaders Headers needing to be parsed\n *\n * @returns {Object} Headers parsed into an object\n */\nexport default rawHeaders => {\n  const parsed = {};\n  let key;\n  let val;\n  let i;\n\n  rawHeaders && rawHeaders.split('\\n').forEach(function parser(line) {\n    i = line.indexOf(':');\n    key = line.substring(0, i).trim().toLowerCase();\n    val = line.substring(i + 1).trim();\n\n    if (!key || (parsed[key] && ignoreDuplicateOf[key])) {\n      return;\n    }\n\n    if (key === 'set-cookie') {\n      if (parsed[key]) {\n        parsed[key].push(val);\n      } else {\n        parsed[key] = [val];\n      }\n    } else {\n      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;\n    }\n  });\n\n  return parsed;\n};\n",
+      "start": 1702568943521,
+      "end": 1702568943540,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943540,
+      "end": 1702568943540,
+      "order": "normal"
+    }
+  ]
+}

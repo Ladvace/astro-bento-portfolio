@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@unhead/shared/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "function asArray$1(value) {\n  return Array.isArray(value) ? value : [value];\n}\n\nconst SelfClosingTags = [\"meta\", \"link\", \"base\"];\nconst TagsWithInnerContent = [\"title\", \"titleTemplate\", \"script\", \"style\", \"noscript\"];\nconst HasElementTags = [\n  \"base\",\n  \"meta\",\n  \"link\",\n  \"style\",\n  \"script\",\n  \"noscript\"\n];\nconst ValidHeadTags = [\n  \"title\",\n  \"titleTemplate\",\n  \"templateParams\",\n  \"base\",\n  \"htmlAttrs\",\n  \"bodyAttrs\",\n  \"meta\",\n  \"link\",\n  \"style\",\n  \"script\",\n  \"noscript\"\n];\nconst UniqueTags = [\"base\", \"title\", \"titleTemplate\", \"bodyAttrs\", \"htmlAttrs\", \"templateParams\"];\nconst TagConfigKeys = [\"tagPosition\", \"tagPriority\", \"tagDuplicateStrategy\", \"children\", \"innerHTML\", \"textContent\", \"processTemplateParams\"];\nconst IsBrowser = typeof window !== \"undefined\";\nconst composableNames = [\n  \"getActiveHead\",\n  \"useHead\",\n  \"useSeoMeta\",\n  \"useHeadSafe\",\n  \"useServerHead\",\n  \"useServerSeoMeta\",\n  \"useServerHeadSafe\"\n];\n\nfunction defineHeadPlugin(plugin) {\n  return plugin;\n}\n\nfunction hashCode(s) {\n  let h = 9;\n  for (let i = 0; i < s.length; )\n    h = Math.imul(h ^ s.charCodeAt(i++), 9 ** 9);\n  return ((h ^ h >>> 9) + 65536).toString(16).substring(1, 8).toLowerCase();\n}\nfunction hashTag(tag) {\n  return tag._h || hashCode(tag._d ? tag._d : `${tag.tag}:${tag.textContent || tag.innerHTML || \"\"}:${Object.entries(tag.props).map(([key, value]) => `${key}:${String(value)}`).join(\",\")}`);\n}\n\nfunction tagDedupeKey(tag, fn) {\n  const { props, tag: tagName } = tag;\n  if (UniqueTags.includes(tagName))\n    return tagName;\n  if (tagName === \"link\" && props.rel === \"canonical\")\n    return \"canonical\";\n  if (props.charset)\n    return \"charset\";\n  const name = [\"id\"];\n  if (tagName === \"meta\")\n    name.push(...[\"name\", \"property\", \"http-equiv\"]);\n  for (const n of name) {\n    if (typeof props[n] !== \"undefined\") {\n      const val = String(props[n]);\n      if (fn && !fn(val))\n        return false;\n      return `${tagName}:${n}:${val}`;\n    }\n  }\n  return false;\n}\n\nfunction resolveTitleTemplate(template, title) {\n  if (template == null)\n    return title || null;\n  if (typeof template === \"function\")\n    return template(title);\n  return template;\n}\n\nfunction asArray(input) {\n  return Array.isArray(input) ? input : [input];\n}\nconst InternalKeySymbol = \"_$key\";\nfunction packObject(input, options) {\n  const keys = Object.keys(input);\n  let [k, v] = keys;\n  options = options || {};\n  options.key = options.key || k;\n  options.value = options.value || v;\n  options.resolveKey = options.resolveKey || ((k2) => k2);\n  const resolveKey = (index) => {\n    const arr = asArray(options?.[index]);\n    return arr.find((k2) => {\n      if (typeof k2 === \"string\" && k2.includes(\".\")) {\n        return k2;\n      }\n      return k2 && keys.includes(k2);\n    });\n  };\n  const resolveValue = (k2, input2) => {\n    if (k2.includes(\".\")) {\n      const paths = k2.split(\".\");\n      let val = input2;\n      for (const path of paths)\n        val = val[path];\n      return val;\n    }\n    return input2[k2];\n  };\n  k = resolveKey(\"key\") || k;\n  v = resolveKey(\"value\") || v;\n  const dedupeKeyPrefix = input.key ? `${InternalKeySymbol}${input.key}-` : \"\";\n  let keyValue = resolveValue(k, input);\n  keyValue = options.resolveKey(keyValue);\n  return {\n    [`${dedupeKeyPrefix}${keyValue}`]: resolveValue(v, input)\n  };\n}\n\nfunction packArray(input, options) {\n  const packed = {};\n  for (const i of input) {\n    const packedObj = packObject(i, options);\n    const pKey = Object.keys(packedObj)[0];\n    const isDedupeKey = pKey.startsWith(InternalKeySymbol);\n    if (!isDedupeKey && packed[pKey]) {\n      packed[pKey] = Array.isArray(packed[pKey]) ? packed[pKey] : [packed[pKey]];\n      packed[pKey].push(Object.values(packedObj)[0]);\n    } else {\n      packed[isDedupeKey ? pKey.split(\"-\").slice(1).join(\"-\") || pKey : pKey] = packedObj[pKey];\n    }\n  }\n  return packed;\n}\n\nfunction unpackToArray(input, options) {\n  const unpacked = [];\n  const kFn = options.resolveKeyData || ((ctx) => ctx.key);\n  const vFn = options.resolveValueData || ((ctx) => ctx.value);\n  for (const [k, v] of Object.entries(input)) {\n    unpacked.push(...(Array.isArray(v) ? v : [v]).map((i) => {\n      const ctx = { key: k, value: i };\n      const val = vFn(ctx);\n      if (typeof val === \"object\")\n        return unpackToArray(val, options);\n      if (Array.isArray(val))\n        return val;\n      return {\n        [typeof options.key === \"function\" ? options.key(ctx) : options.key]: kFn(ctx),\n        [typeof options.value === \"function\" ? options.value(ctx) : options.value]: val\n      };\n    }).flat());\n  }\n  return unpacked;\n}\n\nfunction unpackToString(value, options) {\n  return Object.entries(value).map(([key, value2]) => {\n    if (typeof value2 === \"object\")\n      value2 = unpackToString(value2, options);\n    if (options.resolve) {\n      const resolved = options.resolve({ key, value: value2 });\n      if (resolved)\n        return resolved;\n    }\n    if (typeof value2 === \"number\")\n      value2 = value2.toString();\n    if (typeof value2 === \"string\" && options.wrapValue) {\n      value2 = value2.replace(new RegExp(options.wrapValue, \"g\"), `\\\\${options.wrapValue}`);\n      value2 = `${options.wrapValue}${value2}${options.wrapValue}`;\n    }\n    return `${key}${options.keyValueSeparator || \"\"}${value2}`;\n  }).join(options.entrySeparator || \"\");\n}\n\nconst p = (p2) => ({ keyValue: p2, metaKey: \"property\" });\nconst k = (p2) => ({ keyValue: p2 });\nconst MetaPackingSchema = {\n  appleItunesApp: {\n    unpack: {\n      entrySeparator: \", \",\n      resolve({ key, value }) {\n        return `${fixKeyCase(key)}=${value}`;\n      }\n    }\n  },\n  articleExpirationTime: p(\"article:expiration_time\"),\n  articleModifiedTime: p(\"article:modified_time\"),\n  articlePublishedTime: p(\"article:published_time\"),\n  bookReleaseDate: p(\"book:release_date\"),\n  charset: {\n    metaKey: \"charset\"\n  },\n  contentSecurityPolicy: {\n    unpack: {\n      entrySeparator: \"; \",\n      resolve({ key, value }) {\n        return `${fixKeyCase(key)} ${value}`;\n      }\n    },\n    metaKey: \"http-equiv\"\n  },\n  contentType: {\n    metaKey: \"http-equiv\"\n  },\n  defaultStyle: {\n    metaKey: \"http-equiv\"\n  },\n  fbAppId: p(\"fb:app_id\"),\n  msapplicationConfig: k(\"msapplication-Config\"),\n  msapplicationTileColor: k(\"msapplication-TileColor\"),\n  msapplicationTileImage: k(\"msapplication-TileImage\"),\n  ogAudioSecureUrl: p(\"og:audio:secure_url\"),\n  ogAudioUrl: p(\"og:audio\"),\n  ogImageSecureUrl: p(\"og:image:secure_url\"),\n  ogImageUrl: p(\"og:image\"),\n  ogSiteName: p(\"og:site_name\"),\n  ogVideoSecureUrl: p(\"og:video:secure_url\"),\n  ogVideoUrl: p(\"og:video\"),\n  profileFirstName: p(\"profile:first_name\"),\n  profileLastName: p(\"profile:last_name\"),\n  profileUsername: p(\"profile:username\"),\n  refresh: {\n    metaKey: \"http-equiv\",\n    unpack: {\n      entrySeparator: \";\",\n      resolve({ key, value }) {\n        if (key === \"seconds\")\n          return `${value}`;\n      }\n    }\n  },\n  robots: {\n    unpack: {\n      entrySeparator: \", \",\n      resolve({ key, value }) {\n        if (typeof value === \"boolean\")\n          return `${fixKeyCase(key)}`;\n        else\n          return `${fixKeyCase(key)}:${value}`;\n      }\n    }\n  },\n  xUaCompatible: {\n    metaKey: \"http-equiv\"\n  }\n};\nconst openGraphNamespaces = [\n  \"og\",\n  \"book\",\n  \"article\",\n  \"profile\"\n];\nfunction resolveMetaKeyType(key) {\n  const fKey = fixKeyCase(key).split(\":\")[0];\n  if (openGraphNamespaces.includes(fKey))\n    return \"property\";\n  return MetaPackingSchema[key]?.metaKey || \"name\";\n}\nfunction resolveMetaKeyValue(key) {\n  return MetaPackingSchema[key]?.keyValue || fixKeyCase(key);\n}\nfunction fixKeyCase(key) {\n  const updated = key.replace(/([A-Z])/g, \"-$1\").toLowerCase();\n  const fKey = updated.split(\"-\")[0];\n  if (openGraphNamespaces.includes(fKey) || fKey === \"twitter\")\n    return key.replace(/([A-Z])/g, \":$1\").toLowerCase();\n  return updated;\n}\nfunction changeKeyCasingDeep(input) {\n  if (Array.isArray(input)) {\n    return input.map((entry) => changeKeyCasingDeep(entry));\n  }\n  if (typeof input !== \"object\" || Array.isArray(input))\n    return input;\n  const output = {};\n  for (const [key, value] of Object.entries(input))\n    output[fixKeyCase(key)] = changeKeyCasingDeep(value);\n  return output;\n}\nfunction resolvePackedMetaObjectValue(value, key) {\n  const definition = MetaPackingSchema[key];\n  if (key === \"refresh\")\n    return `${value.seconds};url=${value.url}`;\n  return unpackToString(\n    changeKeyCasingDeep(value),\n    {\n      keyValueSeparator: \"=\",\n      entrySeparator: \", \",\n      resolve({ value: value2, key: key2 }) {\n        if (value2 === null)\n          return \"\";\n        if (typeof value2 === \"boolean\")\n          return `${key2}`;\n      },\n      ...definition?.unpack\n    }\n  );\n}\nconst ObjectArrayEntries = [\"og:image\", \"og:video\", \"og:audio\", \"twitter:image\"];\nfunction sanitize(input) {\n  const out = {};\n  Object.entries(input).forEach(([k2, v]) => {\n    if (String(v) !== \"false\" && k2)\n      out[k2] = v;\n  });\n  return out;\n}\nfunction handleObjectEntry(key, v) {\n  const value = sanitize(v);\n  const fKey = fixKeyCase(key);\n  const attr = resolveMetaKeyType(fKey);\n  if (ObjectArrayEntries.includes(fKey)) {\n    const input = {};\n    Object.entries(value).forEach(([k2, v2]) => {\n      input[`${key}${k2 === \"url\" ? \"\" : `${k2.charAt(0).toUpperCase()}${k2.slice(1)}`}`] = v2;\n    });\n    return unpackMeta(input).sort((a, b) => (a[attr]?.length || 0) - (b[attr]?.length || 0));\n  }\n  return [{ [attr]: fKey, ...value }];\n}\nfunction unpackMeta(input) {\n  const extras = [];\n  const primitives = {};\n  Object.entries(input).forEach(([key, value]) => {\n    if (!Array.isArray(value)) {\n      if (typeof value === \"object\" && value) {\n        if (ObjectArrayEntries.includes(fixKeyCase(key))) {\n          extras.push(...handleObjectEntry(key, value));\n          return;\n        }\n        primitives[key] = sanitize(value);\n      } else {\n        primitives[key] = value;\n      }\n      return;\n    }\n    value.forEach((v) => {\n      extras.push(...typeof v === \"string\" ? unpackMeta({ [key]: v }) : handleObjectEntry(key, v));\n    });\n  });\n  const meta = unpackToArray(primitives, {\n    key({ key }) {\n      return resolveMetaKeyType(key);\n    },\n    value({ key }) {\n      return key === \"charset\" ? \"charset\" : \"content\";\n    },\n    resolveKeyData({ key }) {\n      return resolveMetaKeyValue(key);\n    },\n    resolveValueData({ value, key }) {\n      if (value === null)\n        return \"_null\";\n      if (typeof value === \"object\")\n        return resolvePackedMetaObjectValue(value, key);\n      return typeof value === \"number\" ? value.toString() : value;\n    }\n  });\n  return [...extras, ...meta].map((m) => {\n    if (m.content === \"_null\")\n      m.content = null;\n    return m;\n  });\n}\nfunction packMeta(inputs) {\n  const mappedPackingSchema = Object.entries(MetaPackingSchema).map(([key, value]) => [key, value.keyValue]);\n  return packArray(inputs, {\n    key: [\"name\", \"property\", \"httpEquiv\", \"http-equiv\", \"charset\"],\n    value: [\"content\", \"charset\"],\n    resolveKey(k2) {\n      let key = mappedPackingSchema.filter((sk) => sk[1] === k2)?.[0]?.[0] || k2;\n      const replacer = (_, letter) => letter?.toUpperCase();\n      key = key.replace(/:([a-z])/g, replacer).replace(/-([a-z])/g, replacer);\n      return key;\n    }\n  });\n}\n\nconst WhitelistAttributes = {\n  htmlAttrs: [\"id\", \"class\", \"lang\", \"dir\"],\n  bodyAttrs: [\"id\", \"class\"],\n  meta: [\"id\", \"name\", \"property\", \"charset\", \"content\"],\n  noscript: [\"id\", \"textContent\"],\n  script: [\"id\", \"type\", \"textContent\"],\n  link: [\"id\", \"color\", \"crossorigin\", \"fetchpriority\", \"href\", \"hreflang\", \"imagesrcset\", \"imagesizes\", \"integrity\", \"media\", \"referrerpolicy\", \"rel\", \"sizes\", \"type\"]\n};\nfunction acceptDataAttrs(value) {\n  const filtered = {};\n  Object.keys(value || {}).filter((a) => a.startsWith(\"data-\")).forEach((a) => {\n    filtered[a] = value[a];\n  });\n  return filtered;\n}\nfunction whitelistSafeInput(input) {\n  const filtered = {};\n  Object.keys(input).forEach((key) => {\n    const tagValue = input[key];\n    if (!tagValue)\n      return;\n    switch (key) {\n      case \"title\":\n      case \"titleTemplate\":\n      case \"templateParams\":\n        filtered[key] = tagValue;\n        break;\n      case \"htmlAttrs\":\n      case \"bodyAttrs\":\n        filtered[key] = acceptDataAttrs(tagValue);\n        WhitelistAttributes[key].forEach((a) => {\n          if (tagValue[a])\n            filtered[key][a] = tagValue[a];\n        });\n        break;\n      case \"meta\":\n        if (Array.isArray(tagValue)) {\n          filtered[key] = tagValue.map((meta) => {\n            const safeMeta = acceptDataAttrs(meta);\n            WhitelistAttributes.meta.forEach((key2) => {\n              if (meta[key2])\n                safeMeta[key2] = meta[key2];\n            });\n            return safeMeta;\n          }).filter((meta) => Object.keys(meta).length > 0);\n        }\n        break;\n      case \"link\":\n        if (Array.isArray(tagValue)) {\n          filtered[key] = tagValue.map((meta) => {\n            const link = acceptDataAttrs(meta);\n            WhitelistAttributes.link.forEach((key2) => {\n              const val = meta[key2];\n              if (key2 === \"rel\" && [\"stylesheet\", \"canonical\", \"modulepreload\", \"prerender\", \"preload\", \"prefetch\"].includes(val))\n                return;\n              if (key2 === \"href\") {\n                if (val.includes(\"javascript:\") || val.includes(\"data:\"))\n                  return;\n                link[key2] = val;\n              } else if (val) {\n                link[key2] = val;\n              }\n            });\n            return link;\n          }).filter((link) => Object.keys(link).length > 1 && !!link.rel);\n        }\n        break;\n      case \"noscript\":\n        if (Array.isArray(tagValue)) {\n          filtered[key] = tagValue.map((meta) => {\n            const noscript = acceptDataAttrs(meta);\n            WhitelistAttributes.noscript.forEach((key2) => {\n              if (meta[key2])\n                noscript[key2] = meta[key2];\n            });\n            return noscript;\n          }).filter((meta) => Object.keys(meta).length > 0);\n        }\n        break;\n      case \"script\":\n        if (Array.isArray(tagValue)) {\n          filtered[key] = tagValue.map((script) => {\n            const safeScript = acceptDataAttrs(script);\n            WhitelistAttributes.script.forEach((s) => {\n              if (script[s]) {\n                if (s === \"textContent\") {\n                  try {\n                    const jsonVal = typeof script[s] === \"string\" ? JSON.parse(script[s]) : script[s];\n                    safeScript[s] = JSON.stringify(jsonVal, null, 0);\n                  } catch (e) {\n                  }\n                } else {\n                  safeScript[s] = script[s];\n                }\n              }\n            });\n            return safeScript;\n          }).filter((meta) => Object.keys(meta).length > 0);\n        }\n        break;\n    }\n  });\n  return filtered;\n}\n\nasync function normaliseTag(tagName, input, e) {\n  const tag = {\n    tag: tagName,\n    props: await normaliseProps(\n      // explicitly check for an object\n      // @ts-expect-error untyped\n      typeof input === \"object\" && typeof input !== \"function\" && !(input instanceof Promise) ? { ...input } : { [[\"script\", \"noscript\", \"style\"].includes(tagName) ? \"innerHTML\" : \"textContent\"]: input },\n      [\"templateParams\", \"titleTemplate\"].includes(tagName)\n    )\n  };\n  TagConfigKeys.forEach((k) => {\n    const val = typeof tag.props[k] !== \"undefined\" ? tag.props[k] : e[k];\n    if (typeof val !== \"undefined\") {\n      if (![\"innerHTML\", \"textContent\", \"children\"].includes(k) || TagsWithInnerContent.includes(tag.tag)) {\n        tag[k === \"children\" ? \"innerHTML\" : k] = val;\n      }\n      delete tag.props[k];\n    }\n  });\n  if (tag.props.body) {\n    tag.tagPosition = \"bodyClose\";\n    delete tag.props.body;\n  }\n  if (tag.tag === \"script\") {\n    if (typeof tag.innerHTML === \"object\") {\n      tag.innerHTML = JSON.stringify(tag.innerHTML);\n      tag.props.type = tag.props.type || \"application/json\";\n    }\n  }\n  return Array.isArray(tag.props.content) ? tag.props.content.map((v) => ({ ...tag, props: { ...tag.props, content: v } })) : tag;\n}\nfunction normaliseClassProp(v) {\n  if (typeof v === \"object\" && !Array.isArray(v)) {\n    v = Object.keys(v).filter((k) => v[k]);\n  }\n  return (Array.isArray(v) ? v.join(\" \") : v).split(\" \").filter((c) => c.trim()).filter(Boolean).join(\" \");\n}\nasync function normaliseProps(props, virtual) {\n  for (const k of Object.keys(props)) {\n    if (k === \"class\") {\n      props[k] = normaliseClassProp(props[k]);\n      continue;\n    }\n    if (props[k] instanceof Promise)\n      props[k] = await props[k];\n    if (!virtual && !TagConfigKeys.includes(k)) {\n      const v = String(props[k]);\n      const isDataKey = k.startsWith(\"data-\");\n      if (v === \"true\" || v === \"\") {\n        props[k] = isDataKey ? \"true\" : true;\n      } else if (!props[k]) {\n        if (isDataKey && v === \"false\")\n          props[k] = \"false\";\n        else\n          delete props[k];\n      }\n    }\n  }\n  return props;\n}\nconst TagEntityBits = 10;\nasync function normaliseEntryTags(e) {\n  const tagPromises = [];\n  Object.entries(e.resolvedInput).filter(([k, v]) => typeof v !== \"undefined\" && ValidHeadTags.includes(k)).forEach(([k, value]) => {\n    const v = asArray$1(value);\n    tagPromises.push(...v.map((props) => normaliseTag(k, props, e)).flat());\n  });\n  return (await Promise.all(tagPromises)).flat().filter(Boolean).map((t, i) => {\n    t._e = e._i;\n    e.mode && (t._m = e.mode);\n    t._p = (e._i << TagEntityBits) + i;\n    return t;\n  });\n}\n\nconst TAG_WEIGHTS = {\n  // tags\n  base: -10,\n  title: 10\n};\nconst TAG_ALIASES = {\n  // relative scores to their default values\n  critical: -80,\n  high: -10,\n  low: 20\n};\nfunction tagWeight(tag) {\n  let weight = 100;\n  const priority = tag.tagPriority;\n  if (typeof priority === \"number\")\n    return priority;\n  if (tag.tag === \"meta\") {\n    if (tag.props[\"http-equiv\"] === \"content-security-policy\")\n      weight = -30;\n    if (tag.props.charset)\n      weight = -20;\n    if (tag.props.name === \"viewport\")\n      weight = -15;\n  } else if (tag.tag === \"link\" && tag.props.rel === \"preconnect\") {\n    weight = 20;\n  } else if (tag.tag in TAG_WEIGHTS) {\n    weight = TAG_WEIGHTS[tag.tag];\n  }\n  if (typeof priority === \"string\" && priority in TAG_ALIASES) {\n    return weight + TAG_ALIASES[priority];\n  }\n  return weight;\n}\nconst SortModifiers = [{ prefix: \"before:\", offset: -1 }, { prefix: \"after:\", offset: 1 }];\n\nconst NetworkEvents = [\"onload\", \"onerror\", \"onabort\", \"onprogress\", \"onloadstart\"];\n\nconst sepSub = \"%separator\";\nfunction processTemplateParams(s, p, sep) {\n  if (typeof s !== \"string\" || !s.includes(\"%\"))\n    return s;\n  function sub(token) {\n    let val;\n    if ([\"s\", \"pageTitle\"].includes(token)) {\n      val = p.pageTitle;\n    } else if (token.includes(\".\")) {\n      val = token.split(\".\").reduce((acc, key) => acc ? acc[key] || void 0 : void 0, p);\n    } else {\n      val = p[token];\n    }\n    return typeof val !== \"undefined\" ? (val || \"\").replace(/\"/g, '\\\\\"') : false;\n  }\n  let decoded = s;\n  try {\n    decoded = decodeURI(s);\n  } catch {\n  }\n  const tokens = (decoded.match(/%(\\w+\\.+\\w+)|%(\\w+)/g) || []).sort().reverse();\n  tokens.forEach((token) => {\n    const re = sub(token.slice(1));\n    if (typeof re === \"string\") {\n      s = s.replace(new RegExp(`\\\\${token}(\\\\W|$)`, \"g\"), (_, args) => `${re}${args}`).trim();\n    }\n  });\n  if (s.includes(sepSub)) {\n    if (s.endsWith(sepSub))\n      s = s.slice(0, -sepSub.length).trim();\n    if (s.startsWith(sepSub))\n      s = s.slice(sepSub.length).trim();\n    s = s.replace(new RegExp(`\\\\${sepSub}\\\\s*\\\\${sepSub}`, \"g\"), sepSub);\n    s = processTemplateParams(s, { separator: sep }, sep);\n  }\n  return s;\n}\n\nexport { HasElementTags, IsBrowser, NetworkEvents, SelfClosingTags, SortModifiers, TAG_ALIASES, TAG_WEIGHTS, TagConfigKeys, TagEntityBits, TagsWithInnerContent, UniqueTags, ValidHeadTags, asArray$1 as asArray, composableNames, defineHeadPlugin, hashCode, hashTag, normaliseClassProp, normaliseEntryTags, normaliseProps, normaliseTag, packMeta, processTemplateParams, resolveMetaKeyType, resolveMetaKeyValue, resolvePackedMetaObjectValue, resolveTitleTemplate, tagDedupeKey, tagWeight, unpackMeta, whitelistSafeInput };\n",
+      "start": 1702568942806,
+      "end": 1702568943040,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943040,
+      "end": 1702568943040,
+      "order": "normal"
+    }
+  ]
+}

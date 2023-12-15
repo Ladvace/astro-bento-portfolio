@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/adapters/adapters.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import utils from '../utils.js';\nimport httpAdapter from './http.js';\nimport xhrAdapter from './xhr.js';\nimport AxiosError from \"../core/AxiosError.js\";\n\nconst knownAdapters = {\n  http: httpAdapter,\n  xhr: xhrAdapter\n}\n\nutils.forEach(knownAdapters, (fn, value) => {\n  if (fn) {\n    try {\n      Object.defineProperty(fn, 'name', {value});\n    } catch (e) {\n      // eslint-disable-next-line no-empty\n    }\n    Object.defineProperty(fn, 'adapterName', {value});\n  }\n});\n\nconst renderReason = (reason) => `- ${reason}`;\n\nconst isResolvedHandle = (adapter) => utils.isFunction(adapter) || adapter === null || adapter === false;\n\nexport default {\n  getAdapter: (adapters) => {\n    adapters = utils.isArray(adapters) ? adapters : [adapters];\n\n    const {length} = adapters;\n    let nameOrAdapter;\n    let adapter;\n\n    const rejectedReasons = {};\n\n    for (let i = 0; i < length; i++) {\n      nameOrAdapter = adapters[i];\n      let id;\n\n      adapter = nameOrAdapter;\n\n      if (!isResolvedHandle(nameOrAdapter)) {\n        adapter = knownAdapters[(id = String(nameOrAdapter)).toLowerCase()];\n\n        if (adapter === undefined) {\n          throw new AxiosError(`Unknown adapter '${id}'`);\n        }\n      }\n\n      if (adapter) {\n        break;\n      }\n\n      rejectedReasons[id || '#' + i] = adapter;\n    }\n\n    if (!adapter) {\n\n      const reasons = Object.entries(rejectedReasons)\n        .map(([id, state]) => `adapter ${id} ` +\n          (state === false ? 'is not supported by the environment' : 'is not available in the build')\n        );\n\n      let s = length ?\n        (reasons.length > 1 ? 'since :\\n' + reasons.map(renderReason).join('\\n') : ' ' + renderReason(reasons[0])) :\n        'as no adapter specified';\n\n      throw new AxiosError(\n        `There is no suitable adapter to dispatch the request ` + s,\n        'ERR_NOT_SUPPORT'\n      );\n    }\n\n    return adapter;\n  },\n  adapters: knownAdapters\n}\n",
+      "start": 1702568943496,
+      "end": 1702568943521,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943521,
+      "end": 1702568943521,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943522,
+      "end": 1702568943522,
+      "order": "normal"
+    }
+  ]
+}

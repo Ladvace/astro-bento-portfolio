@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/timeline/index.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { __rest } from 'tslib';\nimport { invariant } from 'hey-listen';\nimport { isString, defaults, isEasingGenerator, defaultOffset, fillOffset, progress } from '@motionone/utils';\nimport { resolveOption } from '../utils/stagger.es.js';\nimport { animateStyle } from '../animate/animate-style.es.js';\nimport { withControls } from '../animate/utils/controls.es.js';\nimport { keyframesList } from '../animate/utils/keyframes.es.js';\nimport { getOptions } from '../animate/utils/options.es.js';\nimport { resolveElements } from '../utils/resolve-elements.es.js';\nimport { calcNextTime } from './utils/calc-time.es.js';\nimport { addKeyframes } from './utils/edit.es.js';\nimport { compareByTime } from './utils/sort.es.js';\nimport { Animation } from '@motionone/animation';\n\nfunction timeline(definition, options = {}) {\n    var _a;\n    const animationDefinitions = createAnimationsFromTimeline(definition, options);\n    /**\n     * Create and start animations\n     */\n    const animationFactories = animationDefinitions\n        .map((definition) => animateStyle(...definition, Animation))\n        .filter(Boolean);\n    return withControls(animationFactories, options, \n    // Get the duration from the first animation definition\n    (_a = animationDefinitions[0]) === null || _a === void 0 ? void 0 : _a[3].duration);\n}\nfunction createAnimationsFromTimeline(definition, _a = {}) {\n    var { defaultOptions = {} } = _a, timelineOptions = __rest(_a, [\"defaultOptions\"]);\n    const animationDefinitions = [];\n    const elementSequences = new Map();\n    const elementCache = {};\n    const timeLabels = new Map();\n    let prevTime = 0;\n    let currentTime = 0;\n    let totalDuration = 0;\n    /**\n     * Build the timeline by mapping over the definition array and converting\n     * the definitions into keyframes and offsets with absolute time values.\n     * These will later get converted into relative offsets in a second pass.\n     */\n    for (let i = 0; i < definition.length; i++) {\n        const segment = definition[i];\n        /**\n         * If this is a timeline label, mark it and skip the rest of this iteration.\n         */\n        if (isString(segment)) {\n            timeLabels.set(segment, currentTime);\n            continue;\n        }\n        else if (!Array.isArray(segment)) {\n            timeLabels.set(segment.name, calcNextTime(currentTime, segment.at, prevTime, timeLabels));\n            continue;\n        }\n        const [elementDefinition, keyframes, options = {}] = segment;\n        /**\n         * If a relative or absolute time value has been specified we need to resolve\n         * it in relation to the currentTime.\n         */\n        if (options.at !== undefined) {\n            currentTime = calcNextTime(currentTime, options.at, prevTime, timeLabels);\n        }\n        /**\n         * Keep track of the maximum duration in this definition. This will be\n         * applied to currentTime once the definition has been parsed.\n         */\n        let maxDuration = 0;\n        /**\n         * Find all the elements specified in the definition and parse value\n         * keyframes from their timeline definitions.\n         */\n        const elements = resolveElements(elementDefinition, elementCache);\n        const numElements = elements.length;\n        for (let elementIndex = 0; elementIndex < numElements; elementIndex++) {\n            const element = elements[elementIndex];\n            const elementSequence = getElementSequence(element, elementSequences);\n            for (const key in keyframes) {\n                const valueSequence = getValueSequence(key, elementSequence);\n                let valueKeyframes = keyframesList(keyframes[key]);\n                const valueOptions = getOptions(options, key);\n                let { duration = defaultOptions.duration || defaults.duration, easing = defaultOptions.easing || defaults.easing, } = valueOptions;\n                if (isEasingGenerator(easing)) {\n                    invariant(key === \"opacity\" || valueKeyframes.length > 1, \"spring must be provided 2 keyframes within timeline()\");\n                    const custom = easing.createAnimation(valueKeyframes, key !== \"opacity\", () => 0, key);\n                    easing = custom.easing;\n                    valueKeyframes = custom.keyframes || valueKeyframes;\n                    duration = custom.duration || duration;\n                }\n                const delay = resolveOption(options.delay, elementIndex, numElements) || 0;\n                const startTime = currentTime + delay;\n                const targetTime = startTime + duration;\n                /**\n                 *\n                 */\n                let { offset = defaultOffset(valueKeyframes.length) } = valueOptions;\n                /**\n                 * If there's only one offset of 0, fill in a second with length 1\n                 *\n                 * TODO: Ensure there's a test that covers this removal\n                 */\n                if (offset.length === 1 && offset[0] === 0) {\n                    offset[1] = 1;\n                }\n                /**\n                 * Fill out if offset if fewer offsets than keyframes\n                 */\n                const remainder = offset.length - valueKeyframes.length;\n                remainder > 0 && fillOffset(offset, remainder);\n                /**\n                 * If only one value has been set, ie [1], push a null to the start of\n                 * the keyframe array. This will let us mark a keyframe at this point\n                 * that will later be hydrated with the previous value.\n                 */\n                valueKeyframes.length === 1 && valueKeyframes.unshift(null);\n                /**\n                 * Add keyframes, mapping offsets to absolute time.\n                 */\n                addKeyframes(valueSequence, valueKeyframes, easing, offset, startTime, targetTime);\n                maxDuration = Math.max(delay + duration, maxDuration);\n                totalDuration = Math.max(targetTime, totalDuration);\n            }\n        }\n        prevTime = currentTime;\n        currentTime += maxDuration;\n    }\n    /**\n     * For every element and value combination create a new animation.\n     */\n    elementSequences.forEach((valueSequences, element) => {\n        for (const key in valueSequences) {\n            const valueSequence = valueSequences[key];\n            /**\n             * Arrange all the keyframes in ascending time order.\n             */\n            valueSequence.sort(compareByTime);\n            const keyframes = [];\n            const valueOffset = [];\n            const valueEasing = [];\n            /**\n             * For each keyframe, translate absolute times into\n             * relative offsets based on the total duration of the timeline.\n             */\n            for (let i = 0; i < valueSequence.length; i++) {\n                const { at, value, easing } = valueSequence[i];\n                keyframes.push(value);\n                valueOffset.push(progress(0, totalDuration, at));\n                valueEasing.push(easing || defaults.easing);\n            }\n            /**\n             * If the first keyframe doesn't land on offset: 0\n             * provide one by duplicating the initial keyframe. This ensures\n             * it snaps to the first keyframe when the animation starts.\n             */\n            if (valueOffset[0] !== 0) {\n                valueOffset.unshift(0);\n                keyframes.unshift(keyframes[0]);\n                valueEasing.unshift(\"linear\");\n            }\n            /**\n             * If the last keyframe doesn't land on offset: 1\n             * provide one with a null wildcard value. This will ensure it\n             * stays static until the end of the animation.\n             */\n            if (valueOffset[valueOffset.length - 1] !== 1) {\n                valueOffset.push(1);\n                keyframes.push(null);\n            }\n            animationDefinitions.push([\n                element,\n                key,\n                keyframes,\n                Object.assign(Object.assign(Object.assign({}, defaultOptions), { duration: totalDuration, easing: valueEasing, offset: valueOffset }), timelineOptions),\n            ]);\n        }\n    });\n    return animationDefinitions;\n}\nfunction getElementSequence(element, sequences) {\n    !sequences.has(element) && sequences.set(element, {});\n    return sequences.get(element);\n}\nfunction getValueSequence(name, sequences) {\n    if (!sequences[name])\n        sequences[name] = [];\n    return sequences[name];\n}\n\nexport { createAnimationsFromTimeline, timeline };\n",
+      "start": 1702568943351,
+      "end": 1702568943427,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943427,
+      "end": 1702568943427,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943427,
+      "end": 1702568943428,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943428,
+      "end": 1702568943428,
+      "order": "normal"
+    }
+  ]
+}

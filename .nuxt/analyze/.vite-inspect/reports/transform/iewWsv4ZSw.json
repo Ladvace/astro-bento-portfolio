@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/gestures/in-view.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { resolveElements } from '../utils/resolve-elements.es.js';\nimport { isFunction } from '@motionone/utils';\n\nconst thresholds = {\n    any: 0,\n    all: 1,\n};\nfunction inView(elementOrSelector, onStart, { root, margin: rootMargin, amount = \"any\" } = {}) {\n    /**\n     * If this browser doesn't support IntersectionObserver, return a dummy stop function.\n     * Default triggering of onStart is tricky - it could be used for starting/stopping\n     * videos, lazy loading content etc. We could provide an option to enable a fallback, or\n     * provide a fallback callback option.\n     */\n    if (typeof IntersectionObserver === \"undefined\") {\n        return () => { };\n    }\n    const elements = resolveElements(elementOrSelector);\n    const activeIntersections = new WeakMap();\n    const onIntersectionChange = (entries) => {\n        entries.forEach((entry) => {\n            const onEnd = activeIntersections.get(entry.target);\n            /**\n             * If there's no change to the intersection, we don't need to\n             * do anything here.\n             */\n            if (entry.isIntersecting === Boolean(onEnd))\n                return;\n            if (entry.isIntersecting) {\n                const newOnEnd = onStart(entry);\n                if (isFunction(newOnEnd)) {\n                    activeIntersections.set(entry.target, newOnEnd);\n                }\n                else {\n                    observer.unobserve(entry.target);\n                }\n            }\n            else if (onEnd) {\n                onEnd(entry);\n                activeIntersections.delete(entry.target);\n            }\n        });\n    };\n    const observer = new IntersectionObserver(onIntersectionChange, {\n        root,\n        rootMargin,\n        threshold: typeof amount === \"number\" ? amount : thresholds[amount],\n    });\n    elements.forEach((element) => observer.observe(element));\n    return () => observer.disconnect();\n}\n\nexport { inView };\n",
+      "start": 1702568943389,
+      "end": 1702568943435,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943435,
+      "end": 1702568943435,
+      "order": "normal"
+    }
+  ]
+}

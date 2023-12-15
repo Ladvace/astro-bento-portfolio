@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@unhead/dom/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { HasElementTags, hashTag, normaliseProps, tagDedupeKey, defineHeadPlugin } from '@unhead/shared';\n\nasync function elementToTag($el) {\n  const tag = {\n    tag: $el.tagName.toLowerCase(),\n    props: await normaliseProps(\n      $el.getAttributeNames().reduce((props, name) => ({ ...props, [name]: $el.getAttribute(name) }), {})\n    ),\n    innerHTML: $el.innerHTML\n  };\n  tag._d = tagDedupeKey(tag);\n  return tag;\n}\nasync function renderDOMHead(head, options = {}) {\n  const dom = options.document || head.resolvedOptions.document;\n  if (!dom)\n    return;\n  const beforeRenderCtx = { shouldRender: head.dirty, tags: [] };\n  await head.hooks.callHook(\"dom:beforeRender\", beforeRenderCtx);\n  if (!beforeRenderCtx.shouldRender)\n    return;\n  const tags = (await head.resolveTags()).map((tag) => ({\n    tag,\n    id: HasElementTags.includes(tag.tag) ? hashTag(tag) : tag.tag,\n    shouldRender: true\n  }));\n  let state = head._dom;\n  if (!state) {\n    state = {\n      elMap: { htmlAttrs: dom.documentElement, bodyAttrs: dom.body }\n    };\n    for (const key of [\"body\", \"head\"]) {\n      const children = dom?.[key]?.children;\n      for (const c of [...children].filter((c2) => HasElementTags.includes(c2.tagName.toLowerCase())))\n        state.elMap[c.getAttribute(\"data-hid\") || hashTag(await elementToTag(c))] = c;\n    }\n  }\n  state.pendingSideEffects = { ...state.sideEffects || {} };\n  state.sideEffects = {};\n  function track(id, scope, fn) {\n    const k = `${id}:${scope}`;\n    state.sideEffects[k] = fn;\n    delete state.pendingSideEffects[k];\n  }\n  function trackCtx({ id, $el, tag }) {\n    const isAttrTag = tag.tag.endsWith(\"Attrs\");\n    state.elMap[id] = $el;\n    if (!isAttrTag) {\n      [\"textContent\", \"innerHTML\"].forEach((k) => {\n        tag[k] && tag[k] !== $el[k] && ($el[k] = tag[k]);\n      });\n      track(id, \"el\", () => {\n        state.elMap[id].remove();\n        delete state.elMap[id];\n      });\n    }\n    Object.entries(tag.props).forEach(([k, value]) => {\n      const ck = `attr:${k}`;\n      if (k === \"class\") {\n        for (const c of (value || \"\").split(\" \").filter(Boolean)) {\n          isAttrTag && track(id, `${ck}:${c}`, () => $el.classList.remove(c));\n          !$el.classList.contains(c) && $el.classList.add(c);\n        }\n      } else {\n        $el.getAttribute(k) !== value && $el.setAttribute(k, value === true ? \"\" : String(value));\n        isAttrTag && track(id, ck, () => $el.removeAttribute(k));\n      }\n    });\n  }\n  const pending = [];\n  const frag = {\n    bodyClose: void 0,\n    bodyOpen: void 0,\n    head: void 0\n  };\n  for (const ctx of tags) {\n    const { tag, shouldRender, id } = ctx;\n    if (!shouldRender)\n      continue;\n    if (tag.tag === \"title\") {\n      dom.title = tag.textContent;\n      continue;\n    }\n    ctx.$el = ctx.$el || state.elMap[id];\n    if (ctx.$el)\n      trackCtx(ctx);\n    else\n      HasElementTags.includes(tag.tag) && pending.push(ctx);\n  }\n  for (const ctx of pending) {\n    const pos = ctx.tag.tagPosition || \"head\";\n    ctx.$el = dom.createElement(ctx.tag.tag);\n    trackCtx(ctx);\n    frag[pos] = frag[pos] || dom.createDocumentFragment();\n    frag[pos].appendChild(ctx.$el);\n  }\n  for (const ctx of tags)\n    await head.hooks.callHook(\"dom:renderTag\", ctx, dom, track);\n  frag.head && dom.head.appendChild(frag.head);\n  frag.bodyOpen && dom.body.insertBefore(frag.bodyOpen, dom.body.firstChild);\n  frag.bodyClose && dom.body.appendChild(frag.bodyClose);\n  Object.values(state.pendingSideEffects).forEach((fn) => fn());\n  head._dom = state;\n  head.dirty = false;\n  await head.hooks.callHook(\"dom:rendered\", { renders: tags });\n}\n\nasync function debouncedRenderDOMHead(head, options = {}) {\n  const fn = options.delayFn || ((fn2) => setTimeout(fn2, 10));\n  return head._domUpdatePromise = head._domUpdatePromise || new Promise((resolve) => fn(async () => {\n    await renderDOMHead(head, options);\n    delete head._domUpdatePromise;\n    resolve();\n  }));\n}\n\n// @__NO_SIDE_EFFECTS__\nfunction DomPlugin(options) {\n  return defineHeadPlugin((head) => {\n    const initialPayload = head.resolvedOptions.document?.head.querySelector('script[id=\"unhead:payload\"]')?.innerHTML || false;\n    initialPayload && head.push(JSON.parse(initialPayload));\n    return {\n      mode: \"client\",\n      hooks: {\n        \"entries:updated\": function(head2) {\n          debouncedRenderDOMHead(head2, options);\n        }\n      }\n    };\n  });\n}\n\nexport { DomPlugin, debouncedRenderDOMHead, renderDOMHead };\n",
+      "start": 1702568942696,
+      "end": 1702568942793,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568942793,
+      "end": 1702568942793,
+      "order": "normal"
+    }
+  ]
+}

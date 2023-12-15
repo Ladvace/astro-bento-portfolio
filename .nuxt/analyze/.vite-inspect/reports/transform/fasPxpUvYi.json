@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/gestures/resize/handle-element.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { resolveElements } from '../../utils/resolve-elements.es.js';\n\nconst resizeHandlers = new WeakMap();\nlet observer;\nfunction getElementSize(target, borderBoxSize) {\n    if (borderBoxSize) {\n        const { inlineSize, blockSize } = borderBoxSize[0];\n        return { width: inlineSize, height: blockSize };\n    }\n    else if (target instanceof SVGElement && \"getBBox\" in target) {\n        return target.getBBox();\n    }\n    else {\n        return {\n            width: target.offsetWidth,\n            height: target.offsetHeight,\n        };\n    }\n}\nfunction notifyTarget({ target, contentRect, borderBoxSize, }) {\n    var _a;\n    (_a = resizeHandlers.get(target)) === null || _a === void 0 ? void 0 : _a.forEach((handler) => {\n        handler({\n            target,\n            contentSize: contentRect,\n            get size() {\n                return getElementSize(target, borderBoxSize);\n            },\n        });\n    });\n}\nfunction notifyAll(entries) {\n    entries.forEach(notifyTarget);\n}\nfunction createResizeObserver() {\n    if (typeof ResizeObserver === \"undefined\")\n        return;\n    observer = new ResizeObserver(notifyAll);\n}\nfunction resizeElement(target, handler) {\n    if (!observer)\n        createResizeObserver();\n    const elements = resolveElements(target);\n    elements.forEach((element) => {\n        let elementHandlers = resizeHandlers.get(element);\n        if (!elementHandlers) {\n            elementHandlers = new Set();\n            resizeHandlers.set(element, elementHandlers);\n        }\n        elementHandlers.add(handler);\n        observer === null || observer === void 0 ? void 0 : observer.observe(element);\n    });\n    return () => {\n        elements.forEach((element) => {\n            const elementHandlers = resizeHandlers.get(element);\n            elementHandlers === null || elementHandlers === void 0 ? void 0 : elementHandlers.delete(handler);\n            if (!(elementHandlers === null || elementHandlers === void 0 ? void 0 : elementHandlers.size)) {\n                observer === null || observer === void 0 ? void 0 : observer.unobserve(element);\n            }\n        });\n    };\n}\n\nexport { resizeElement };\n",
+      "start": 1702568943459,
+      "end": 1702568943479,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943479,
+      "end": 1702568943479,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943479,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943480,
+      "end": 1702568943480,
+      "order": "normal"
+    }
+  ]
+}

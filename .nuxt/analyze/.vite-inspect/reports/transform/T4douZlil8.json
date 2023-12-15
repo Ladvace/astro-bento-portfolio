@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/core/AxiosHeaders.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from '../utils.js';\nimport parseHeaders from '../helpers/parseHeaders.js';\n\nconst $internals = Symbol('internals');\n\nfunction normalizeHeader(header) {\n  return header && String(header).trim().toLowerCase();\n}\n\nfunction normalizeValue(value) {\n  if (value === false || value == null) {\n    return value;\n  }\n\n  return utils.isArray(value) ? value.map(normalizeValue) : String(value);\n}\n\nfunction parseTokens(str) {\n  const tokens = Object.create(null);\n  const tokensRE = /([^\\s,;=]+)\\s*(?:=\\s*([^,;]+))?/g;\n  let match;\n\n  while ((match = tokensRE.exec(str))) {\n    tokens[match[1]] = match[2];\n  }\n\n  return tokens;\n}\n\nconst isValidHeaderName = (str) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());\n\nfunction matchHeaderValue(context, value, header, filter, isHeaderNameFilter) {\n  if (utils.isFunction(filter)) {\n    return filter.call(this, value, header);\n  }\n\n  if (isHeaderNameFilter) {\n    value = header;\n  }\n\n  if (!utils.isString(value)) return;\n\n  if (utils.isString(filter)) {\n    return value.indexOf(filter) !== -1;\n  }\n\n  if (utils.isRegExp(filter)) {\n    return filter.test(value);\n  }\n}\n\nfunction formatHeader(header) {\n  return header.trim()\n    .toLowerCase().replace(/([a-z\\d])(\\w*)/g, (w, char, str) => {\n      return char.toUpperCase() + str;\n    });\n}\n\nfunction buildAccessors(obj, header) {\n  const accessorName = utils.toCamelCase(' ' + header);\n\n  ['get', 'set', 'has'].forEach(methodName => {\n    Object.defineProperty(obj, methodName + accessorName, {\n      value: function(arg1, arg2, arg3) {\n        return this[methodName].call(this, header, arg1, arg2, arg3);\n      },\n      configurable: true\n    });\n  });\n}\n\nclass AxiosHeaders {\n  constructor(headers) {\n    headers && this.set(headers);\n  }\n\n  set(header, valueOrRewrite, rewrite) {\n    const self = this;\n\n    function setHeader(_value, _header, _rewrite) {\n      const lHeader = normalizeHeader(_header);\n\n      if (!lHeader) {\n        throw new Error('header name must be a non-empty string');\n      }\n\n      const key = utils.findKey(self, lHeader);\n\n      if(!key || self[key] === undefined || _rewrite === true || (_rewrite === undefined && self[key] !== false)) {\n        self[key || _header] = normalizeValue(_value);\n      }\n    }\n\n    const setHeaders = (headers, _rewrite) =>\n      utils.forEach(headers, (_value, _header) => setHeader(_value, _header, _rewrite));\n\n    if (utils.isPlainObject(header) || header instanceof this.constructor) {\n      setHeaders(header, valueOrRewrite)\n    } else if(utils.isString(header) && (header = header.trim()) && !isValidHeaderName(header)) {\n      setHeaders(parseHeaders(header), valueOrRewrite);\n    } else {\n      header != null && setHeader(valueOrRewrite, header, rewrite);\n    }\n\n    return this;\n  }\n\n  get(header, parser) {\n    header = normalizeHeader(header);\n\n    if (header) {\n      const key = utils.findKey(this, header);\n\n      if (key) {\n        const value = this[key];\n\n        if (!parser) {\n          return value;\n        }\n\n        if (parser === true) {\n          return parseTokens(value);\n        }\n\n        if (utils.isFunction(parser)) {\n          return parser.call(this, value, key);\n        }\n\n        if (utils.isRegExp(parser)) {\n          return parser.exec(value);\n        }\n\n        throw new TypeError('parser must be boolean|regexp|function');\n      }\n    }\n  }\n\n  has(header, matcher) {\n    header = normalizeHeader(header);\n\n    if (header) {\n      const key = utils.findKey(this, header);\n\n      return !!(key && this[key] !== undefined && (!matcher || matchHeaderValue(this, this[key], key, matcher)));\n    }\n\n    return false;\n  }\n\n  delete(header, matcher) {\n    const self = this;\n    let deleted = false;\n\n    function deleteHeader(_header) {\n      _header = normalizeHeader(_header);\n\n      if (_header) {\n        const key = utils.findKey(self, _header);\n\n        if (key && (!matcher || matchHeaderValue(self, self[key], key, matcher))) {\n          delete self[key];\n\n          deleted = true;\n        }\n      }\n    }\n\n    if (utils.isArray(header)) {\n      header.forEach(deleteHeader);\n    } else {\n      deleteHeader(header);\n    }\n\n    return deleted;\n  }\n\n  clear(matcher) {\n    const keys = Object.keys(this);\n    let i = keys.length;\n    let deleted = false;\n\n    while (i--) {\n      const key = keys[i];\n      if(!matcher || matchHeaderValue(this, this[key], key, matcher, true)) {\n        delete this[key];\n        deleted = true;\n      }\n    }\n\n    return deleted;\n  }\n\n  normalize(format) {\n    const self = this;\n    const headers = {};\n\n    utils.forEach(this, (value, header) => {\n      const key = utils.findKey(headers, header);\n\n      if (key) {\n        self[key] = normalizeValue(value);\n        delete self[header];\n        return;\n      }\n\n      const normalized = format ? formatHeader(header) : String(header).trim();\n\n      if (normalized !== header) {\n        delete self[header];\n      }\n\n      self[normalized] = normalizeValue(value);\n\n      headers[normalized] = true;\n    });\n\n    return this;\n  }\n\n  concat(...targets) {\n    return this.constructor.concat(this, ...targets);\n  }\n\n  toJSON(asStrings) {\n    const obj = Object.create(null);\n\n    utils.forEach(this, (value, header) => {\n      value != null && value !== false && (obj[header] = asStrings && utils.isArray(value) ? value.join(', ') : value);\n    });\n\n    return obj;\n  }\n\n  [Symbol.iterator]() {\n    return Object.entries(this.toJSON())[Symbol.iterator]();\n  }\n\n  toString() {\n    return Object.entries(this.toJSON()).map(([header, value]) => header + ': ' + value).join('\\n');\n  }\n\n  get [Symbol.toStringTag]() {\n    return 'AxiosHeaders';\n  }\n\n  static from(thing) {\n    return thing instanceof this ? thing : new this(thing);\n  }\n\n  static concat(first, ...targets) {\n    const computed = new this(first);\n\n    targets.forEach((target) => computed.set(target));\n\n    return computed;\n  }\n\n  static accessor(header) {\n    const internals = this[$internals] = (this[$internals] = {\n      accessors: {}\n    });\n\n    const accessors = internals.accessors;\n    const prototype = this.prototype;\n\n    function defineAccessor(_header) {\n      const lHeader = normalizeHeader(_header);\n\n      if (!accessors[lHeader]) {\n        buildAccessors(prototype, _header);\n        accessors[lHeader] = true;\n      }\n    }\n\n    utils.isArray(header) ? header.forEach(defineAccessor) : defineAccessor(header);\n\n    return this;\n  }\n}\n\nAxiosHeaders.accessor(['Content-Type', 'Content-Length', 'Accept', 'Accept-Encoding', 'User-Agent', 'Authorization']);\n\n// reserved names hotfix\nutils.reduceDescriptors(AxiosHeaders.prototype, ({value}, key) => {\n  let mapped = key[0].toUpperCase() + key.slice(1); // map `set` => `Set`\n  return {\n    get: () => value,\n    set(headerValue) {\n      this[mapped] = headerValue;\n    }\n  }\n});\n\nutils.freezeMethods(AxiosHeaders);\n\nexport default AxiosHeaders;\n",
+      "start": 1702568943496,
+      "end": 1702568943519,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943519,
+      "end": 1702568943519,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943519,
+      "end": 1702568943520,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943520,
+      "end": 1702568943520,
+      "order": "normal"
+    }
+  ]
+}

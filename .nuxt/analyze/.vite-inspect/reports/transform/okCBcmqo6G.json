@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/destr/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "const suspectProtoRx = /\"(?:_|\\\\u0{2}5[Ff]){2}(?:p|\\\\u0{2}70)(?:r|\\\\u0{2}72)(?:o|\\\\u0{2}6[Ff])(?:t|\\\\u0{2}74)(?:o|\\\\u0{2}6[Ff])(?:_|\\\\u0{2}5[Ff]){2}\"\\s*:/;\nconst suspectConstructorRx = /\"(?:c|\\\\u0063)(?:o|\\\\u006[Ff])(?:n|\\\\u006[Ee])(?:s|\\\\u0073)(?:t|\\\\u0074)(?:r|\\\\u0072)(?:u|\\\\u0075)(?:c|\\\\u0063)(?:t|\\\\u0074)(?:o|\\\\u006[Ff])(?:r|\\\\u0072)\"\\s*:/;\nconst JsonSigRx = /^\\s*[\"[{]|^\\s*-?\\d{1,16}(\\.\\d{1,17})?([Ee][+-]?\\d+)?\\s*$/;\nfunction jsonParseTransform(key, value) {\n  if (key === \"__proto__\" || key === \"constructor\" && value && typeof value === \"object\" && \"prototype\" in value) {\n    warnKeyDropped(key);\n    return;\n  }\n  return value;\n}\nfunction warnKeyDropped(key) {\n  console.warn(`[destr] Dropping \"${key}\" key to prevent prototype pollution.`);\n}\nfunction destr(value, options = {}) {\n  if (typeof value !== \"string\") {\n    return value;\n  }\n  const _value = value.trim();\n  if (\n    // eslint-disable-next-line unicorn/prefer-at\n    value[0] === '\"' && value.at(-1) === '\"' && !value.includes(\"\\\\\")\n  ) {\n    return _value.slice(1, -1);\n  }\n  if (_value.length <= 9) {\n    const _lval = _value.toLowerCase();\n    if (_lval === \"true\") {\n      return true;\n    }\n    if (_lval === \"false\") {\n      return false;\n    }\n    if (_lval === \"undefined\") {\n      return void 0;\n    }\n    if (_lval === \"null\") {\n      return null;\n    }\n    if (_lval === \"nan\") {\n      return Number.NaN;\n    }\n    if (_lval === \"infinity\") {\n      return Number.POSITIVE_INFINITY;\n    }\n    if (_lval === \"-infinity\") {\n      return Number.NEGATIVE_INFINITY;\n    }\n  }\n  if (!JsonSigRx.test(value)) {\n    if (options.strict) {\n      throw new SyntaxError(\"[destr] Invalid JSON\");\n    }\n    return value;\n  }\n  try {\n    if (suspectProtoRx.test(value) || suspectConstructorRx.test(value)) {\n      if (options.strict) {\n        throw new Error(\"[destr] Possible prototype pollution\");\n      }\n      return JSON.parse(value, jsonParseTransform);\n    }\n    return JSON.parse(value);\n  } catch (error) {\n    if (options.strict) {\n      throw error;\n    }\n    return value;\n  }\n}\nfunction safeDestr(value, options = {}) {\n  return destr(value, { ...options, strict: true });\n}\n\nexport { destr as default, destr, safeDestr };\n",
+      "start": 1702568942745,
+      "end": 1702568942838,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568942838,
+      "end": 1702568942838,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568942838,
+      "end": 1702568942838,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568942838,
+      "end": 1702568942838,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568942839,
+      "end": 1702568942839,
+      "order": "normal"
+    }
+  ]
+}

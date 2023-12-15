@@ -1,0 +1,269 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/tailwindcss/tailwind.css",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "@tailwind base;\n\n@tailwind components;\n\n@tailwind utilities;\n",
+      "start": 1702568944030,
+      "end": 1702568944116,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944116,
+      "end": 1702568944116,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944116,
+      "end": 1702568944116,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944116,
+      "end": 1702568944116,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944116,
+      "end": 1702568944116,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568944116,
+      "end": 1702568944116,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "result": "/*! tailwindcss v3.3.6 | MIT License | https://tailwindcss.com*/*,:after,:before{border:0 solid #e5e7eb;box-sizing:border-box}:after,:before{--tw-content:\"\"}html{-webkit-text-size-adjust:100%;font-feature-settings:normal;font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-variation-settings:normal;line-height:1.5;tab-size:4}body{line-height:inherit;margin:0}hr{border-top-width:1px;color:inherit;height:0}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-feature-settings:normal;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-size:1em;font-variation-settings:normal}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{border-collapse:collapse;border-color:inherit;text-indent:0}button,input,optgroup,select,textarea{font-feature-settings:inherit;color:inherit;font-family:inherit;font-size:100%;font-variation-settings:inherit;font-weight:inherit;line-height:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{color:#9ca3af;opacity:1}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{height:auto;max-width:100%}[hidden]{display:none}*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.sr-only{clip:rect(0,0,0,0);border-width:0;height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;white-space:nowrap;width:1px}.pointer-events-none{pointer-events:none}.absolute{position:absolute}.relative{position:relative}.inset-0{inset:0}.bottom-\\[-20px\\]{bottom:-20px}.right-\\[-110px\\]{right:-110px}.-z-10{z-index:-10}.z-20{z-index:20}.z-\\[-1\\]{z-index:-1}.col-span-1{grid-column:span 1/span 1}.m-0{margin:0}.m-auto{margin:auto}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-3{height:.75rem}.h-6{height:1.5rem}.h-\\[calc\\(100\\%-28px\\)\\]{height:calc(100% - 28px)}.h-full{height:100%}.max-h-\\[300px\\]{max-height:300px}.max-h-\\[50px\\]{max-height:50px}.w-3{width:.75rem}.w-auto{width:auto}.w-fit{width:-moz-fit-content;width:fit-content}.w-full{width:100%}.max-w-6xl{max-width:72rem}.flex-none{flex:none}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes ping{75%,to{opacity:0;transform:scale(2)}}.animate-ping{animation:ping 1s cubic-bezier(0,0,.2,1) infinite}.cursor-pointer{cursor:pointer}.select-none{-webkit-user-select:none;user-select:none}.list-inside{list-style-position:inside}.list-disc{list-style-type:disc}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-start{justify-content:flex-start}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:.5rem}.gap-4{gap:1rem}.overflow-hidden{overflow:hidden}.rounded{border-radius:.25rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.border{border-width:1px}.bg-gray-900{--tw-bg-opacity:1;background-color:#111827;background-color:rgb(17 24 39/var(--tw-bg-opacity))}.bg-green-400{--tw-bg-opacity:1;background-color:#4ade80;background-color:rgb(74 222 128/var(--tw-bg-opacity))}.bg-green-500{--tw-bg-opacity:1;background-color:#22c55e;background-color:rgb(34 197 94/var(--tw-bg-opacity))}.p-2{padding:.5rem}.p-6{padding:1.5rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-2{padding-bottom:.5rem;padding-top:.5rem}.text-center{text-align:center}.font-serif{font-family:ui-serif,Georgia,Cambria,Times New Roman,Times,serif}.text-2xl{font-size:1.5rem;line-height:2rem}.text-base{font-size:1rem;line-height:1.5rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-light{font-weight:300}.text-gray-200{--tw-text-opacity:1;color:#e5e7eb;color:rgb(229 231 235/var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:#6b7280;color:rgb(107 114 128/var(--tw-text-opacity))}.text-red-500{--tw-text-opacity:1;color:#ef4444;color:rgb(239 68 68/var(--tw-text-opacity))}.text-white{--tw-text-opacity:1;color:#fff;color:rgb(255 255 255/var(--tw-text-opacity))}.opacity-50{opacity:.5}.opacity-75{opacity:.75}.shadow-lg{--tw-shadow:0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color),0 4px 6px -4px var(--tw-shadow-color);box-shadow:0 0 #0000,0 0 #0000,0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -4px rgba(0,0,0,.1);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.transition{transition-duration:.15s;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1)}.transition-colors{transition-duration:.15s;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1)}.duration-100{transition-duration:.1s}.duration-75{transition-duration:75ms}.ease-in-out{transition-timing-function:cubic-bezier(.4,0,.2,1)}.hover\\:text-red-500:hover{--tw-text-opacity:1;color:#ef4444;color:rgb(239 68 68/var(--tw-text-opacity))}.active\\:translate-x-\\[3px\\]:active{--tw-translate-x:3px;transform:translate(3px,var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\\:translate-y-\\[3px\\]:active{--tw-translate-y:3px;transform:translate(var(--tw-translate-x),3px) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.active\\:shadow-none:active{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:0 0 #0000,0 0 #0000,0 0 #0000;box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}@media (min-width:640px){.sm\\:gap-2{gap:.5rem}.sm\\:p-4{padding:1rem}}@media (min-width:768px){.md\\:relative{position:relative}.md\\:bottom-auto{bottom:auto}.md\\:right-auto{right:auto}.md\\:z-auto{z-index:auto}.md\\:col-span-1{grid-column:span 1/span 1}.md\\:col-span-2{grid-column:span 2/span 2}.md\\:col-span-3{grid-column:span 3/span 3}.md\\:row-span-1{grid-row:span 1/span 1}.md\\:row-span-2{grid-row:span 2/span 2}.md\\:row-span-3{grid-row:span 3/span 3}.md\\:row-span-4{grid-row:span 4/span 4}.md\\:h-screen{height:100vh}.md\\:max-h-\\[300px\\]{max-height:300px}.md\\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.md\\:gap-3{gap:.75rem}.md\\:p-6{padding:1.5rem}.md\\:opacity-100{opacity:1}}@media (min-width:1024px){.lg\\:col-span-2{grid-column:span 2/span 2}.lg\\:h-screen{height:100vh}.lg\\:max-h-\\[800px\\]{max-height:800px}.lg\\:grid-cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}.lg\\:gap-4{gap:1rem}}@media (min-width:1280px){.xl\\:text-5xl{font-size:3rem;line-height:1}}",
+      "start": 1702568944116,
+      "end": 1702568944298,
+      "order": "normal",
+      "sourcemaps": {
+        "file": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/tailwindcss/tailwind.css",
+        "mappings": "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",
+        "names": [],
+        "sources": [
+          "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/tailwindcss/tailwind.css"
+        ],
+        "sourcesContent": [
+          "@tailwind base;\n\n@tailwind components;\n\n@tailwind utilities;\n"
+        ],
+        "version": 3
+      }
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568944298,
+      "end": 1702568944298,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568944298,
+      "end": 1702568944298,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568944298,
+      "end": 1702568944298,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568944298,
+      "end": 1702568944298,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568944298,
+      "end": 1702568944298,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944298,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944298,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "result": "export default ''",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568944299,
+      "end": 1702568944299,
+      "order": "normal"
+    }
+  ]
+}

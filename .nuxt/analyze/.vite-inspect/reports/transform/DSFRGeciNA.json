@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/devalue/src/stringify.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import {\n\tDevalueError,\n\tget_type,\n\tis_plain_object,\n\tis_primitive,\n\tstringify_string\n} from './utils.js';\nimport {\n\tHOLE,\n\tNAN,\n\tNEGATIVE_INFINITY,\n\tNEGATIVE_ZERO,\n\tPOSITIVE_INFINITY,\n\tUNDEFINED\n} from './constants.js';\n\n/**\n * Turn a value into a JSON string that can be parsed with `devalue.parse`\n * @param {any} value\n * @param {Record<string, (value: any) => any>} [reducers]\n */\nexport function stringify(value, reducers) {\n\t/** @type {any[]} */\n\tconst stringified = [];\n\n\t/** @type {Map<any, number>} */\n\tconst indexes = new Map();\n\n\t/** @type {Array<{ key: string, fn: (value: any) => any }>} */\n\tconst custom = [];\n\tfor (const key in reducers) {\n\t\tcustom.push({ key, fn: reducers[key] });\n\t}\n\n\t/** @type {string[]} */\n\tconst keys = [];\n\n\tlet p = 0;\n\n\t/** @param {any} thing */\n\tfunction flatten(thing) {\n\t\tif (typeof thing === 'function') {\n\t\t\tthrow new DevalueError(`Cannot stringify a function`, keys);\n\t\t}\n\n\t\tif (indexes.has(thing)) return indexes.get(thing);\n\n\t\tif (thing === undefined) return UNDEFINED;\n\t\tif (Number.isNaN(thing)) return NAN;\n\t\tif (thing === Infinity) return POSITIVE_INFINITY;\n\t\tif (thing === -Infinity) return NEGATIVE_INFINITY;\n\t\tif (thing === 0 && 1 / thing < 0) return NEGATIVE_ZERO;\n\n\t\tconst index = p++;\n\t\tindexes.set(thing, index);\n\n\t\tfor (const { key, fn } of custom) {\n\t\t\tconst value = fn(thing);\n\t\t\tif (value) {\n\t\t\t\tstringified[index] = `[\"${key}\",${flatten(value)}]`;\n\t\t\t\treturn index;\n\t\t\t}\n\t\t}\n\n\t\tlet str = '';\n\n\t\tif (is_primitive(thing)) {\n\t\t\tstr = stringify_primitive(thing);\n\t\t} else {\n\t\t\tconst type = get_type(thing);\n\n\t\t\tswitch (type) {\n\t\t\t\tcase 'Number':\n\t\t\t\tcase 'String':\n\t\t\t\tcase 'Boolean':\n\t\t\t\t\tstr = `[\"Object\",${stringify_primitive(thing)}]`;\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'BigInt':\n\t\t\t\t\tstr = `[\"BigInt\",${thing}]`;\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Date':\n\t\t\t\t\tstr = `[\"Date\",\"${thing.toISOString()}\"]`;\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'RegExp':\n\t\t\t\t\tconst { source, flags } = thing;\n\t\t\t\t\tstr = flags\n\t\t\t\t\t\t? `[\"RegExp\",${stringify_string(source)},\"${flags}\"]`\n\t\t\t\t\t\t: `[\"RegExp\",${stringify_string(source)}]`;\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Array':\n\t\t\t\t\tstr = '[';\n\n\t\t\t\t\tfor (let i = 0; i < thing.length; i += 1) {\n\t\t\t\t\t\tif (i > 0) str += ',';\n\n\t\t\t\t\t\tif (i in thing) {\n\t\t\t\t\t\t\tkeys.push(`[${i}]`);\n\t\t\t\t\t\t\tstr += flatten(thing[i]);\n\t\t\t\t\t\t\tkeys.pop();\n\t\t\t\t\t\t} else {\n\t\t\t\t\t\t\tstr += HOLE;\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\n\t\t\t\t\tstr += ']';\n\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Set':\n\t\t\t\t\tstr = '[\"Set\"';\n\n\t\t\t\t\tfor (const value of thing) {\n\t\t\t\t\t\tstr += `,${flatten(value)}`;\n\t\t\t\t\t}\n\n\t\t\t\t\tstr += ']';\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Map':\n\t\t\t\t\tstr = '[\"Map\"';\n\n\t\t\t\t\tfor (const [key, value] of thing) {\n\t\t\t\t\t\tkeys.push(\n\t\t\t\t\t\t\t`.get(${is_primitive(key) ? stringify_primitive(key) : '...'})`\n\t\t\t\t\t\t);\n\t\t\t\t\t\tstr += `,${flatten(key)},${flatten(value)}`;\n\t\t\t\t\t}\n\n\t\t\t\t\tstr += ']';\n\t\t\t\t\tbreak;\n\n\t\t\t\tdefault:\n\t\t\t\t\tif (!is_plain_object(thing)) {\n\t\t\t\t\t\tthrow new DevalueError(\n\t\t\t\t\t\t\t`Cannot stringify arbitrary non-POJOs`,\n\t\t\t\t\t\t\tkeys\n\t\t\t\t\t\t);\n\t\t\t\t\t}\n\n\t\t\t\t\tif (Object.getOwnPropertySymbols(thing).length > 0) {\n\t\t\t\t\t\tthrow new DevalueError(\n\t\t\t\t\t\t\t`Cannot stringify POJOs with symbolic keys`,\n\t\t\t\t\t\t\tkeys\n\t\t\t\t\t\t);\n\t\t\t\t\t}\n\n\t\t\t\t\tif (Object.getPrototypeOf(thing) === null) {\n\t\t\t\t\t\tstr = '[\"null\"';\n\t\t\t\t\t\tfor (const key in thing) {\n\t\t\t\t\t\t\tkeys.push(`.${key}`);\n\t\t\t\t\t\t\tstr += `,${stringify_string(key)},${flatten(thing[key])}`;\n\t\t\t\t\t\t\tkeys.pop();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tstr += ']';\n\t\t\t\t\t} else {\n\t\t\t\t\t\tstr = '{';\n\t\t\t\t\t\tlet started = false;\n\t\t\t\t\t\tfor (const key in thing) {\n\t\t\t\t\t\t\tif (started) str += ',';\n\t\t\t\t\t\t\tstarted = true;\n\t\t\t\t\t\t\tkeys.push(`.${key}`);\n\t\t\t\t\t\t\tstr += `${stringify_string(key)}:${flatten(thing[key])}`;\n\t\t\t\t\t\t\tkeys.pop();\n\t\t\t\t\t\t}\n\t\t\t\t\t\tstr += '}';\n\t\t\t\t\t}\n\t\t\t}\n\t\t}\n\n\t\tstringified[index] = str;\n\t\treturn index;\n\t}\n\n\tconst index = flatten(value);\n\n\t// special case — value is represented as a negative index\n\tif (index < 0) return `${index}`;\n\n\treturn `[${stringified.join(',')}]`;\n}\n\n/**\n * @param {any} thing\n * @returns {string}\n */\nfunction stringify_primitive(thing) {\n\tconst type = typeof thing;\n\tif (type === 'string') return stringify_string(thing);\n\tif (thing instanceof String) return stringify_string(thing.toString());\n\tif (thing === void 0) return UNDEFINED.toString();\n\tif (thing === 0 && 1 / thing < 0) return NEGATIVE_ZERO.toString();\n\tif (type === 'bigint') return `[\"BigInt\",\"${thing}\"]`;\n\treturn String(thing);\n}\n",
+      "start": 1702568943139,
+      "end": 1702568943248,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943248,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943249,
+      "end": 1702568943249,
+      "order": "normal"
+    }
+  ]
+}

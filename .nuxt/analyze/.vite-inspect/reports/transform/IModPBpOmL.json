@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/gestures/scroll/index.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { __rest } from 'tslib';\nimport { resize } from '../resize/index.es.js';\nimport { createScrollInfo } from './info.es.js';\nimport { createOnScrollHandler } from './on-scroll-handler.es.js';\n\nconst scrollListeners = new WeakMap();\nconst resizeListeners = new WeakMap();\nconst onScrollHandlers = new WeakMap();\nconst getEventTarget = (element) => element === document.documentElement ? window : element;\nfunction scroll(onScroll, _a = {}) {\n    var { container = document.documentElement } = _a, options = __rest(_a, [\"container\"]);\n    let containerHandlers = onScrollHandlers.get(container);\n    /**\n     * Get the onScroll handlers for this container.\n     * If one isn't found, create a new one.\n     */\n    if (!containerHandlers) {\n        containerHandlers = new Set();\n        onScrollHandlers.set(container, containerHandlers);\n    }\n    /**\n     * Create a new onScroll handler for the provided callback.\n     */\n    const info = createScrollInfo();\n    const containerHandler = createOnScrollHandler(container, onScroll, info, options);\n    containerHandlers.add(containerHandler);\n    /**\n     * Check if there's a scroll event listener for this container.\n     * If not, create one.\n     */\n    if (!scrollListeners.has(container)) {\n        const listener = () => {\n            const time = performance.now();\n            for (const handler of containerHandlers)\n                handler.measure();\n            for (const handler of containerHandlers)\n                handler.update(time);\n            for (const handler of containerHandlers)\n                handler.notify();\n        };\n        scrollListeners.set(container, listener);\n        const target = getEventTarget(container);\n        window.addEventListener(\"resize\", listener, { passive: true });\n        if (container !== document.documentElement) {\n            resizeListeners.set(container, resize(container, listener));\n        }\n        target.addEventListener(\"scroll\", listener, { passive: true });\n    }\n    const listener = scrollListeners.get(container);\n    const onLoadProcesss = requestAnimationFrame(listener);\n    return () => {\n        var _a;\n        if (typeof onScroll !== \"function\")\n            onScroll.stop();\n        cancelAnimationFrame(onLoadProcesss);\n        /**\n         * Check if we even have any handlers for this container.\n         */\n        const containerHandlers = onScrollHandlers.get(container);\n        if (!containerHandlers)\n            return;\n        containerHandlers.delete(containerHandler);\n        if (containerHandlers.size)\n            return;\n        /**\n         * If no more handlers, remove the scroll listener too.\n         */\n        const listener = scrollListeners.get(container);\n        scrollListeners.delete(container);\n        if (listener) {\n            getEventTarget(container).removeEventListener(\"scroll\", listener);\n            (_a = resizeListeners.get(container)) === null || _a === void 0 ? void 0 : _a();\n            window.removeEventListener(\"resize\", listener);\n        }\n    };\n}\n\nexport { scroll };\n",
+      "start": 1702568943391,
+      "end": 1702568943442,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943442,
+      "end": 1702568943442,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943442,
+      "end": 1702568943443,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943443,
+      "end": 1702568943443,
+      "order": "normal"
+    }
+  ]
+}

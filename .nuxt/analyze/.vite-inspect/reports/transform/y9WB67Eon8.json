@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/animate/utils/controls.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { defaults, noop, time } from '@motionone/utils';\nimport { stopAnimation } from './stop-animation.es.js';\n\nconst createAnimation = (factory) => factory();\nconst withControls = (animationFactory, options, duration = defaults.duration) => {\n    return new Proxy({\n        animations: animationFactory.map(createAnimation).filter(Boolean),\n        duration,\n        options,\n    }, controls);\n};\n/**\n * TODO:\n * Currently this returns the first animation, ideally it would return\n * the first active animation.\n */\nconst getActiveAnimation = (state) => state.animations[0];\nconst controls = {\n    get: (target, key) => {\n        const activeAnimation = getActiveAnimation(target);\n        switch (key) {\n            case \"duration\":\n                return target.duration;\n            case \"currentTime\":\n                return time.s((activeAnimation === null || activeAnimation === void 0 ? void 0 : activeAnimation[key]) || 0);\n            case \"playbackRate\":\n            case \"playState\":\n                return activeAnimation === null || activeAnimation === void 0 ? void 0 : activeAnimation[key];\n            case \"finished\":\n                if (!target.finished) {\n                    target.finished = Promise.all(target.animations.map(selectFinished)).catch(noop);\n                }\n                return target.finished;\n            case \"stop\":\n                return () => {\n                    target.animations.forEach((animation) => stopAnimation(animation));\n                };\n            case \"forEachNative\":\n                /**\n                 * This is for internal use only, fire a callback for each\n                 * underlying animation.\n                 */\n                return (callback) => {\n                    target.animations.forEach((animation) => callback(animation, target));\n                };\n            default:\n                return typeof (activeAnimation === null || activeAnimation === void 0 ? void 0 : activeAnimation[key]) === \"undefined\"\n                    ? undefined\n                    : () => target.animations.forEach((animation) => animation[key]());\n        }\n    },\n    set: (target, key, value) => {\n        switch (key) {\n            case \"currentTime\":\n                value = time.ms(value);\n            // Fall-through\n            case \"playbackRate\":\n                for (let i = 0; i < target.animations.length; i++) {\n                    target.animations[i][key] = value;\n                }\n                return true;\n        }\n        return false;\n    },\n};\nconst selectFinished = (animation) => animation.finished;\n\nexport { controls, withControls };\n",
+      "start": 1702568943393,
+      "end": 1702568943444,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943444,
+      "end": 1702568943444,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943444,
+      "end": 1702568943444,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943444,
+      "end": 1702568943444,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943445,
+      "end": 1702568943445,
+      "order": "normal"
+    }
+  ]
+}

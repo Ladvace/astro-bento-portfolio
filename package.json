@@ -1,35 +1,24 @@
 {
-  "name": "astro-bento-portfolio",
+  "name": "nuxt-app",
+  "private": true,
   "type": "module",
-  "version": "0.0.2",
   "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/netlify": "^3.0.4",
-    "@astrojs/rss": "^3.0.0",
-    "@astrojs/sitemap": "^3.0.3",
-    "@astrojs/solid-js": "^3.0.2",
-    "astro": "^3.6.3",
-    "astro-icon": "^0.8.1",
-    "astro-robots-txt": "^1.0.0",
-    "mdast-util-to-string": "^4.0.0",
-    "reading-time": "^1.5.0",
-    "solid-js": "^1.8.6"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "motion": "^10.16.4",
-    "autoprefixer": "^10.4.16",
-    "@unocss/astro": "^0.57.7",
-    "@unocss/postcss": "^0.57.7",
-    "@unocss/preset-uno": "^0.57.7",
-    "@unocss/reset": "^0.57.7",
-    "markdown-it": "^13.0.2",
-    "sanitize-html": "^2.11.0",
-    "unocss": "^0.57.7"
+    "@nuxt/devtools": "latest",
+    "@nuxtjs/tailwindcss": "^6.10.1",
+    "nuxt": "^3.8.2",
+    "vue": "^3.3.10",
+    "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "moment": "^2.29.4",
+    "motion": "^10.16.4"
   }
 }

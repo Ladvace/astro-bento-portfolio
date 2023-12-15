@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/gestures/scroll/offsets/index.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { interpolate, defaultOffset } from '@motionone/utils';\nimport { calcInset } from './inset.es.js';\nimport { ScrollOffset } from './presets.es.js';\nimport { resolveOffset } from './offset.es.js';\n\nconst point = { x: 0, y: 0 };\nfunction resolveOffsets(container, info, options) {\n    let { offset: offsetDefinition = ScrollOffset.All } = options;\n    const { target = container, axis = \"y\" } = options;\n    const lengthLabel = axis === \"y\" ? \"height\" : \"width\";\n    const inset = target !== container ? calcInset(target, container) : point;\n    /**\n     * Measure the target and container. If they're the same thing then we\n     * use the container's scrollWidth/Height as the target, from there\n     * all other calculations can remain the same.\n     */\n    const targetSize = target === container\n        ? { width: container.scrollWidth, height: container.scrollHeight }\n        : { width: target.clientWidth, height: target.clientHeight };\n    const containerSize = {\n        width: container.clientWidth,\n        height: container.clientHeight,\n    };\n    /**\n     * Reset the length of the resolved offset array rather than creating a new one.\n     * TODO: More reusable data structures for targetSize/containerSize would also be good.\n     */\n    info[axis].offset.length = 0;\n    /**\n     * Populate the offset array by resolving the user's offset definition into\n     * a list of pixel scroll offets.\n     */\n    let hasChanged = !info[axis].interpolate;\n    const numOffsets = offsetDefinition.length;\n    for (let i = 0; i < numOffsets; i++) {\n        const offset = resolveOffset(offsetDefinition[i], containerSize[lengthLabel], targetSize[lengthLabel], inset[axis]);\n        if (!hasChanged && offset !== info[axis].interpolatorOffsets[i]) {\n            hasChanged = true;\n        }\n        info[axis].offset[i] = offset;\n    }\n    /**\n     * If the pixel scroll offsets have changed, create a new interpolator function\n     * to map scroll value into a progress.\n     */\n    if (hasChanged) {\n        info[axis].interpolate = interpolate(defaultOffset(numOffsets), info[axis].offset);\n        info[axis].interpolatorOffsets = [...info[axis].offset];\n    }\n    info[axis].progress = info[axis].interpolate(info[axis].current);\n}\n\nexport { resolveOffsets };\n",
+      "start": 1702568943505,
+      "end": 1702568943532,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943532,
+      "end": 1702568943532,
+      "order": "normal"
+    }
+  ]
+}

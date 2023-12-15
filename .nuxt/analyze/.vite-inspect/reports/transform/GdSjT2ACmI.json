@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/animation/dist/utils/easing.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { cubicBezier, steps } from '@motionone/easing';\nimport { isFunction, isCubicBezier, noopReturn } from '@motionone/utils';\n\nconst namedEasings = {\n    ease: cubicBezier(0.25, 0.1, 0.25, 1.0),\n    \"ease-in\": cubicBezier(0.42, 0.0, 1.0, 1.0),\n    \"ease-in-out\": cubicBezier(0.42, 0.0, 0.58, 1.0),\n    \"ease-out\": cubicBezier(0.0, 0.0, 0.58, 1.0),\n};\nconst functionArgsRegex = /\\((.*?)\\)/;\nfunction getEasingFunction(definition) {\n    // If already an easing function, return\n    if (isFunction(definition))\n        return definition;\n    // If an easing curve definition, return bezier function\n    if (isCubicBezier(definition))\n        return cubicBezier(...definition);\n    // If we have a predefined easing function, return\n    if (namedEasings[definition])\n        return namedEasings[definition];\n    // If this is a steps function, attempt to create easing curve\n    if (definition.startsWith(\"steps\")) {\n        const args = functionArgsRegex.exec(definition);\n        if (args) {\n            const argsArray = args[1].split(\",\");\n            return steps(parseFloat(argsArray[0]), argsArray[1].trim());\n        }\n    }\n    return noopReturn;\n}\n\nexport { getEasingFunction };\n",
+      "start": 1702568943488,
+      "end": 1702568943499,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943499,
+      "end": 1702568943499,
+      "order": "normal"
+    }
+  ]
+}

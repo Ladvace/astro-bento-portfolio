@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/animate/animate-style.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { getAnimationData, getMotionValue } from './data.es.js';\nimport { isCssVar, registerCssVariable } from './utils/css-var.es.js';\nimport { defaults, isEasingGenerator, isFunction, isEasingList, isNumber, time, noop } from '@motionone/utils';\nimport { isTransform, addTransformToElement, transformDefinitions } from './utils/transforms.es.js';\nimport { convertEasing } from './utils/easing.es.js';\nimport { supports } from './utils/feature-detection.es.js';\nimport { hydrateKeyframes, keyframesList } from './utils/keyframes.es.js';\nimport { style } from './style.es.js';\nimport { getStyleName } from './utils/get-style-name.es.js';\nimport { stopAnimation } from './utils/stop-animation.es.js';\nimport { getUnitConverter } from './utils/get-unit.es.js';\n\nfunction getDevToolsRecord() {\n    return window.__MOTION_DEV_TOOLS_RECORD;\n}\nfunction animateStyle(element, key, keyframesDefinition, options = {}, AnimationPolyfill) {\n    const record = getDevToolsRecord();\n    const isRecording = options.record !== false && record;\n    let animation;\n    let { duration = defaults.duration, delay = defaults.delay, endDelay = defaults.endDelay, repeat = defaults.repeat, easing = defaults.easing, persist = false, direction, offset, allowWebkitAcceleration = false, } = options;\n    const data = getAnimationData(element);\n    const valueIsTransform = isTransform(key);\n    let canAnimateNatively = supports.waapi();\n    /**\n     * If this is an individual transform, we need to map its\n     * key to a CSS variable and update the element's transform style\n     */\n    valueIsTransform && addTransformToElement(element, key);\n    const name = getStyleName(key);\n    const motionValue = getMotionValue(data.values, name);\n    /**\n     * Get definition of value, this will be used to convert numerical\n     * keyframes into the default value type.\n     */\n    const definition = transformDefinitions.get(name);\n    /**\n     * Stop the current animation, if any. Because this will trigger\n     * commitStyles (DOM writes) and we might later trigger DOM reads,\n     * this is fired now and we return a factory function to create\n     * the actual animation that can get called in batch,\n     */\n    stopAnimation(motionValue.animation, !(isEasingGenerator(easing) && motionValue.generator) &&\n        options.record !== false);\n    /**\n     * Batchable factory function containing all DOM reads.\n     */\n    return () => {\n        const readInitialValue = () => { var _a, _b; return (_b = (_a = style.get(element, name)) !== null && _a !== void 0 ? _a : definition === null || definition === void 0 ? void 0 : definition.initialValue) !== null && _b !== void 0 ? _b : 0; };\n        /**\n         * Replace null values with the previous keyframe value, or read\n         * it from the DOM if it's the first keyframe.\n         */\n        let keyframes = hydrateKeyframes(keyframesList(keyframesDefinition), readInitialValue);\n        /**\n         * Detect unit type of keyframes.\n         */\n        const toUnit = getUnitConverter(keyframes, definition);\n        if (isEasingGenerator(easing)) {\n            const custom = easing.createAnimation(keyframes, key !== \"opacity\", readInitialValue, name, motionValue);\n            easing = custom.easing;\n            keyframes = custom.keyframes || keyframes;\n            duration = custom.duration || duration;\n        }\n        /**\n         * If this is a CSS variable we need to register it with the browser\n         * before it can be animated natively. We also set it with setProperty\n         * rather than directly onto the element.style object.\n         */\n        if (isCssVar(name)) {\n            if (supports.cssRegisterProperty()) {\n                registerCssVariable(name);\n            }\n            else {\n                canAnimateNatively = false;\n            }\n        }\n        /**\n         * If we've been passed a custom easing function, and this browser\n         * does **not** support linear() easing, and the value is a transform\n         * (and thus a pure number) we can still support the custom easing\n         * by falling back to the animation polyfill.\n         */\n        if (valueIsTransform &&\n            !supports.linearEasing() &&\n            (isFunction(easing) || (isEasingList(easing) && easing.some(isFunction)))) {\n            canAnimateNatively = false;\n        }\n        /**\n         * If we can animate this value with WAAPI, do so.\n         */\n        if (canAnimateNatively) {\n            /**\n             * Convert numbers to default value types. Currently this only supports\n             * transforms but it could also support other value types.\n             */\n            if (definition) {\n                keyframes = keyframes.map((value) => isNumber(value) ? definition.toDefaultUnit(value) : value);\n            }\n            /**\n             * If this browser doesn't support partial/implicit keyframes we need to\n             * explicitly provide one.\n             */\n            if (keyframes.length === 1 &&\n                (!supports.partialKeyframes() || isRecording)) {\n                keyframes.unshift(readInitialValue());\n            }\n            const animationOptions = {\n                delay: time.ms(delay),\n                duration: time.ms(duration),\n                endDelay: time.ms(endDelay),\n                easing: !isEasingList(easing)\n                    ? convertEasing(easing, duration)\n                    : undefined,\n                direction,\n                iterations: repeat + 1,\n                fill: \"both\",\n            };\n            animation = element.animate({\n                [name]: keyframes,\n                offset,\n                easing: isEasingList(easing)\n                    ? easing.map((thisEasing) => convertEasing(thisEasing, duration))\n                    : undefined,\n            }, animationOptions);\n            /**\n             * Polyfill finished Promise in browsers that don't support it\n             */\n            if (!animation.finished) {\n                animation.finished = new Promise((resolve, reject) => {\n                    animation.onfinish = resolve;\n                    animation.oncancel = reject;\n                });\n            }\n            const target = keyframes[keyframes.length - 1];\n            animation.finished\n                .then(() => {\n                if (persist)\n                    return;\n                // Apply styles to target\n                style.set(element, name, target);\n                // Ensure fill modes don't persist\n                animation.cancel();\n            })\n                .catch(noop);\n            /**\n             * This forces Webkit to run animations on the main thread by exploiting\n             * this condition:\n             * https://trac.webkit.org/browser/webkit/trunk/Source/WebCore/platform/graphics/ca/GraphicsLayerCA.cpp?rev=281238#L1099\n             *\n             * This fixes Webkit's timing bugs, like accelerated animations falling\n             * out of sync with main thread animations and massive delays in starting\n             * accelerated animations in WKWebView.\n             */\n            if (!allowWebkitAcceleration)\n                animation.playbackRate = 1.000001;\n            /**\n             * If we can't animate the value natively then we can fallback to the numbers-only\n             * polyfill for transforms.\n             */\n        }\n        else if (AnimationPolyfill && valueIsTransform) {\n            /**\n             * If any keyframe is a string (because we measured it from the DOM), we need to convert\n             * it into a number before passing to the Animation polyfill.\n             */\n            keyframes = keyframes.map((value) => typeof value === \"string\" ? parseFloat(value) : value);\n            /**\n             * If we only have a single keyframe, we need to create an initial keyframe by reading\n             * the current value from the DOM.\n             */\n            if (keyframes.length === 1) {\n                keyframes.unshift(parseFloat(readInitialValue()));\n            }\n            animation = new AnimationPolyfill((latest) => {\n                style.set(element, name, toUnit ? toUnit(latest) : latest);\n            }, keyframes, Object.assign(Object.assign({}, options), { duration,\n                easing }));\n        }\n        else {\n            const target = keyframes[keyframes.length - 1];\n            style.set(element, name, definition && isNumber(target)\n                ? definition.toDefaultUnit(target)\n                : target);\n        }\n        if (isRecording) {\n            record(element, key, keyframes, {\n                duration,\n                delay: delay,\n                easing,\n                repeat,\n                offset,\n            }, \"motion-one\");\n        }\n        motionValue.setAnimation(animation);\n        return animation;\n    };\n}\n\nexport { animateStyle };\n",
+      "start": 1702568943350,
+      "end": 1702568943424,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943424,
+      "end": 1702568943424,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943424,
+      "end": 1702568943425,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943425,
+      "end": 1702568943425,
+      "order": "normal"
+    }
+  ]
+}

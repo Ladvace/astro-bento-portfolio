@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/core/dispatchRequest.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport transformData from './transformData.js';\nimport isCancel from '../cancel/isCancel.js';\nimport defaults from '../defaults/index.js';\nimport CanceledError from '../cancel/CanceledError.js';\nimport AxiosHeaders from '../core/AxiosHeaders.js';\nimport adapters from \"../adapters/adapters.js\";\n\n/**\n * Throws a `CanceledError` if cancellation has been requested.\n *\n * @param {Object} config The config that is to be used for the request\n *\n * @returns {void}\n */\nfunction throwIfCancellationRequested(config) {\n  if (config.cancelToken) {\n    config.cancelToken.throwIfRequested();\n  }\n\n  if (config.signal && config.signal.aborted) {\n    throw new CanceledError(null, config);\n  }\n}\n\n/**\n * Dispatch a request to the server using the configured adapter.\n *\n * @param {object} config The config that is to be used for the request\n *\n * @returns {Promise} The Promise to be fulfilled\n */\nexport default function dispatchRequest(config) {\n  throwIfCancellationRequested(config);\n\n  config.headers = AxiosHeaders.from(config.headers);\n\n  // Transform request data\n  config.data = transformData.call(\n    config,\n    config.transformRequest\n  );\n\n  if (['post', 'put', 'patch'].indexOf(config.method) !== -1) {\n    config.headers.setContentType('application/x-www-form-urlencoded', false);\n  }\n\n  const adapter = adapters.getAdapter(config.adapter || defaults.adapter);\n\n  return adapter(config).then(function onAdapterResolution(response) {\n    throwIfCancellationRequested(config);\n\n    // Transform response data\n    response.data = transformData.call(\n      config,\n      config.transformResponse,\n      response\n    );\n\n    response.headers = AxiosHeaders.from(response.headers);\n\n    return response;\n  }, function onAdapterRejection(reason) {\n    if (!isCancel(reason)) {\n      throwIfCancellationRequested(config);\n\n      // Transform response data\n      if (reason && reason.response) {\n        reason.response.data = transformData.call(\n          config,\n          config.transformResponse,\n          reason.response\n        );\n        reason.response.headers = AxiosHeaders.from(reason.response.headers);\n      }\n    }\n\n    return Promise.reject(reason);\n  });\n}\n",
+      "start": 1702568943515,
+      "end": 1702568943537,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943537,
+      "end": 1702568943537,
+      "order": "normal"
+    }
+  ]
+}

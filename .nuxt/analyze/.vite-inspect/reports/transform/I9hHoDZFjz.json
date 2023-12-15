@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/defu/dist/defu.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "function _defu(baseObject, defaults, namespace = \".\", merger) {\n  if (!_isPlainObject(defaults)) {\n    return _defu(baseObject, {}, namespace, merger);\n  }\n  const object = Object.assign({}, defaults);\n  for (const key in baseObject) {\n    if (key === \"__proto__\" || key === \"constructor\") {\n      continue;\n    }\n    const value = baseObject[key];\n    if (value === null || value === void 0) {\n      continue;\n    }\n    if (merger && merger(object, key, value, namespace)) {\n      continue;\n    }\n    if (Array.isArray(value) && Array.isArray(object[key])) {\n      object[key] = [...value, ...object[key]];\n    } else if (_isPlainObject(value) && _isPlainObject(object[key])) {\n      object[key] = _defu(\n        value,\n        object[key],\n        (namespace ? `${namespace}.` : \"\") + key.toString(),\n        merger\n      );\n    } else {\n      object[key] = value;\n    }\n  }\n  return object;\n}\nfunction _isPlainObject(value) {\n  if (value === null || typeof value !== \"object\") {\n    return false;\n  }\n  const prototype = Object.getPrototypeOf(value);\n  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in value) && !(Symbol.iterator in value);\n}\nfunction createDefu(merger) {\n  return (...arguments_) => (\n    // eslint-disable-next-line unicorn/no-array-reduce\n    arguments_.reduce((p, c) => _defu(p, c, \"\", merger), {})\n  );\n}\nconst defu = createDefu();\nconst defuFn = createDefu((object, key, currentValue) => {\n  if (object[key] !== void 0 && typeof currentValue === \"function\") {\n    object[key] = currentValue(object[key]);\n    return true;\n  }\n});\nconst defuArrayFn = createDefu((object, key, currentValue) => {\n  if (Array.isArray(object[key]) && typeof currentValue === \"function\") {\n    object[key] = currentValue(object[key]);\n    return true;\n  }\n});\n\nexport { createDefu, defu as default, defu, defuArrayFn, defuFn };\n",
+      "start": 1702568942969,
+      "end": 1702568943070,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943070,
+      "end": 1702568943070,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943070,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943071,
+      "end": 1702568943071,
+      "order": "normal"
+    }
+  ]
+}

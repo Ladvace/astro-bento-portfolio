@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/ofetch/dist/shared/ofetch.00501375.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import destr from 'destr';\nimport { withBase, withQuery } from 'ufo';\n\nclass FetchError extends Error {\n  constructor(message, opts) {\n    super(message, opts);\n    this.name = \"FetchError\";\n    if (opts?.cause && !this.cause) {\n      this.cause = opts.cause;\n    }\n  }\n}\nfunction createFetchError(ctx) {\n  const errorMessage = ctx.error?.message || ctx.error?.toString() || \"\";\n  const method = ctx.request?.method || ctx.options?.method || \"GET\";\n  const url = ctx.request?.url || String(ctx.request) || \"/\";\n  const requestStr = `[${method}] ${JSON.stringify(url)}`;\n  const statusStr = ctx.response ? `${ctx.response.status} ${ctx.response.statusText}` : \"<no response>\";\n  const message = `${requestStr}: ${statusStr}${errorMessage ? ` ${errorMessage}` : \"\"}`;\n  const fetchError = new FetchError(\n    message,\n    ctx.error ? { cause: ctx.error } : void 0\n  );\n  for (const key of [\"request\", \"options\", \"response\"]) {\n    Object.defineProperty(fetchError, key, {\n      get() {\n        return ctx[key];\n      }\n    });\n  }\n  for (const [key, refKey] of [\n    [\"data\", \"_data\"],\n    [\"status\", \"status\"],\n    [\"statusCode\", \"status\"],\n    [\"statusText\", \"statusText\"],\n    [\"statusMessage\", \"statusText\"]\n  ]) {\n    Object.defineProperty(fetchError, key, {\n      get() {\n        return ctx.response && ctx.response[refKey];\n      }\n    });\n  }\n  return fetchError;\n}\n\nconst payloadMethods = new Set(\n  Object.freeze([\"PATCH\", \"POST\", \"PUT\", \"DELETE\"])\n);\nfunction isPayloadMethod(method = \"GET\") {\n  return payloadMethods.has(method.toUpperCase());\n}\nfunction isJSONSerializable(value) {\n  if (value === void 0) {\n    return false;\n  }\n  const t = typeof value;\n  if (t === \"string\" || t === \"number\" || t === \"boolean\" || t === null) {\n    return true;\n  }\n  if (t !== \"object\") {\n    return false;\n  }\n  if (Array.isArray(value)) {\n    return true;\n  }\n  if (value.buffer) {\n    return false;\n  }\n  return value.constructor && value.constructor.name === \"Object\" || typeof value.toJSON === \"function\";\n}\nconst textTypes = /* @__PURE__ */ new Set([\n  \"image/svg\",\n  \"application/xml\",\n  \"application/xhtml\",\n  \"application/html\"\n]);\nconst JSON_RE = /^application\\/(?:[\\w!#$%&*.^`~-]*\\+)?json(;.+)?$/i;\nfunction detectResponseType(_contentType = \"\") {\n  if (!_contentType) {\n    return \"json\";\n  }\n  const contentType = _contentType.split(\";\").shift() || \"\";\n  if (JSON_RE.test(contentType)) {\n    return \"json\";\n  }\n  if (textTypes.has(contentType) || contentType.startsWith(\"text/\")) {\n    return \"text\";\n  }\n  return \"blob\";\n}\nfunction mergeFetchOptions(input, defaults, Headers = globalThis.Headers) {\n  const merged = {\n    ...defaults,\n    ...input\n  };\n  if (defaults?.params && input?.params) {\n    merged.params = {\n      ...defaults?.params,\n      ...input?.params\n    };\n  }\n  if (defaults?.query && input?.query) {\n    merged.query = {\n      ...defaults?.query,\n      ...input?.query\n    };\n  }\n  if (defaults?.headers && input?.headers) {\n    merged.headers = new Headers(defaults?.headers || {});\n    for (const [key, value] of new Headers(input?.headers || {})) {\n      merged.headers.set(key, value);\n    }\n  }\n  return merged;\n}\n\nconst retryStatusCodes = /* @__PURE__ */ new Set([\n  408,\n  // Request Timeout\n  409,\n  // Conflict\n  425,\n  // Too Early\n  429,\n  // Too Many Requests\n  500,\n  // Internal Server Error\n  502,\n  // Bad Gateway\n  503,\n  // Service Unavailable\n  504\n  //  Gateway Timeout\n]);\nconst nullBodyResponses = /* @__PURE__ */ new Set([101, 204, 205, 304]);\nfunction createFetch(globalOptions = {}) {\n  const {\n    fetch = globalThis.fetch,\n    Headers = globalThis.Headers,\n    AbortController = globalThis.AbortController\n  } = globalOptions;\n  async function onError(context) {\n    const isAbort = context.error && context.error.name === \"AbortError\" && !context.options.timeout || false;\n    if (context.options.retry !== false && !isAbort) {\n      let retries;\n      if (typeof context.options.retry === \"number\") {\n        retries = context.options.retry;\n      } else {\n        retries = isPayloadMethod(context.options.method) ? 0 : 1;\n      }\n      const responseCode = context.response && context.response.status || 500;\n      if (retries > 0 && (Array.isArray(context.options.retryStatusCodes) ? context.options.retryStatusCodes.includes(responseCode) : retryStatusCodes.has(responseCode))) {\n        const retryDelay = context.options.retryDelay || 0;\n        if (retryDelay > 0) {\n          await new Promise((resolve) => setTimeout(resolve, retryDelay));\n        }\n        return $fetchRaw(context.request, {\n          ...context.options,\n          retry: retries - 1,\n          timeout: context.options.timeout\n        });\n      }\n    }\n    const error = createFetchError(context);\n    if (Error.captureStackTrace) {\n      Error.captureStackTrace(error, $fetchRaw);\n    }\n    throw error;\n  }\n  const $fetchRaw = async function $fetchRaw2(_request, _options = {}) {\n    const context = {\n      request: _request,\n      options: mergeFetchOptions(_options, globalOptions.defaults, Headers),\n      response: void 0,\n      error: void 0\n    };\n    context.options.method = context.options.method?.toUpperCase();\n    if (context.options.onRequest) {\n      await context.options.onRequest(context);\n    }\n    if (typeof context.request === \"string\") {\n      if (context.options.baseURL) {\n        context.request = withBase(context.request, context.options.baseURL);\n      }\n      if (context.options.query || context.options.params) {\n        context.request = withQuery(context.request, {\n          ...context.options.params,\n          ...context.options.query\n        });\n      }\n    }\n    if (context.options.body && isPayloadMethod(context.options.method)) {\n      if (isJSONSerializable(context.options.body)) {\n        context.options.body = typeof context.options.body === \"string\" ? context.options.body : JSON.stringify(context.options.body);\n        context.options.headers = new Headers(context.options.headers || {});\n        if (!context.options.headers.has(\"content-type\")) {\n          context.options.headers.set(\"content-type\", \"application/json\");\n        }\n        if (!context.options.headers.has(\"accept\")) {\n          context.options.headers.set(\"accept\", \"application/json\");\n        }\n      } else if (\n        // ReadableStream Body\n        \"pipeTo\" in context.options.body && typeof context.options.body.pipeTo === \"function\" || // Node.js Stream Body\n        typeof context.options.body.pipe === \"function\"\n      ) {\n        if (!(\"duplex\" in context.options)) {\n          context.options.duplex = \"half\";\n        }\n      }\n    }\n    if (!context.options.signal && context.options.timeout) {\n      const controller = new AbortController();\n      setTimeout(() => controller.abort(), context.options.timeout);\n      context.options.signal = controller.signal;\n    }\n    try {\n      context.response = await fetch(\n        context.request,\n        context.options\n      );\n    } catch (error) {\n      context.error = error;\n      if (context.options.onRequestError) {\n        await context.options.onRequestError(context);\n      }\n      return await onError(context);\n    }\n    const hasBody = context.response.body && !nullBodyResponses.has(context.response.status) && context.options.method !== \"HEAD\";\n    if (hasBody) {\n      const responseType = (context.options.parseResponse ? \"json\" : context.options.responseType) || detectResponseType(context.response.headers.get(\"content-type\") || \"\");\n      switch (responseType) {\n        case \"json\": {\n          const data = await context.response.text();\n          const parseFunction = context.options.parseResponse || destr;\n          context.response._data = parseFunction(data);\n          break;\n        }\n        case \"stream\": {\n          context.response._data = context.response.body;\n          break;\n        }\n        default: {\n          context.response._data = await context.response[responseType]();\n        }\n      }\n    }\n    if (context.options.onResponse) {\n      await context.options.onResponse(context);\n    }\n    if (!context.options.ignoreResponseError && context.response.status >= 400 && context.response.status < 600) {\n      if (context.options.onResponseError) {\n        await context.options.onResponseError(context);\n      }\n      return await onError(context);\n    }\n    return context.response;\n  };\n  const $fetch = async function $fetch2(request, options) {\n    const r = await $fetchRaw(request, options);\n    return r._data;\n  };\n  $fetch.raw = $fetchRaw;\n  $fetch.native = (...args) => fetch(...args);\n  $fetch.create = (defaultOptions = {}) => createFetch({\n    ...globalOptions,\n    defaults: {\n      ...globalOptions.defaults,\n      ...defaultOptions\n    }\n  });\n  return $fetch;\n}\n\nexport { FetchError as F, createFetchError as a, createFetch as c };\n",
+      "start": 1702568942785,
+      "end": 1702568943022,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943022,
+      "end": 1702568943022,
+      "order": "normal"
+    }
+  ]
+}

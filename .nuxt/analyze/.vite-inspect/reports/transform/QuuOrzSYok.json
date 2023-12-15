@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/animation/dist/Animation.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { noopReturn, defaults, isEasingGenerator, isEasingList, interpolate } from '@motionone/utils';\nimport { getEasingFunction } from './utils/easing.es.js';\n\nclass Animation {\n    constructor(output, keyframes = [0, 1], { easing, duration: initialDuration = defaults.duration, delay = defaults.delay, endDelay = defaults.endDelay, repeat = defaults.repeat, offset, direction = \"normal\", } = {}) {\n        this.startTime = null;\n        this.rate = 1;\n        this.t = 0;\n        this.cancelTimestamp = null;\n        this.easing = noopReturn;\n        this.duration = 0;\n        this.totalDuration = 0;\n        this.repeat = 0;\n        this.playState = \"idle\";\n        this.finished = new Promise((resolve, reject) => {\n            this.resolve = resolve;\n            this.reject = reject;\n        });\n        easing = easing || defaults.easing;\n        if (isEasingGenerator(easing)) {\n            const custom = easing.createAnimation(keyframes);\n            easing = custom.easing;\n            keyframes = custom.keyframes || keyframes;\n            initialDuration = custom.duration || initialDuration;\n        }\n        this.repeat = repeat;\n        this.easing = isEasingList(easing) ? noopReturn : getEasingFunction(easing);\n        this.updateDuration(initialDuration);\n        const interpolate$1 = interpolate(keyframes, offset, isEasingList(easing) ? easing.map(getEasingFunction) : noopReturn);\n        this.tick = (timestamp) => {\n            var _a;\n            // TODO: Temporary fix for OptionsResolver typing\n            delay = delay;\n            let t = 0;\n            if (this.pauseTime !== undefined) {\n                t = this.pauseTime;\n            }\n            else {\n                t = (timestamp - this.startTime) * this.rate;\n            }\n            this.t = t;\n            // Convert to seconds\n            t /= 1000;\n            // Rebase on delay\n            t = Math.max(t - delay, 0);\n            /**\n             * If this animation has finished, set the current time\n             * to the total duration.\n             */\n            if (this.playState === \"finished\" && this.pauseTime === undefined) {\n                t = this.totalDuration;\n            }\n            /**\n             * Get the current progress (0-1) of the animation. If t is >\n             * than duration we'll get values like 2.5 (midway through the\n             * third iteration)\n             */\n            const progress = t / this.duration;\n            // TODO progress += iterationStart\n            /**\n             * Get the current iteration (0 indexed). For instance the floor of\n             * 2.5 is 2.\n             */\n            let currentIteration = Math.floor(progress);\n            /**\n             * Get the current progress of the iteration by taking the remainder\n             * so 2.5 is 0.5 through iteration 2\n             */\n            let iterationProgress = progress % 1.0;\n            if (!iterationProgress && progress >= 1) {\n                iterationProgress = 1;\n            }\n            /**\n             * If iteration progress is 1 we count that as the end\n             * of the previous iteration.\n             */\n            iterationProgress === 1 && currentIteration--;\n            /**\n             * Reverse progress if we're not running in \"normal\" direction\n             */\n            const iterationIsOdd = currentIteration % 2;\n            if (direction === \"reverse\" ||\n                (direction === \"alternate\" && iterationIsOdd) ||\n                (direction === \"alternate-reverse\" && !iterationIsOdd)) {\n                iterationProgress = 1 - iterationProgress;\n            }\n            const p = t >= this.totalDuration ? 1 : Math.min(iterationProgress, 1);\n            const latest = interpolate$1(this.easing(p));\n            output(latest);\n            const isAnimationFinished = this.pauseTime === undefined &&\n                (this.playState === \"finished\" || t >= this.totalDuration + endDelay);\n            if (isAnimationFinished) {\n                this.playState = \"finished\";\n                (_a = this.resolve) === null || _a === void 0 ? void 0 : _a.call(this, latest);\n            }\n            else if (this.playState !== \"idle\") {\n                this.frameRequestId = requestAnimationFrame(this.tick);\n            }\n        };\n        this.play();\n    }\n    play() {\n        const now = performance.now();\n        this.playState = \"running\";\n        if (this.pauseTime !== undefined) {\n            this.startTime = now - this.pauseTime;\n        }\n        else if (!this.startTime) {\n            this.startTime = now;\n        }\n        this.cancelTimestamp = this.startTime;\n        this.pauseTime = undefined;\n        this.frameRequestId = requestAnimationFrame(this.tick);\n    }\n    pause() {\n        this.playState = \"paused\";\n        this.pauseTime = this.t;\n    }\n    finish() {\n        this.playState = \"finished\";\n        this.tick(0);\n    }\n    stop() {\n        var _a;\n        this.playState = \"idle\";\n        if (this.frameRequestId !== undefined) {\n            cancelAnimationFrame(this.frameRequestId);\n        }\n        (_a = this.reject) === null || _a === void 0 ? void 0 : _a.call(this, false);\n    }\n    cancel() {\n        this.stop();\n        this.tick(this.cancelTimestamp);\n    }\n    reverse() {\n        this.rate *= -1;\n    }\n    commitStyles() { }\n    updateDuration(duration) {\n        this.duration = duration;\n        this.totalDuration = duration * (this.repeat + 1);\n    }\n    get currentTime() {\n        return this.t;\n    }\n    set currentTime(t) {\n        if (this.pauseTime !== undefined || this.rate === 0) {\n            this.pauseTime = t;\n        }\n        else {\n            this.startTime = performance.now() - t / this.rate;\n        }\n    }\n    get playbackRate() {\n        return this.rate;\n    }\n    set playbackRate(rate) {\n        this.rate = rate;\n    }\n}\n\nexport { Animation };\n",
+      "start": 1702568943487,
+      "end": 1702568943497,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943497,
+      "end": 1702568943497,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943497,
+      "end": 1702568943498,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943498,
+      "end": 1702568943498,
+      "order": "normal"
+    }
+  ]
+}

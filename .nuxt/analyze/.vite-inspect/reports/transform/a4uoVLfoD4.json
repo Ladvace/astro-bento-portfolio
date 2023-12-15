@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@vue/devtools-api/lib/esm/proxy.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { HOOK_PLUGIN_SETTINGS_SET } from './const.js';\nimport { now } from './time.js';\nexport class ApiProxy {\n    constructor(plugin, hook) {\n        this.target = null;\n        this.targetQueue = [];\n        this.onQueue = [];\n        this.plugin = plugin;\n        this.hook = hook;\n        const defaultSettings = {};\n        if (plugin.settings) {\n            for (const id in plugin.settings) {\n                const item = plugin.settings[id];\n                defaultSettings[id] = item.defaultValue;\n            }\n        }\n        const localSettingsSaveId = `__vue-devtools-plugin-settings__${plugin.id}`;\n        let currentSettings = Object.assign({}, defaultSettings);\n        try {\n            const raw = localStorage.getItem(localSettingsSaveId);\n            const data = JSON.parse(raw);\n            Object.assign(currentSettings, data);\n        }\n        catch (e) {\n            // noop\n        }\n        this.fallbacks = {\n            getSettings() {\n                return currentSettings;\n            },\n            setSettings(value) {\n                try {\n                    localStorage.setItem(localSettingsSaveId, JSON.stringify(value));\n                }\n                catch (e) {\n                    // noop\n                }\n                currentSettings = value;\n            },\n            now() {\n                return now();\n            },\n        };\n        if (hook) {\n            hook.on(HOOK_PLUGIN_SETTINGS_SET, (pluginId, value) => {\n                if (pluginId === this.plugin.id) {\n                    this.fallbacks.setSettings(value);\n                }\n            });\n        }\n        this.proxiedOn = new Proxy({}, {\n            get: (_target, prop) => {\n                if (this.target) {\n                    return this.target.on[prop];\n                }\n                else {\n                    return (...args) => {\n                        this.onQueue.push({\n                            method: prop,\n                            args,\n                        });\n                    };\n                }\n            },\n        });\n        this.proxiedTarget = new Proxy({}, {\n            get: (_target, prop) => {\n                if (this.target) {\n                    return this.target[prop];\n                }\n                else if (prop === 'on') {\n                    return this.proxiedOn;\n                }\n                else if (Object.keys(this.fallbacks).includes(prop)) {\n                    return (...args) => {\n                        this.targetQueue.push({\n                            method: prop,\n                            args,\n                            resolve: () => { },\n                        });\n                        return this.fallbacks[prop](...args);\n                    };\n                }\n                else {\n                    return (...args) => {\n                        return new Promise(resolve => {\n                            this.targetQueue.push({\n                                method: prop,\n                                args,\n                                resolve,\n                            });\n                        });\n                    };\n                }\n            },\n        });\n    }\n    async setRealTarget(target) {\n        this.target = target;\n        for (const item of this.onQueue) {\n            this.target.on[item.method](...item.args);\n        }\n        for (const item of this.targetQueue) {\n            item.resolve(await this.target[item.method](...item.args));\n        }\n    }\n}\n",
+      "start": 1702568943249,
+      "end": 1702568943387,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943387,
+      "end": 1702568943387,
+      "order": "normal"
+    }
+  ]
+}

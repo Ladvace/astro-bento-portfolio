@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/defaults/index.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from '../utils.js';\nimport AxiosError from '../core/AxiosError.js';\nimport transitionalDefaults from './transitional.js';\nimport toFormData from '../helpers/toFormData.js';\nimport toURLEncodedForm from '../helpers/toURLEncodedForm.js';\nimport platform from '../platform/index.js';\nimport formDataToJSON from '../helpers/formDataToJSON.js';\n\n/**\n * It takes a string, tries to parse it, and if it fails, it returns the stringified version\n * of the input\n *\n * @param {any} rawValue - The value to be stringified.\n * @param {Function} parser - A function that parses a string into a JavaScript object.\n * @param {Function} encoder - A function that takes a value and returns a string.\n *\n * @returns {string} A stringified version of the rawValue.\n */\nfunction stringifySafely(rawValue, parser, encoder) {\n  if (utils.isString(rawValue)) {\n    try {\n      (parser || JSON.parse)(rawValue);\n      return utils.trim(rawValue);\n    } catch (e) {\n      if (e.name !== 'SyntaxError') {\n        throw e;\n      }\n    }\n  }\n\n  return (encoder || JSON.stringify)(rawValue);\n}\n\nconst defaults = {\n\n  transitional: transitionalDefaults,\n\n  adapter: ['xhr', 'http'],\n\n  transformRequest: [function transformRequest(data, headers) {\n    const contentType = headers.getContentType() || '';\n    const hasJSONContentType = contentType.indexOf('application/json') > -1;\n    const isObjectPayload = utils.isObject(data);\n\n    if (isObjectPayload && utils.isHTMLForm(data)) {\n      data = new FormData(data);\n    }\n\n    const isFormData = utils.isFormData(data);\n\n    if (isFormData) {\n      if (!hasJSONContentType) {\n        return data;\n      }\n      return hasJSONContentType ? JSON.stringify(formDataToJSON(data)) : data;\n    }\n\n    if (utils.isArrayBuffer(data) ||\n      utils.isBuffer(data) ||\n      utils.isStream(data) ||\n      utils.isFile(data) ||\n      utils.isBlob(data)\n    ) {\n      return data;\n    }\n    if (utils.isArrayBufferView(data)) {\n      return data.buffer;\n    }\n    if (utils.isURLSearchParams(data)) {\n      headers.setContentType('application/x-www-form-urlencoded;charset=utf-8', false);\n      return data.toString();\n    }\n\n    let isFileList;\n\n    if (isObjectPayload) {\n      if (contentType.indexOf('application/x-www-form-urlencoded') > -1) {\n        return toURLEncodedForm(data, this.formSerializer).toString();\n      }\n\n      if ((isFileList = utils.isFileList(data)) || contentType.indexOf('multipart/form-data') > -1) {\n        const _FormData = this.env && this.env.FormData;\n\n        return toFormData(\n          isFileList ? {'files[]': data} : data,\n          _FormData && new _FormData(),\n          this.formSerializer\n        );\n      }\n    }\n\n    if (isObjectPayload || hasJSONContentType ) {\n      headers.setContentType('application/json', false);\n      return stringifySafely(data);\n    }\n\n    return data;\n  }],\n\n  transformResponse: [function transformResponse(data) {\n    const transitional = this.transitional || defaults.transitional;\n    const forcedJSONParsing = transitional && transitional.forcedJSONParsing;\n    const JSONRequested = this.responseType === 'json';\n\n    if (data && utils.isString(data) && ((forcedJSONParsing && !this.responseType) || JSONRequested)) {\n      const silentJSONParsing = transitional && transitional.silentJSONParsing;\n      const strictJSONParsing = !silentJSONParsing && JSONRequested;\n\n      try {\n        return JSON.parse(data);\n      } catch (e) {\n        if (strictJSONParsing) {\n          if (e.name === 'SyntaxError') {\n            throw AxiosError.from(e, AxiosError.ERR_BAD_RESPONSE, this, null, this.response);\n          }\n          throw e;\n        }\n      }\n    }\n\n    return data;\n  }],\n\n  /**\n   * A timeout in milliseconds to abort a request. If set to 0 (default) a\n   * timeout is not created.\n   */\n  timeout: 0,\n\n  xsrfCookieName: 'XSRF-TOKEN',\n  xsrfHeaderName: 'X-XSRF-TOKEN',\n\n  maxContentLength: -1,\n  maxBodyLength: -1,\n\n  env: {\n    FormData: platform.classes.FormData,\n    Blob: platform.classes.Blob\n  },\n\n  validateStatus: function validateStatus(status) {\n    return status >= 200 && status < 300;\n  },\n\n  headers: {\n    common: {\n      'Accept': 'application/json, text/plain, */*',\n      'Content-Type': undefined\n    }\n  }\n};\n\nutils.forEach(['delete', 'get', 'head', 'post', 'put', 'patch'], (method) => {\n  defaults.headers[method] = {};\n});\n\nexport default defaults;\n",
+      "start": 1702568943490,
+      "end": 1702568943505,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943505,
+      "end": 1702568943505,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943505,
+      "end": 1702568943506,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943506,
+      "end": 1702568943506,
+      "order": "normal"
+    }
+  ]
+}

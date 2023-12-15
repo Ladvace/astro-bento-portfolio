@@ -1,0 +1,215 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Blog.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script setup>\nimport { reactive } from 'vue';\nconst posts = reactive([\n    'Vue + Pinia made simple',\n    'Vue + Nuxt made simple',\n    'How to port a project from another Framework',\n])\n\n</script>\n<template>\n    <Card colSpan=\"md:col-span-1\" rowSpan=\"md:row-span-3\" href=\"/\">\n        <h2 class=\"text-xl font-bold m-0 z-20\">Blog</h2>\n        <p class=\"text-xs text-gray-500 mb-1\">Latest from the blog</p>\n        <p class=\"text-sm font-light text-base hover:text-red-500\" v-for=\"(post, index) in posts\" :key=\"index\">\n            <router-link to=\"/\">\n                - {{ post }}\n            </router-link>\n        </p>\n    </Card>\n</template>",
+      "start": 1702568943028,
+      "end": 1702568943213,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "import { createElementVNode as _createElementVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, createVNode as _createVNode, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = /*#__PURE__*/_createElementVNode(\"h2\", { class: \"text-xl font-bold m-0 z-20\" }, \"Blog\", -1)\nconst _hoisted_2 = /*#__PURE__*/_createElementVNode(\"p\", { class: \"text-xs text-gray-500 mb-1\" }, \"Latest from the blog\", -1)\n\nimport { reactive } from 'vue';\n\nconst _sfc_main = {\n  __name: 'Blog',\n  setup(__props) {\n\nconst posts = reactive([\n    'Vue + Pinia made simple',\n    'Vue + Nuxt made simple',\n    'How to port a project from another Framework',\n])\n\n\nreturn (_ctx, _cache) => {\n  const _component_router_link = _resolveComponent(\"router-link\")\n  const _component_Card = _resolveComponent(\"Card\")\n\n  return (_openBlock(), _createBlock(_component_Card, {\n    colSpan: \"md:col-span-1\",\n    rowSpan: \"md:row-span-3\",\n    href: \"/\"\n  }, {\n    default: _withCtx(() => [\n      _hoisted_1,\n      _hoisted_2,\n      (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(posts, (post, index) => {\n        return (_openBlock(), _createElementBlock(\"p\", {\n          class: \"text-sm font-light text-base hover:text-red-500\",\n          key: index\n        }, [\n          _createVNode(_component_router_link, { to: \"/\" }, {\n            default: _withCtx(() => [\n              _createTextVNode(\" - \" + _toDisplayString(post), 1)\n            ]),\n            _: 2\n          }, 1024)\n        ]))\n      }), 128))\n    ]),\n    _: 1\n  }))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1702568943213,
+      "end": 1702568943215,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943215,
+      "end": 1702568943215,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943215,
+      "end": 1702568943216,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943216,
+      "end": 1702568943216,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Card.vue\";\nimport { createElementVNode as _createElementVNode, renderList as _renderList, Fragment as _Fragment, openBlock as _openBlock, createElementBlock as _createElementBlock, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, createVNode as _createVNode, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = /*#__PURE__*/_createElementVNode(\"h2\", { class: \"text-xl font-bold m-0 z-20\" }, \"Blog\", -1)\nconst _hoisted_2 = /*#__PURE__*/_createElementVNode(\"p\", { class: \"text-xs text-gray-500 mb-1\" }, \"Latest from the blog\", -1)\n\nimport { reactive } from 'vue';\n\nconst _sfc_main = {\n  __name: 'Blog',\n  setup(__props) {\n\nconst posts = reactive([\n    'Vue + Pinia made simple',\n    'Vue + Nuxt made simple',\n    'How to port a project from another Framework',\n])\n\n\nreturn (_ctx, _cache) => {\n  const _component_router_link = _resolveComponent(\"router-link\")\n  const _component_Card = __nuxt_component_0\n\n  return (_openBlock(), _createBlock(_component_Card, {\n    colSpan: \"md:col-span-1\",\n    rowSpan: \"md:row-span-3\",\n    href: \"/\"\n  }, {\n    default: _withCtx(() => [\n      _hoisted_1,\n      _hoisted_2,\n      (_openBlock(true), _createElementBlock(_Fragment, null, _renderList(posts, (post, index) => {\n        return (_openBlock(), _createElementBlock(\"p\", {\n          class: \"text-sm font-light text-base hover:text-red-500\",\n          key: index\n        }, [\n          _createVNode(_component_router_link, { to: \"/\" }, {\n            default: _withCtx(() => [\n              _createTextVNode(\" - \" + _toDisplayString(post), 1)\n            ]),\n            _: 2\n          }, 1024)\n        ]))\n      }), 128))\n    ]),\n    _: 1\n  }))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1702568943216,
+      "end": 1702568943216,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943216,
+      "end": 1702568943216,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943216,
+      "end": 1702568943216,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943216,
+      "end": 1702568943216,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Currently.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<template>\n    <Card colSpan=\"md:col-span-1\" rowSpan=\"md:row-span-2\">\n        <div class=\"flex justify-between w-full items-start mb-2\">\n            <div class=\"flex flex-col\">\n                <h2>Now</h2>\n            </div>\n            <span class=\"relative flex h-3 w-3\">\n                <span class=\"animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75\"></span>\n                <span class=\"relative inline-flex rounded-full h-3 w-3 bg-green-500\"></span>\n            </span>\n        </div>\n        <p class=\"text-xs\">Currently working at <a href=\"https://formability.eu\" target=\"_blank\">Formability</a></p>\n    </Card>\n</template>",
+      "start": 1702568943038,
+      "end": 1702568943220,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943220,
+      "end": 1702568943220,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "const _sfc_main = {}\nimport { createElementVNode as _createElementVNode, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = /*#__PURE__*/_createElementVNode(\"div\", { class: \"flex justify-between w-full items-start mb-2\" }, [\n  /*#__PURE__*/_createElementVNode(\"div\", { class: \"flex flex-col\" }, [\n    /*#__PURE__*/_createElementVNode(\"h2\", null, \"Now\")\n  ]),\n  /*#__PURE__*/_createElementVNode(\"span\", { class: \"relative flex h-3 w-3\" }, [\n    /*#__PURE__*/_createElementVNode(\"span\", { class: \"animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75\" }),\n    /*#__PURE__*/_createElementVNode(\"span\", { class: \"relative inline-flex rounded-full h-3 w-3 bg-green-500\" })\n  ])\n], -1)\nconst _hoisted_2 = /*#__PURE__*/_createElementVNode(\"p\", { class: \"text-xs\" }, [\n  /*#__PURE__*/_createTextVNode(\"Currently working at \"),\n  /*#__PURE__*/_createElementVNode(\"a\", {\n    href: \"https://formability.eu\",\n    target: \"_blank\"\n  }, \"Formability\")\n], -1)\n\nfunction _sfc_render(_ctx, _cache) {\n  const _component_Card = _resolveComponent(\"Card\")\n\n  return (_openBlock(), _createBlock(_component_Card, {\n    colSpan: \"md:col-span-1\",\n    rowSpan: \"md:row-span-2\"\n  }, {\n    default: _withCtx(() => [\n      _hoisted_1,\n      _hoisted_2\n    ]),\n    _: 1\n  }))\n}\n\n\nimport _export_sfc from '\u0000plugin-vue:export-helper'\nexport default /*#__PURE__*/_export_sfc(_sfc_main, [['render',_sfc_render]])",
+      "start": 1702568943220,
+      "end": 1702568943221,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Card.vue\";\nconst _sfc_main = {}\nimport { createElementVNode as _createElementVNode, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = /*#__PURE__*/_createElementVNode(\"div\", { class: \"flex justify-between w-full items-start mb-2\" }, [\n  /*#__PURE__*/_createElementVNode(\"div\", { class: \"flex flex-col\" }, [\n    /*#__PURE__*/_createElementVNode(\"h2\", null, \"Now\")\n  ]),\n  /*#__PURE__*/_createElementVNode(\"span\", { class: \"relative flex h-3 w-3\" }, [\n    /*#__PURE__*/_createElementVNode(\"span\", { class: \"animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75\" }),\n    /*#__PURE__*/_createElementVNode(\"span\", { class: \"relative inline-flex rounded-full h-3 w-3 bg-green-500\" })\n  ])\n], -1)\nconst _hoisted_2 = /*#__PURE__*/_createElementVNode(\"p\", { class: \"text-xs\" }, [\n  /*#__PURE__*/_createTextVNode(\"Currently working at \"),\n  /*#__PURE__*/_createElementVNode(\"a\", {\n    href: \"https://formability.eu\",\n    target: \"_blank\"\n  }, \"Formability\")\n], -1)\n\nfunction _sfc_render(_ctx, _cache) {\n  const _component_Card = __nuxt_component_0\n\n  return (_openBlock(), _createBlock(_component_Card, {\n    colSpan: \"md:col-span-1\",\n    rowSpan: \"md:row-span-2\"\n  }, {\n    default: _withCtx(() => [\n      _hoisted_1,\n      _hoisted_2\n    ]),\n    _: 1\n  }))\n}\n\n\nimport _export_sfc from '\u0000plugin-vue:export-helper'\nexport default /*#__PURE__*/_export_sfc(_sfc_main, [['render',_sfc_render]])",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943221,
+      "end": 1702568943221,
+      "order": "normal"
+    }
+  ]
+}

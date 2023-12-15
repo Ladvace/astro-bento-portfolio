@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/platform/common/utils.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'undefined';\n\n/**\n * Determine if we're running in a standard browser environment\n *\n * This allows axios to run in a web worker, and react-native.\n * Both environments support XMLHttpRequest, but not fully standard globals.\n *\n * web workers:\n *  typeof window -> undefined\n *  typeof document -> undefined\n *\n * react-native:\n *  navigator.product -> 'ReactNative'\n * nativescript\n *  navigator.product -> 'NativeScript' or 'NS'\n *\n * @returns {boolean}\n */\nconst hasStandardBrowserEnv = (\n  (product) => {\n    return hasBrowserEnv && ['ReactNative', 'NativeScript', 'NS'].indexOf(product) < 0\n  })(typeof navigator !== 'undefined' && navigator.product);\n\n/**\n * Determine if we're running in a standard browser webWorker environment\n *\n * Although the `isStandardBrowserEnv` method indicates that\n * `allows axios to run in a web worker`, the WebWorker will still be\n * filtered out due to its judgment standard\n * `typeof window !== 'undefined' && typeof document !== 'undefined'`.\n * This leads to a problem when axios post `FormData` in webWorker\n */\nconst hasStandardBrowserWebWorkerEnv = (() => {\n  return (\n    typeof WorkerGlobalScope !== 'undefined' &&\n    // eslint-disable-next-line no-undef\n    self instanceof WorkerGlobalScope &&\n    typeof self.importScripts === 'function'\n  );\n})();\n\nexport {\n  hasBrowserEnv,\n  hasStandardBrowserWebWorkerEnv,\n  hasStandardBrowserEnv\n}\n",
+      "start": 1702568943534,
+      "end": 1702568943549,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943549,
+      "end": 1702568943549,
+      "order": "normal"
+    }
+  ]
+}

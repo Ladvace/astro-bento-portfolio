@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/cancel/CancelToken.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport CanceledError from './CanceledError.js';\n\n/**\n * A `CancelToken` is an object that can be used to request cancellation of an operation.\n *\n * @param {Function} executor The executor function.\n *\n * @returns {CancelToken}\n */\nclass CancelToken {\n  constructor(executor) {\n    if (typeof executor !== 'function') {\n      throw new TypeError('executor must be a function.');\n    }\n\n    let resolvePromise;\n\n    this.promise = new Promise(function promiseExecutor(resolve) {\n      resolvePromise = resolve;\n    });\n\n    const token = this;\n\n    // eslint-disable-next-line func-names\n    this.promise.then(cancel => {\n      if (!token._listeners) return;\n\n      let i = token._listeners.length;\n\n      while (i-- > 0) {\n        token._listeners[i](cancel);\n      }\n      token._listeners = null;\n    });\n\n    // eslint-disable-next-line func-names\n    this.promise.then = onfulfilled => {\n      let _resolve;\n      // eslint-disable-next-line func-names\n      const promise = new Promise(resolve => {\n        token.subscribe(resolve);\n        _resolve = resolve;\n      }).then(onfulfilled);\n\n      promise.cancel = function reject() {\n        token.unsubscribe(_resolve);\n      };\n\n      return promise;\n    };\n\n    executor(function cancel(message, config, request) {\n      if (token.reason) {\n        // Cancellation has already been requested\n        return;\n      }\n\n      token.reason = new CanceledError(message, config, request);\n      resolvePromise(token.reason);\n    });\n  }\n\n  /**\n   * Throws a `CanceledError` if cancellation has been requested.\n   */\n  throwIfRequested() {\n    if (this.reason) {\n      throw this.reason;\n    }\n  }\n\n  /**\n   * Subscribe to the cancel signal\n   */\n\n  subscribe(listener) {\n    if (this.reason) {\n      listener(this.reason);\n      return;\n    }\n\n    if (this._listeners) {\n      this._listeners.push(listener);\n    } else {\n      this._listeners = [listener];\n    }\n  }\n\n  /**\n   * Unsubscribe from the cancel signal\n   */\n\n  unsubscribe(listener) {\n    if (!this._listeners) {\n      return;\n    }\n    const index = this._listeners.indexOf(listener);\n    if (index !== -1) {\n      this._listeners.splice(index, 1);\n    }\n  }\n\n  /**\n   * Returns an object that contains a new `CancelToken` and a function that, when called,\n   * cancels the `CancelToken`.\n   */\n  static source() {\n    let cancel;\n    const token = new CancelToken(function executor(c) {\n      cancel = c;\n    });\n    return {\n      token,\n      cancel\n    };\n  }\n}\n\nexport default CancelToken;\n",
+      "start": 1702568943492,
+      "end": 1702568943512,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943512,
+      "end": 1702568943512,
+      "order": "normal"
+    }
+  ]
+}

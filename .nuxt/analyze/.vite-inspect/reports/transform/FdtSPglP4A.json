@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/pathe/dist/shared/pathe.92c04245.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "function normalizeWindowsPath(input = \"\") {\n  if (!input || !input.includes(\"\\\\\")) {\n    return input;\n  }\n  return input.replace(/\\\\/g, \"/\");\n}\n\nconst _UNC_REGEX = /^[/\\\\]{2}/;\nconst _IS_ABSOLUTE_RE = /^[/\\\\](?![/\\\\])|^[/\\\\]{2}(?!\\.)|^[A-Za-z]:[/\\\\]/;\nconst _DRIVE_LETTER_RE = /^[A-Za-z]:$/;\nconst sep = \"/\";\nconst delimiter = \":\";\nconst normalize = function(path) {\n  if (path.length === 0) {\n    return \".\";\n  }\n  path = normalizeWindowsPath(path);\n  const isUNCPath = path.match(_UNC_REGEX);\n  const isPathAbsolute = isAbsolute(path);\n  const trailingSeparator = path[path.length - 1] === \"/\";\n  path = normalizeString(path, !isPathAbsolute);\n  if (path.length === 0) {\n    if (isPathAbsolute) {\n      return \"/\";\n    }\n    return trailingSeparator ? \"./\" : \".\";\n  }\n  if (trailingSeparator) {\n    path += \"/\";\n  }\n  if (_DRIVE_LETTER_RE.test(path)) {\n    path += \"/\";\n  }\n  if (isUNCPath) {\n    if (!isPathAbsolute) {\n      return `//./${path}`;\n    }\n    return `//${path}`;\n  }\n  return isPathAbsolute && !isAbsolute(path) ? `/${path}` : path;\n};\nconst join = function(...arguments_) {\n  if (arguments_.length === 0) {\n    return \".\";\n  }\n  let joined;\n  for (const argument of arguments_) {\n    if (argument && argument.length > 0) {\n      if (joined === void 0) {\n        joined = argument;\n      } else {\n        joined += `/${argument}`;\n      }\n    }\n  }\n  if (joined === void 0) {\n    return \".\";\n  }\n  return normalize(joined.replace(/\\/\\/+/g, \"/\"));\n};\nfunction cwd() {\n  if (typeof process !== \"undefined\") {\n    return process.cwd().replace(/\\\\/g, \"/\");\n  }\n  return \"/\";\n}\nconst resolve = function(...arguments_) {\n  arguments_ = arguments_.map((argument) => normalizeWindowsPath(argument));\n  let resolvedPath = \"\";\n  let resolvedAbsolute = false;\n  for (let index = arguments_.length - 1; index >= -1 && !resolvedAbsolute; index--) {\n    const path = index >= 0 ? arguments_[index] : cwd();\n    if (!path || path.length === 0) {\n      continue;\n    }\n    resolvedPath = `${path}/${resolvedPath}`;\n    resolvedAbsolute = isAbsolute(path);\n  }\n  resolvedPath = normalizeString(resolvedPath, !resolvedAbsolute);\n  if (resolvedAbsolute && !isAbsolute(resolvedPath)) {\n    return `/${resolvedPath}`;\n  }\n  return resolvedPath.length > 0 ? resolvedPath : \".\";\n};\nfunction normalizeString(path, allowAboveRoot) {\n  let res = \"\";\n  let lastSegmentLength = 0;\n  let lastSlash = -1;\n  let dots = 0;\n  let char = null;\n  for (let index = 0; index <= path.length; ++index) {\n    if (index < path.length) {\n      char = path[index];\n    } else if (char === \"/\") {\n      break;\n    } else {\n      char = \"/\";\n    }\n    if (char === \"/\") {\n      if (lastSlash === index - 1 || dots === 1) ; else if (dots === 2) {\n        if (res.length < 2 || lastSegmentLength !== 2 || res[res.length - 1] !== \".\" || res[res.length - 2] !== \".\") {\n          if (res.length > 2) {\n            const lastSlashIndex = res.lastIndexOf(\"/\");\n            if (lastSlashIndex === -1) {\n              res = \"\";\n              lastSegmentLength = 0;\n            } else {\n              res = res.slice(0, lastSlashIndex);\n              lastSegmentLength = res.length - 1 - res.lastIndexOf(\"/\");\n            }\n            lastSlash = index;\n            dots = 0;\n            continue;\n          } else if (res.length > 0) {\n            res = \"\";\n            lastSegmentLength = 0;\n            lastSlash = index;\n            dots = 0;\n            continue;\n          }\n        }\n        if (allowAboveRoot) {\n          res += res.length > 0 ? \"/..\" : \"..\";\n          lastSegmentLength = 2;\n        }\n      } else {\n        if (res.length > 0) {\n          res += `/${path.slice(lastSlash + 1, index)}`;\n        } else {\n          res = path.slice(lastSlash + 1, index);\n        }\n        lastSegmentLength = index - lastSlash - 1;\n      }\n      lastSlash = index;\n      dots = 0;\n    } else if (char === \".\" && dots !== -1) {\n      ++dots;\n    } else {\n      dots = -1;\n    }\n  }\n  return res;\n}\nconst isAbsolute = function(p) {\n  return _IS_ABSOLUTE_RE.test(p);\n};\nconst toNamespacedPath = function(p) {\n  return normalizeWindowsPath(p);\n};\nconst _EXTNAME_RE = /.(\\.[^./]+)$/;\nconst extname = function(p) {\n  const match = _EXTNAME_RE.exec(normalizeWindowsPath(p));\n  return match && match[1] || \"\";\n};\nconst relative = function(from, to) {\n  const _from = resolve(from).split(\"/\");\n  const _to = resolve(to).split(\"/\");\n  const _fromCopy = [..._from];\n  for (const segment of _fromCopy) {\n    if (_to[0] !== segment) {\n      break;\n    }\n    _from.shift();\n    _to.shift();\n  }\n  return [..._from.map(() => \"..\"), ..._to].join(\"/\");\n};\nconst dirname = function(p) {\n  const segments = normalizeWindowsPath(p).replace(/\\/$/, \"\").split(\"/\").slice(0, -1);\n  if (segments.length === 1 && _DRIVE_LETTER_RE.test(segments[0])) {\n    segments[0] += \"/\";\n  }\n  return segments.join(\"/\") || (isAbsolute(p) ? \"/\" : \".\");\n};\nconst format = function(p) {\n  const segments = [p.root, p.dir, p.base ?? p.name + p.ext].filter(Boolean);\n  return normalizeWindowsPath(\n    p.root ? resolve(...segments) : segments.join(\"/\")\n  );\n};\nconst basename = function(p, extension) {\n  const lastSegment = normalizeWindowsPath(p).split(\"/\").pop();\n  return extension && lastSegment.endsWith(extension) ? lastSegment.slice(0, -extension.length) : lastSegment;\n};\nconst parse = function(p) {\n  const root = normalizeWindowsPath(p).split(\"/\").shift() || \"/\";\n  const base = basename(p);\n  const extension = extname(base);\n  return {\n    root,\n    dir: dirname(p),\n    base,\n    ext: extension,\n    name: base.slice(0, base.length - extension.length)\n  };\n};\n\nconst path = {\n  __proto__: null,\n  basename: basename,\n  delimiter: delimiter,\n  dirname: dirname,\n  extname: extname,\n  format: format,\n  isAbsolute: isAbsolute,\n  join: join,\n  normalize: normalize,\n  normalizeString: normalizeString,\n  parse: parse,\n  relative: relative,\n  resolve: resolve,\n  sep: sep,\n  toNamespacedPath: toNamespacedPath\n};\n\nexport { normalizeString as a, relative as b, dirname as c, delimiter as d, extname as e, format as f, basename as g, parse as h, isAbsolute as i, join as j, normalizeWindowsPath as k, normalize as n, path as p, resolve as r, sep as s, toNamespacedPath as t };\n",
+      "start": 1702568943344,
+      "end": 1702568943419,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943419,
+      "end": 1702568943419,
+      "order": "normal"
+    }
+  ]
+}

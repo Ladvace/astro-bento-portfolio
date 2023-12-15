@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/utils.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport bind from './helpers/bind.js';\n\n// utils is a library of generic helper functions non-specific to axios\n\nconst {toString} = Object.prototype;\nconst {getPrototypeOf} = Object;\n\nconst kindOf = (cache => thing => {\n    const str = toString.call(thing);\n    return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());\n})(Object.create(null));\n\nconst kindOfTest = (type) => {\n  type = type.toLowerCase();\n  return (thing) => kindOf(thing) === type\n}\n\nconst typeOfTest = type => thing => typeof thing === type;\n\n/**\n * Determine if a value is an Array\n *\n * @param {Object} val The value to test\n *\n * @returns {boolean} True if value is an Array, otherwise false\n */\nconst {isArray} = Array;\n\n/**\n * Determine if a value is undefined\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if the value is undefined, otherwise false\n */\nconst isUndefined = typeOfTest('undefined');\n\n/**\n * Determine if a value is a Buffer\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a Buffer, otherwise false\n */\nfunction isBuffer(val) {\n  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)\n    && isFunction(val.constructor.isBuffer) && val.constructor.isBuffer(val);\n}\n\n/**\n * Determine if a value is an ArrayBuffer\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is an ArrayBuffer, otherwise false\n */\nconst isArrayBuffer = kindOfTest('ArrayBuffer');\n\n\n/**\n * Determine if a value is a view on an ArrayBuffer\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false\n */\nfunction isArrayBufferView(val) {\n  let result;\n  if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {\n    result = ArrayBuffer.isView(val);\n  } else {\n    result = (val) && (val.buffer) && (isArrayBuffer(val.buffer));\n  }\n  return result;\n}\n\n/**\n * Determine if a value is a String\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a String, otherwise false\n */\nconst isString = typeOfTest('string');\n\n/**\n * Determine if a value is a Function\n *\n * @param {*} val The value to test\n * @returns {boolean} True if value is a Function, otherwise false\n */\nconst isFunction = typeOfTest('function');\n\n/**\n * Determine if a value is a Number\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a Number, otherwise false\n */\nconst isNumber = typeOfTest('number');\n\n/**\n * Determine if a value is an Object\n *\n * @param {*} thing The value to test\n *\n * @returns {boolean} True if value is an Object, otherwise false\n */\nconst isObject = (thing) => thing !== null && typeof thing === 'object';\n\n/**\n * Determine if a value is a Boolean\n *\n * @param {*} thing The value to test\n * @returns {boolean} True if value is a Boolean, otherwise false\n */\nconst isBoolean = thing => thing === true || thing === false;\n\n/**\n * Determine if a value is a plain Object\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a plain Object, otherwise false\n */\nconst isPlainObject = (val) => {\n  if (kindOf(val) !== 'object') {\n    return false;\n  }\n\n  const prototype = getPrototypeOf(val);\n  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in val) && !(Symbol.iterator in val);\n}\n\n/**\n * Determine if a value is a Date\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a Date, otherwise false\n */\nconst isDate = kindOfTest('Date');\n\n/**\n * Determine if a value is a File\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a File, otherwise false\n */\nconst isFile = kindOfTest('File');\n\n/**\n * Determine if a value is a Blob\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a Blob, otherwise false\n */\nconst isBlob = kindOfTest('Blob');\n\n/**\n * Determine if a value is a FileList\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a File, otherwise false\n */\nconst isFileList = kindOfTest('FileList');\n\n/**\n * Determine if a value is a Stream\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a Stream, otherwise false\n */\nconst isStream = (val) => isObject(val) && isFunction(val.pipe);\n\n/**\n * Determine if a value is a FormData\n *\n * @param {*} thing The value to test\n *\n * @returns {boolean} True if value is an FormData, otherwise false\n */\nconst isFormData = (thing) => {\n  let kind;\n  return thing && (\n    (typeof FormData === 'function' && thing instanceof FormData) || (\n      isFunction(thing.append) && (\n        (kind = kindOf(thing)) === 'formdata' ||\n        // detect form-data instance\n        (kind === 'object' && isFunction(thing.toString) && thing.toString() === '[object FormData]')\n      )\n    )\n  )\n}\n\n/**\n * Determine if a value is a URLSearchParams object\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a URLSearchParams object, otherwise false\n */\nconst isURLSearchParams = kindOfTest('URLSearchParams');\n\n/**\n * Trim excess whitespace off the beginning and end of a string\n *\n * @param {String} str The String to trim\n *\n * @returns {String} The String freed of excess whitespace\n */\nconst trim = (str) => str.trim ?\n  str.trim() : str.replace(/^[\\s\\uFEFF\\xA0]+|[\\s\\uFEFF\\xA0]+$/g, '');\n\n/**\n * Iterate over an Array or an Object invoking a function for each item.\n *\n * If `obj` is an Array callback will be called passing\n * the value, index, and complete array for each item.\n *\n * If 'obj' is an Object callback will be called passing\n * the value, key, and complete object for each property.\n *\n * @param {Object|Array} obj The object to iterate\n * @param {Function} fn The callback to invoke for each item\n *\n * @param {Boolean} [allOwnKeys = false]\n * @returns {any}\n */\nfunction forEach(obj, fn, {allOwnKeys = false} = {}) {\n  // Don't bother if no value provided\n  if (obj === null || typeof obj === 'undefined') {\n    return;\n  }\n\n  let i;\n  let l;\n\n  // Force an array if not already something iterable\n  if (typeof obj !== 'object') {\n    /*eslint no-param-reassign:0*/\n    obj = [obj];\n  }\n\n  if (isArray(obj)) {\n    // Iterate over array values\n    for (i = 0, l = obj.length; i < l; i++) {\n      fn.call(null, obj[i], i, obj);\n    }\n  } else {\n    // Iterate over object keys\n    const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);\n    const len = keys.length;\n    let key;\n\n    for (i = 0; i < len; i++) {\n      key = keys[i];\n      fn.call(null, obj[key], key, obj);\n    }\n  }\n}\n\nfunction findKey(obj, key) {\n  key = key.toLowerCase();\n  const keys = Object.keys(obj);\n  let i = keys.length;\n  let _key;\n  while (i-- > 0) {\n    _key = keys[i];\n    if (key === _key.toLowerCase()) {\n      return _key;\n    }\n  }\n  return null;\n}\n\nconst _global = (() => {\n  /*eslint no-undef:0*/\n  if (typeof globalThis !== \"undefined\") return globalThis;\n  return typeof self !== \"undefined\" ? self : (typeof window !== 'undefined' ? window : global)\n})();\n\nconst isContextDefined = (context) => !isUndefined(context) && context !== _global;\n\n/**\n * Accepts varargs expecting each argument to be an object, then\n * immutably merges the properties of each object and returns result.\n *\n * When multiple objects contain the same key the later object in\n * the arguments list will take precedence.\n *\n * Example:\n *\n * ```js\n * var result = merge({foo: 123}, {foo: 456});\n * console.log(result.foo); // outputs 456\n * ```\n *\n * @param {Object} obj1 Object to merge\n *\n * @returns {Object} Result of all merge properties\n */\nfunction merge(/* obj1, obj2, obj3, ... */) {\n  const {caseless} = isContextDefined(this) && this || {};\n  const result = {};\n  const assignValue = (val, key) => {\n    const targetKey = caseless && findKey(result, key) || key;\n    if (isPlainObject(result[targetKey]) && isPlainObject(val)) {\n      result[targetKey] = merge(result[targetKey], val);\n    } else if (isPlainObject(val)) {\n      result[targetKey] = merge({}, val);\n    } else if (isArray(val)) {\n      result[targetKey] = val.slice();\n    } else {\n      result[targetKey] = val;\n    }\n  }\n\n  for (let i = 0, l = arguments.length; i < l; i++) {\n    arguments[i] && forEach(arguments[i], assignValue);\n  }\n  return result;\n}\n\n/**\n * Extends object a by mutably adding to it the properties of object b.\n *\n * @param {Object} a The object to be extended\n * @param {Object} b The object to copy properties from\n * @param {Object} thisArg The object to bind function to\n *\n * @param {Boolean} [allOwnKeys]\n * @returns {Object} The resulting value of object a\n */\nconst extend = (a, b, thisArg, {allOwnKeys}= {}) => {\n  forEach(b, (val, key) => {\n    if (thisArg && isFunction(val)) {\n      a[key] = bind(val, thisArg);\n    } else {\n      a[key] = val;\n    }\n  }, {allOwnKeys});\n  return a;\n}\n\n/**\n * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)\n *\n * @param {string} content with BOM\n *\n * @returns {string} content value without BOM\n */\nconst stripBOM = (content) => {\n  if (content.charCodeAt(0) === 0xFEFF) {\n    content = content.slice(1);\n  }\n  return content;\n}\n\n/**\n * Inherit the prototype methods from one constructor into another\n * @param {function} constructor\n * @param {function} superConstructor\n * @param {object} [props]\n * @param {object} [descriptors]\n *\n * @returns {void}\n */\nconst inherits = (constructor, superConstructor, props, descriptors) => {\n  constructor.prototype = Object.create(superConstructor.prototype, descriptors);\n  constructor.prototype.constructor = constructor;\n  Object.defineProperty(constructor, 'super', {\n    value: superConstructor.prototype\n  });\n  props && Object.assign(constructor.prototype, props);\n}\n\n/**\n * Resolve object with deep prototype chain to a flat object\n * @param {Object} sourceObj source object\n * @param {Object} [destObj]\n * @param {Function|Boolean} [filter]\n * @param {Function} [propFilter]\n *\n * @returns {Object}\n */\nconst toFlatObject = (sourceObj, destObj, filter, propFilter) => {\n  let props;\n  let i;\n  let prop;\n  const merged = {};\n\n  destObj = destObj || {};\n  // eslint-disable-next-line no-eq-null,eqeqeq\n  if (sourceObj == null) return destObj;\n\n  do {\n    props = Object.getOwnPropertyNames(sourceObj);\n    i = props.length;\n    while (i-- > 0) {\n      prop = props[i];\n      if ((!propFilter || propFilter(prop, sourceObj, destObj)) && !merged[prop]) {\n        destObj[prop] = sourceObj[prop];\n        merged[prop] = true;\n      }\n    }\n    sourceObj = filter !== false && getPrototypeOf(sourceObj);\n  } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);\n\n  return destObj;\n}\n\n/**\n * Determines whether a string ends with the characters of a specified string\n *\n * @param {String} str\n * @param {String} searchString\n * @param {Number} [position= 0]\n *\n * @returns {boolean}\n */\nconst endsWith = (str, searchString, position) => {\n  str = String(str);\n  if (position === undefined || position > str.length) {\n    position = str.length;\n  }\n  position -= searchString.length;\n  const lastIndex = str.indexOf(searchString, position);\n  return lastIndex !== -1 && lastIndex === position;\n}\n\n\n/**\n * Returns new array from array like object or null if failed\n *\n * @param {*} [thing]\n *\n * @returns {?Array}\n */\nconst toArray = (thing) => {\n  if (!thing) return null;\n  if (isArray(thing)) return thing;\n  let i = thing.length;\n  if (!isNumber(i)) return null;\n  const arr = new Array(i);\n  while (i-- > 0) {\n    arr[i] = thing[i];\n  }\n  return arr;\n}\n\n/**\n * Checking if the Uint8Array exists and if it does, it returns a function that checks if the\n * thing passed in is an instance of Uint8Array\n *\n * @param {TypedArray}\n *\n * @returns {Array}\n */\n// eslint-disable-next-line func-names\nconst isTypedArray = (TypedArray => {\n  // eslint-disable-next-line func-names\n  return thing => {\n    return TypedArray && thing instanceof TypedArray;\n  };\n})(typeof Uint8Array !== 'undefined' && getPrototypeOf(Uint8Array));\n\n/**\n * For each entry in the object, call the function with the key and value.\n *\n * @param {Object<any, any>} obj - The object to iterate over.\n * @param {Function} fn - The function to call for each entry.\n *\n * @returns {void}\n */\nconst forEachEntry = (obj, fn) => {\n  const generator = obj && obj[Symbol.iterator];\n\n  const iterator = generator.call(obj);\n\n  let result;\n\n  while ((result = iterator.next()) && !result.done) {\n    const pair = result.value;\n    fn.call(obj, pair[0], pair[1]);\n  }\n}\n\n/**\n * It takes a regular expression and a string, and returns an array of all the matches\n *\n * @param {string} regExp - The regular expression to match against.\n * @param {string} str - The string to search.\n *\n * @returns {Array<boolean>}\n */\nconst matchAll = (regExp, str) => {\n  let matches;\n  const arr = [];\n\n  while ((matches = regExp.exec(str)) !== null) {\n    arr.push(matches);\n  }\n\n  return arr;\n}\n\n/* Checking if the kindOfTest function returns true when passed an HTMLFormElement. */\nconst isHTMLForm = kindOfTest('HTMLFormElement');\n\nconst toCamelCase = str => {\n  return str.toLowerCase().replace(/[-_\\s]([a-z\\d])(\\w*)/g,\n    function replacer(m, p1, p2) {\n      return p1.toUpperCase() + p2;\n    }\n  );\n};\n\n/* Creating a function that will check if an object has a property. */\nconst hasOwnProperty = (({hasOwnProperty}) => (obj, prop) => hasOwnProperty.call(obj, prop))(Object.prototype);\n\n/**\n * Determine if a value is a RegExp object\n *\n * @param {*} val The value to test\n *\n * @returns {boolean} True if value is a RegExp object, otherwise false\n */\nconst isRegExp = kindOfTest('RegExp');\n\nconst reduceDescriptors = (obj, reducer) => {\n  const descriptors = Object.getOwnPropertyDescriptors(obj);\n  const reducedDescriptors = {};\n\n  forEach(descriptors, (descriptor, name) => {\n    let ret;\n    if ((ret = reducer(descriptor, name, obj)) !== false) {\n      reducedDescriptors[name] = ret || descriptor;\n    }\n  });\n\n  Object.defineProperties(obj, reducedDescriptors);\n}\n\n/**\n * Makes all methods read-only\n * @param {Object} obj\n */\n\nconst freezeMethods = (obj) => {\n  reduceDescriptors(obj, (descriptor, name) => {\n    // skip restricted props in strict mode\n    if (isFunction(obj) && ['arguments', 'caller', 'callee'].indexOf(name) !== -1) {\n      return false;\n    }\n\n    const value = obj[name];\n\n    if (!isFunction(value)) return;\n\n    descriptor.enumerable = false;\n\n    if ('writable' in descriptor) {\n      descriptor.writable = false;\n      return;\n    }\n\n    if (!descriptor.set) {\n      descriptor.set = () => {\n        throw Error('Can not rewrite read-only method \\'' + name + '\\'');\n      };\n    }\n  });\n}\n\nconst toObjectSet = (arrayOrString, delimiter) => {\n  const obj = {};\n\n  const define = (arr) => {\n    arr.forEach(value => {\n      obj[value] = true;\n    });\n  }\n\n  isArray(arrayOrString) ? define(arrayOrString) : define(String(arrayOrString).split(delimiter));\n\n  return obj;\n}\n\nconst noop = () => {}\n\nconst toFiniteNumber = (value, defaultValue) => {\n  value = +value;\n  return Number.isFinite(value) ? value : defaultValue;\n}\n\nconst ALPHA = 'abcdefghijklmnopqrstuvwxyz'\n\nconst DIGIT = '0123456789';\n\nconst ALPHABET = {\n  DIGIT,\n  ALPHA,\n  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT\n}\n\nconst generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {\n  let str = '';\n  const {length} = alphabet;\n  while (size--) {\n    str += alphabet[Math.random() * length|0]\n  }\n\n  return str;\n}\n\n/**\n * If the thing is a FormData object, return true, otherwise return false.\n *\n * @param {unknown} thing - The thing to check.\n *\n * @returns {boolean}\n */\nfunction isSpecCompliantForm(thing) {\n  return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === 'FormData' && thing[Symbol.iterator]);\n}\n\nconst toJSONObject = (obj) => {\n  const stack = new Array(10);\n\n  const visit = (source, i) => {\n\n    if (isObject(source)) {\n      if (stack.indexOf(source) >= 0) {\n        return;\n      }\n\n      if(!('toJSON' in source)) {\n        stack[i] = source;\n        const target = isArray(source) ? [] : {};\n\n        forEach(source, (value, key) => {\n          const reducedValue = visit(value, i + 1);\n          !isUndefined(reducedValue) && (target[key] = reducedValue);\n        });\n\n        stack[i] = undefined;\n\n        return target;\n      }\n    }\n\n    return source;\n  }\n\n  return visit(obj, 0);\n}\n\nconst isAsyncFn = kindOfTest('AsyncFunction');\n\nconst isThenable = (thing) =>\n  thing && (isObject(thing) || isFunction(thing)) && isFunction(thing.then) && isFunction(thing.catch);\n\nexport default {\n  isArray,\n  isArrayBuffer,\n  isBuffer,\n  isFormData,\n  isArrayBufferView,\n  isString,\n  isNumber,\n  isBoolean,\n  isObject,\n  isPlainObject,\n  isUndefined,\n  isDate,\n  isFile,\n  isBlob,\n  isRegExp,\n  isFunction,\n  isStream,\n  isURLSearchParams,\n  isTypedArray,\n  isFileList,\n  forEach,\n  merge,\n  extend,\n  trim,\n  stripBOM,\n  inherits,\n  toFlatObject,\n  kindOf,\n  kindOfTest,\n  endsWith,\n  toArray,\n  forEachEntry,\n  matchAll,\n  isHTMLForm,\n  hasOwnProperty,\n  hasOwnProp: hasOwnProperty, // an alias to avoid ESLint no-prototype-builtins detection\n  reduceDescriptors,\n  freezeMethods,\n  toObjectSet,\n  toCamelCase,\n  noop,\n  toFiniteNumber,\n  findKey,\n  global: _global,\n  isContextDefined,\n  ALPHABET,\n  generateString,\n  isSpecCompliantForm,\n  toJSONObject,\n  isAsyncFn,\n  isThenable\n};\n",
+      "start": 1702568943489,
+      "end": 1702568943500,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943500,
+      "end": 1702568943500,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943500,
+      "end": 1702568943501,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943501,
+      "end": 1702568943501,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Button.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<template>\n    <button :class=\"buttonClasses\">\n        <slot />\n    </button>\n</template>\n\n<script setup>\nimport { computed } from 'vue';\n\n// Props declaration\nconst props = defineProps({\n    rounded: Boolean\n});\n\n// Computed class\nconst buttonClasses = computed(() => {\n    return `custom-btn text-xl max-h-[50px] shadow-custom active:shadow-none active:translate-x-[3px] active:translate-y-[3px] text-gray-200 px-5 py-2 border border-primary-500 hover:text-primary-500 transition-colors duration-100 ease-in-out bg-gray-900 cursor-pointer ${props.rounded ? \"rounded-full\" : \"rounded-lg\"\n        }`;\n});\n</script>",
+      "start": 1702568943228,
+      "end": 1702568943285,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943285,
+      "end": 1702568943285,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "import { renderSlot as _renderSlot, normalizeClass as _normalizeClass, openBlock as _openBlock, createElementBlock as _createElementBlock } from \"vue\"\n\nimport { computed } from 'vue';\n\n// Props declaration\n\nconst _sfc_main = {\n  __name: 'Button',\n  props: {\n    rounded: Boolean\n},\n  setup(__props) {\n\nconst props = __props;\n\n// Computed class\nconst buttonClasses = computed(() => {\n    return `custom-btn text-xl max-h-[50px] shadow-custom active:shadow-none active:translate-x-[3px] active:translate-y-[3px] text-gray-200 px-5 py-2 border border-primary-500 hover:text-primary-500 transition-colors duration-100 ease-in-out bg-gray-900 cursor-pointer ${props.rounded ? \"rounded-full\" : \"rounded-lg\"\n        }`;\n});\n\nreturn (_ctx, _cache) => {\n  return (_openBlock(), _createElementBlock(\"button\", {\n    class: _normalizeClass(buttonClasses.value)\n  }, [\n    _renderSlot(_ctx.$slots, \"default\")\n  ], 2))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1702568943285,
+      "end": 1702568943287,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943287,
+      "end": 1702568943287,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943287,
+      "end": 1702568943287,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943303,
+      "end": 1702568943303,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943304,
+      "end": 1702568943304,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943305,
+      "end": 1702568943305,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943307,
+      "end": 1702568943307,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943308,
+      "end": 1702568943308,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943308,
+      "end": 1702568943308,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943320,
+      "end": 1702568943320,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943321,
+      "end": 1702568943321,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943322,
+      "end": 1702568943322,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943327,
+      "end": 1702568943327,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943328,
+      "end": 1702568943328,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943328,
+      "end": 1702568943328,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943328,
+      "end": 1702568943328,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943340,
+      "end": 1702568943340,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943340,
+      "end": 1702568943343,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943343,
+      "end": 1702568943343,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943344,
+      "end": 1702568943344,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943344,
+      "end": 1702568943344,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943344,
+      "end": 1702568943344,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943344,
+      "end": 1702568943345,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943346,
+      "end": 1702568943346,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943346,
+      "end": 1702568943346,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943346,
+      "end": 1702568943346,
+      "order": "normal"
+    }
+  ]
+}

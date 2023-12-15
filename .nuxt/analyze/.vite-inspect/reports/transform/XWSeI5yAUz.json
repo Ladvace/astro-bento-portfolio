@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/helpers/buildURL.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from '../utils.js';\nimport AxiosURLSearchParams from '../helpers/AxiosURLSearchParams.js';\n\n/**\n * It replaces all instances of the characters `:`, `$`, `,`, `+`, `[`, and `]` with their\n * URI encoded counterparts\n *\n * @param {string} val The value to be encoded.\n *\n * @returns {string} The encoded value.\n */\nfunction encode(val) {\n  return encodeURIComponent(val).\n    replace(/%3A/gi, ':').\n    replace(/%24/g, '$').\n    replace(/%2C/gi, ',').\n    replace(/%20/g, '+').\n    replace(/%5B/gi, '[').\n    replace(/%5D/gi, ']');\n}\n\n/**\n * Build a URL by appending params to the end\n *\n * @param {string} url The base of the url (e.g., http://www.google.com)\n * @param {object} [params] The params to be appended\n * @param {?object} options\n *\n * @returns {string} The formatted url\n */\nexport default function buildURL(url, params, options) {\n  /*eslint no-param-reassign:0*/\n  if (!params) {\n    return url;\n  }\n  \n  const _encode = options && options.encode || encode;\n\n  const serializeFn = options && options.serialize;\n\n  let serializedParams;\n\n  if (serializeFn) {\n    serializedParams = serializeFn(params, options);\n  } else {\n    serializedParams = utils.isURLSearchParams(params) ?\n      params.toString() :\n      new AxiosURLSearchParams(params, options).toString(_encode);\n  }\n\n  if (serializedParams) {\n    const hashmarkIndex = url.indexOf(\"#\");\n\n    if (hashmarkIndex !== -1) {\n      url = url.slice(0, hashmarkIndex);\n    }\n    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;\n  }\n\n  return url;\n}\n",
+      "start": 1702568943513,
+      "end": 1702568943535,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943535,
+      "end": 1702568943535,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943535,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943536,
+      "end": 1702568943536,
+      "order": "normal"
+    }
+  ]
+}

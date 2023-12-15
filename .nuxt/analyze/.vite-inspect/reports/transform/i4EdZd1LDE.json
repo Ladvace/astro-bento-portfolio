@@ -1,0 +1,214 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/components/TimeZone.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "<script setup>\nimport moment from 'moment'\nimport { ref } from 'vue';\nimport Card from './Card.vue';\n\nconst currentDateTime = ref(moment().format('h:mm:ss A [CET]'));\n\nsetInterval(() => {\n    currentDateTime.value = moment().format('h:mm:ss A [CET]');\n}, 1000);\n\n</script>\n\n<template>\n    <Card :colSpan=\"'lg:col-span-2'\" :rowSpan=\"'md:row-span-1'\" title=\"Time zone\">\n        <h2 class=\"text-xl font-bold\">Time zone</h2>\n        <p id=\"timeDisplay\"\n            class=\"text-2xl xl:text-5xl w-50 xl:w-100 h-[calc(100%-28px)] font-serif flex justify-left items-center\">\n            {{ currentDateTime }}\n        </p>\n    </Card>\n</template>\n",
+      "start": 1702568943028,
+      "end": 1702568943211,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943211,
+      "end": 1702568943211,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "import { createElementVNode as _createElementVNode, toDisplayString as _toDisplayString, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = /*#__PURE__*/_createElementVNode(\"h2\", { class: \"text-xl font-bold\" }, \"Time zone\", -1)\nconst _hoisted_2 = {\n  id: \"timeDisplay\",\n  class: \"text-2xl xl:text-5xl w-50 xl:w-100 h-[calc(100%-28px)] font-serif flex justify-left items-center\"\n}\n\nimport moment from 'moment'\nimport { ref } from 'vue';\nimport Card from './Card.vue';\n\n\nconst _sfc_main = {\n  __name: 'TimeZone',\n  setup(__props) {\n\nconst currentDateTime = ref(moment().format('h:mm:ss A [CET]'));\n\nsetInterval(() => {\n    currentDateTime.value = moment().format('h:mm:ss A [CET]');\n}, 1000);\n\n\nreturn (_ctx, _cache) => {\n  return (_openBlock(), _createBlock(Card, {\n    colSpan: 'lg:col-span-2',\n    rowSpan: 'md:row-span-1',\n    title: \"Time zone\"\n  }, {\n    default: _withCtx(() => [\n      _hoisted_1,\n      _createElementVNode(\"p\", _hoisted_2, _toDisplayString(currentDateTime.value), 1)\n    ]),\n    _: 1\n  }))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1702568943211,
+      "end": 1702568943212,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943212,
+      "end": 1702568943212,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943212,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943213,
+      "end": 1702568943213,
+      "order": "normal"
+    }
+  ]
+}

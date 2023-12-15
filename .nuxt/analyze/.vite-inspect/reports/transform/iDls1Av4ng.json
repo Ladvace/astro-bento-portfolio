@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/cookie-es/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "const fieldContentRegExp = /^[\\u0009\\u0020-\\u007E\\u0080-\\u00FF]+$/;\nfunction parse(str, options) {\n  if (typeof str !== \"string\") {\n    throw new TypeError(\"argument str must be a string\");\n  }\n  const obj = {};\n  const opt = options || {};\n  const dec = opt.decode || decode;\n  let index = 0;\n  while (index < str.length) {\n    const eqIdx = str.indexOf(\"=\", index);\n    if (eqIdx === -1) {\n      break;\n    }\n    let endIdx = str.indexOf(\";\", index);\n    if (endIdx === -1) {\n      endIdx = str.length;\n    } else if (endIdx < eqIdx) {\n      index = str.lastIndexOf(\";\", eqIdx - 1) + 1;\n      continue;\n    }\n    const key = str.slice(index, eqIdx).trim();\n    if (void 0 === obj[key]) {\n      let val = str.slice(eqIdx + 1, endIdx).trim();\n      if (val.codePointAt(0) === 34) {\n        val = val.slice(1, -1);\n      }\n      obj[key] = tryDecode(val, dec);\n    }\n    index = endIdx + 1;\n  }\n  return obj;\n}\nfunction serialize(name, value, options) {\n  const opt = options || {};\n  const enc = opt.encode || encode;\n  if (typeof enc !== \"function\") {\n    throw new TypeError(\"option encode is invalid\");\n  }\n  if (!fieldContentRegExp.test(name)) {\n    throw new TypeError(\"argument name is invalid\");\n  }\n  const encodedValue = enc(value);\n  if (encodedValue && !fieldContentRegExp.test(encodedValue)) {\n    throw new TypeError(\"argument val is invalid\");\n  }\n  let str = name + \"=\" + encodedValue;\n  if (void 0 !== opt.maxAge && opt.maxAge !== null) {\n    const maxAge = opt.maxAge - 0;\n    if (Number.isNaN(maxAge) || !Number.isFinite(maxAge)) {\n      throw new TypeError(\"option maxAge is invalid\");\n    }\n    str += \"; Max-Age=\" + Math.floor(maxAge);\n  }\n  if (opt.domain) {\n    if (!fieldContentRegExp.test(opt.domain)) {\n      throw new TypeError(\"option domain is invalid\");\n    }\n    str += \"; Domain=\" + opt.domain;\n  }\n  if (opt.path) {\n    if (!fieldContentRegExp.test(opt.path)) {\n      throw new TypeError(\"option path is invalid\");\n    }\n    str += \"; Path=\" + opt.path;\n  }\n  if (opt.expires) {\n    if (!isDate(opt.expires) || Number.isNaN(opt.expires.valueOf())) {\n      throw new TypeError(\"option expires is invalid\");\n    }\n    str += \"; Expires=\" + opt.expires.toUTCString();\n  }\n  if (opt.httpOnly) {\n    str += \"; HttpOnly\";\n  }\n  if (opt.secure) {\n    str += \"; Secure\";\n  }\n  if (opt.priority) {\n    const priority = typeof opt.priority === \"string\" ? opt.priority.toLowerCase() : opt.priority;\n    switch (priority) {\n      case \"low\":\n        str += \"; Priority=Low\";\n        break;\n      case \"medium\":\n        str += \"; Priority=Medium\";\n        break;\n      case \"high\":\n        str += \"; Priority=High\";\n        break;\n      default:\n        throw new TypeError(\"option priority is invalid\");\n    }\n  }\n  if (opt.sameSite) {\n    const sameSite = typeof opt.sameSite === \"string\" ? opt.sameSite.toLowerCase() : opt.sameSite;\n    switch (sameSite) {\n      case true:\n        str += \"; SameSite=Strict\";\n        break;\n      case \"lax\":\n        str += \"; SameSite=Lax\";\n        break;\n      case \"strict\":\n        str += \"; SameSite=Strict\";\n        break;\n      case \"none\":\n        str += \"; SameSite=None\";\n        break;\n      default:\n        throw new TypeError(\"option sameSite is invalid\");\n    }\n  }\n  return str;\n}\nfunction isDate(val) {\n  return Object.prototype.toString.call(val) === \"[object Date]\" || val instanceof Date;\n}\nfunction tryDecode(str, decode2) {\n  try {\n    return decode2(str);\n  } catch {\n    return str;\n  }\n}\nfunction decode(str) {\n  return str.includes(\"%\") ? decodeURIComponent(str) : str;\n}\nfunction encode(val) {\n  return encodeURIComponent(val);\n}\n\nexport { parse, serialize };\n",
+      "start": 1702568943046,
+      "end": 1702568943247,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943247,
+      "end": 1702568943247,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943247,
+      "end": 1702568943248,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943248,
+      "end": 1702568943248,
+      "order": "normal"
+    }
+  ]
+}

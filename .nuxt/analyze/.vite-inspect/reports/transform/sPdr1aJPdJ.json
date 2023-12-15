@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/gestures/scroll/on-scroll-handler.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { isFunction, noopReturn } from '@motionone/utils';\nimport { updateScrollInfo } from './info.es.js';\nimport { resolveOffsets } from './offsets/index.es.js';\n\nfunction measure(container, target = container, info) {\n    /**\n     * Find inset of target within scrollable container\n     */\n    info.x.targetOffset = 0;\n    info.y.targetOffset = 0;\n    if (target !== container) {\n        let node = target;\n        while (node && node != container) {\n            info.x.targetOffset += node.offsetLeft;\n            info.y.targetOffset += node.offsetTop;\n            node = node.offsetParent;\n        }\n    }\n    info.x.targetLength =\n        target === container ? target.scrollWidth : target.clientWidth;\n    info.y.targetLength =\n        target === container ? target.scrollHeight : target.clientHeight;\n    info.x.containerLength = container.clientWidth;\n    info.y.containerLength = container.clientHeight;\n}\nfunction createOnScrollHandler(element, onScroll, info, options = {}) {\n    const axis = options.axis || \"y\";\n    return {\n        measure: () => measure(element, options.target, info),\n        update: (time) => {\n            updateScrollInfo(element, info, time);\n            if (options.offset || options.target) {\n                resolveOffsets(element, info, options);\n            }\n        },\n        notify: isFunction(onScroll)\n            ? () => onScroll(info)\n            : scrubAnimation(onScroll, info[axis]),\n    };\n}\nfunction scrubAnimation(controls, axisInfo) {\n    controls.pause();\n    controls.forEachNative((animation, { easing }) => {\n        var _a, _b;\n        if (animation.updateDuration) {\n            if (!easing)\n                animation.easing = noopReturn;\n            animation.updateDuration(1);\n        }\n        else {\n            const timingOptions = { duration: 1000 };\n            if (!easing)\n                timingOptions.easing = \"linear\";\n            (_b = (_a = animation.effect) === null || _a === void 0 ? void 0 : _a.updateTiming) === null || _b === void 0 ? void 0 : _b.call(_a, timingOptions);\n        }\n    });\n    return () => {\n        controls.currentTime = axisInfo.progress;\n    };\n}\n\nexport { createOnScrollHandler };\n",
+      "start": 1702568943460,
+      "end": 1702568943481,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943481,
+      "end": 1702568943481,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943481,
+      "end": 1702568943482,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943482,
+      "end": 1702568943482,
+      "order": "normal"
+    }
+  ]
+}

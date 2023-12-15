@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/easing/dist/cubic-bezier.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { noopReturn } from '@motionone/utils';\n\n/*\n  Bezier function generator\n\n  This has been modified from Gaëtan Renaudeau's BezierEasing\n  https://github.com/gre/bezier-easing/blob/master/src/index.js\n  https://github.com/gre/bezier-easing/blob/master/LICENSE\n  \n  I've removed the newtonRaphsonIterate algo because in benchmarking it\n  wasn't noticiably faster than binarySubdivision, indeed removing it\n  usually improved times, depending on the curve.\n\n  I also removed the lookup table, as for the added bundle size and loop we're\n  only cutting ~4 or so subdivision iterations. I bumped the max iterations up\n  to 12 to compensate and this still tended to be faster for no perceivable\n  loss in accuracy.\n\n  Usage\n    const easeOut = cubicBezier(.17,.67,.83,.67);\n    const x = easeOut(0.5); // returns 0.627...\n*/\n// Returns x(t) given t, x1, and x2, or y(t) given t, y1, and y2.\nconst calcBezier = (t, a1, a2) => (((1.0 - 3.0 * a2 + 3.0 * a1) * t + (3.0 * a2 - 6.0 * a1)) * t + 3.0 * a1) * t;\nconst subdivisionPrecision = 0.0000001;\nconst subdivisionMaxIterations = 12;\nfunction binarySubdivide(x, lowerBound, upperBound, mX1, mX2) {\n    let currentX;\n    let currentT;\n    let i = 0;\n    do {\n        currentT = lowerBound + (upperBound - lowerBound) / 2.0;\n        currentX = calcBezier(currentT, mX1, mX2) - x;\n        if (currentX > 0.0) {\n            upperBound = currentT;\n        }\n        else {\n            lowerBound = currentT;\n        }\n    } while (Math.abs(currentX) > subdivisionPrecision &&\n        ++i < subdivisionMaxIterations);\n    return currentT;\n}\nfunction cubicBezier(mX1, mY1, mX2, mY2) {\n    // If this is a linear gradient, return linear easing\n    if (mX1 === mY1 && mX2 === mY2)\n        return noopReturn;\n    const getTForX = (aX) => binarySubdivide(aX, 0, 1, mX1, mX2);\n    // If animation is at start/end, return t without easing\n    return (t) => t === 0 || t === 1 ? t : calcBezier(getTForX(t), mY1, mY2);\n}\n\nexport { cubicBezier };\n",
+      "start": 1702568943534,
+      "end": 1702568943547,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943547,
+      "end": 1702568943547,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943547,
+      "end": 1702568943548,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943548,
+      "end": 1702568943548,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943548,
+      "end": 1702568943548,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943548,
+      "end": 1702568943548,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943548,
+      "end": 1702568943548,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943548,
+      "end": 1702568943548,
+      "order": "normal"
+    }
+  ]
+}

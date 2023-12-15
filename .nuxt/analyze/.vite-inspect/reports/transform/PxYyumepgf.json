@@ -1,0 +1,215 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Copyright.vue",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "\n<script setup>\nimport moment from 'moment';\n</script>\n<template>\n    <Card colSpan=\"md:col-span-1\" rowSpan=\"md:row-span-2\">\n        <p class=\"text-xs mt-3\">\n            Forked with ♥️ by Andrea Puglisi using <a href=\"https://nuxt.com/\" target=\"_blank\" class=\"text-red-500\">Nuxt</a>\n            from <a href=\"https://gianmarco.xyz/\" target=\"_blank\" class=\"text-red-500\">Gianmarco Cavallo</a>. © {{\n                moment().format('Y') }}\n        </p>\n    </Card>\n</template>",
+      "start": 1702568943039,
+      "end": 1702568943222,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943222,
+      "end": 1702568943222,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "result": "import { createElementVNode as _createElementVNode, unref as _unref, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = { class: \"text-xs mt-3\" }\nconst _hoisted_2 = /*#__PURE__*/_createElementVNode(\"a\", {\n  href: \"https://nuxt.com/\",\n  target: \"_blank\",\n  class: \"text-red-500\"\n}, \"Nuxt\", -1)\nconst _hoisted_3 = /*#__PURE__*/_createElementVNode(\"a\", {\n  href: \"https://gianmarco.xyz/\",\n  target: \"_blank\",\n  class: \"text-red-500\"\n}, \"Gianmarco Cavallo\", -1)\n\nimport moment from 'moment';\n\nconst _sfc_main = {\n  __name: 'Copyright',\n  setup(__props) {\n\n\nreturn (_ctx, _cache) => {\n  const _component_Card = _resolveComponent(\"Card\")\n\n  return (_openBlock(), _createBlock(_component_Card, {\n    colSpan: \"md:col-span-1\",\n    rowSpan: \"md:row-span-2\"\n  }, {\n    default: _withCtx(() => [\n      _createElementVNode(\"p\", _hoisted_1, [\n        _createTextVNode(\" Forked with ♥️ by Andrea Puglisi using \"),\n        _hoisted_2,\n        _createTextVNode(\" from \"),\n        _hoisted_3,\n        _createTextVNode(\". © \" + _toDisplayString(_unref(moment)().format('Y')), 1)\n      ])\n    ]),\n    _: 1\n  }))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1702568943222,
+      "end": 1702568943223,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "result": "import { default as __nuxt_component_0 } from \"/Users/andreapuglisi/Desktop/andreapuglisi.io/components/Card.vue\";\nimport { createElementVNode as _createElementVNode, unref as _unref, toDisplayString as _toDisplayString, createTextVNode as _createTextVNode, resolveComponent as _resolveComponent, withCtx as _withCtx, openBlock as _openBlock, createBlock as _createBlock } from \"vue\"\n\nconst _hoisted_1 = { class: \"text-xs mt-3\" }\nconst _hoisted_2 = /*#__PURE__*/_createElementVNode(\"a\", {\n  href: \"https://nuxt.com/\",\n  target: \"_blank\",\n  class: \"text-red-500\"\n}, \"Nuxt\", -1)\nconst _hoisted_3 = /*#__PURE__*/_createElementVNode(\"a\", {\n  href: \"https://gianmarco.xyz/\",\n  target: \"_blank\",\n  class: \"text-red-500\"\n}, \"Gianmarco Cavallo\", -1)\n\nimport moment from 'moment';\n\nconst _sfc_main = {\n  __name: 'Copyright',\n  setup(__props) {\n\n\nreturn (_ctx, _cache) => {\n  const _component_Card = __nuxt_component_0\n\n  return (_openBlock(), _createBlock(_component_Card, {\n    colSpan: \"md:col-span-1\",\n    rowSpan: \"md:row-span-2\"\n  }, {\n    default: _withCtx(() => [\n      _createElementVNode(\"p\", _hoisted_1, [\n        _createTextVNode(\" Forked with ♥️ by Andrea Puglisi using \"),\n        _hoisted_2,\n        _createTextVNode(\" from \"),\n        _hoisted_3,\n        _createTextVNode(\". © \" + _toDisplayString(_unref(moment)().format('Y')), 1)\n      ])\n    ]),\n    _: 1\n  }))\n}\n}\n\n}\n\n\n\nexport default _sfc_main",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943223,
+      "end": 1702568943223,
+      "order": "normal"
+    }
+  ]
+}

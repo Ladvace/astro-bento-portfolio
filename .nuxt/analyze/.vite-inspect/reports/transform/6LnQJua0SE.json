@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/devalue/src/uneval.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import {\n\tDevalueError,\n\tescaped,\n\tget_type,\n\tis_plain_object,\n\tis_primitive,\n\tstringify_string\n} from './utils.js';\n\nconst chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_$';\nconst unsafe_chars = /[<\\b\\f\\n\\r\\t\\0\\u2028\\u2029]/g;\nconst reserved =\n\t/^(?:do|if|in|for|int|let|new|try|var|byte|case|char|else|enum|goto|long|this|void|with|await|break|catch|class|const|final|float|short|super|throw|while|yield|delete|double|export|import|native|return|switch|throws|typeof|boolean|default|extends|finally|package|private|abstract|continue|debugger|function|volatile|interface|protected|transient|implements|instanceof|synchronized)$/;\n\n/**\n * Turn a value into the JavaScript that creates an equivalent value\n * @param {any} value\n * @param {(value: any) => string | void} [replacer]\n */\nexport function uneval(value, replacer) {\n\tconst counts = new Map();\n\n\t/** @type {string[]} */\n\tconst keys = [];\n\n\tconst custom = new Map();\n\n\t/** @param {any} thing */\n\tfunction walk(thing) {\n\t\tif (typeof thing === 'function') {\n\t\t\tthrow new DevalueError(`Cannot stringify a function`, keys);\n\t\t}\n\n\t\tif (!is_primitive(thing)) {\n\t\t\tif (counts.has(thing)) {\n\t\t\t\tcounts.set(thing, counts.get(thing) + 1);\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tcounts.set(thing, 1);\n\n\t\t\tif (replacer) {\n\t\t\t\tconst str = replacer(thing);\n\n\t\t\t\tif (typeof str === 'string') {\n\t\t\t\t\tcustom.set(thing, str);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tconst type = get_type(thing);\n\n\t\t\tswitch (type) {\n\t\t\t\tcase 'Number':\n\t\t\t\tcase 'BigInt':\n\t\t\t\tcase 'String':\n\t\t\t\tcase 'Boolean':\n\t\t\t\tcase 'Date':\n\t\t\t\tcase 'RegExp':\n\t\t\t\t\treturn;\n\n\t\t\t\tcase 'Array':\n\t\t\t\t\t/** @type {any[]} */ (thing).forEach((value, i) => {\n\t\t\t\t\t\tkeys.push(`[${i}]`);\n\t\t\t\t\t\twalk(value);\n\t\t\t\t\t\tkeys.pop();\n\t\t\t\t\t});\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Set':\n\t\t\t\t\tArray.from(thing).forEach(walk);\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Map':\n\t\t\t\t\tfor (const [key, value] of thing) {\n\t\t\t\t\t\tkeys.push(\n\t\t\t\t\t\t\t`.get(${is_primitive(key) ? stringify_primitive(key) : '...'})`\n\t\t\t\t\t\t);\n\t\t\t\t\t\twalk(value);\n\t\t\t\t\t\tkeys.pop();\n\t\t\t\t\t}\n\t\t\t\t\tbreak;\n\n\t\t\t\tdefault:\n\t\t\t\t\tif (!is_plain_object(thing)) {\n\t\t\t\t\t\tthrow new DevalueError(\n\t\t\t\t\t\t\t`Cannot stringify arbitrary non-POJOs`,\n\t\t\t\t\t\t\tkeys\n\t\t\t\t\t\t);\n\t\t\t\t\t}\n\n\t\t\t\t\tif (Object.getOwnPropertySymbols(thing).length > 0) {\n\t\t\t\t\t\tthrow new DevalueError(\n\t\t\t\t\t\t\t`Cannot stringify POJOs with symbolic keys`,\n\t\t\t\t\t\t\tkeys\n\t\t\t\t\t\t);\n\t\t\t\t\t}\n\n\t\t\t\t\tfor (const key in thing) {\n\t\t\t\t\t\tkeys.push(`.${key}`);\n\t\t\t\t\t\twalk(thing[key]);\n\t\t\t\t\t\tkeys.pop();\n\t\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\n\twalk(value);\n\n\tconst names = new Map();\n\n\tArray.from(counts)\n\t\t.filter((entry) => entry[1] > 1)\n\t\t.sort((a, b) => b[1] - a[1])\n\t\t.forEach((entry, i) => {\n\t\t\tnames.set(entry[0], get_name(i));\n\t\t});\n\n\t/**\n\t * @param {any} thing\n\t * @returns {string}\n\t */\n\tfunction stringify(thing) {\n\t\tif (names.has(thing)) {\n\t\t\treturn names.get(thing);\n\t\t}\n\n\t\tif (is_primitive(thing)) {\n\t\t\treturn stringify_primitive(thing);\n\t\t}\n\n\t\tif (custom.has(thing)) {\n\t\t\treturn custom.get(thing);\n\t\t}\n\n\t\tconst type = get_type(thing);\n\n\t\tswitch (type) {\n\t\t\tcase 'Number':\n\t\t\tcase 'String':\n\t\t\tcase 'Boolean':\n\t\t\t\treturn `Object(${stringify(thing.valueOf())})`;\n\n\t\t\tcase 'RegExp':\n\t\t\t\treturn `new RegExp(${stringify_string(thing.source)}, \"${\n\t\t\t\t\tthing.flags\n\t\t\t\t}\")`;\n\n\t\t\tcase 'Date':\n\t\t\t\treturn `new Date(${thing.getTime()})`;\n\n\t\t\tcase 'Array':\n\t\t\t\tconst members = /** @type {any[]} */ (thing).map((v, i) =>\n\t\t\t\t\ti in thing ? stringify(v) : ''\n\t\t\t\t);\n\t\t\t\tconst tail = thing.length === 0 || thing.length - 1 in thing ? '' : ',';\n\t\t\t\treturn `[${members.join(',')}${tail}]`;\n\n\t\t\tcase 'Set':\n\t\t\tcase 'Map':\n\t\t\t\treturn `new ${type}([${Array.from(thing).map(stringify).join(',')}])`;\n\n\t\t\tdefault:\n\t\t\t\tconst obj = `{${Object.keys(thing)\n\t\t\t\t\t.map((key) => `${safe_key(key)}:${stringify(thing[key])}`)\n\t\t\t\t\t.join(',')}}`;\n\t\t\t\tconst proto = Object.getPrototypeOf(thing);\n\t\t\t\tif (proto === null) {\n\t\t\t\t\treturn Object.keys(thing).length > 0\n\t\t\t\t\t\t? `Object.assign(Object.create(null),${obj})`\n\t\t\t\t\t\t: `Object.create(null)`;\n\t\t\t\t}\n\n\t\t\t\treturn obj;\n\t\t}\n\t}\n\n\tconst str = stringify(value);\n\n\tif (names.size) {\n\t\t/** @type {string[]} */\n\t\tconst params = [];\n\n\t\t/** @type {string[]} */\n\t\tconst statements = [];\n\n\t\t/** @type {string[]} */\n\t\tconst values = [];\n\n\t\tnames.forEach((name, thing) => {\n\t\t\tparams.push(name);\n\n\t\t\tif (custom.has(thing)) {\n\t\t\t\tvalues.push(/** @type {string} */ (custom.get(thing)));\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tif (is_primitive(thing)) {\n\t\t\t\tvalues.push(stringify_primitive(thing));\n\t\t\t\treturn;\n\t\t\t}\n\n\t\t\tconst type = get_type(thing);\n\n\t\t\tswitch (type) {\n\t\t\t\tcase 'Number':\n\t\t\t\tcase 'String':\n\t\t\t\tcase 'Boolean':\n\t\t\t\t\tvalues.push(`Object(${stringify(thing.valueOf())})`);\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'RegExp':\n\t\t\t\t\tvalues.push(thing.toString());\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Date':\n\t\t\t\t\tvalues.push(`new Date(${thing.getTime()})`);\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Array':\n\t\t\t\t\tvalues.push(`Array(${thing.length})`);\n\t\t\t\t\t/** @type {any[]} */ (thing).forEach((v, i) => {\n\t\t\t\t\t\tstatements.push(`${name}[${i}]=${stringify(v)}`);\n\t\t\t\t\t});\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Set':\n\t\t\t\t\tvalues.push(`new Set`);\n\t\t\t\t\tstatements.push(\n\t\t\t\t\t\t`${name}.${Array.from(thing)\n\t\t\t\t\t\t\t.map((v) => `add(${stringify(v)})`)\n\t\t\t\t\t\t\t.join('.')}`\n\t\t\t\t\t);\n\t\t\t\t\tbreak;\n\n\t\t\t\tcase 'Map':\n\t\t\t\t\tvalues.push(`new Map`);\n\t\t\t\t\tstatements.push(\n\t\t\t\t\t\t`${name}.${Array.from(thing)\n\t\t\t\t\t\t\t.map(([k, v]) => `set(${stringify(k)}, ${stringify(v)})`)\n\t\t\t\t\t\t\t.join('.')}`\n\t\t\t\t\t);\n\t\t\t\t\tbreak;\n\n\t\t\t\tdefault:\n\t\t\t\t\tvalues.push(\n\t\t\t\t\t\tObject.getPrototypeOf(thing) === null ? 'Object.create(null)' : '{}'\n\t\t\t\t\t);\n\t\t\t\t\tObject.keys(thing).forEach((key) => {\n\t\t\t\t\t\tstatements.push(\n\t\t\t\t\t\t\t`${name}${safe_prop(key)}=${stringify(thing[key])}`\n\t\t\t\t\t\t);\n\t\t\t\t\t});\n\t\t\t}\n\t\t});\n\n\t\tstatements.push(`return ${str}`);\n\n\t\treturn `(function(${params.join(',')}){${statements.join(\n\t\t\t';'\n\t\t)}}(${values.join(',')}))`;\n\t} else {\n\t\treturn str;\n\t}\n}\n\n/** @param {number} num */\nfunction get_name(num) {\n\tlet name = '';\n\n\tdo {\n\t\tname = chars[num % chars.length] + name;\n\t\tnum = ~~(num / chars.length) - 1;\n\t} while (num >= 0);\n\n\treturn reserved.test(name) ? `${name}0` : name;\n}\n\n/** @param {string} c */\nfunction escape_unsafe_char(c) {\n\treturn escaped[c] || c;\n}\n\n/** @param {string} str */\nfunction escape_unsafe_chars(str) {\n\treturn str.replace(unsafe_chars, escape_unsafe_char);\n}\n\n/** @param {string} key */\nfunction safe_key(key) {\n\treturn /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key)\n\t\t? key\n\t\t: escape_unsafe_chars(JSON.stringify(key));\n}\n\n/** @param {string} key */\nfunction safe_prop(key) {\n\treturn /^[_$a-zA-Z][_$a-zA-Z0-9]*$/.test(key)\n\t\t? `.${key}`\n\t\t: `[${escape_unsafe_chars(JSON.stringify(key))}]`;\n}\n\n/** @param {any} thing */\nfunction stringify_primitive(thing) {\n\tif (typeof thing === 'string') return stringify_string(thing);\n\tif (thing === void 0) return 'void 0';\n\tif (thing === 0 && 1 / thing < 0) return '-0';\n\tconst str = String(thing);\n\tif (typeof thing === 'number') return str.replace(/^(-)?0\\./, '$1.');\n\tif (typeof thing === 'bigint') return thing + 'n';\n\treturn str;\n}\n",
+      "start": 1702568943064,
+      "end": 1702568943231,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943231,
+      "end": 1702568943231,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943231,
+      "end": 1702568943232,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943232,
+      "end": 1702568943232,
+      "order": "normal"
+    }
+  ]
+}

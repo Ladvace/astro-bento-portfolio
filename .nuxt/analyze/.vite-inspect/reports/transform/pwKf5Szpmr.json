@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/easing/create-generator-easing.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { calcGeneratorVelocity, pregenerateKeyframes } from '@motionone/generators';\nimport { isNumber, isString, noopReturn } from '@motionone/utils';\nimport { getUnitConverter } from '../animate/utils/get-unit.es.js';\nimport { transformDefinitions } from '../animate/utils/transforms.es.js';\nimport { getStyleName } from '../animate/utils/get-style-name.es.js';\n\nfunction canGenerate(value) {\n    return isNumber(value) && !isNaN(value);\n}\nfunction getAsNumber(value) {\n    return isString(value) ? parseFloat(value) : value;\n}\nfunction createGeneratorEasing(createGenerator) {\n    const keyframesCache = new WeakMap();\n    return (options = {}) => {\n        const generatorCache = new Map();\n        const getGenerator = (from = 0, to = 100, velocity = 0, isScale = false) => {\n            const key = `${from}-${to}-${velocity}-${isScale}`;\n            if (!generatorCache.has(key)) {\n                generatorCache.set(key, createGenerator(Object.assign({ from,\n                    to,\n                    velocity }, options)));\n            }\n            return generatorCache.get(key);\n        };\n        const getKeyframes = (generator, toUnit) => {\n            if (!keyframesCache.has(generator)) {\n                keyframesCache.set(generator, pregenerateKeyframes(generator, toUnit));\n            }\n            return keyframesCache.get(generator);\n        };\n        return {\n            createAnimation: (keyframes, shouldGenerate = true, getOrigin, name, motionValue) => {\n                let settings;\n                let origin;\n                let target;\n                let velocity = 0;\n                let toUnit = noopReturn;\n                const numKeyframes = keyframes.length;\n                /**\n                 * If we should generate an animation for this value, run some preperation\n                 * like resolving target/origin, finding a unit (if any) and determine if\n                 * it is actually possible to generate.\n                 */\n                if (shouldGenerate) {\n                    toUnit = getUnitConverter(keyframes, name ? transformDefinitions.get(getStyleName(name)) : undefined);\n                    const targetDefinition = keyframes[numKeyframes - 1];\n                    target = getAsNumber(targetDefinition);\n                    if (numKeyframes > 1 && keyframes[0] !== null) {\n                        /**\n                         * If we have multiple keyframes, take the initial keyframe as the origin.\n                         */\n                        origin = getAsNumber(keyframes[0]);\n                    }\n                    else {\n                        const prevGenerator = motionValue === null || motionValue === void 0 ? void 0 : motionValue.generator;\n                        /**\n                         * If we have an existing generator for this value we can use it to resolve\n                         * the animation's current value and velocity.\n                         */\n                        if (prevGenerator) {\n                            /**\n                             * If we have a generator for this value we can use it to resolve\n                             * the animations's current value and velocity.\n                             */\n                            const { animation, generatorStartTime } = motionValue;\n                            const startTime = (animation === null || animation === void 0 ? void 0 : animation.startTime) || generatorStartTime || 0;\n                            const currentTime = (animation === null || animation === void 0 ? void 0 : animation.currentTime) || performance.now() - startTime;\n                            const prevGeneratorCurrent = prevGenerator(currentTime).current;\n                            origin = prevGeneratorCurrent;\n                            velocity = calcGeneratorVelocity((t) => prevGenerator(t).current, currentTime, prevGeneratorCurrent);\n                        }\n                        else if (getOrigin) {\n                            /**\n                             * As a last resort, read the origin from the DOM.\n                             */\n                            origin = getAsNumber(getOrigin());\n                        }\n                    }\n                }\n                /**\n                 * If we've determined it is possible to generate an animation, do so.\n                 */\n                if (canGenerate(origin) && canGenerate(target)) {\n                    const generator = getGenerator(origin, target, velocity, name === null || name === void 0 ? void 0 : name.includes(\"scale\"));\n                    settings = Object.assign(Object.assign({}, getKeyframes(generator, toUnit)), { easing: \"linear\" });\n                    // TODO Add test for this\n                    if (motionValue) {\n                        motionValue.generator = generator;\n                        motionValue.generatorStartTime = performance.now();\n                    }\n                }\n                /**\n                 * If by now we haven't generated a set of keyframes, create a generic generator\n                 * based on the provided props that animates from 0-100 to fetch a rough\n                 * \"overshootDuration\" - the moment when the generator first hits the animation target.\n                 * Then return animation settings that will run a normal animation for that duration.\n                 */\n                if (!settings) {\n                    const keyframesMetadata = getKeyframes(getGenerator(0, 100));\n                    settings = {\n                        easing: \"ease\",\n                        duration: keyframesMetadata.overshootDuration,\n                    };\n                }\n                return settings;\n            },\n        };\n    };\n}\n\nexport { createGeneratorEasing };\n",
+      "start": 1702568943458,
+      "end": 1702568943478,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943478,
+      "end": 1702568943478,
+      "order": "normal"
+    }
+  ]
+}

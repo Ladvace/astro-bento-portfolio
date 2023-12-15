@@ -1,0 +1,269 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/assets/css/main.css?inline&used",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "@font-face {\n    font-family: Zodiak;\n    src: url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff2) format(\"woff2\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff) format(\"woff\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.ttf) format(\"truetype\");\n    font-weight: 100 900;\n    font-display: swap;\n    font-style: normal\n}\n\n@font-face {\n    font-family: \"CabinetGrotesk\";\n    src: url(\"./fonts/CabinetGrotesk-Variable.ttf\") format(\"truetype-variations\");\n    font-weight: normal;\n    font-style: normal;\n    font-display: swap;\n    font-weight: 100 1000;\n  }\n  @font-face {\n    font-family: \"Satoshi\";\n    src: url(\"./fonts/Satoshi-Variable.ttf\") format(\"truetype-variations\");\n    font-weight: normal;\n    font-style: normal;\n    font-display: swap;\n    font-weight: 100 1000;\n  }\n\nbody {\n    margin: 0;\n    font-family: \"Satoshi\", sans-serif;\n    -webkit-font-smoothing: antialiased;\n  }\n\n  h1,\n  h2,\n  h3,\n  h4,\n  h5,\n  h6 {\n    font-family: \"Cabinet Grotesk\", sans-serif;\n  }\n  p {\n    font-family: \"Satoshi\", sans-serif;\n  }\n\n  b {\n    font-weight: 700 !important;\n  }\n\n  .font-serif{\n    font-family: \"Zodiak\", serif;\n  }\n\n.bg-darkslate-700 {\n    --un-bg-opacity: 1;\n    background-color: rgb(17 17 17 / var(--un-bg-opacity));\n}\n.bg-darkslate-500, .bg-gray-900, .bg-neutral-900 {\n    --un-bg-opacity: 1;\n    background-color: rgb(23 23 23 / var(--un-bg-opacity));\n}\n\n\n.border-darkslate-100 {\n    --un-border-opacity: 1;\n    border-color: rgb(44 44 44 / var(--un-border-opacity))\n}\n\n.border-primary-500,.hover\\:border-primary-500:hover {\n    --un-border-opacity: 1;\n    border-color: rgb(230 57 70 / var(--un-border-opacity))\n}\n\n\n.shadow-custom {\n    --un-shadow: 2px 2px #E63946 !important;\n    box-shadow: 0 0 rgb(0 0 0 / 0),0 0 rgb(0 0 0 / 0),var(--un-shadow);\n}\n\n.vibrate {\n    animation: horizontalTic 2s linear infinite;\n  }\n  @keyframes horizontalTic {\n    0%, 100% { transform: translateX(0); }\n    10% { transform: translateX(-2px); }\n    20% { transform: translateX(2px); }\n    30% { transform: translateX(-2px); }\n    40% { transform: translateX(2px); }\n    50% { transform: translateX(0); }\n    60% { transform: translateX(-2px); }\n    70% { transform: translateX(2px); }\n    80% { transform: translateX(-2px); }\n    90% { transform: translateX(2px); }\n  }\n\n  #wave {\n    animation: waveAnimation 2s ease-in-out 2s infinite alternate;\n    display: inline-block;\n    transform: rotate(-15deg);\n    transform-origin: 70% 70%;\n    will-change: transform;\n}\n\n@keyframes waveAnimation {\n0% {\n    transform: rotate(-15deg);\n}\n50% {\n    transform: rotate(15deg);\n}\n100% {\n    transform: rotate(-15deg);\n}\n}\n\n.world-img {\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n    opacity: 0.5;\n}\n",
+      "start": 1702568944021,
+      "end": 1702568944078,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944078,
+      "end": 1702568944078,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944078,
+      "end": 1702568944078,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944078,
+      "end": 1702568944078,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944078,
+      "end": 1702568944078,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568944078,
+      "end": 1702568944078,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "result": "@font-face{font-display:swap;font-family:Zodiak;font-style:normal;font-weight:100 900;src:url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff2) format(\"woff2\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff) format(\"woff\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.ttf) format(\"truetype\")}@font-face{font-display:swap;font-family:CabinetGrotesk;font-style:normal;font-weight:400;font-weight:100 1000;src:url(fonts/CabinetGrotesk-Variable.ttf) format(\"truetype-variations\")}@font-face{font-display:swap;font-family:Satoshi;font-style:normal;font-weight:400;font-weight:100 1000;src:url(fonts/Satoshi-Variable.ttf) format(\"truetype-variations\")}body{-webkit-font-smoothing:antialiased;font-family:Satoshi,sans-serif;margin:0}h1,h2,h3,h4,h5,h6{font-family:Cabinet Grotesk,sans-serif}p{font-family:Satoshi,sans-serif}b{font-weight:700!important}.font-serif{font-family:Zodiak,serif}.bg-darkslate-700{--un-bg-opacity:1;background-color:#111;background-color:rgb(17 17 17/var(--un-bg-opacity))}.bg-darkslate-500,.bg-gray-900,.bg-neutral-900{--un-bg-opacity:1;background-color:#171717;background-color:rgb(23 23 23/var(--un-bg-opacity))}.border-darkslate-100{--un-border-opacity:1;border-color:#2c2c2c;border-color:rgb(44 44 44/var(--un-border-opacity))}.border-primary-500,.hover\\:border-primary-500:hover{--un-border-opacity:1;border-color:#e63946;border-color:rgb(230 57 70/var(--un-border-opacity))}.shadow-custom{--un-shadow:2px 2px #e63946!important;box-shadow:0 0 transparent,0 0 transparent,2px 2px #e63946;box-shadow:0 0 transparent,0 0 transparent,var(--un-shadow)}.vibrate{animation:horizontalTic 2s linear infinite}@keyframes horizontalTic{0%,to{transform:translateX(0)}10%{transform:translateX(-2px)}20%{transform:translateX(2px)}30%{transform:translateX(-2px)}40%{transform:translateX(2px)}50%{transform:translateX(0)}60%{transform:translateX(-2px)}70%{transform:translateX(2px)}80%{transform:translateX(-2px)}90%{transform:translateX(2px)}}#wave{animation:waveAnimation 2s ease-in-out 2s infinite alternate;display:inline-block;transform:rotate(-15deg);transform-origin:70% 70%;will-change:transform}@keyframes waveAnimation{0%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}to{transform:rotate(-15deg)}}.world-img{height:100%;-o-object-fit:cover;object-fit:cover;opacity:.5;width:100%}",
+      "start": 1702568944078,
+      "end": 1702568944097,
+      "order": "normal",
+      "sourcemaps": {
+        "file": "/Users/andreapuglisi/Desktop/andreapuglisi.io/assets/css/main.css",
+        "mappings": "AAAA,WAII,iBAAkB,CAHlB,kBAAmB,CAInB,iBAAiB,CAFjB,mBAAoB,CADpB,icAIJ,CAEA,WAKI,iBAAkB,CAJlB,0BAA6B,CAG7B,iBAAkB,CADlB,eAAmB,CAGnB,oBAAqB,CAJrB,wEAKF,CACA,WAKE,iBAAkB,CAJlB,mBAAsB,CAGtB,iBAAkB,CADlB,eAAmB,CAGnB,oBAAqB,CAJrB,iEAKF,CAEF,KAGI,kCAAmC,CADnC,8BAAkC,CADlC,QAGF,CAEA,kBAME,sCACF,CACA,EACE,8BACF,CAEA,EACE,yBACF,CAEA,YACE,wBACF,CAEF,kBACI,iBAAkB,CAClB,qBAAsD,CAAtD,mDACJ,CACA,+CACI,iBAAkB,CAClB,wBAAsD,CAAtD,mDACJ,CAGA,sBACI,qBAAsB,CACtB,oBAAqD,CAArD,mDACJ,CAEA,qDACI,qBAAsB,CACtB,oBAAsD,CAAtD,oDACJ,CAGA,eACI,qCAAuC,CACvC,0DAAkE,CAAlE,2DACJ,CAEA,SACI,0CACF,CACA,yBACE,MAAW,uBAA0B,CACrC,IAAM,0BAA6B,CACnC,IAAM,yBAA4B,CAClC,IAAM,0BAA6B,CACnC,IAAM,yBAA4B,CAClC,IAAM,uBAA0B,CAChC,IAAM,0BAA6B,CACnC,IAAM,yBAA4B,CAClC,IAAM,0BAA6B,CACnC,IAAM,yBAA4B,CACpC,CAEA,MACE,4DAA6D,CAC7D,oBAAqB,CACrB,wBAAyB,CACzB,wBAAyB,CACzB,qBACJ,CAEA,yBACA,GACI,wBACJ,CACA,IACI,uBACJ,CACA,GACI,wBACJ,CACA,CAEA,WAEI,WAAY,CACZ,mBAAiB,CAAjB,gBAAiB,CACjB,UAAY,CAHZ,UAIJ",
+        "names": [],
+        "sources": [
+          "/Users/andreapuglisi/Desktop/andreapuglisi.io/assets/css/main.css"
+        ],
+        "sourcesContent": [
+          "@font-face {\n    font-family: Zodiak;\n    src: url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff2) format(\"woff2\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff) format(\"woff\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.ttf) format(\"truetype\");\n    font-weight: 100 900;\n    font-display: swap;\n    font-style: normal\n}\n\n@font-face {\n    font-family: \"CabinetGrotesk\";\n    src: url(\"./fonts/CabinetGrotesk-Variable.ttf\") format(\"truetype-variations\");\n    font-weight: normal;\n    font-style: normal;\n    font-display: swap;\n    font-weight: 100 1000;\n  }\n  @font-face {\n    font-family: \"Satoshi\";\n    src: url(\"./fonts/Satoshi-Variable.ttf\") format(\"truetype-variations\");\n    font-weight: normal;\n    font-style: normal;\n    font-display: swap;\n    font-weight: 100 1000;\n  }\n\nbody {\n    margin: 0;\n    font-family: \"Satoshi\", sans-serif;\n    -webkit-font-smoothing: antialiased;\n  }\n\n  h1,\n  h2,\n  h3,\n  h4,\n  h5,\n  h6 {\n    font-family: \"Cabinet Grotesk\", sans-serif;\n  }\n  p {\n    font-family: \"Satoshi\", sans-serif;\n  }\n\n  b {\n    font-weight: 700 !important;\n  }\n\n  .font-serif{\n    font-family: \"Zodiak\", serif;\n  }\n\n.bg-darkslate-700 {\n    --un-bg-opacity: 1;\n    background-color: rgb(17 17 17 / var(--un-bg-opacity));\n}\n.bg-darkslate-500, .bg-gray-900, .bg-neutral-900 {\n    --un-bg-opacity: 1;\n    background-color: rgb(23 23 23 / var(--un-bg-opacity));\n}\n\n\n.border-darkslate-100 {\n    --un-border-opacity: 1;\n    border-color: rgb(44 44 44 / var(--un-border-opacity))\n}\n\n.border-primary-500,.hover\\:border-primary-500:hover {\n    --un-border-opacity: 1;\n    border-color: rgb(230 57 70 / var(--un-border-opacity))\n}\n\n\n.shadow-custom {\n    --un-shadow: 2px 2px #E63946 !important;\n    box-shadow: 0 0 rgb(0 0 0 / 0),0 0 rgb(0 0 0 / 0),var(--un-shadow);\n}\n\n.vibrate {\n    animation: horizontalTic 2s linear infinite;\n  }\n  @keyframes horizontalTic {\n    0%, 100% { transform: translateX(0); }\n    10% { transform: translateX(-2px); }\n    20% { transform: translateX(2px); }\n    30% { transform: translateX(-2px); }\n    40% { transform: translateX(2px); }\n    50% { transform: translateX(0); }\n    60% { transform: translateX(-2px); }\n    70% { transform: translateX(2px); }\n    80% { transform: translateX(-2px); }\n    90% { transform: translateX(2px); }\n  }\n\n  #wave {\n    animation: waveAnimation 2s ease-in-out 2s infinite alternate;\n    display: inline-block;\n    transform: rotate(-15deg);\n    transform-origin: 70% 70%;\n    will-change: transform;\n}\n\n@keyframes waveAnimation {\n0% {\n    transform: rotate(-15deg);\n}\n50% {\n    transform: rotate(15deg);\n}\n100% {\n    transform: rotate(-15deg);\n}\n}\n\n.world-img {\n    width: 100%;\n    height: 100%;\n    object-fit: cover;\n    opacity: 0.5;\n}\n"
+        ],
+        "version": 3
+      }
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "result": "export default \"@font-face{font-display:swap;font-family:Zodiak;font-style:normal;font-weight:100 900;src:url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff2) format(\\\"woff2\\\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.woff) format(\\\"woff\\\"),url(//cdn.fontshare.com/wf/UDGW4K5KDO2WNP2256GU5CP7HQDVADLQ/LML445TYWQT7TRPDYZPCIVB3BJWX7NTD/2O5TXCJMYUDHI5FO6N4PXN6WNROSBHNU.ttf) format(\\\"truetype\\\")}@font-face{font-display:swap;font-family:CabinetGrotesk;font-style:normal;font-weight:400;font-weight:100 1000;src:url(fonts/CabinetGrotesk-Variable.ttf) format(\\\"truetype-variations\\\")}@font-face{font-display:swap;font-family:Satoshi;font-style:normal;font-weight:400;font-weight:100 1000;src:url(fonts/Satoshi-Variable.ttf) format(\\\"truetype-variations\\\")}body{-webkit-font-smoothing:antialiased;font-family:Satoshi,sans-serif;margin:0}h1,h2,h3,h4,h5,h6{font-family:Cabinet Grotesk,sans-serif}p{font-family:Satoshi,sans-serif}b{font-weight:700!important}.font-serif{font-family:Zodiak,serif}.bg-darkslate-700{--un-bg-opacity:1;background-color:#111;background-color:rgb(17 17 17/var(--un-bg-opacity))}.bg-darkslate-500,.bg-gray-900,.bg-neutral-900{--un-bg-opacity:1;background-color:#171717;background-color:rgb(23 23 23/var(--un-bg-opacity))}.border-darkslate-100{--un-border-opacity:1;border-color:#2c2c2c;border-color:rgb(44 44 44/var(--un-border-opacity))}.border-primary-500,.hover\\\\:border-primary-500:hover{--un-border-opacity:1;border-color:#e63946;border-color:rgb(230 57 70/var(--un-border-opacity))}.shadow-custom{--un-shadow:2px 2px #e63946!important;box-shadow:0 0 transparent,0 0 transparent,2px 2px #e63946;box-shadow:0 0 transparent,0 0 transparent,var(--un-shadow)}.vibrate{animation:horizontalTic 2s linear infinite}@keyframes horizontalTic{0%,to{transform:translateX(0)}10%{transform:translateX(-2px)}20%{transform:translateX(2px)}30%{transform:translateX(-2px)}40%{transform:translateX(2px)}50%{transform:translateX(0)}60%{transform:translateX(-2px)}70%{transform:translateX(2px)}80%{transform:translateX(-2px)}90%{transform:translateX(2px)}}#wave{animation:waveAnimation 2s ease-in-out 2s infinite alternate;display:inline-block;transform:rotate(-15deg);transform-origin:70% 70%;will-change:transform}@keyframes waveAnimation{0%{transform:rotate(-15deg)}50%{transform:rotate(15deg)}to{transform:rotate(-15deg)}}.world-img{height:100%;-o-object-fit:cover;object-fit:cover;opacity:.5;width:100%}\"",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal",
+      "sourcemaps": {
+        "mappings": ""
+      }
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568944097,
+      "end": 1702568944097,
+      "order": "normal"
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/core/mergeConfig.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from '../utils.js';\nimport AxiosHeaders from \"./AxiosHeaders.js\";\n\nconst headersToObject = (thing) => thing instanceof AxiosHeaders ? thing.toJSON() : thing;\n\n/**\n * Config-specific merge-function which creates a new config-object\n * by merging two configuration objects together.\n *\n * @param {Object} config1\n * @param {Object} config2\n *\n * @returns {Object} New object resulting from merging config2 to config1\n */\nexport default function mergeConfig(config1, config2) {\n  // eslint-disable-next-line no-param-reassign\n  config2 = config2 || {};\n  const config = {};\n\n  function getMergedValue(target, source, caseless) {\n    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {\n      return utils.merge.call({caseless}, target, source);\n    } else if (utils.isPlainObject(source)) {\n      return utils.merge({}, source);\n    } else if (utils.isArray(source)) {\n      return source.slice();\n    }\n    return source;\n  }\n\n  // eslint-disable-next-line consistent-return\n  function mergeDeepProperties(a, b, caseless) {\n    if (!utils.isUndefined(b)) {\n      return getMergedValue(a, b, caseless);\n    } else if (!utils.isUndefined(a)) {\n      return getMergedValue(undefined, a, caseless);\n    }\n  }\n\n  // eslint-disable-next-line consistent-return\n  function valueFromConfig2(a, b) {\n    if (!utils.isUndefined(b)) {\n      return getMergedValue(undefined, b);\n    }\n  }\n\n  // eslint-disable-next-line consistent-return\n  function defaultToConfig2(a, b) {\n    if (!utils.isUndefined(b)) {\n      return getMergedValue(undefined, b);\n    } else if (!utils.isUndefined(a)) {\n      return getMergedValue(undefined, a);\n    }\n  }\n\n  // eslint-disable-next-line consistent-return\n  function mergeDirectKeys(a, b, prop) {\n    if (prop in config2) {\n      return getMergedValue(a, b);\n    } else if (prop in config1) {\n      return getMergedValue(undefined, a);\n    }\n  }\n\n  const mergeMap = {\n    url: valueFromConfig2,\n    method: valueFromConfig2,\n    data: valueFromConfig2,\n    baseURL: defaultToConfig2,\n    transformRequest: defaultToConfig2,\n    transformResponse: defaultToConfig2,\n    paramsSerializer: defaultToConfig2,\n    timeout: defaultToConfig2,\n    timeoutMessage: defaultToConfig2,\n    withCredentials: defaultToConfig2,\n    withXSRFToken: defaultToConfig2,\n    adapter: defaultToConfig2,\n    responseType: defaultToConfig2,\n    xsrfCookieName: defaultToConfig2,\n    xsrfHeaderName: defaultToConfig2,\n    onUploadProgress: defaultToConfig2,\n    onDownloadProgress: defaultToConfig2,\n    decompress: defaultToConfig2,\n    maxContentLength: defaultToConfig2,\n    maxBodyLength: defaultToConfig2,\n    beforeRedirect: defaultToConfig2,\n    transport: defaultToConfig2,\n    httpAgent: defaultToConfig2,\n    httpsAgent: defaultToConfig2,\n    cancelToken: defaultToConfig2,\n    socketPath: defaultToConfig2,\n    responseEncoding: defaultToConfig2,\n    validateStatus: mergeDirectKeys,\n    headers: (a, b) => mergeDeepProperties(headersToObject(a), headersToObject(b), true)\n  };\n\n  utils.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {\n    const merge = mergeMap[prop] || mergeDeepProperties;\n    const configValue = merge(config1[prop], config2[prop], prop);\n    (utils.isUndefined(configValue) && merge !== mergeDirectKeys) || (config[prop] = configValue);\n  });\n\n  return config;\n}\n",
+      "start": 1702568943490,
+      "end": 1702568943510,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943510,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943511,
+      "end": 1702568943511,
+      "order": "normal"
+    }
+  ]
+}

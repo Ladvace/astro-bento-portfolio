@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/helpers/isURLSameOrigin.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from './../utils.js';\nimport platform from '../platform/index.js';\n\nexport default platform.hasStandardBrowserEnv ?\n\n// Standard browser envs have full support of the APIs needed to test\n// whether the request URL is of the same origin as current location.\n  (function standardBrowserEnv() {\n    const msie = /(msie|trident)/i.test(navigator.userAgent);\n    const urlParsingNode = document.createElement('a');\n    let originURL;\n\n    /**\n    * Parse a URL to discover its components\n    *\n    * @param {String} url The URL to be parsed\n    * @returns {Object}\n    */\n    function resolveURL(url) {\n      let href = url;\n\n      if (msie) {\n        // IE needs attribute set twice to normalize properties\n        urlParsingNode.setAttribute('href', href);\n        href = urlParsingNode.href;\n      }\n\n      urlParsingNode.setAttribute('href', href);\n\n      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils\n      return {\n        href: urlParsingNode.href,\n        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',\n        host: urlParsingNode.host,\n        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\\?/, '') : '',\n        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',\n        hostname: urlParsingNode.hostname,\n        port: urlParsingNode.port,\n        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?\n          urlParsingNode.pathname :\n          '/' + urlParsingNode.pathname\n      };\n    }\n\n    originURL = resolveURL(window.location.href);\n\n    /**\n    * Determine if a URL shares the same origin as the current location\n    *\n    * @param {String} requestURL The URL to test\n    * @returns {boolean} True if URL shares the same origin, otherwise false\n    */\n    return function isURLSameOrigin(requestURL) {\n      const parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;\n      return (parsed.protocol === originURL.protocol &&\n          parsed.host === originURL.host);\n    };\n  })() :\n\n  // Non standard browser envs (web workers, react-native) lack needed support.\n  (function nonStandardBrowserEnv() {\n    return function isURLSameOrigin() {\n      return true;\n    };\n  })();\n",
+      "start": 1702568943543,
+      "end": 1702568943554,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943554,
+      "end": 1702568943554,
+      "order": "normal"
+    }
+  ]
+}

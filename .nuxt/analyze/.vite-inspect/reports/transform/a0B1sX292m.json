@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/generators/dist/spring/index.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { time } from '@motionone/utils';\nimport { defaults } from './defaults.es.js';\nimport { calcDampingRatio } from './utils.es.js';\nimport { hasReachedTarget } from '../utils/has-reached-target.es.js';\nimport { calcGeneratorVelocity } from '../utils/velocity.es.js';\n\nconst spring = ({ stiffness = defaults.stiffness, damping = defaults.damping, mass = defaults.mass, from = 0, to = 1, velocity = 0.0, restSpeed, restDistance, } = {}) => {\n    velocity = velocity ? time.s(velocity) : 0.0;\n    const state = {\n        done: false,\n        hasReachedTarget: false,\n        current: from,\n        target: to,\n    };\n    const initialDelta = to - from;\n    const undampedAngularFreq = Math.sqrt(stiffness / mass) / 1000;\n    const dampingRatio = calcDampingRatio(stiffness, damping, mass);\n    const isGranularScale = Math.abs(initialDelta) < 5;\n    restSpeed || (restSpeed = isGranularScale ? 0.01 : 2);\n    restDistance || (restDistance = isGranularScale ? 0.005 : 0.5);\n    let resolveSpring;\n    if (dampingRatio < 1) {\n        const angularFreq = undampedAngularFreq * Math.sqrt(1 - dampingRatio * dampingRatio);\n        // Underdamped spring (bouncy)\n        resolveSpring = (t) => to -\n            Math.exp(-dampingRatio * undampedAngularFreq * t) *\n                (((-velocity + dampingRatio * undampedAngularFreq * initialDelta) /\n                    angularFreq) *\n                    Math.sin(angularFreq * t) +\n                    initialDelta * Math.cos(angularFreq * t));\n    }\n    else {\n        // Critically damped spring\n        resolveSpring = (t) => {\n            return (to -\n                Math.exp(-undampedAngularFreq * t) *\n                    (initialDelta + (-velocity + undampedAngularFreq * initialDelta) * t));\n        };\n    }\n    return (t) => {\n        state.current = resolveSpring(t);\n        const currentVelocity = t === 0\n            ? velocity\n            : calcGeneratorVelocity(resolveSpring, t, state.current);\n        const isBelowVelocityThreshold = Math.abs(currentVelocity) <= restSpeed;\n        const isBelowDisplacementThreshold = Math.abs(to - state.current) <= restDistance;\n        state.done = isBelowVelocityThreshold && isBelowDisplacementThreshold;\n        state.hasReachedTarget = hasReachedTarget(from, to, state.current);\n        return state;\n    };\n};\n\nexport { spring };\n",
+      "start": 1702568943499,
+      "end": 1702568943529,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943529,
+      "end": 1702568943529,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943529,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943530,
+      "end": 1702568943530,
+      "order": "normal"
+    }
+  ]
+}

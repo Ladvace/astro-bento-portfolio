@@ -1,0 +1,270 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/nuxt/dist/app/config.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { reactive } from \"vue\";\nimport { klona } from \"klona\";\nimport { useNuxtApp } from \"./nuxt.js\";\nimport __appConfig from \"#build/app.config.mjs\";\nexport const _getAppConfig = () => __appConfig;\nfunction deepDelete(obj, newObj) {\n  for (const key in obj) {\n    const val = newObj[key];\n    if (!(key in newObj)) {\n      delete obj[key];\n    }\n    if (val !== null && typeof val === \"object\") {\n      deepDelete(obj[key], newObj[key]);\n    }\n  }\n}\nfunction deepAssign(obj, newObj) {\n  for (const key in newObj) {\n    const val = newObj[key];\n    if (val !== null && typeof val === \"object\") {\n      obj[key] = obj[key] || {};\n      deepAssign(obj[key], val);\n    } else {\n      obj[key] = val;\n    }\n  }\n}\nexport function useAppConfig() {\n  const nuxtApp = useNuxtApp();\n  if (!nuxtApp._appConfig) {\n    nuxtApp._appConfig = import.meta.server ? klona(__appConfig) : reactive(__appConfig);\n  }\n  return nuxtApp._appConfig;\n}\nexport function updateAppConfig(appConfig) {\n  const _appConfig = useAppConfig();\n  deepAssign(_appConfig, appConfig);\n}\nif (import.meta.dev) {\n  const applyHMR = (newConfig) => {\n    const appConfig = useAppConfig();\n    if (newConfig && appConfig) {\n      deepAssign(appConfig, newConfig);\n      deepDelete(appConfig, newConfig);\n    }\n  };\n  if (import.meta.hot) {\n    import.meta.hot.accept((newModule) => {\n      const newConfig = newModule?._getAppConfig();\n      applyHMR(newConfig);\n    });\n  }\n  if (import.meta.webpackHot) {\n    import.meta.webpackHot.accept(\"#build/app.config.mjs\", () => {\n      applyHMR(__appConfig);\n    });\n  }\n}\n",
+      "start": 1702568944338,
+      "end": 1702568944522,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "result": "import { reactive } from \"vue\";\nimport { klona } from \"klona\";\nimport { useNuxtApp } from \"./nuxt.js\";\nimport __appConfig from \"#build/app.config.mjs\";\nexport const _getAppConfig = () => __appConfig;\nfunction deepDelete(obj, newObj) {\n  for (const key in obj) {\n    const val = newObj[key];\n    if (!(key in newObj)) {\n      delete obj[key];\n    }\n    if (val !== null && typeof val === \"object\") {\n      deepDelete(obj[key], newObj[key]);\n    }\n  }\n}\nfunction deepAssign(obj, newObj) {\n  for (const key in newObj) {\n    const val = newObj[key];\n    if (val !== null && typeof val === \"object\") {\n      obj[key] = obj[key] || {};\n      deepAssign(obj[key], val);\n    } else {\n      obj[key] = val;\n    }\n  }\n}\nexport function useAppConfig() {\n  const nuxtApp = useNuxtApp();\n  if (!nuxtApp._appConfig) {\n    nuxtApp._appConfig = true ? klona(__appConfig) : reactive(__appConfig);\n  }\n  return nuxtApp._appConfig;\n}\nexport function updateAppConfig(appConfig) {\n  const _appConfig = useAppConfig();\n  deepAssign(_appConfig, appConfig);\n}\nif (false) {\n  const applyHMR = (newConfig) => {\n    const appConfig = useAppConfig();\n    if (newConfig && appConfig) {\n      deepAssign(appConfig, newConfig);\n      deepDelete(appConfig, newConfig);\n    }\n  };\n  if (import.meta.hot) {\n    import.meta.hot.accept((newModule) => {\n      const newConfig = newModule?._getAppConfig();\n      applyHMR(newConfig);\n    });\n  }\n  if (import.meta.webpackHot) {\n    import.meta.webpackHot.accept(\"#build/app.config.mjs\", () => {\n      applyHMR(__appConfig);\n    });\n  }\n}\n",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          ""
+        ],
+        "names": [],
+        "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC9B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACvC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/C,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAClC,CAAC,CAAC,CAAC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AAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAChC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC/B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5B,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,IAAkB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACzF,CAAC,CAAC,CAAC;AACH,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAC5B,CAAC;AACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,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"
+      }
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "result": "import { reactive } from \"vue\";\nimport { klona } from \"klona\";\nimport { useNuxtApp } from \"./nuxt.js\";\nimport __appConfig from \"#build/app.config.mjs\";\nexport const _getAppConfig = () => __appConfig;\nfunction deepDelete(obj, newObj) {\n  for (const key in obj) {\n    const val = newObj[key];\n    if (!(key in newObj)) {\n      delete obj[key];\n    }\n    if (val !== null && typeof val === \"object\") {\n      deepDelete(obj[key], newObj[key]);\n    }\n  }\n}\nfunction deepAssign(obj, newObj) {\n  for (const key in newObj) {\n    const val = newObj[key];\n    if (val !== null && typeof val === \"object\") {\n      obj[key] = obj[key] || {};\n      deepAssign(obj[key], val);\n    } else {\n      obj[key] = val;\n    }\n  }\n}\nexport function useAppConfig() {\n  const nuxtApp = useNuxtApp();\n  if (!nuxtApp._appConfig) {\n    nuxtApp._appConfig = true ? klona(__appConfig) : reactive(__appConfig);\n  }\n  return nuxtApp._appConfig;\n}\nexport function updateAppConfig(appConfig) {\n  const _appConfig = useAppConfig();\n  deepAssign(_appConfig, appConfig);\n}\nif (false) {\n  const applyHMR = (newConfig) => {\n    const appConfig = useAppConfig();\n    if (newConfig && appConfig) {\n      deepAssign(appConfig, newConfig);\n      deepDelete(appConfig, newConfig);\n    }\n  };\n  if (undefined) {\n    undefined.accept((newModule) => {\n      const newConfig = newModule?._getAppConfig();\n      applyHMR(newConfig);\n    });\n  }\n  if (import.meta.webpackHot) {\n    import.meta.webpackHot.accept(\"#build/app.config.mjs\", () => {\n      applyHMR(__appConfig);\n    });\n  }\n}\n",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal",
+      "sourcemaps": {
+        "version": 3,
+        "sources": [
+          "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/nuxt/dist/app/config.js"
+        ],
+        "names": [],
+        "mappings": "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"
+      }
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568944522,
+      "end": 1702568944522,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568944522,
+      "end": 1702568944523,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568944523,
+      "end": 1702568944523,
+      "order": "normal"
+    }
+  ]
+}

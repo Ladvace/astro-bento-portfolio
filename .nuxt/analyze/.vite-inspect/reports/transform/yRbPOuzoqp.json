@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/helpers/formDataToJSON.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from '../utils.js';\n\n/**\n * It takes a string like `foo[x][y][z]` and returns an array like `['foo', 'x', 'y', 'z']\n *\n * @param {string} name - The name of the property to get.\n *\n * @returns An array of strings.\n */\nfunction parsePropPath(name) {\n  // foo[x][y][z]\n  // foo.x.y.z\n  // foo-x-y-z\n  // foo x y z\n  return utils.matchAll(/\\w+|\\[(\\w*)]/g, name).map(match => {\n    return match[0] === '[]' ? '' : match[1] || match[0];\n  });\n}\n\n/**\n * Convert an array to an object.\n *\n * @param {Array<any>} arr - The array to convert to an object.\n *\n * @returns An object with the same keys and values as the array.\n */\nfunction arrayToObject(arr) {\n  const obj = {};\n  const keys = Object.keys(arr);\n  let i;\n  const len = keys.length;\n  let key;\n  for (i = 0; i < len; i++) {\n    key = keys[i];\n    obj[key] = arr[key];\n  }\n  return obj;\n}\n\n/**\n * It takes a FormData object and returns a JavaScript object\n *\n * @param {string} formData The FormData object to convert to JSON.\n *\n * @returns {Object<string, any> | null} The converted object.\n */\nfunction formDataToJSON(formData) {\n  function buildPath(path, value, target, index) {\n    let name = path[index++];\n    const isNumericKey = Number.isFinite(+name);\n    const isLast = index >= path.length;\n    name = !name && utils.isArray(target) ? target.length : name;\n\n    if (isLast) {\n      if (utils.hasOwnProp(target, name)) {\n        target[name] = [target[name], value];\n      } else {\n        target[name] = value;\n      }\n\n      return !isNumericKey;\n    }\n\n    if (!target[name] || !utils.isObject(target[name])) {\n      target[name] = [];\n    }\n\n    const result = buildPath(path, value, target[name], index);\n\n    if (result && utils.isArray(target[name])) {\n      target[name] = arrayToObject(target[name]);\n    }\n\n    return !isNumericKey;\n  }\n\n  if (utils.isFormData(formData) && utils.isFunction(formData.entries)) {\n    const obj = {};\n\n    utils.forEachEntry(formData, (name, value) => {\n      buildPath(parsePropPath(name), value, obj, 0);\n    });\n\n    return obj;\n  }\n\n  return null;\n}\n\nexport default formDataToJSON;\n",
+      "start": 1702568943491,
+      "end": 1702568943509,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943509,
+      "end": 1702568943509,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943510,
+      "end": 1702568943510,
+      "order": "normal"
+    }
+  ]
+}

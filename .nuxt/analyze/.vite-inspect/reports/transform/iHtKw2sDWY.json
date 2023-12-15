@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/animate/utils/transforms.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { noopReturn, addUniqueItem } from '@motionone/utils';\nimport { getAnimationData } from '../data.es.js';\n\n/**\n * A list of all transformable axes. We'll use this list to generated a version\n * of each axes for each transform.\n */\nconst axes = [\"\", \"X\", \"Y\", \"Z\"];\n/**\n * An ordered array of each transformable value. By default, transform values\n * will be sorted to this order.\n */\nconst order = [\"translate\", \"scale\", \"rotate\", \"skew\"];\nconst transformAlias = {\n    x: \"translateX\",\n    y: \"translateY\",\n    z: \"translateZ\",\n};\nconst rotation = {\n    syntax: \"<angle>\",\n    initialValue: \"0deg\",\n    toDefaultUnit: (v) => v + \"deg\",\n};\nconst baseTransformProperties = {\n    translate: {\n        syntax: \"<length-percentage>\",\n        initialValue: \"0px\",\n        toDefaultUnit: (v) => v + \"px\",\n    },\n    rotate: rotation,\n    scale: {\n        syntax: \"<number>\",\n        initialValue: 1,\n        toDefaultUnit: noopReturn,\n    },\n    skew: rotation,\n};\nconst transformDefinitions = new Map();\nconst asTransformCssVar = (name) => `--motion-${name}`;\n/**\n * Generate a list of every possible transform key\n */\nconst transforms = [\"x\", \"y\", \"z\"];\norder.forEach((name) => {\n    axes.forEach((axis) => {\n        transforms.push(name + axis);\n        transformDefinitions.set(asTransformCssVar(name + axis), baseTransformProperties[name]);\n    });\n});\n/**\n * A function to use with Array.sort to sort transform keys by their default order.\n */\nconst compareTransformOrder = (a, b) => transforms.indexOf(a) - transforms.indexOf(b);\n/**\n * Provide a quick way to check if a string is the name of a transform\n */\nconst transformLookup = new Set(transforms);\nconst isTransform = (name) => transformLookup.has(name);\nconst addTransformToElement = (element, name) => {\n    // Map x to translateX etc\n    if (transformAlias[name])\n        name = transformAlias[name];\n    const { transforms } = getAnimationData(element);\n    addUniqueItem(transforms, name);\n    /**\n     * TODO: An optimisation here could be to cache the transform in element data\n     * and only update if this has changed.\n     */\n    element.style.transform = buildTransformTemplate(transforms);\n};\nconst buildTransformTemplate = (transforms) => transforms\n    .sort(compareTransformOrder)\n    .reduce(transformListToString, \"\")\n    .trim();\nconst transformListToString = (template, name) => `${template} ${name}(var(${asTransformCssVar(name)}))`;\n\nexport { addTransformToElement, asTransformCssVar, axes, buildTransformTemplate, compareTransformOrder, isTransform, transformAlias, transformDefinitions };\n",
+      "start": 1702568943450,
+      "end": 1702568943465,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943465,
+      "end": 1702568943465,
+      "order": "normal"
+    }
+  ]
+}

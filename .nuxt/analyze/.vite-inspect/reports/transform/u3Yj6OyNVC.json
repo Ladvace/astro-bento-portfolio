@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/state/index.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { __rest } from 'tslib';\nimport { invariant } from 'hey-listen';\nimport { noop } from '@motionone/utils';\nimport { animateStyle } from '../animate/animate-style.es.js';\nimport { style } from '../animate/style.es.js';\nimport { getOptions } from '../animate/utils/options.es.js';\nimport { hasChanged } from './utils/has-changed.es.js';\nimport { resolveVariant } from './utils/resolve-variant.es.js';\nimport { scheduleAnimation, unscheduleAnimation } from './utils/schedule.es.js';\nimport { inView } from './gestures/in-view.es.js';\nimport { hover } from './gestures/hover.es.js';\nimport { press } from './gestures/press.es.js';\nimport { motionEvent } from './utils/events.es.js';\nimport { Animation } from '@motionone/animation';\n\nconst gestures = { inView, hover, press };\n/**\n * A list of state types, in priority order. If a value is defined in\n * a righter-most type, it will override any definition in a lefter-most.\n */\nconst stateTypes = [\"initial\", \"animate\", ...Object.keys(gestures), \"exit\"];\n/**\n * A global store of all generated motion states. This can be used to lookup\n * a motion state for a given Element.\n */\nconst mountedStates = new WeakMap();\nfunction createMotionState(options = {}, parent) {\n    /**\n     * The element represented by the motion state. This is an empty reference\n     * when we create the state to support SSR and allow for later mounting\n     * in view libraries.\n     *\n     * @ts-ignore\n     */\n    let element;\n    /**\n     * Calculate a depth that we can use to order motion states by tree depth.\n     */\n    let depth = parent ? parent.getDepth() + 1 : 0;\n    /**\n     * Track which states are currently active.\n     */\n    const activeStates = { initial: true, animate: true };\n    /**\n     * A map of functions that, when called, will remove event listeners for\n     * a given gesture.\n     */\n    const gestureSubscriptions = {};\n    /**\n     * Initialise a context to share through motion states. This\n     * will be populated by variant names (if any).\n     */\n    const context = {};\n    for (const name of stateTypes) {\n        context[name] =\n            typeof options[name] === \"string\"\n                ? options[name]\n                : parent === null || parent === void 0 ? void 0 : parent.getContext()[name];\n    }\n    /**\n     * If initial is set to false we use the animate prop as the initial\n     * animation state.\n     */\n    const initialVariantSource = options.initial === false ? \"animate\" : \"initial\";\n    /**\n     * Destructure an initial target out from the resolved initial variant.\n     */\n    let _a = resolveVariant(options[initialVariantSource] || context[initialVariantSource], options.variants) || {}, target = __rest(_a, [\"transition\"]);\n    /**\n     * The base target is a cached map of values that we'll use to animate\n     * back to if a value is removed from all active state types. This\n     * is usually the initial value as read from the DOM, for instance if\n     * it hasn't been defined in initial.\n     */\n    const baseTarget = Object.assign({}, target);\n    /**\n     * A generator that will be processed by the global animation scheduler.\n     * This yields when it switches from reading the DOM to writing to it\n     * to prevent layout thrashing.\n     */\n    function* animateUpdates() {\n        var _a, _b;\n        const prevTarget = target;\n        target = {};\n        const animationOptions = {};\n        for (const name of stateTypes) {\n            if (!activeStates[name])\n                continue;\n            const variant = resolveVariant(options[name]);\n            if (!variant)\n                continue;\n            for (const key in variant) {\n                if (key === \"transition\")\n                    continue;\n                target[key] = variant[key];\n                animationOptions[key] = getOptions((_b = (_a = variant.transition) !== null && _a !== void 0 ? _a : options.transition) !== null && _b !== void 0 ? _b : {}, key);\n            }\n        }\n        const allTargetKeys = new Set([\n            ...Object.keys(target),\n            ...Object.keys(prevTarget),\n        ]);\n        const animationFactories = [];\n        allTargetKeys.forEach((key) => {\n            var _a;\n            if (target[key] === undefined) {\n                target[key] = baseTarget[key];\n            }\n            if (hasChanged(prevTarget[key], target[key])) {\n                (_a = baseTarget[key]) !== null && _a !== void 0 ? _a : (baseTarget[key] = style.get(element, key));\n                animationFactories.push(animateStyle(element, key, target[key], animationOptions[key], Animation));\n            }\n        });\n        // Wait for all animation states to read from the DOM\n        yield;\n        const animations = animationFactories\n            .map((factory) => factory())\n            .filter(Boolean);\n        if (!animations.length)\n            return;\n        const animationTarget = target;\n        element.dispatchEvent(motionEvent(\"motionstart\", animationTarget));\n        Promise.all(animations.map((animation) => animation.finished))\n            .then(() => {\n            element.dispatchEvent(motionEvent(\"motioncomplete\", animationTarget));\n        })\n            .catch(noop);\n    }\n    const setGesture = (name, isActive) => () => {\n        activeStates[name] = isActive;\n        scheduleAnimation(state);\n    };\n    const updateGestureSubscriptions = () => {\n        for (const name in gestures) {\n            const isGestureActive = gestures[name].isActive(options);\n            const remove = gestureSubscriptions[name];\n            if (isGestureActive && !remove) {\n                gestureSubscriptions[name] = gestures[name].subscribe(element, {\n                    enable: setGesture(name, true),\n                    disable: setGesture(name, false),\n                }, options);\n            }\n            else if (!isGestureActive && remove) {\n                remove();\n                delete gestureSubscriptions[name];\n            }\n        }\n    };\n    const state = {\n        update: (newOptions) => {\n            if (!element)\n                return;\n            options = newOptions;\n            updateGestureSubscriptions();\n            scheduleAnimation(state);\n        },\n        setActive: (name, isActive) => {\n            if (!element)\n                return;\n            activeStates[name] = isActive;\n            scheduleAnimation(state);\n        },\n        animateUpdates,\n        getDepth: () => depth,\n        getTarget: () => target,\n        getOptions: () => options,\n        getContext: () => context,\n        mount: (newElement) => {\n            invariant(Boolean(newElement), \"Animation state must be mounted with valid Element\");\n            element = newElement;\n            mountedStates.set(element, state);\n            updateGestureSubscriptions();\n            return () => {\n                mountedStates.delete(element);\n                unscheduleAnimation(state);\n                for (const key in gestureSubscriptions) {\n                    gestureSubscriptions[key]();\n                }\n            };\n        },\n        isMounted: () => Boolean(element),\n    };\n    return state;\n}\n\nexport { createMotionState, mountedStates };\n",
+      "start": 1702568943399,
+      "end": 1702568943447,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943447,
+      "end": 1702568943447,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943447,
+      "end": 1702568943448,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943448,
+      "end": 1702568943448,
+      "order": "normal"
+    }
+  ]
+}

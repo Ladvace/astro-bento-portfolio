@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/unenv/runtime/node/events/_events.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "let defaultMaxListeners = 10;\nexport class EventEmitter {\n  __unenv__ = true;\n  _events = /* @__PURE__ */ Object.create(null);\n  _maxListeners;\n  static get defaultMaxListeners() {\n    return defaultMaxListeners;\n  }\n  static set defaultMaxListeners(arg) {\n    if (typeof arg !== \"number\" || arg < 0 || Number.isNaN(arg)) {\n      throw new RangeError(\n        'The value of \"defaultMaxListeners\" is out of range. It must be a non-negative number. Received ' + arg + \".\"\n      );\n    }\n    defaultMaxListeners = arg;\n  }\n  setMaxListeners(n) {\n    if (typeof n !== \"number\" || n < 0 || Number.isNaN(n)) {\n      throw new RangeError(\n        'The value of \"n\" is out of range. It must be a non-negative number. Received ' + n + \".\"\n      );\n    }\n    this._maxListeners = n;\n    return this;\n  }\n  getMaxListeners() {\n    return _getMaxListeners(this);\n  }\n  emit(type, ...args) {\n    if (!this._events[type] || this._events[type].length === 0) {\n      return false;\n    }\n    if (type === \"error\") {\n      let er;\n      if (args.length > 0) {\n        er = args[0];\n      }\n      if (er instanceof Error) {\n        throw er;\n      }\n      const err = new Error(\n        \"Unhandled error.\" + (er ? \" (\" + er.message + \")\" : \"\")\n      );\n      err.context = er;\n      throw err;\n    }\n    for (const _listener of this._events[type]) {\n      (_listener.listener || _listener).apply(this, args);\n    }\n    return true;\n  }\n  addListener(type, listener) {\n    return _addListener(this, type, listener, false);\n  }\n  on(type, listener) {\n    return _addListener(this, type, listener, false);\n  }\n  prependListener(type, listener) {\n    return _addListener(this, type, listener, true);\n  }\n  once(type, listener) {\n    return this.on(type, _wrapOnce(this, type, listener));\n  }\n  prependOnceListener(type, listener) {\n    return this.prependListener(type, _wrapOnce(this, type, listener));\n  }\n  removeListener(type, listener) {\n    return _removeListener(this, type, listener);\n  }\n  off(type, listener) {\n    return this.removeListener(type, listener);\n  }\n  removeAllListeners(type) {\n    return _removeAllListeners(this, type);\n  }\n  listeners(type) {\n    return _listeners(this, type, true);\n  }\n  rawListeners(type) {\n    return _listeners(this, type, false);\n  }\n  listenerCount(type) {\n    return this.rawListeners(type).length;\n  }\n  eventNames() {\n    return Object.keys(this._events);\n  }\n}\nexport function once(emitter, name) {\n  return new Promise(function(resolve, reject) {\n    function errorListener(err) {\n      emitter.removeListener(name, resolver);\n      reject(err);\n    }\n    function resolver() {\n      if (typeof emitter.removeListener === \"function\") {\n        emitter.removeListener(\"error\", errorListener);\n      }\n      resolve(Array.prototype.slice.call(arguments));\n    }\n    _eventTargetAgnosticAddListener(emitter, name, resolver, { once: true });\n    if (name !== \"error\") {\n      _addErrorHandlerIfEventEmitter(emitter, errorListener, { once: true });\n    }\n  });\n}\nfunction _addListener(target, type, listener, prepend) {\n  _checkListener(listener);\n  if (target._events.newListener !== void 0) {\n    target.emit(\"newListener\", type, listener.listener || listener);\n  }\n  if (!target._events[type]) {\n    target._events[type] = [];\n  }\n  if (prepend) {\n    target._events[type].unshift(listener);\n  } else {\n    target._events[type].push(listener);\n  }\n  const maxListeners = _getMaxListeners(target);\n  if (maxListeners > 0 && target._events[type].length > maxListeners && !target._events[type].warned) {\n    target._events[type].warned = true;\n    const warning = new Error(\n      `[unenv] Possible EventEmitter memory leak detected. ${target._events[type].length} ${type} listeners added. Use emitter.setMaxListeners() to increase limit`\n    );\n    warning.name = \"MaxListenersExceededWarning\";\n    warning.emitter = target;\n    warning.type = type;\n    warning.count = target._events[type]?.length;\n    console.warn(warning);\n  }\n  return target;\n}\nfunction _removeListener(target, type, listener) {\n  _checkListener(listener);\n  if (!target._events[type] || target._events[type].length === 0) {\n    return target;\n  }\n  const lenBeforeFilter = target._events[type].length;\n  target._events[type] = target._events[type].filter((fn) => fn !== listener);\n  if (lenBeforeFilter === target._events[type].length) {\n    return target;\n  }\n  if (target._events.removeListener) {\n    target.emit(\"removeListener\", type, listener.listener || listener);\n  }\n  if (target._events[type].length === 0) {\n    delete target._events[type];\n  }\n  return target;\n}\nfunction _removeAllListeners(target, type) {\n  if (!target._events[type] || target._events[type].length === 0) {\n    return target;\n  }\n  if (target._events.removeListener) {\n    for (const _listener of target._events[type]) {\n      target.emit(\"removeListener\", type, _listener.listener || _listener);\n    }\n  }\n  delete target._events[type];\n  return target;\n}\nfunction _wrapOnce(target, type, listener) {\n  let fired = false;\n  const wrapper = (...args) => {\n    if (fired) {\n      return;\n    }\n    target.removeListener(type, wrapper);\n    fired = true;\n    return args.length === 0 ? listener.call(target) : listener.apply(target, args);\n  };\n  wrapper.listener = listener;\n  return wrapper;\n}\nfunction _getMaxListeners(target) {\n  return target._maxListeners ?? EventEmitter.defaultMaxListeners;\n}\nfunction _listeners(target, type, unwrap) {\n  let listeners = target._events[type];\n  if (typeof listeners === \"function\") {\n    listeners = [listeners];\n  }\n  return unwrap ? listeners.map((l) => l.listener || l) : listeners;\n}\nfunction _checkListener(listener) {\n  if (typeof listener !== \"function\") {\n    throw new TypeError(\n      'The \"listener\" argument must be of type Function. Received type ' + typeof listener\n    );\n  }\n}\nfunction _addErrorHandlerIfEventEmitter(emitter, handler, flags) {\n  if (typeof emitter.on === \"function\") {\n    _eventTargetAgnosticAddListener(emitter, \"error\", handler, flags);\n  }\n}\nfunction _eventTargetAgnosticAddListener(emitter, name, listener, flags) {\n  if (typeof emitter.on === \"function\") {\n    if (flags.once) {\n      emitter.once(name, listener);\n    } else {\n      emitter.on(name, listener);\n    }\n  } else if (typeof emitter.addEventListener === \"function\") {\n    emitter.addEventListener(name, listener);\n  } else {\n    throw new TypeError(\n      'The \"emitter\" argument must be of type EventEmitter. Received type ' + typeof emitter\n    );\n  }\n}\n",
+      "start": 1702568943497,
+      "end": 1702568943525,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943525,
+      "end": 1702568943525,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943525,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943527,
+      "end": 1702568943527,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943527,
+      "end": 1702568943528,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943528,
+      "end": 1702568943528,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943528,
+      "end": 1702568943528,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943528,
+      "end": 1702568943528,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943528,
+      "end": 1702568943528,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943528,
+      "end": 1702568943528,
+      "order": "normal"
+    }
+  ]
+}

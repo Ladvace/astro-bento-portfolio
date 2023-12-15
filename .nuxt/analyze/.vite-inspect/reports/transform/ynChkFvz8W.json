@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/core/Axios.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from './../utils.js';\nimport buildURL from '../helpers/buildURL.js';\nimport InterceptorManager from './InterceptorManager.js';\nimport dispatchRequest from './dispatchRequest.js';\nimport mergeConfig from './mergeConfig.js';\nimport buildFullPath from './buildFullPath.js';\nimport validator from '../helpers/validator.js';\nimport AxiosHeaders from './AxiosHeaders.js';\n\nconst validators = validator.validators;\n\n/**\n * Create a new instance of Axios\n *\n * @param {Object} instanceConfig The default config for the instance\n *\n * @return {Axios} A new instance of Axios\n */\nclass Axios {\n  constructor(instanceConfig) {\n    this.defaults = instanceConfig;\n    this.interceptors = {\n      request: new InterceptorManager(),\n      response: new InterceptorManager()\n    };\n  }\n\n  /**\n   * Dispatch a request\n   *\n   * @param {String|Object} configOrUrl The config specific for this request (merged with this.defaults)\n   * @param {?Object} config\n   *\n   * @returns {Promise} The Promise to be fulfilled\n   */\n  request(configOrUrl, config) {\n    /*eslint no-param-reassign:0*/\n    // Allow for axios('example/url'[, config]) a la fetch API\n    if (typeof configOrUrl === 'string') {\n      config = config || {};\n      config.url = configOrUrl;\n    } else {\n      config = configOrUrl || {};\n    }\n\n    config = mergeConfig(this.defaults, config);\n\n    const {transitional, paramsSerializer, headers} = config;\n\n    if (transitional !== undefined) {\n      validator.assertOptions(transitional, {\n        silentJSONParsing: validators.transitional(validators.boolean),\n        forcedJSONParsing: validators.transitional(validators.boolean),\n        clarifyTimeoutError: validators.transitional(validators.boolean)\n      }, false);\n    }\n\n    if (paramsSerializer != null) {\n      if (utils.isFunction(paramsSerializer)) {\n        config.paramsSerializer = {\n          serialize: paramsSerializer\n        }\n      } else {\n        validator.assertOptions(paramsSerializer, {\n          encode: validators.function,\n          serialize: validators.function\n        }, true);\n      }\n    }\n\n    // Set config.method\n    config.method = (config.method || this.defaults.method || 'get').toLowerCase();\n\n    // Flatten headers\n    let contextHeaders = headers && utils.merge(\n      headers.common,\n      headers[config.method]\n    );\n\n    headers && utils.forEach(\n      ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],\n      (method) => {\n        delete headers[method];\n      }\n    );\n\n    config.headers = AxiosHeaders.concat(contextHeaders, headers);\n\n    // filter out skipped interceptors\n    const requestInterceptorChain = [];\n    let synchronousRequestInterceptors = true;\n    this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {\n      if (typeof interceptor.runWhen === 'function' && interceptor.runWhen(config) === false) {\n        return;\n      }\n\n      synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;\n\n      requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);\n    });\n\n    const responseInterceptorChain = [];\n    this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {\n      responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);\n    });\n\n    let promise;\n    let i = 0;\n    let len;\n\n    if (!synchronousRequestInterceptors) {\n      const chain = [dispatchRequest.bind(this), undefined];\n      chain.unshift.apply(chain, requestInterceptorChain);\n      chain.push.apply(chain, responseInterceptorChain);\n      len = chain.length;\n\n      promise = Promise.resolve(config);\n\n      while (i < len) {\n        promise = promise.then(chain[i++], chain[i++]);\n      }\n\n      return promise;\n    }\n\n    len = requestInterceptorChain.length;\n\n    let newConfig = config;\n\n    i = 0;\n\n    while (i < len) {\n      const onFulfilled = requestInterceptorChain[i++];\n      const onRejected = requestInterceptorChain[i++];\n      try {\n        newConfig = onFulfilled(newConfig);\n      } catch (error) {\n        onRejected.call(this, error);\n        break;\n      }\n    }\n\n    try {\n      promise = dispatchRequest.call(this, newConfig);\n    } catch (error) {\n      return Promise.reject(error);\n    }\n\n    i = 0;\n    len = responseInterceptorChain.length;\n\n    while (i < len) {\n      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);\n    }\n\n    return promise;\n  }\n\n  getUri(config) {\n    config = mergeConfig(this.defaults, config);\n    const fullPath = buildFullPath(config.baseURL, config.url);\n    return buildURL(fullPath, config.params, config.paramsSerializer);\n  }\n}\n\n// Provide aliases for supported request methods\nutils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {\n  /*eslint func-names:0*/\n  Axios.prototype[method] = function(url, config) {\n    return this.request(mergeConfig(config || {}, {\n      method,\n      url,\n      data: (config || {}).data\n    }));\n  };\n});\n\nutils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {\n  /*eslint func-names:0*/\n\n  function generateHTTPMethod(isForm) {\n    return function httpMethod(url, data, config) {\n      return this.request(mergeConfig(config || {}, {\n        method,\n        headers: isForm ? {\n          'Content-Type': 'multipart/form-data'\n        } : {},\n        url,\n        data\n      }));\n    };\n  }\n\n  Axios.prototype[method] = generateHTTPMethod();\n\n  Axios.prototype[method + 'Form'] = generateHTTPMethod(true);\n});\n\nexport default Axios;\n",
+      "start": 1702568943489,
+      "end": 1702568943507,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943507,
+      "end": 1702568943507,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943507,
+      "end": 1702568943508,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943508,
+      "end": 1702568943508,
+      "order": "normal"
+    }
+  ]
+}

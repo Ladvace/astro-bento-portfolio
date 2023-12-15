@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/axios/lib/adapters/xhr.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "'use strict';\n\nimport utils from './../utils.js';\nimport settle from './../core/settle.js';\nimport cookies from './../helpers/cookies.js';\nimport buildURL from './../helpers/buildURL.js';\nimport buildFullPath from '../core/buildFullPath.js';\nimport isURLSameOrigin from './../helpers/isURLSameOrigin.js';\nimport transitionalDefaults from '../defaults/transitional.js';\nimport AxiosError from '../core/AxiosError.js';\nimport CanceledError from '../cancel/CanceledError.js';\nimport parseProtocol from '../helpers/parseProtocol.js';\nimport platform from '../platform/index.js';\nimport AxiosHeaders from '../core/AxiosHeaders.js';\nimport speedometer from '../helpers/speedometer.js';\n\nfunction progressEventReducer(listener, isDownloadStream) {\n  let bytesNotified = 0;\n  const _speedometer = speedometer(50, 250);\n\n  return e => {\n    const loaded = e.loaded;\n    const total = e.lengthComputable ? e.total : undefined;\n    const progressBytes = loaded - bytesNotified;\n    const rate = _speedometer(progressBytes);\n    const inRange = loaded <= total;\n\n    bytesNotified = loaded;\n\n    const data = {\n      loaded,\n      total,\n      progress: total ? (loaded / total) : undefined,\n      bytes: progressBytes,\n      rate: rate ? rate : undefined,\n      estimated: rate && total && inRange ? (total - loaded) / rate : undefined,\n      event: e\n    };\n\n    data[isDownloadStream ? 'download' : 'upload'] = true;\n\n    listener(data);\n  };\n}\n\nconst isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';\n\nexport default isXHRAdapterSupported && function (config) {\n  return new Promise(function dispatchXhrRequest(resolve, reject) {\n    let requestData = config.data;\n    const requestHeaders = AxiosHeaders.from(config.headers).normalize();\n    let {responseType, withXSRFToken} = config;\n    let onCanceled;\n    function done() {\n      if (config.cancelToken) {\n        config.cancelToken.unsubscribe(onCanceled);\n      }\n\n      if (config.signal) {\n        config.signal.removeEventListener('abort', onCanceled);\n      }\n    }\n\n    let contentType;\n\n    if (utils.isFormData(requestData)) {\n      if (platform.hasStandardBrowserEnv || platform.hasStandardBrowserWebWorkerEnv) {\n        requestHeaders.setContentType(false); // Let the browser set it\n      } else if ((contentType = requestHeaders.getContentType()) !== false) {\n        // fix semicolon duplication issue for ReactNative FormData implementation\n        const [type, ...tokens] = contentType ? contentType.split(';').map(token => token.trim()).filter(Boolean) : [];\n        requestHeaders.setContentType([type || 'multipart/form-data', ...tokens].join('; '));\n      }\n    }\n\n    let request = new XMLHttpRequest();\n\n    // HTTP basic authentication\n    if (config.auth) {\n      const username = config.auth.username || '';\n      const password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';\n      requestHeaders.set('Authorization', 'Basic ' + btoa(username + ':' + password));\n    }\n\n    const fullPath = buildFullPath(config.baseURL, config.url);\n\n    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);\n\n    // Set the request timeout in MS\n    request.timeout = config.timeout;\n\n    function onloadend() {\n      if (!request) {\n        return;\n      }\n      // Prepare the response\n      const responseHeaders = AxiosHeaders.from(\n        'getAllResponseHeaders' in request && request.getAllResponseHeaders()\n      );\n      const responseData = !responseType || responseType === 'text' || responseType === 'json' ?\n        request.responseText : request.response;\n      const response = {\n        data: responseData,\n        status: request.status,\n        statusText: request.statusText,\n        headers: responseHeaders,\n        config,\n        request\n      };\n\n      settle(function _resolve(value) {\n        resolve(value);\n        done();\n      }, function _reject(err) {\n        reject(err);\n        done();\n      }, response);\n\n      // Clean up request\n      request = null;\n    }\n\n    if ('onloadend' in request) {\n      // Use onloadend if available\n      request.onloadend = onloadend;\n    } else {\n      // Listen for ready state to emulate onloadend\n      request.onreadystatechange = function handleLoad() {\n        if (!request || request.readyState !== 4) {\n          return;\n        }\n\n        // The request errored out and we didn't get a response, this will be\n        // handled by onerror instead\n        // With one exception: request that using file: protocol, most browsers\n        // will return status as 0 even though it's a successful request\n        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {\n          return;\n        }\n        // readystate handler is calling before onerror or ontimeout handlers,\n        // so we should call onloadend on the next 'tick'\n        setTimeout(onloadend);\n      };\n    }\n\n    // Handle browser request cancellation (as opposed to a manual cancellation)\n    request.onabort = function handleAbort() {\n      if (!request) {\n        return;\n      }\n\n      reject(new AxiosError('Request aborted', AxiosError.ECONNABORTED, config, request));\n\n      // Clean up request\n      request = null;\n    };\n\n    // Handle low level network errors\n    request.onerror = function handleError() {\n      // Real errors are hidden from us by the browser\n      // onerror should only fire if it's a network error\n      reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, request));\n\n      // Clean up request\n      request = null;\n    };\n\n    // Handle timeout\n    request.ontimeout = function handleTimeout() {\n      let timeoutErrorMessage = config.timeout ? 'timeout of ' + config.timeout + 'ms exceeded' : 'timeout exceeded';\n      const transitional = config.transitional || transitionalDefaults;\n      if (config.timeoutErrorMessage) {\n        timeoutErrorMessage = config.timeoutErrorMessage;\n      }\n      reject(new AxiosError(\n        timeoutErrorMessage,\n        transitional.clarifyTimeoutError ? AxiosError.ETIMEDOUT : AxiosError.ECONNABORTED,\n        config,\n        request));\n\n      // Clean up request\n      request = null;\n    };\n\n    // Add xsrf header\n    // This is only done if running in a standard browser environment.\n    // Specifically not if we're in a web worker, or react-native.\n    if(platform.hasStandardBrowserEnv) {\n      withXSRFToken && utils.isFunction(withXSRFToken) && (withXSRFToken = withXSRFToken(config));\n\n      if (withXSRFToken || (withXSRFToken !== false && isURLSameOrigin(fullPath))) {\n        // Add xsrf header\n        const xsrfValue = config.xsrfHeaderName && config.xsrfCookieName && cookies.read(config.xsrfCookieName);\n\n        if (xsrfValue) {\n          requestHeaders.set(config.xsrfHeaderName, xsrfValue);\n        }\n      }\n    }\n\n    // Remove Content-Type if data is undefined\n    requestData === undefined && requestHeaders.setContentType(null);\n\n    // Add headers to the request\n    if ('setRequestHeader' in request) {\n      utils.forEach(requestHeaders.toJSON(), function setRequestHeader(val, key) {\n        request.setRequestHeader(key, val);\n      });\n    }\n\n    // Add withCredentials to request if needed\n    if (!utils.isUndefined(config.withCredentials)) {\n      request.withCredentials = !!config.withCredentials;\n    }\n\n    // Add responseType to request if needed\n    if (responseType && responseType !== 'json') {\n      request.responseType = config.responseType;\n    }\n\n    // Handle progress if needed\n    if (typeof config.onDownloadProgress === 'function') {\n      request.addEventListener('progress', progressEventReducer(config.onDownloadProgress, true));\n    }\n\n    // Not all browsers support upload events\n    if (typeof config.onUploadProgress === 'function' && request.upload) {\n      request.upload.addEventListener('progress', progressEventReducer(config.onUploadProgress));\n    }\n\n    if (config.cancelToken || config.signal) {\n      // Handle cancellation\n      // eslint-disable-next-line func-names\n      onCanceled = cancel => {\n        if (!request) {\n          return;\n        }\n        reject(!cancel || cancel.type ? new CanceledError(null, config, request) : cancel);\n        request.abort();\n        request = null;\n      };\n\n      config.cancelToken && config.cancelToken.subscribe(onCanceled);\n      if (config.signal) {\n        config.signal.aborted ? onCanceled() : config.signal.addEventListener('abort', onCanceled);\n      }\n    }\n\n    const protocol = parseProtocol(fullPath);\n\n    if (protocol && platform.protocols.indexOf(protocol) === -1) {\n      reject(new AxiosError('Unsupported protocol ' + protocol + ':', AxiosError.ERR_BAD_REQUEST, config));\n      return;\n    }\n\n\n    // Send the request\n    request.send(requestData || null);\n  });\n}\n",
+      "start": 1702568943523,
+      "end": 1702568943541,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943541,
+      "end": 1702568943541,
+      "order": "normal"
+    }
+  ]
+}

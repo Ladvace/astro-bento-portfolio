@@ -1,0 +1,252 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@unhead/vue/dist/index.mjs",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { useScript as useScript$1 } from 'unhead';\nexport { CapoPlugin, HashHydrationPlugin, createHeadCore } from 'unhead';\nimport { V as Vue3, h as headSymbol, i as injectHead } from './shared/vue.cf295fb1.mjs';\nexport { c as createHead, a as createServerHead, r as resolveUnrefHeadInput, s as setHeadInjectionHandler } from './shared/vue.cf295fb1.mjs';\nimport { getCurrentInstance, ref, computed } from 'vue';\nimport { u as useHead } from './shared/vue.f36acd1f.mjs';\nimport { composableNames, whitelistSafeInput, unpackMeta, NetworkEvents } from '@unhead/shared';\n\nconst VueHeadMixin = {\n  created() {\n    let source = false;\n    if (Vue3) {\n      const instance = getCurrentInstance();\n      if (!instance)\n        return;\n      const options = instance.type;\n      if (!options || !(\"head\" in options))\n        return;\n      source = typeof options.head === \"function\" ? () => options.head.call(instance.proxy) : options.head;\n    } else {\n      const head = this.$options.head;\n      if (head) {\n        source = typeof head === \"function\" ? () => head.call(this) : head;\n      }\n    }\n    source && useHead(source);\n  }\n};\n\nconst Vue2ProvideUnheadPlugin = function(_Vue, head) {\n  _Vue.mixin({\n    beforeCreate() {\n      const options = this.$options;\n      const origProvide = options.provide;\n      options.provide = function() {\n        let origProvideResult;\n        if (typeof origProvide === \"function\")\n          origProvideResult = origProvide.call(this);\n        else\n          origProvideResult = origProvide || {};\n        return {\n          ...origProvideResult,\n          [headSymbol]: head\n        };\n      };\n    }\n  });\n};\n\nconst coreComposableNames = [\n  \"injectHead\"\n];\nconst unheadVueComposablesImports = {\n  \"@unhead/vue\": [...coreComposableNames, ...composableNames]\n};\n\nfunction useHeadSafe(input, options = {}) {\n  return useHead(input, { ...options, transform: whitelistSafeInput });\n}\n\nfunction useSeoMeta(input, options) {\n  const { title, titleTemplate, ...meta } = input;\n  return useHead({\n    title,\n    titleTemplate,\n    // @ts-expect-error runtime type\n    _flatMeta: meta\n  }, {\n    ...options,\n    transform(t) {\n      const meta2 = unpackMeta({ ...t._flatMeta });\n      delete t._flatMeta;\n      return {\n        // @ts-expect-error runtime type\n        ...t,\n        meta: meta2\n      };\n    }\n  });\n}\n\nfunction useServerHead(input, options = {}) {\n  const head = options.head || injectHead();\n  delete options.head;\n  if (head)\n    return head.push(input, { ...options, mode: \"server\" });\n}\n\nfunction useServerHeadSafe(input, options = {}) {\n  return useHeadSafe(input, { ...options, mode: \"server\" });\n}\n\nfunction useServerSeoMeta(input, options) {\n  return useSeoMeta(input, { ...options || {}, mode: \"server\" });\n}\n\nfunction useScript(input, _options) {\n  const head = injectHead();\n  const ctx = getCurrentInstance();\n  const options = _options || {};\n  options.head = head;\n  const status = ref(\"awaitingLoad\");\n  NetworkEvents.forEach((fn) => {\n    const _fn = typeof input[fn] === \"function\" ? input[fn].bind(ctx) : null;\n    if (_fn) {\n      input[fn] = (e) => _fn(e);\n    }\n  });\n  options.stub = ({ script, fn }) => {\n    if (fn === \"$script\") {\n      return {\n        ...script,\n        status,\n        loaded: computed(() => status.value === \"loaded\")\n      };\n    }\n  };\n  const instance = useScript$1(input, options);\n  function syncStatus({ script }) {\n    if (script.id === instance.$script.id) {\n      status.value = script.status;\n      if (script.status === \"removed\")\n        head.hooks.removeHook(`script:updated`, syncStatus);\n    }\n  }\n  head.hooks.hook(`script:updated`, syncStatus);\n  return instance;\n}\n\nexport { Vue2ProvideUnheadPlugin, VueHeadMixin, injectHead, unheadVueComposablesImports, useHead, useHeadSafe, useScript, useSeoMeta, useServerHead, useServerHeadSafe, useServerSeoMeta };\n",
+      "start": 1702568944102,
+      "end": 1702568944253,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-template",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568944253,
+      "end": 1702568944253,
+      "order": "normal"
+    }
+  ]
+}

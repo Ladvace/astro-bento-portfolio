@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/dom/dist/animate/create-animate.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { invariant } from 'hey-listen';\nimport { animateStyle } from './animate-style.es.js';\nimport { getOptions } from './utils/options.es.js';\nimport { resolveElements } from '../utils/resolve-elements.es.js';\nimport { withControls } from './utils/controls.es.js';\nimport { resolveOption } from '../utils/stagger.es.js';\n\nfunction createAnimate(AnimatePolyfill) {\n    return function animate(elements, keyframes, options = {}) {\n        elements = resolveElements(elements);\n        const numElements = elements.length;\n        invariant(Boolean(numElements), \"No valid element provided.\");\n        invariant(Boolean(keyframes), \"No keyframes defined.\");\n        /**\n         * Create and start new animations\n         */\n        const animationFactories = [];\n        for (let i = 0; i < numElements; i++) {\n            const element = elements[i];\n            for (const key in keyframes) {\n                const valueOptions = getOptions(options, key);\n                valueOptions.delay = resolveOption(valueOptions.delay, i, numElements);\n                const animation = animateStyle(element, key, keyframes[key], valueOptions, AnimatePolyfill);\n                animationFactories.push(animation);\n            }\n        }\n        return withControls(animationFactories, options, \n        /**\n         * TODO:\n         * If easing is set to spring or glide, duration will be dynamically\n         * generated. Ideally we would dynamically generate this from\n         * animation.effect.getComputedTiming().duration but this isn't\n         * supported in iOS13 or our number polyfill. Perhaps it's possible\n         * to Proxy animations returned from animateStyle that has duration\n         * as a getter.\n         */\n        options.duration);\n    };\n}\n\nexport { createAnimate };\n",
+      "start": 1702568943349,
+      "end": 1702568943422,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943422,
+      "end": 1702568943422,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943423,
+      "end": 1702568943423,
+      "order": "normal"
+    }
+  ]
+}

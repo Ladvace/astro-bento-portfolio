@@ -1,0 +1,210 @@
+{
+  "resolvedId": "/Users/andreapuglisi/Desktop/andreapuglisi.io/node_modules/@motionone/generators/dist/glide/index.es.js",
+  "transforms": [
+    {
+      "name": "vite:load-fallback",
+      "result": "import { time } from '@motionone/utils';\nimport { calcGeneratorVelocity } from '../utils/velocity.es.js';\nimport { spring } from '../spring/index.es.js';\n\nconst glide = ({ from = 0, velocity = 0.0, power = 0.8, decay = 0.325, bounceDamping, bounceStiffness, changeTarget, min, max, restDistance = 0.5, restSpeed, }) => {\n    decay = time.ms(decay);\n    const state = {\n        hasReachedTarget: false,\n        done: false,\n        current: from,\n        target: from,\n    };\n    const isOutOfBounds = (v) => (min !== undefined && v < min) || (max !== undefined && v > max);\n    const nearestBoundary = (v) => {\n        if (min === undefined)\n            return max;\n        if (max === undefined)\n            return min;\n        return Math.abs(min - v) < Math.abs(max - v) ? min : max;\n    };\n    let amplitude = power * velocity;\n    const ideal = from + amplitude;\n    const target = changeTarget === undefined ? ideal : changeTarget(ideal);\n    state.target = target;\n    /**\n     * If the target has changed we need to re-calculate the amplitude, otherwise\n     * the animation will start from the wrong position.\n     */\n    if (target !== ideal)\n        amplitude = target - from;\n    const calcDelta = (t) => -amplitude * Math.exp(-t / decay);\n    const calcLatest = (t) => target + calcDelta(t);\n    const applyFriction = (t) => {\n        const delta = calcDelta(t);\n        const latest = calcLatest(t);\n        state.done = Math.abs(delta) <= restDistance;\n        state.current = state.done ? target : latest;\n    };\n    /**\n     * Ideally this would resolve for t in a stateless way, we could\n     * do that by always precalculating the animation but as we know\n     * this will be done anyway we can assume that spring will\n     * be discovered during that.\n     */\n    let timeReachedBoundary;\n    let spring$1;\n    const checkCatchBoundary = (t) => {\n        if (!isOutOfBounds(state.current))\n            return;\n        timeReachedBoundary = t;\n        spring$1 = spring({\n            from: state.current,\n            to: nearestBoundary(state.current),\n            velocity: calcGeneratorVelocity(calcLatest, t, state.current),\n            damping: bounceDamping,\n            stiffness: bounceStiffness,\n            restDistance,\n            restSpeed,\n        });\n    };\n    checkCatchBoundary(0);\n    return (t) => {\n        /**\n         * We need to resolve the friction to figure out if we need a\n         * spring but we don't want to do this twice per frame. So here\n         * we flag if we updated for this frame and later if we did\n         * we can skip doing it again.\n         */\n        let hasUpdatedFrame = false;\n        if (!spring$1 && timeReachedBoundary === undefined) {\n            hasUpdatedFrame = true;\n            applyFriction(t);\n            checkCatchBoundary(t);\n        }\n        /**\n         * If we have a spring and the provided t is beyond the moment the friction\n         * animation crossed the min/max boundary, use the spring.\n         */\n        if (timeReachedBoundary !== undefined && t > timeReachedBoundary) {\n            state.hasReachedTarget = true;\n            return spring$1(t - timeReachedBoundary);\n        }\n        else {\n            state.hasReachedTarget = false;\n            !hasUpdatedFrame && applyFriction(t);\n            return state;\n        }\n    };\n};\n\nexport { glide };\n",
+      "start": 1702568943497,
+      "end": 1702568943523,
+      "sourcemaps": null
+    },
+    {
+      "name": "nuxt:layer-aliasing",
+      "start": 1702568943523,
+      "end": 1702568943523,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:server-devonly:transform",
+      "start": 1702568943523,
+      "end": 1702568943523,
+      "order": "pre"
+    },
+    {
+      "name": "nuxt:client-fallback-auto-id",
+      "start": 1702568943523,
+      "end": 1702568943523,
+      "order": "pre"
+    },
+    {
+      "name": "vite:css",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:esbuild",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:json",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:vue-jsx",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:remove-plugin-metadata",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:chunk-error",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:components:imports",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "replace",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "ssr-styles",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:define",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:css-post",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:build-html",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:worker-import-meta-url",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:asset-import-meta-url",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "commonjs",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:dynamic-import-vars",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:import-glob",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "nuxt:composable-keys",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:imports-transform",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "unctx:transform",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:pages-macros-transform",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:runtime-paths-dep",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:route-injection-plugin",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:components-loader",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "nuxt:tree-shake-composables:transform",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "post"
+    },
+    {
+      "name": "vite:build-import-analysis",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    },
+    {
+      "name": "vite:reporter",
+      "start": 1702568943524,
+      "end": 1702568943524,
+      "order": "normal"
+    }
+  ]
+}
