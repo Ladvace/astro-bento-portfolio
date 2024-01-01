@@ -29,8 +29,10 @@
     "@unocss/reset": "^0.58.2",
     "autoprefixer": "^10.4.16",
     "markdown-it": "^14.0.0",
+    "d3": "^7.8.5",
     "motion": "^10.16.4",
     "sanitize-html": "^2.11.0",
-    "unocss": "^0.58.2"
+    "unocss": "^0.58.2",
+    "@types/d3": "^7.4.3"
   }
 }

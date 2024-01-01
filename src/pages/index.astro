@@ -6,6 +6,7 @@ import ContactsCard from "../components/ContactsCard.astro";
 import TimeZone from "../components/TimeZoneCard.astro";
 import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
+import Globe from "../components/Globe";
 ---
 
 <script>
@@ -35,7 +36,7 @@ import Now from "../components/Now.astro";
   description="Software developer with strong focus on the user experience animations and micro interactions"
 >
   <main
-    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
+    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
   >
     <IntroCard />
     <AboutMe />
@@ -43,10 +44,21 @@ import Now from "../components/Now.astro";
     <TimeZone />
     <Card
       colSpan="md:col-span-1"
-      rowSpan="md:row-span-1"
+      rowSpan="md:row-span-2"
       title="Blog"
       href="/blog"
     />
+    <Card
+      colSpan="md:col-span-1"
+      rowSpan="md:row-span-1"
+      title="Countries I visited"
+      href="travel"
+      colorText="text-neutral-900"
+    >
+      <div class="h-full w-full absolute inset-0 -z-10">
+        <Globe client:load />
+      </div>
+    </Card>
     <Now />
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <p class="text-xs">

@@ -17,12 +17,14 @@ or my portfolio **[click here](https://gianmarco.xyz/)**
 - Ready to be deployed on [Netlify](https://www.netlify.com/)
 - Blog
 - RSS support (your-domain/rss.xml)
+- Cool 3d globe
 
 ## Tech Stack
 
 - [Astro](https://astro.build)
 - [unocss](https://unocss.dev/)
 - [motion](https://motion.dev/)
+- [d3](https://d3js.org/)
 
 # Steps ▶️
 
@@ -33,7 +35,7 @@ $ git clone https://github.com/Ladvace/astro-bento-portfolio
 
 ```bash
 # Go into the repository
-$ cd astro-bento-grid-portfolio
+$ cd astro-bento-portfolio
 ```
 
 ```bash
@@ -45,6 +47,10 @@ $ pnpm install
 # Start the project in development
 $ pnpm run dev
 ```
+
+# Configuration
+
+remember to replace the `site` and other properties with your data in `astro.config.mjs`
 
 # Deploy on Netlify 🚀
 
