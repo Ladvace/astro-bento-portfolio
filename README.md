@@ -38,12 +38,12 @@ $ cd astro-bento-grid-portfolio
 
 ```bash
 # Install dependencies
-$ npm install
+$ pnpm install
 ```
 
 ```bash
 # Start the project in development
-$ npm run dev
+$ pnpm run dev
 ```
 
 # Deploy on Netlify 🚀
