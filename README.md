@@ -40,12 +40,12 @@ $ cd astro-bento-portfolio
 
 ```bash
 # Install dependencies
-$ pnpm install
+$ npm install
 ```
 
 ```bash
 # Start the project in development
-$ pnpm run dev
+$ npm run dev
 ```
 
 # Configuration
