@@ -38,6 +38,8 @@ $ npm install
 $ npm run dev
 ```
 
+## REMOVE THE umami analytics script tag (or replace it with your id) in `src/layouts/Layout.astro`
+
 # Deploy on Netlify 🚀
 
 Deploying your website on Netlify it's optional but I reccomand it in order to deploy it faster and easly.
