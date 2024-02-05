@@ -1,0 +1,52 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card/index.astro";
+
+const projects = [
+  {
+    title: "Rive rifle animation",
+    description: "interactive rifle animation made in rive.app",
+    slug: "/rifle-1",
+  },
+];
+---
+
+<script>
+  import { timeline, type TimelineDefinition } from "motion";
+
+  const sequence = [
+    [
+      ".loaderRef",
+      { opacity: [1, 0], pointerEvents: "none" },
+      { easing: "ease-out" },
+    ],
+  ];
+
+  timeline(sequence as TimelineDefinition);
+</script>
+
+<Layout
+  title="Gianmarco Cavallo - Playground"
+  description="playground with some experiments and test"
+>
+  <main
+    class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8 text-white"
+  >
+    <a
+      href="/"
+      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"
+      >Back</a
+    >
+    <h1 class="text-4xl font-bold mb-4 text-neutral-100">Playground</h1>
+    {
+      projects.map((project) => (
+        <Card href={`playground${project.slug}`} height="h-auto">
+          <div class="text-white">
+            <h2 class="font-bold text-2xl">{project.title}</h2>
+            <p class="font-light">{project.description}</p>
+          </div>
+        </Card>
+      ))
+    }
+  </main>
+</Layout>

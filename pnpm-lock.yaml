@@ -17,6 +17,9 @@ dependencies:
   '@iconify-json/ri':
     specifier: ^1.1.19
     version: 1.1.19
+  '@rive-app/canvas':
+    specifier: ^2.9.3
+    version: 2.9.3
   astro:
     specifier: ^4.3.2
     version: 4.3.2
@@ -964,6 +967,10 @@ packages:
   /@polka/url@1.0.0-next.24:
     resolution: {integrity: sha512-2LuNTFBIO0m7kKIQvvPHN6UE63VjpmL9rnEEaOOaiSPbZK+zUOYIzBAWcED+3XYzhYsd/0mD57VdxAEqqV52CQ==}
     dev: true
+
+  /@rive-app/canvas@2.9.3:
+    resolution: {integrity: sha512-in0Iiaw11hg+DgwPhmunzJvGCUH7Vlp8PVr4r2KreN8R6b57F1UT89VMeSppINTkvZt0ncP0crgUKL7AiB2Xtw==}
+    dev: false
 
   /@rollup/pluginutils@5.1.0:
     resolution: {integrity: sha512-XTIWOPPcpvyKI6L1NHo0lFlCyznUEyPmPY1mc3KpPVDYulHSTvyeLNVW00QTLIAFNhR3kYnJTQHeGqU4M3n09g==}

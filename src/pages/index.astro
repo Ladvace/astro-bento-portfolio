@@ -45,11 +45,12 @@ import Globe from "../components/Globe";
     <AboutMe />
     <ContactsCard />
     <TimeZone />
+    <Now />
     <Card
+      href="playground"
       colSpan="md:col-span-1"
-      rowSpan="md:row-span-2"
-      title="Blog"
-      body="Currently WIP"
+      rowSpan="md:row-span-1 flex"
+      title="Playground"
     />
     <Card
       colSpan="md:col-span-1"
@@ -62,7 +63,12 @@ import Globe from "../components/Globe";
         <Globe client:load />
       </div>
     </Card>
-    <Now />
+    <Card
+      colSpan="md:col-span-1"
+      rowSpan="md:row-span-1 flex gap-4"
+      title="Blog"
+      body="Currently WIP"
+    />
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <p class="text-xs">
         © 2023 · Crafted with ♥️ using <a

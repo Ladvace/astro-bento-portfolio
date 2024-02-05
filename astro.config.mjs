@@ -23,4 +23,7 @@ export default defineConfig({
   ],
   output: "server",
   adapter: netlify(),
+  vite: {
+    assetsInclude: "**/*.riv",
+  },
 });
