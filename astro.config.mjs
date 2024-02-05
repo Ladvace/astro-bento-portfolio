@@ -3,7 +3,7 @@ import sitemap from "@astrojs/sitemap";
 import netlify from "@astrojs/netlify/functions";
 import robotsTxt from "astro-robots-txt";
 import UnoCSS from "@unocss/astro";
-
+import icon from "astro-icon";
 import solidJs from "@astrojs/solid-js";
 
 // https://astro.build/config
@@ -19,6 +19,7 @@ export default defineConfig({
     }),
     solidJs(),
     UnoCSS({ injectReset: true }),
+    icon()
   ],
   output: "server",
   adapter: netlify(),
