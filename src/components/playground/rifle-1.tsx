@@ -76,7 +76,7 @@ const Illustrations = () => {
     <div class="flex flex-col justify-center w-fit h-fit text-white p-4">
       <h1>Rifle animation</h1>
       <p>
-        this is an interactive animation made in rive.app using some
+        Interactive animation made in rive.app using an
         illustration made by me
       </p>
       <p>
