@@ -7,8 +7,8 @@ export default defineConfig({
   },
   theme: {
     boxShadow: {
-      custom: `2px 2px theme('colors.primary.500')`,
-      "custom-hover": `1px 1px theme('colors.primary.500')`,
+      custom: `2px 2px 0`,
+      "custom-hover": `1px 1px 0`,
     },
     fontFamily: {
       sans: ["CabinetGrotesk", "Satoshi"],

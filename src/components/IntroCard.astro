@@ -2,7 +2,7 @@
 import Card from "./Card/index.astro";
 import Button from "./Button.astro";
 import { LINKS } from "../lib/constants";
-import { Icon } from 'astro-icon/components'
+import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
 ---
 
@@ -28,6 +28,12 @@ import Tooltip from "./Tooltip/index";
           <Button aria-label="linkedin profile">
             <Icon name="ri:linkedin-box-fill" class="h-6" />
             <span class="sr-only">Linkedin Profile</span>
+          </Button>
+        </a>
+        <a href={LINKS.dribble} aria-label="dribble profile" target="_blank">
+          <Button aria-label="dribble profile">
+            <Icon name="ri:dribbble-fill" class="h-6" />
+            <span class="sr-only">Dribble Profile</span>
           </Button>
         </a>
         <Tooltip client:visible>
