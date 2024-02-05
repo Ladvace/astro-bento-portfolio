@@ -1,4 +1,4 @@
-import { JSX, Show, createSignal } from "solid-js";
+import { type JSX, Show, createSignal } from "solid-js";
 
 type Props = {
   children: JSX.Element;
