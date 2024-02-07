@@ -8,6 +8,11 @@ const projects = [
     description: "interactive rifle animation made in rive.app",
     slug: "/rifle-1",
   },
+  {
+    title: "GSAP future svg Scroll experiment",
+    description: "scroll animation made with GSAP and some custom futuristic svg",
+    slug: "/future-scroll",
+  },
 ];
 ---
 
@@ -38,15 +43,17 @@ const projects = [
       >Back</a
     >
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Playground</h1>
-    {
-      projects.map((project) => (
-        <Card href={`playground${project.slug}`} height="h-auto">
-          <div class="text-white">
-            <h2 class="font-bold text-2xl">{project.title}</h2>
-            <p class="font-light">{project.description}</p>
-          </div>
-        </Card>
-      ))
-    }
+    <div class="flex flex-col gap-4 w-full">
+      {
+        projects.map((project) => (
+          <Card href={`playground${project.slug}`} height="h-auto">
+            <div class="text-white">
+              <h2 class="font-bold text-2xl">{project.title}</h2>
+              <p class="font-light">{project.description}</p>
+            </div>
+          </Card>
+        ))
+      }
+    </div>
   </main>
 </Layout>
