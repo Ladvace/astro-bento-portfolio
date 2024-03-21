@@ -46,6 +46,34 @@ const { title, description, page, fullScreen } = Astro.props;
     />
 
     <link rel="preconnect" href="https://cdn.fontshare.com" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        "@context": "http://schema.org",
+        "@type": "Person",
+        name: "Gianmarco",
+        url: "https://gianmarco.xyz",
+        sameAs: [
+          "https://www.linkedin.com/in/gianmarco-cavallo",
+          "https://github.com/Ladvace",
+        ],
+        image: "https://gianmarco.xyz/og-image.png",
+        jobTitle: "Freelance Frontend Developer",
+        worksFor: {
+          "@type": "Organization",
+          name: "Self-Employed",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Italy",
+            addressCountry: "IT",
+          },
+        },
+        nationality: {
+          "@type": "Country",
+          name: "Italy",
+        },
+      })}
+    />
   </head>
   <body
     class={`bg-darkslate-700 flex justify-center items-center ${
