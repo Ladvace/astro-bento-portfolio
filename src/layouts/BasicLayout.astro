@@ -2,14 +2,82 @@
 interface Props {
   title: string;
   description: string;
-  page?: "travel";
+  page?: "travel" | "blog";
+  slug?: string | undefined;
+  frontmatter?: {
+    file: string;
+    url: string | undefined;
+  } & {
+    title: string;
+    description: string;
+    pubDate: string;
+    minutesRead: string;
+  };
 }
 
-const { title, description, page } = Astro.props;
+const { title, description, page, slug, frontmatter } = Astro.props;
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
-    : `${Astro.url.origin}/me.webp`;
+    : `${Astro.url.origin}/og-image.png`;
+
+const schema =
+  page !== "blog"
+    ? {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        name: "Gianmarco",
+        url: "https://gianmarco.xyz",
+        sameAs: [
+          "https://www.linkedin.com/in/gianmarco-cavallo",
+          "https://github.com/Ladvace",
+        ],
+        image: "https://gianmarco.xyz/og-image.png",
+        jobTitle: "Freelance Frontend Developer",
+        worksFor: {
+          "@type": "Organization",
+          name: "Self-Employed",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Italy",
+            addressCountry: "IT",
+          },
+        },
+        nationality: {
+          "@type": "Country",
+          name: "Italy",
+        },
+      }
+    : {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `https://gianmarco.xyz/blog/${slug}`,
+        },
+        headline: frontmatter?.title || title,
+        description: frontmatter?.description || title,
+        image: "https://gianmarco.xyz/og-image.png", //TODO: dynamic
+        author: {
+          "@type": "Person",
+          name: "Gianmarco",
+          url: "https://gianmarco.xyz",
+          sameAs: [
+            "https://www.linkedin.com/in/gianmarco-cavallo",
+            "https://github.com/Ladvace",
+          ],
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Gianmarco",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://gianmarco.xyz/og-image.png",
+          },
+        },
+        datePublished: frontmatter?.pubDate || new Date().toISOString(),
+        dateModified: frontmatter?.pubDate || new Date().toISOString(),
+      };
 ---
 
 <!doctype html>
@@ -27,14 +95,21 @@ const image =
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url.origin} />
-    <meta property="og:image" content={image} />
+    <meta
+      property="og:image"
+      content={image || "https://gianmarco.xyz/og-image.png"}
+    />
     <!-- Basic Twitter Card tags -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
+    <meta
+      name="twitter:image"
+      content={image || "https://gianmarco.xyz/og-image.png"}
+    />
 
     <link rel="preconnect" href="https://cdn.fontshare.com" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
   <body
     class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center"

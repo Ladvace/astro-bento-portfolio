@@ -2,8 +2,9 @@
 import Card from "./Card/index.astro";
 import Button from "./Button.astro";
 import { LINKS } from "../lib/constants";
-import { Icon } from "astro-icon/components";
+import { Icon } from 'astro-icon/components'
 import Tooltip from "./Tooltip/index";
+import { Image } from "astro:assets";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
@@ -44,7 +45,7 @@ import Tooltip from "./Tooltip/index";
         </Tooltip>
       </div>
     </div>
-    <img
+    <Image
       width="300"
       height="300"
       src="/me.webp"
