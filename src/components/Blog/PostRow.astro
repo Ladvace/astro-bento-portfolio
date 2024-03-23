@@ -1,0 +1,29 @@
+---
+import { formatDate } from "../../lib/helpers";
+
+interface Props {
+  title: string;
+  date: Date;
+  url: string;
+}
+
+const { title, date, url } = Astro.props;
+---
+
+<li class="w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-2">
+  <a
+    class="text-sm md:text-base decoration-none flex justify-between"
+    href={`/blog/${url}`}
+  >
+    <p class="inline-block whitespace-nowrap">
+      {title}
+    </p>
+    <time
+      class="text-right tabular-nums"
+      datetime={date.toISOString()}
+      data-date={date.toISOString()}
+    >
+      {formatDate(date)}
+    </time>
+  </a>
+</li>

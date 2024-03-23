@@ -1,6 +1,6 @@
 ---
 import Globe from "../components/Globe";
-import Layout from "../layouts/Layout.astro";
+import BasicLayout from "../layouts/BasicLayout.astro";
 ---
 
 <script>
@@ -17,7 +17,7 @@ import Layout from "../layouts/Layout.astro";
   timeline(sequence as TimelineDefinition);
 </script>
 
-<Layout
+<BasicLayout
   title="Gianmarco Cavallo - Visited Countries"
   description="A 3d globe showing countries that I have visited so far"
   page="travel"
@@ -30,4 +30,4 @@ import Layout from "../layouts/Layout.astro";
   >
 
   <Globe client:load />
-</Layout>
+</BasicLayout>

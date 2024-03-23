@@ -1,0 +1,161 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  page?: "travel" | "blog";
+  slug?: string | undefined;
+  frontmatter?: {
+    file: string;
+    url: string | undefined;
+  } & {
+    title: string;
+    description: string;
+    pubDate: string;
+    minutesRead: string;
+  };
+}
+
+const { title, description, page, slug, frontmatter } = Astro.props;
+const image =
+  page === "travel"
+    ? `${Astro.url.origin}/globe_preview.webp"`
+    : `${Astro.url.origin}/og-image.png`;
+
+const schema =
+  page !== "blog"
+    ? {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        name: "Gianmarco",
+        url: "https://gianmarco.xyz",
+        sameAs: [
+          "https://www.linkedin.com/in/gianmarco-cavallo",
+          "https://github.com/Ladvace",
+        ],
+        image: "https://gianmarco.xyz/og-image.png",
+        jobTitle: "Freelance Frontend Developer",
+        worksFor: {
+          "@type": "Organization",
+          name: "Self-Employed",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Italy",
+            addressCountry: "IT",
+          },
+        },
+        nationality: {
+          "@type": "Country",
+          name: "Italy",
+        },
+      }
+    : {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `https://gianmarco.xyz/blog/${slug}`,
+        },
+        headline: frontmatter?.title || title,
+        description: frontmatter?.description || title,
+        image: "https://gianmarco.xyz/og-image.png", //TODO: dynamic
+        author: {
+          "@type": "Person",
+          name: "Gianmarco",
+          url: "https://gianmarco.xyz",
+          sameAs: [
+            "https://www.linkedin.com/in/gianmarco-cavallo",
+            "https://github.com/Ladvace",
+          ],
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Gianmarco",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://gianmarco.xyz/og-image.png",
+          },
+        },
+        datePublished: frontmatter?.pubDate || new Date().toISOString(),
+        dateModified: frontmatter?.pubDate || new Date().toISOString(),
+      };
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="/favicon/sitemap-index.xml" />
+    <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url.origin} />
+    <meta
+      property="og:image"
+      content={image || "https://gianmarco.xyz/og-image.png"}
+    />
+    <!-- Basic Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="twitter:image"
+      content={image || "https://gianmarco.xyz/og-image.png"}
+    />
+
+    <link rel="preconnect" href="https://cdn.fontshare.com" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body
+    class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center"
+  >
+    <slot name="loader" />
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  @font-face {
+    font-family: "CabinetGrotesk";
+    src: url("/fonts/CabinetGrotesk-Variable.ttf") format("truetype-variations");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 1000;
+  }
+  @font-face {
+    font-family: "Satoshi";
+    src: url("/fonts/Satoshi-Variable.ttf") format("truetype-variations");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 1000;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Satoshi", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Cabinet Grotesk", sans-serif;
+  }
+  p {
+    font-family: "Satoshi";
+  }
+
+  b {
+    font-weight: 700 !important;
+  }
+</style>

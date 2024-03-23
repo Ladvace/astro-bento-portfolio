@@ -11,14 +11,11 @@ import Globe from "../components/Globe";
 
 <script>
   import { stagger, spring, timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../lib/constants";
   const cards = document.querySelectorAll(".card");
 
   const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-out" },
-    ],
+    loaderAnimation,
     [
       cards,
       { y: ["40%", "0%"], opacity: [0, 1] },
@@ -49,9 +46,10 @@ import Globe from "../components/Globe";
     <Card
       href="playground"
       colSpan="md:col-span-1"
-      rowSpan="md:row-span-1 flex"
+      rowSpan="md:row-span-1"
       title="Playground"
     />
+
     <Card
       colSpan="md:col-span-1"
       rowSpan="md:row-span-1"
@@ -71,7 +69,7 @@ import Globe from "../components/Globe";
     />
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <p class="text-xs">
-        © 2023 · Crafted with ♥️ using <a
+        © 2024 · Crafted with ♥️ using <a
           href="https://astro.build/"
           target="_blank"
           class="text-red-500">Astro</a
