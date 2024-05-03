@@ -10,7 +10,8 @@ const projects = [
   },
   {
     title: "GSAP future svg Scroll experiment",
-    description: "scroll animation made with GSAP and some custom futuristic svg",
+    description:
+      "scroll animation made with GSAP and some custom futuristic svg",
     slug: "/future-scroll",
   },
 ];
@@ -18,16 +19,9 @@ const projects = [
 
 <script>
   import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
 
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-out" },
-    ],
-  ];
-
-  timeline(sequence as TimelineDefinition);
+  timeline([loaderAnimation] as TimelineDefinition);
 </script>
 
 <Layout

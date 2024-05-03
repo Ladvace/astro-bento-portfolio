@@ -16,7 +16,6 @@ const Illustrations = () => {
     const screenWidth = window.innerWidth;
     // Assuming you want the canvas to take up most of the screen width but maintain its aspect ratio
     const newCanvasWidth = Math.min(screenWidth * 0.9, 950); // Cap at original width or 90% of screen width
-    console.log("TEST", screenWidth, newCanvasWidth);
     const aspectRatio = 950 / 540;
     const newCanvasHeight = newCanvasWidth / aspectRatio;
     setCanvasWidth(newCanvasWidth);
@@ -76,8 +75,7 @@ const Illustrations = () => {
     <div class="flex flex-col justify-center w-fit h-fit text-white p-4">
       <h1>Rifle animation</h1>
       <p>
-        Interactive animation made in rive.app using an
-        illustration made by me
+        Interactive animation made in rive.app using an illustration made by me
       </p>
       <p>
         click on the rifle or on the <span class="font-bold">S</span> and on the{" "}

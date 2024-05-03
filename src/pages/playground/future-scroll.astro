@@ -5,16 +5,9 @@ import Scroll1Component from "../../components/playground/scroll-1/scroll-1.svel
 
 <script>
   import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
 
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-out" },
-    ],
-  ];
-
-  timeline(sequence as TimelineDefinition);
+  timeline([loaderAnimation] as TimelineDefinition);
 </script>
 
 <Layout

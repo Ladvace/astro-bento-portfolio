@@ -1,20 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Rifle1 from "../../components/playground/rifle-1";
+import Rifle1Component from "../../components/playground/rifle-1";
 ---
 
 <script>
   import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
 
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-out" },
-    ],
-  ];
-
-  timeline(sequence as TimelineDefinition);
+  timeline([loaderAnimation] as TimelineDefinition);
 </script>
 
 <Layout
@@ -29,7 +22,7 @@ import Rifle1 from "../../components/playground/rifle-1";
     >
 
     <div class="w-full h-full flex justify-center items-center">
-      <Rifle1 client:load />
+      <Rifle1Component client:load />
     </div>
   </div>
 </Layout>

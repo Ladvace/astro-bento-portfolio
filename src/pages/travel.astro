@@ -5,23 +5,15 @@ import BasicLayout from "../layouts/BasicLayout.astro";
 
 <script>
   import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../lib/constants";
 
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-out" },
-    ],
-  ];
-
-  timeline(sequence as TimelineDefinition);
+  timeline(loaderAnimation as TimelineDefinition);
 </script>
 
 <BasicLayout
   title="Gianmarco Cavallo - Visited Countries"
   description="A 3d globe showing countries that I have visited so far"
   page="travel"
-
 >
   <a
     href="/"
