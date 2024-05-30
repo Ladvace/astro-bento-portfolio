@@ -61,7 +61,7 @@ const GlobeComponent = () => {
       .append("path")
       .attr("d", (d: any) => pathGenerator(d as any))
       .attr("fill", (d: { properties: { name: string } }) =>
-        visitedCountries.includes(d.properties.name) ? "#E63946" : "white"
+        visitedCountries.includes(d.properties.name) ? "var(--primary-500)" : "white"
       )
       .style("stroke", "black")
       .style("stroke-width", 0.3)
