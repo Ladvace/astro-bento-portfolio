@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card/index.astro";
 import IntroCard from "../components/IntroCard.astro";
 import ContactsCard from "../components/ContactsCard.astro";
+import ThemeChangeCard from "../components/ThemeChangeCard.astro";
 import TimeZone from "../components/TimeZoneCard.astro";
 import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
@@ -61,12 +62,13 @@ import Globe from "../components/Globe";
         <Globe client:load />
       </div>
     </Card>
-    <Card
+    <!-- <Card
       colSpan="md:col-span-1"
       rowSpan="md:row-span-1 flex gap-4"
       title="Blog"
       body="Currently WIP"
-    />
+    /> -->
+    <ThemeChangeCard client:load />
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <p class="text-xs">
         © 2024 · Crafted with ♥️ using <a

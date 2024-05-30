@@ -29,7 +29,7 @@ const { frontmatter } = Astro.props;
     >
     <div class="my-10">
       <h1 class="text-5xl font-semibold">{frontmatter.title}</h1>
-      <div class="flex justify-between pt-4 text-gray-500 text-sm">
+      <div class="flex justify-between pt-4 text-darkslate-200 text-sm">
         <p>{formatDate(new Date(frontmatter.pubDate))}</p>
         <p>{frontmatter.minutesRead}</p>
       </div>
