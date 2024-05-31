@@ -1,6 +1,5 @@
 ---
 import BasicLayout from "./BasicLayout.astro";
-import '../style.css';
 
 interface Props {
   title: string;
@@ -9,7 +8,7 @@ interface Props {
   fullScreen?: string;
 }
 
-const { title, description, page, fullScreen } = Astro.props;
+const { title, description } = Astro.props;
 ---
 
 <BasicLayout title={title} description={description}>
