@@ -3,7 +3,12 @@ import Card from "./Card/index.astro";
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-1 flex gap-4" padding="p-4">
-  <div class="flex gap-4 theme-colors">
+  <div class="flex theme-colors flex justify-between items-center w-full">
+    <div
+      class="w-10 h-10 rounded-full bg-[#e63946] cursor-pointer"
+      data-theme="default"
+    >
+    </div>
     <div
       class="w-10 h-10 rounded-full bg-yellow-500 cursor-pointer"
       data-theme="yellow-theme"
@@ -34,13 +39,15 @@ import Card from "./Card/index.astro";
     themeButtons.forEach((button) => {
       button.addEventListener("click", () => {
         const themeName = button.getAttribute("data-theme");
+
+        const isDefault = themeName === "default";
         document.body.classList.remove(
           "yellow-theme",
           "blue-theme",
           "purple-theme",
           "green-theme"
         );
-        if (!themeName) return;
+        if (!themeName || isDefault) return;
         document.body.classList.add(themeName);
       });
     });
