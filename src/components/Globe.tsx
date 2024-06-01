@@ -15,7 +15,7 @@ const GlobeComponent = () => {
     "Malta",
     "Hungary",
     "Portugal",
-    "Marocco",
+    "Morocco",
     "Greece",
     "Spain"
   ];
