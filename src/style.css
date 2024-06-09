@@ -85,3 +85,50 @@ body::before {
   -webkit-mask: linear-gradient(-360deg, transparent 40%, white);
   mask: linear-gradient(-360deg, transparent 40%, white);
 }
+
+.switchboard {
+  background-color: theme("colors.darkslate.900");
+  padding: 40px;
+  border-radius: 20px;
+}
+
+.switchboard .star {
+  width: 1px;
+  height: 1px;
+  border-radius: 100%;
+  position: relative;
+  transition: transform 10ms ease;
+}
+
+.switchboard .star::after,
+.switchboard .star::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  border-radius: inherit;
+  transition: opacity 10ms ease;
+}
+
+.switchboard .star::before {
+  background: theme("colors.primary.500");
+  box-shadow: 0px 0px 2px 1px theme("colors.primary.800");
+}
+
+.switchboard .star::after {
+  background: #ffffff;
+  box-shadow: 0px 0px 1px 1px theme("colors.primary.500"),
+    0px 0px 2px 1px theme("colors.primary.800");
+}
+
+.switchboard .star[data-state="off"] {
+  background: theme("colors.darkslate.300");
+}
+
+.switchboard .star[data-state="medium"]::before {
+  opacity: 1;
+}
+
+.switchboard .star[data-state="high"]::after {
+  opacity: 1;
+}
