@@ -49,6 +49,8 @@ import Card from "./Card/index.astro";
         );
         if (!themeName || isDefault) return;
         document.body.classList.add(themeName);
+
+        localStorage.setItem("theme", themeName)
       });
     });
   });

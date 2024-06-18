@@ -10,37 +10,37 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^5.2.1",
+    "@astrojs/netlify": "^5.3.1",
     "@astrojs/rss": "^4.0.6",
-    "@astrojs/sitemap": "^3.1.5",
-    "@astrojs/solid-js": "^4.3.0",
-    "@astrojs/svelte": "^5.5.0",
-    "@iconify-json/ri": "^1.1.20",
-    "@rive-app/canvas": "^2.16.0",
+    "@astrojs/sitemap": "^3.1.6",
+    "@astrojs/solid-js": "^4.4.0",
+    "@astrojs/svelte": "^5.6.0",
+    "@iconify-json/ri": "^1.1.21",
+    "@rive-app/canvas": "^2.17.3",
     "@studio-freight/lenis": "^1.0.34",
-    "astro": "^4.10.1",
+    "astro": "^4.10.3",
     "astro-icon": "^1.1.0",
     "astro-robots-txt": "^1.0.0",
     "autoprefixer": "^10.4.19",
     "d3": "^7.9.0",
     "gsap": "^3.12.5",
     "mdast-util-to-string": "^4.0.0",
-    "motion": "^10.17.0",
+    "motion": "^10.18.0",
     "reading-time": "^1.5.0",
     "sharp": "^0.33.4",
     "solid-js": "^1.8.17",
-    "svelte": "^4.2.17"
+    "svelte": "^4.2.18"
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
-    "@unocss/astro": "^0.60.3",
-    "@unocss/postcss": "^0.60.3",
-    "@unocss/preset-uno": "^0.60.3",
-    "@unocss/reset": "^0.60.3",
+    "@unocss/astro": "^0.61.0",
+    "@unocss/postcss": "^0.61.0",
+    "@unocss/preset-uno": "^0.61.0",
+    "@unocss/reset": "^0.61.0",
     "autoprefixer": "^10.4.19",
     "markdown-it": "^14.1.0",
-    "motion": "^10.17.0",
+    "motion": "^10.18.0",
     "sanitize-html": "^2.13.0",
-    "unocss": "^0.60.3"
+    "unocss": "^0.61.0"
   }
 }

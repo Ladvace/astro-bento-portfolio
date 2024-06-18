@@ -19,3 +19,11 @@ const { title, description } = Astro.props;
   </div>
   <slot />
 </BasicLayout>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const theme = localStorage.getItem("theme");
+
+    if (theme) document.body.classList.add(theme);
+  });
+</script>
