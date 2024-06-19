@@ -47,10 +47,11 @@ import Card from "./Card/index.astro";
           "purple-theme",
           "green-theme"
         );
+        
+        localStorage.setItem("theme", themeName as string)
         if (!themeName || isDefault) return;
         document.body.classList.add(themeName);
 
-        localStorage.setItem("theme", themeName)
       });
     });
   });

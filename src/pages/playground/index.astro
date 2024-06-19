@@ -19,6 +19,11 @@ const projects = [
     description: "Glowing stars text, inspired by the nextjs website",
     slug: "/glowing-stars",
   },
+  {
+    title: "Turbolence clip-path header",
+    description: "Header animation made clip-path and turbolence svg filter",
+    slug: "/turbolence-header",
+  },
 ];
 ---
 
@@ -46,9 +51,9 @@ const projects = [
       {
         projects.map((project) => (
           <Card href={`playground${project.slug}`} height="h-auto">
-            <div class="text-white">
-              <h2 class="font-bold text-2xl">{project.title}</h2>
-              <p class="font-light">{project.description}</p>
+            <div class="text-darkslate-50">
+              <h2 class="font-semibold text-2xl">{project.title}</h2>
+              <p class="text-darkslate-300">{project.description}</p>
             </div>
           </Card>
         ))
