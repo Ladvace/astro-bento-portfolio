@@ -1,6 +1,6 @@
-import { createEffect, createSignal, For } from "solid-js";
+import { createSignal, For } from "solid-js";
 
-const turbolenceHeader = () => {
+const turbulenceHeader = () => {
   const [selectedRouted, setSelectedRoute] = createSignal("Home");
 
   const routes = [
@@ -110,4 +110,4 @@ const turbolenceHeader = () => {
   );
 };
 
-export default turbolenceHeader;
+export default turbulenceHeader;
