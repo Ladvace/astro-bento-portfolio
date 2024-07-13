@@ -5,7 +5,7 @@
   import Shape4 from "./svg-shapes/Shape4.svelte";
   import gsap from "gsap";
   import ScrollTrigger from "gsap/dist/ScrollTrigger";
-  import Lenis from "@studio-freight/lenis";
+  import Lenis from "lenis";
   import { onMount } from "svelte";
 
   onMount(() => {
