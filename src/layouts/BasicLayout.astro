@@ -3,7 +3,7 @@ import "../style.css";
 interface Props {
   title: string;
   description: string;
-  page?: "travel" | "blog";
+  page?: "travel";
   slug?: string | undefined;
   frontmatter?: {
     file: string;
@@ -22,63 +22,31 @@ const image =
     ? `${Astro.url.origin}/globe_preview.webp"`
     : `${Astro.url.origin}/og-image.png`;
 
-const schema =
-  page !== "blog"
-    ? {
-        "@context": "http://schema.org",
-        "@type": "Person",
-        name: "Gianmarco",
-        url: "https://gianmarco.xyz",
-        sameAs: [
-          "https://www.linkedin.com/in/gianmarco-cavallo",
-          "https://github.com/Ladvace",
-        ],
-        image: "https://gianmarco.xyz/og-image.png",
-        jobTitle: "Freelance Frontend Developer",
-        worksFor: {
-          "@type": "Organization",
-          name: "Self-Employed",
-          address: {
-            "@type": "PostalAddress",
-            addressLocality: "Italy",
-            addressCountry: "IT",
-          },
-        },
-        nationality: {
-          "@type": "Country",
-          name: "Italy",
-        },
-      }
-    : {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        mainEntityOfPage: {
-          "@type": "WebPage",
-          "@id": `https://gianmarco.xyz/blog/${slug}`,
-        },
-        headline: frontmatter?.title || title,
-        description: frontmatter?.description || title,
-        image: "https://gianmarco.xyz/og-image.png", //TODO: dynamic
-        author: {
-          "@type": "Person",
-          name: "Gianmarco",
-          url: "https://gianmarco.xyz",
-          sameAs: [
-            "https://www.linkedin.com/in/gianmarco-cavallo",
-            "https://github.com/Ladvace",
-          ],
-        },
-        publisher: {
-          "@type": "Organization",
-          name: "Gianmarco",
-          logo: {
-            "@type": "ImageObject",
-            url: "https://gianmarco.xyz/og-image.png",
-          },
-        },
-        datePublished: frontmatter?.pubDate || new Date().toISOString(),
-        dateModified: frontmatter?.pubDate || new Date().toISOString(),
-      };
+const schema = {
+  "@context": "http://schema.org",
+  "@type": "Person",
+  name: "Gianmarco",
+  url: "https://gianmarco.xyz",
+  sameAs: [
+    "https://www.linkedin.com/in/gianmarco-cavallo",
+    "https://github.com/Ladvace",
+  ],
+  image: "https://gianmarco.xyz/og-image.png",
+  jobTitle: "Freelance Frontend Developer",
+  worksFor: {
+    "@type": "Organization",
+    name: "Self-Employed",
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Italy",
+      addressCountry: "IT",
+    },
+  },
+  nationality: {
+    "@type": "Country",
+    name: "Italy",
+  },
+};
 ---
 
 <!doctype html>
@@ -116,9 +84,7 @@ const schema =
       src="https://cloud.umami.is/script.js"
       data-website-id="04ef2638-4aac-4bb6-80fd-5ac4e003dfee"></script>
   </head>
-  <body
-    class="bg-darkslate-700 flex flex-col justify-center items-center"
-  >
+  <body class="bg-darkslate-700 flex flex-col justify-center items-center">
     <slot name="loader" />
     <slot />
   </body>
