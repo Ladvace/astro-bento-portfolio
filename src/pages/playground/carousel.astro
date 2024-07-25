@@ -1,0 +1,33 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import CarouselComponent from "../../components/playground/carousel";
+---
+
+<script>
+  import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
+
+  timeline([loaderAnimation] as TimelineDefinition);
+</script>
+
+<Layout
+  title="Gianmarco Cavallo - Playground - Fancy league of legends carousel"
+  description="Fancy carousel with league of legends champions"
+  fullScreen="h-auto"
+>
+  <div
+    class="flex flex-col px-4 pb-4 overscroll-none w-full h-screen overflow-hidden"
+  >
+    <header class="sticky top-0 inset-x-0 z-60 p-4">
+      <a
+        href="/playground"
+        class="text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
+        >Back</a
+      >
+    </header>
+
+    <div class="h-full w-full">
+      <CarouselComponent client:load />
+    </div>
+  </div>
+</Layout>
