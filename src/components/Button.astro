@@ -1,15 +1,17 @@
 ---
 interface Props {
   rounded?: boolean;
+  class?: string;
 }
 
-const { rounded } = Astro.props;
+const { rounded, ...props } = Astro.props;
 ---
 
 <button
-  class={`custom-btn text-xl max-h-[50px] shadow-custom shadow-primary-500 active:shadow-none active:translate-x-[3px] active:translate-y-[3px] text-darkslate-50 px-5 py-2 border border-primary-500 hover:text-primary-500 transition-colors duration-100 ease-in-out bg-darkslate-900 cursor-pointer ${
+  {...props}
+  class={`custom-btn w-fit text-xl max-h-[50px] shadow-custom shadow-primary-500 active:shadow-none active:translate-x-[3px] active:translate-y-[3px] text-darkslate-50 px-5 py-2 border border-primary-500 hover:text-primary-500 transition-colors duration-100 ease-in-out bg-darkslate-900 cursor-pointer ${
     rounded ? "rounded-full" : "rounded-lg"
-  }`}
+  } ${props.class}`}
 >
   <slot />
 </button>

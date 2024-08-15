@@ -31,39 +31,52 @@ import Tooltip from "./Tooltip/index";
           </span>
         </p>
       </div>
-      <div class="flex gap-4">
-        <a href={LINKS.github} aria-label="github profile" target="_blank">
-          <Button aria-label="github profile">
-            <Icon name="ri:github-fill" class="h-6" />
-            <span class="sr-only" data-umami-event="github button"
-              >GitHub Profile</span
-            >
-          </Button>
-        </a>
-        <a href={LINKS.linkedin} aria-label="linkedin profile" target="_blank">
-          <Button aria-label="linkedin profile">
-            <Icon name="ri:linkedin-box-fill" class="h-6" />
-            <span class="sr-only" data-umami-event="linkedin button"
-              >Linkedin Profile</span
-            >
-          </Button>
-        </a>
-        <a href={LINKS.dribble} aria-label="dribble profile" target="_blank">
-          <Button aria-label="dribble profile">
-            <Icon name="ri:dribbble-fill" class="h-6" />
-            <span class="sr-only" data-umami-event="Dribble button"
-              >Dribble Profile</span
-            >
-          </Button>
-        </a>
-        <Tooltip client:visible>
-          <Button aria-label="easter egg btn">
-            <Icon name="ri:emotion-laugh-line" class="h-6" />
-            <span class="sr-only" data-umami-event="Easter egg button"
-              >Easter egg button</span
-            >
-          </Button>
-        </Tooltip>
+      <div class="flex flex-col lg:flex-row gap-2 lg:gap-4">
+        <div class="flex gap-2 lg:gap-4">
+          <a href={LINKS.github} aria-label="github profile" target="_blank">
+            <Button aria-label="github profile">
+              <Icon name="ri:github-fill" class="h-6" />
+              <span class="sr-only" data-umami-event="github button"
+                >GitHub Profile</span
+              >
+            </Button>
+          </a>
+          <a
+            href={LINKS.linkedin}
+            aria-label="linkedin profile"
+            target="_blank"
+          >
+            <Button aria-label="linkedin profile">
+              <Icon name="ri:linkedin-box-fill" class="h-6" />
+              <span class="sr-only" data-umami-event="linkedin button"
+                >Linkedin Profile</span
+              >
+            </Button>
+          </a>
+          <a href={LINKS.dribble} aria-label="dribble profile" target="_blank">
+            <Button aria-label="dribble profile">
+              <Icon name="ri:dribbble-fill" class="h-6" />
+              <span class="sr-only" data-umami-event="Dribble button"
+                >Dribble Profile</span
+              >
+            </Button>
+          </a>
+          <Tooltip client:visible>
+            <Button aria-label="easter egg btn">
+              <Icon name="ri:emotion-laugh-line" class="h-6" />
+              <span class="sr-only" data-umami-event="Easter egg button"
+                >Easter egg button</span
+              >
+            </Button>
+          </Tooltip>
+        </div>
+        <Button aria-label="book a call" data-cal-link="ladvace">
+          <span
+            data-umami-event="Book a call"
+            data-cal-link="ladvace"
+            class="font-bold whitespace-nowrap">Book a call</span
+          >
+        </Button>
       </div>
     </div>
     <img

@@ -2,6 +2,7 @@ import { type JSX, Show, createSignal } from "solid-js";
 
 type Props = {
   children: JSX.Element;
+  class?: string;
 };
 
 function Tooltip(props: Props) {
@@ -43,7 +44,7 @@ function Tooltip(props: Props) {
   };
 
   return (
-    <div class="relative inline-block">
+    <div class={`relative inline-block ${props.class}`}>
       <div
         onMouseDown={() => {
           setIsVisible(!isVisible());

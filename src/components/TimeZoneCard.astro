@@ -28,14 +28,16 @@ import Card from "./Card/index.astro";
   });
 </script>
 
-<Card colSpan="lg:col-span-2" rowSpan="md:row-span-2" title="Time zone">
-  <div class="flex text-3xl lg:text-5xl items-center h-[calc(100%-28px)] font-serif">
+<Card colSpan="lg:col-span-1" rowSpan="md:row-span-2" title="Local time">
+  <div
+    class="flex text-4xl items-center h-[calc(100%-28px)] font-serif"
+  >
     <time
       datetime=""
       id="timeDisplay"
-      class="xl:whitespace-nowrap flex items-center"
+      class="whitespace-nowrap flex items-center"
     >
       {formatTimeForItaly(getCurrentTimeInItaly())}
-    </time>, Italy
+    </time>
   </div>
 </Card>

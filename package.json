@@ -10,14 +10,14 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^5.4.0",
+    "@astrojs/netlify": "^5.5.0",
     "@astrojs/rss": "^4.0.7",
     "@astrojs/sitemap": "^3.1.6",
-    "@astrojs/solid-js": "^4.4.0",
+    "@astrojs/solid-js": "^4.4.1",
     "@astrojs/svelte": "^5.7.0",
     "@iconify-json/ri": "^1.1.21",
     "@rive-app/canvas": "^2.19.5",
-    "astro": "^4.12.2",
+    "astro": "^4.13.4",
     "astro-icon": "^1.1.0",
     "astro-robots-txt": "^1.0.0",
     "autoprefixer": "^10.4.19",
@@ -40,7 +40,6 @@
     "autoprefixer": "^10.4.19",
     "markdown-it": "^14.1.0",
     "motion": "^10.18.0",
-    "sanitize-html": "^2.13.0",
     "unocss": "^0.61.5"
   }
 }
