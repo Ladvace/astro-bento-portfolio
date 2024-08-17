@@ -14,16 +14,31 @@ const { title, description } = Astro.props;
 <BasicLayout title={title} description={description}>
   <div
     slot="loader"
+    transition:animate="fade"
     class="loader bg-darkslate-700 text-neutral-50 text-3xl font-black uppercase flex justify-center items-center w-screen h-screen z-50 fixed top-0 bottom-0 right-0 left-0"
   >
   </div>
+
   <slot />
 </BasicLayout>
 
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
+<script is:inline>
+  document.addEventListener("astro:page-load", () => {
     const theme = localStorage.getItem("theme");
 
     if (theme) document.body.classList.add(theme);
+  });
+</script>
+
+<script>
+  import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../lib/constants";
+
+  document.addEventListener("astro:page-load", () => {
+    timeline([loaderAnimation] as TimelineDefinition);
+  });
+
+  document.addEventListener("astro:after-swap", () => {
+    timeline([loaderAnimation] as TimelineDefinition);
   });
 </script>
