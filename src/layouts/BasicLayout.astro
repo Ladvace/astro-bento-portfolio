@@ -60,6 +60,7 @@ const schema = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="robots" content="/favicon/sitemap-index.xml" />
+    <link rel="canonical" href={Astro.url.href} />
     <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
