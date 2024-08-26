@@ -33,7 +33,7 @@ import Card from "./Card/index.astro";
 </Card>
 
 <script>
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     const themeButtons = document.querySelectorAll(".theme-colors > div");
 
     themeButtons.forEach((button) => {

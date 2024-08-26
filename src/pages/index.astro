@@ -8,6 +8,7 @@ import TimeZone from "../components/TimeZoneCard.astro";
 import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
+import DesignWorksCard from "../components/DesignWorksCard.astro";
 ---
 
 <script>
@@ -23,7 +24,7 @@ import Globe from "../components/Globe";
       {
         at: "-0.1",
         duration: 0.4,
-        delay: stagger(0.3),
+        delay: stagger(0.15),
         easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
       },
     ],
@@ -43,8 +44,11 @@ import Globe from "../components/Globe";
     <AboutMe />
     <ContactsCard />
     <TimeZone />
+    <DesignWorksCard />
     <Card colSpan="md:col-star-1" rowSpan="md:row-span-2" title="Works">
-      <div class="h-[calc(100%-28px)] w-full flex items-center justify-center">WIP</div>
+      <div class="h-[calc(100%-28px)] w-full flex items-center justify-center">
+        WIP
+      </div>
     </Card>
     <Now />
     <Card
