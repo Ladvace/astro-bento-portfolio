@@ -1,5 +1,4 @@
 ---
-import { ViewTransitions } from "astro:transitions";
 import "../style.css";
 interface Props {
   title: string;
@@ -17,7 +16,7 @@ interface Props {
   };
 }
 
-const { title, description, page } = Astro.props;
+const { title, description, page, slug, frontmatter } = Astro.props;
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
@@ -134,11 +133,8 @@ const schema = {
       });
     </script>
     <!-- Cal element-click embed code ends -->
-    <ViewTransitions />
   </head>
-  <body
-    class="bg-darkslate-700 flex flex-col justify-center items-center overscroll-none"
-  >
+  <body class="bg-darkslate-700 flex flex-col justify-center items-center">
     <slot name="loader" />
     <slot />
   </body>

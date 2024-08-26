@@ -12,24 +12,18 @@ import Globe from "../components/Globe";
 
 <script>
   import { stagger, spring, timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../lib/constants";
+  const cards = document.querySelectorAll(".card");
 
   const sequence = [
+    loaderAnimation,
     [
-      ".card",
-      { opacity: [0, 1] },
+      cards,
+      { y: ["40%", "0%"], opacity: [0, 1] },
       {
-        duration: 0.1,
-        delay: stagger(0.15),
-        easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
-      },
-    ],
-    [
-      ".card",
-      { y: ["40%", "0%"] },
-      {
-        at: "<",
-        duration: 0.1,
-        delay: stagger(0.15),
+        at: "-0.1",
+        duration: 0.4,
+        delay: stagger(0.3),
         easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
       },
     ],
@@ -39,7 +33,7 @@ import Globe from "../components/Globe";
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Freelance Frontend Developer"
+  title="Gianmarco Cavallo - Freelance front-end Developer"
   description="I'm a developer based in Italy, passionate about user experience and specializing in engaging animations and micro-interactions. My primary tools of choice include: JavaScript, React, Solid.js, Astro, Svelte, and Node.js."
 >
   <main
@@ -50,9 +44,7 @@ import Globe from "../components/Globe";
     <ContactsCard />
     <TimeZone />
     <Card colSpan="md:col-star-1" rowSpan="md:row-span-2" title="Works">
-      <div class="h-[calc(100%-28px)] w-full flex items-center justify-center">
-        Work in progress
-      </div>
+      <div class="h-[calc(100%-28px)] w-full flex items-center justify-center">WIP</div>
     </Card>
     <Now />
     <Card
@@ -61,6 +53,7 @@ import Globe from "../components/Globe";
       rowSpan="md:row-span-1"
       title="Playground"
     />
+
     <Card
       colSpan="md:col-span-1"
       rowSpan="md:row-span-1"

@@ -3,6 +3,13 @@ import Layout from "../../layouts/Layout.astro";
 import Rifle1Component from "../../components/playground/rifle-1";
 ---
 
+<script>
+  import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
+
+  timeline([loaderAnimation] as TimelineDefinition);
+</script>
+
 <Layout
   title="Gianmarco Cavallo - Playground - Rifle animation"
   description="A rifle animation made with rive.app"

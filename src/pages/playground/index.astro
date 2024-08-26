@@ -29,14 +29,15 @@ const projects = [
     description: "Fancy carousel with league of legends champions",
     slug: "/carousel",
   },
-  {
-    title: "Loader animation inspired by camillemormal.com",
-    description:
-      "I tried to remake the loader animation of camillemormal.com with solidjs and motion one",
-    slug: "/sliding-images-loader",
-  },
 ];
 ---
+
+<script>
+  import { timeline, type TimelineDefinition } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
+
+  timeline([loaderAnimation] as TimelineDefinition);
+</script>
 
 <Layout
   title="Gianmarco Cavallo - Playground"
@@ -51,14 +52,10 @@ const projects = [
       >Back</a
     >
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Playground</h1>
-    <div class="grid grid-cols-2 gap-4 w-full">
+    <div class="flex flex-col gap-4 w-full">
       {
         projects.map((project) => (
-          <Card
-            href={`playground${project.slug}`}
-            height="h-auto"
-            colSpan="md:col-span-1"
-          >
+          <Card href={`playground${project.slug}`} height="h-auto">
             <div class="text-darkslate-50">
               <h2 class="font-semibold text-2xl">{project.title}</h2>
               <p class="text-darkslate-300">{project.description}</p>
