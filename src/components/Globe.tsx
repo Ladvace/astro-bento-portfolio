@@ -2,7 +2,11 @@ import { onMount } from "solid-js";
 import * as d3 from "d3";
 import worldData from "../lib/world.json";
 
-const GlobeComponent = () => {
+type Props = {
+  isStatic?: boolean;
+};
+
+const GlobeComponent = ({ isStatic }: Props) => {
   let mapContainer: HTMLDivElement | undefined;
 
   const visitedCountries = [
@@ -17,7 +21,9 @@ const GlobeComponent = () => {
     "Portugal",
     "Morocco",
     "Greece",
-    "Spain"
+    "Spain",
+    "Netherland",
+    "Belgium",
   ];
 
   onMount(() => {
@@ -63,7 +69,9 @@ const GlobeComponent = () => {
       .append("path")
       .attr("d", (d: any) => pathGenerator(d as any))
       .attr("fill", (d: { properties: { name: string } }) =>
-        visitedCountries.includes(d.properties.name) ? "var(--primary-500)" : "white"
+        visitedCountries.includes(d.properties.name)
+          ? "var(--primary-500)"
+          : "white"
       )
       .style("stroke", "black")
       .style("stroke-width", 0.3)
@@ -72,7 +80,9 @@ const GlobeComponent = () => {
     d3.timer(() => {
       const rotate = projection.rotate();
       const k = sensitivity / projection.scale();
-      projection.rotate([rotate[0] - 1 * k, rotate[1]]);
+      if (!isStatic) {
+        projection.rotate([rotate[0] - 1 * k, rotate[1]]);
+      }
       svg.selectAll("path").attr("d", (d: any) => pathGenerator(d as any));
     }, 200);
   });

@@ -66,7 +66,8 @@ import DesignWorksCard from "../components/DesignWorksCard.astro";
       colorText="text-neutral-900"
     >
       <div class="h-full w-full absolute inset-0 -z-10">
-        <Globe client:load />
+        <Globe client:media="(min-width: 768px)" />
+        <Globe client:media="(max-width: 768px)" isStatic={true} />
       </div>
     </Card>
     <ThemeChangeCard />
