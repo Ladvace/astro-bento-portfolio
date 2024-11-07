@@ -22,7 +22,7 @@ const GlobeComponent = ({ isStatic }: Props) => {
     "Morocco",
     "Greece",
     "Spain",
-    "Netherland",
+    "Netherlands",
     "Belgium",
   ];
 
