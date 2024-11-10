@@ -4,6 +4,8 @@ import Button from "./Button.astro";
 import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
+import { Image } from "astro:assets";
+import MemojiAvatar from "../assets/me.webp";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
@@ -79,10 +81,9 @@ import Tooltip from "./Tooltip/index";
         </Button>
       </div>
     </div>
-    <img
-      width="300"
-      height="300"
-      src="/me.webp"
+    <Image
+      quality="max"
+      src={MemojiAvatar}
       class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
       alt="memoji of gianmarco"
     />

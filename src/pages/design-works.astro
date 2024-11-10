@@ -1,5 +1,19 @@
 ---
+import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
+import MustangIllustration from "../assets/illustrations/mustangs.webp";
+import RifleIllustration from "../assets/illustrations/rifle.webp";
+import SniperIllustration from "../assets/illustrations/sniper.webp";
+import ShieldLogoIllustration from "../assets/illustrations/shield_logo.webp";
+import RomanShieldIllustration from "../assets/illustrations/roman_shield.webp";
+import RemoteControlIllustration from "../assets/illustrations/remote_control.webp";
+import ProspectiveIllustration from "../assets/illustrations/prospective.webp";
+import Landscape1Illustration from "../assets/illustrations/landscape_1.webp";
+import Landscape2Illustration from "../assets/illustrations/landscape_2.webp";
+import StockMarketDownIllustration from "../assets/illustrations/stock_market_down.webp";
+import StockMarketUpIllustration from "../assets/illustrations/stock_market_up.webp";
+import HouseIllustration from "../assets/illustrations/house.webp";
+import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
 ---
 
 <script>
@@ -25,70 +39,96 @@ import Layout from "../layouts/Layout.astro";
     </p>
 
     <div class="w-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-      <img
-        src="/illustrations/mustangs.webp"
+      <Image
+        src={MustangIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="mustangs illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/sniper.webp"
+      <Image
+        src={SniperIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="sniper illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/rifle.webp"
+      <Image
+        src={RifleIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="rifle illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/shield_logo.webp"
+      <Image
+        src={ShieldLogoIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="shield logo illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/roman_shield.webp"
-        class="w-80 h-80 rounded-md object-contain border-1 border-solid border-neutral-200"
+      <Image
+        src={RomanShieldIllustration}
+        class="w-80 h-80 rounded-md object-cover"
         alt="roman shield illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/remote_control.webp"
+      <Image
+        src={RemoteControlIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="remote control illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/prospective.webp"
+      <Image
+        src={ProspectiveIllustration}
         class="w-80 h-80 rounded-md object-cover"
-        alt="prospective exploration"
+        alt="prospective illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/landscape_1.webp"
-        class="w-80 h-80 rounded-md object-contain border-1 border-solid border-neutral-200"
-        alt="landscape illustration"
+      <Image
+        src={Landscape1Illustration}
+        class="w-80 h-80 rounded-md object-cover"
+        alt="landscape 1 illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/landscape_2.webp"
-        class="w-80 h-80 rounded-md object-contain border-1 border-solid border-neutral-200"
+      <Image
+        src={Landscape2Illustration}
+        class="w-80 h-80 rounded-md object-cover"
         alt="landscape 2 illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/stock_market_down.webp"
+      <Image
+        src={StockMarketDownIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="stock market down illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/stock_market_up.webp"
+      <Image
+        src={StockMarketUpIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="stock market up illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/house.webp"
+      <Image
+        src={HouseIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="house illustration"
+        loading="lazy"
+        decoding="auto"
       />
-      <img
-        src="/illustrations/bone_logo_exploration.webp"
+      <Image
+        src={BoneLogoExplorationIllustration}
         class="w-80 h-80 rounded-md object-cover"
         alt="bone logo exploration"
+        loading="lazy"
+        decoding="auto"
       />
     </div>
   </div>
