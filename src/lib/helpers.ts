@@ -3,11 +3,10 @@ export function trimText(input: string, maxLength: number = 100): string {
   return input.substring(0, maxLength - 3) + "...";
 }
 export function getCurrentTimeInItaly(): Date {
-  // Get the current time in Italy, accounting for DST automatically
-  const nowInItaly = new Date().toLocaleString("it-IT", {
-    timeZone: "Europe/Rome",
-  });
-  return new Date(nowInItaly);
+  const nowInItaly = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Europe/Rome" })
+  );
+  return nowInItaly;
 }
 
 export function formatTimeTo12H(date: Date): string {
@@ -20,7 +19,6 @@ export function formatTimeTo12H(date: Date): string {
 
   return new Intl.DateTimeFormat("en-US", options).format(date);
 }
-
 export function formatDate(date: Date): string {
   return date.toLocaleDateString("en-US", {
     year: "numeric",
