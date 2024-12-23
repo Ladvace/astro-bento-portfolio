@@ -38,7 +38,7 @@ const posts = (await getCollection("blog"))?.sort(
           <PostRow
             title={post.data.title || "No title"}
             date={post.data.pubDate || new Date()}
-            url={post.slug}
+            id={post.id}
           />
         ))
       }

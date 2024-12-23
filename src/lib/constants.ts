@@ -4,6 +4,7 @@ export const LINKS = {
   medium: "https://ladvace.medium.com/",
   discord: "https://discordapp.com/users/163300027618295808",
   dribble: "https://dribbble.com/Ladvace_Jace",
+  email: "contact@gianmarcocavallo.com<",
 };
 
 export const loaderAnimation = [

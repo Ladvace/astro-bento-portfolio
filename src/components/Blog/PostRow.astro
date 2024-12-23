@@ -4,16 +4,18 @@ import { formatDate } from "../../lib/helpers";
 interface Props {
   title: string;
   date: Date;
-  url: string;
+  id: string;
 }
 
-const { title, date, url } = Astro.props;
+const { title, date, id } = Astro.props;
 ---
 
-<li class="w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-2">
+<li
+  class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-2"
+>
   <a
     class="text-sm md:text-base decoration-none flex justify-between"
-    href={`/blog/${url}`}
+    href={`/blog/${id}`}
   >
     <p class="inline-block whitespace-nowrap">
       {title}

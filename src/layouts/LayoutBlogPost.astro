@@ -1,26 +1,19 @@
 ---
 import { formatDate } from "../lib/helpers";
-import type { MarkdownLayoutProps } from "astro";
 import BasicLayout from "./BasicLayout.astro";
 
-type Props = MarkdownLayoutProps<{
+type Props = {
   title: string;
   description: string;
-  pubDate: string;
+  pubDate: Date;
   minutesRead: string;
-}>;
+  url: string;
+};
 
-const { slug } = Astro.params;
-const { frontmatter } = Astro.props;
+const { title, description, pubDate, minutesRead, url } = Astro.props;
 ---
 
-<BasicLayout
-  frontmatter={frontmatter}
-  slug={slug}
-  page="blog"
-  title={`Gianmarco Cavallo - ${frontmatter.title}`}
-  description={frontmatter.description}
->
+<BasicLayout slug={url} page="blog" title={title} description={description}>
   <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
     <a
       href="/blog"
@@ -28,10 +21,10 @@ const { frontmatter } = Astro.props;
       >Back</a
     >
     <div class="my-10">
-      <h1 class="text-5xl font-semibold">{frontmatter.title}</h1>
+      <h1 class="text-5xl font-semibold">{title}</h1>
       <div class="flex justify-between pt-4 text-gray-500 text-sm">
-        <p>{formatDate(new Date(frontmatter.pubDate))}</p>
-        <p>{frontmatter.minutesRead}</p>
+        <p>{formatDate(pubDate)}</p>
+        <p>{minutesRead}</p>
       </div>
     </div>
     <article class="prose prose-p:text-red-500 prose-slate prose-invert">

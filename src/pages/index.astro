@@ -7,6 +7,14 @@ import TimeZone from "../components/TimeZoneCard.astro";
 import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
+import { getCollection } from "astro:content";
+import { formatDate } from "../lib/helpers";
+
+const posts = (await getCollection("blog"))?.sort(
+  (blogEntryA, blogEntryB) =>
+    (blogEntryB.data.pubDate || new Date()).getTime() -
+    (blogEntryA.data.pubDate || new Date()).getTime()
+);
 ---
 
 <script>
@@ -59,7 +67,29 @@ import Globe from "../components/Globe";
       rowSpan="md:row-span-2 flex gap-4"
       title="Blog"
       href="/blog"
-    />
+    >
+      <div class="flex flex-col gap-2">
+        {
+          posts?.slice(0, 3).map((post) => (
+            <div class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-0">
+              <p class="inline-block whitespace-nowrap text-xs">
+                {post.data.title}
+              </p>
+              {post.data.pubDate && (
+                <time
+                  class="text-right tabular-nums text-xs"
+                  datetime={post.data.pubDate.toISOString()}
+                  data-date={post.data.pubDate.toISOString()}
+                >
+                  {formatDate(post.data.pubDate)}
+                </time>
+              )}
+            </div>
+            // </a>
+          ))
+        }
+      </div>
+    </Card>
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <p class="text-xs">
         © 2024 · Crafted with ♥️ using <a

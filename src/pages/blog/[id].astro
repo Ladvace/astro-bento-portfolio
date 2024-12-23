@@ -1,35 +1,42 @@
 ---
+import { getEntry, render } from "astro:content";
 import { getCollection } from "astro:content";
+import LayoutBlogPost from "../../layouts/LayoutBlogPost.astro";
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-  return (await getCollection("blog")).map(({ slug }) => ({
-    params: { slug },
+  return (await getCollection("blog")).map(({ id }) => ({
+    params: { id: id as string },
   }));
 }
 
-const { slug } = Astro.params;
+const { id } = Astro.params;
 
-if (slug === undefined) {
-  throw new Error("slug is missing");
+if (!id) {
+  throw new Error("id is missing");
 }
 
-const posts = (await getCollection("blog")).sort(
-  (blogEntryA, blogEntryB) =>
-    (blogEntryB.data.pubDate || new Date()).getTime() -
-    (blogEntryA.data.pubDate || new Date()).getTime()
-);
+const entry = await getEntry("blog", id);
 
-const entry = posts.find((entry) => entry.slug === slug);
-if (entry === undefined) {
+if (!entry) {
   return Astro.redirect("/404");
 }
 
-const { Content } = await entry.render();
+const { Content, remarkPluginFrontmatter } = await render(entry);
+
+console.log("headings", entry, id);
 ---
 
-<Content />
+<LayoutBlogPost
+  url={`blog/${entry.id}`}
+  minutesRead={remarkPluginFrontmatter.minutesRead}
+  pubDate={entry.data.pubDate!}
+  title={`${entry.data.title} | Gianmarco Cavallo`}
+  description={entry.data.description!}
+>
+  <Content />
+</LayoutBlogPost>
 
 <style is:global>
   h1,
