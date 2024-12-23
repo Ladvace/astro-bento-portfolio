@@ -68,9 +68,13 @@ const posts = (await getCollection("blog"))?.sort(
       title="Blog"
       href="/blog"
     >
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-4">
         {
           posts?.slice(0, 3).map((post) => (
+            // <a
+            //   class="text-sm md:text-base decoration-none flex justify-between"
+            //   href={`/blog/${post.id}`}
+            // >
             <div class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-0">
               <p class="inline-block whitespace-nowrap text-xs">
                 {post.data.title}
