@@ -10,7 +10,7 @@ draft: false
 
 ## A personal portfolio website made using `Astro`.
 
-![astro-bento-portfolio | Bento-like Personal Porfolio Template](../../../public/preview.png)
+<!-- ![astro-bento-portfolio | Bento-like Personal Porfolio Template](../../../public/preview.png) -->
 
 To view a demo example, **[click here](https://sparkly-speculoos-0c9197.netlify.app/)**
 

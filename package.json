@@ -7,7 +7,10 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "build:github": "cp astro.config.github.mjs astro.config.mjs && astro build",
+    "deploy:github": "npm run build:github && gh-pages -d dist",
+    "deploy:netlify": "netlify deploy --prod"
   },
   "dependencies": {
     "@astrojs/netlify": "^6.0.1",
