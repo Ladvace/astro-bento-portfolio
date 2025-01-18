@@ -1,0 +1,39 @@
+---
+const projects = [
+  {
+    title: "Project 1",
+    description: "Short description of project 1",
+    link: "#"
+  },
+  {
+    title: "Project 2", 
+    description: "Short description of project 2",
+    link: "#"
+  },
+  {
+    title: "Project 3",
+    description: "Short description of project 3", 
+    link: "#"
+  }
+];
+---
+
+<div class="card h-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  {projects.map((project) => (
+    <a 
+      href={project.link}
+      class="flex flex-col gap-2 p-4 rounded-lg bg-neutral-900 hover:bg-neutral-800 transition-colors"
+    >
+      <h3 class="font-medium text-lg">{project.title}</h3>
+      <p class="text-sm text-neutral-300">{project.description}</p>
+    </a>
+  ))}
+</div>
+
+<style>
+.card {
+  background-color: #1c1c1c;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+</style> 
