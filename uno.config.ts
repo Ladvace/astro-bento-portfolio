@@ -3,8 +3,13 @@ import { defineConfig, presetUno, presetWebFonts } from "unocss";
 
 export default defineConfig({
   content: {
-    filesystem: ["**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}"],
-  },
+    filesystem: [
+      // Narrow scope to specific directories
+      "src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
+      "src/components/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
+      "src/pages/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
+      "src/layouts/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}"
+    ],  },
   theme: {
     boxShadow: {
       custom: `2px 2px 0`,
