@@ -11,24 +11,22 @@ const posts = (await getCollection("blog"))?.sort(
 ---
 
 <script>
-  import { timeline, type TimelineDefinition } from "motion";
+  import { animate, type AnimationSequence } from "motion";
   import { loaderAnimation } from "../../lib/constants";
 
   const sequence = [loaderAnimation];
 
-  timeline(sequence as TimelineDefinition);
+  animate(sequence as AnimationSequence);
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Blog"
-  description="Software developer with strong focus on the user experience animations and micro interactions"
+  description="Software developer with strong focus on the user experience animations and micro interactions"   title="Gianmarco Cavallo - Blog"
 >
   <main
     class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
   >
     <a
-      href="/"
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"
+      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"       href="/"
       >Back</a
     >
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
@@ -36,9 +34,7 @@ const posts = (await getCollection("blog"))?.sort(
       {
         posts?.map((post) => (
           <PostRow
-            title={post.data.title || "No title"}
-            date={post.data.pubDate || new Date()}
-            id={post.id}
+            date={post.data.pubDate || new Date()}             id={post.id}             title={post.data.title || "No title"}
           />
         ))
       }

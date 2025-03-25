@@ -72,42 +72,46 @@ const schema =
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
+    <meta content="width=device-width" name="viewport" />
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <meta content={Astro.generator} name="generator" />
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="robots" content="index, follow" />
+    <meta content={description} name="description" />
+    <meta content="index, follow" name="robots" />
     <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url.origin} />
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content="website" property="og:type" />
+    <meta content={Astro.url.origin} property="og:url" />
     <meta
-      property="og:image"
       content={image || `${Astro.url.origin}/og-image.png`}
+      property="og:image"
     />
     <!-- Basic Twitter Card tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
     <meta
-      name="twitter:image"
       content={image || `${Astro.url.origin}/og-image.png`}
+      name="twitter:image"
     />
 
-    <link rel="preconnect" href="https://cdn.fontshare.com" />
+    <link href="https://cdn.fontshare.com" rel="preconnect" />
     {
       page === "travel" && (
-        <link rel="canonical" href={`${Astro.url.origin}/travel`} />
+        <link href={`${Astro.url.origin}/travel`} rel="canonical" />
       )
     }
     {
       page === "blog" && (
-        <link rel="canonical" href={`${Astro.url.origin}/blog/${slug}`} />
+        <link href={`${Astro.url.origin}/blog/${slug}`} rel="canonical" />
       )
     }
-    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script
+      is:inline
+      set:html={JSON.stringify(schema)}
+      type="application/ld+json"
+    />
   </head>
   <body
     class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center"

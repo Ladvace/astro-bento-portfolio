@@ -19,38 +19,34 @@ import { Image } from "astro:assets";
         </p>
       </div>
       <div class="flex gap-4">
-        <a href={LINKS.github} aria-label="github profile" target="_blank">
+        <a aria-label="github profile" href={LINKS.github} target="_blank">
           <Button aria-label="github profile">
-            <Icon name="ri:github-fill" class="h-6" />
+            <Icon class="h-6" name="ri:github-fill" />
             <span class="sr-only">GitHub Profile</span>
           </Button>
         </a>
-        <a href={LINKS.linkedin} aria-label="linkedin profile" target="_blank">
+        <a aria-label="linkedin profile" href={LINKS.linkedin} target="_blank">
           <Button aria-label="linkedin profile">
-            <Icon name="ri:linkedin-box-fill" class="h-6" />
+            <Icon class="h-6" name="ri:linkedin-box-fill" />
             <span class="sr-only">Linkedin Profile</span>
           </Button>
         </a>
-        <a href={LINKS.dribble} aria-label="dribble profile" target="_blank">
+        <a aria-label="dribble profile" href={LINKS.dribble} target="_blank">
           <Button aria-label="dribble profile">
-            <Icon name="ri:dribbble-fill" class="h-6" />
+            <Icon class="h-6" name="ri:dribbble-fill" />
             <span class="sr-only">Dribble Profile</span>
           </Button>
         </a>
         <Tooltip client:visible>
           <Button aria-label="easter egg btn">
-            <Icon name="ri:emotion-laugh-line" class="h-6" />
+            <Icon class="h-6" name="ri:emotion-laugh-line" />
             <span class="sr-only">Easter egg button</span>
           </Button>
         </Tooltip>
       </div>
     </div>
     <Image
-      width="300"
-      height="300"
-      src="/me.webp"
-      class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
-      alt="memoji of gianmarco"
+      alt="memoji of gianmarco"       class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"       height="300"       src="/me.webp"       width="300"
     />
   </div>
 </Card>

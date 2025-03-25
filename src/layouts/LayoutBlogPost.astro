@@ -13,11 +13,10 @@ type Props = {
 const { title, description, pubDate, minutesRead, url } = Astro.props;
 ---
 
-<BasicLayout slug={url} page="blog" title={title} description={description}>
+<BasicLayout description={description} page="blog" slug={url} title={title}>
   <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
     <a
-      href="/blog"
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg mb-8"
+      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg mb-8"       href="/blog"
       >Back</a
     >
     <div class="my-10">
