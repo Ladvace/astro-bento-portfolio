@@ -1,10 +1,11 @@
 ---
+import "../style.css";
 import { LINKS } from "../lib/constants";
 
 interface Props {
   title: string;
   description: string;
-  page?: "travel";
+  page?: "travel" | "blog";
   slug?: string | undefined;
   pubDate?: string;
 }

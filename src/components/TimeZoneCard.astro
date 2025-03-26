@@ -30,7 +30,9 @@ import Card from "./Card/index.astro";
 </script>
 
 <Card colSpan="lg:col-span-1" rowSpan="md:row-span-1">
-  <div class="flex text-2xl items-center justify-center h-full font-serif">
+  <div
+    class="flex gap-2 text-2xl items-center justify-center h-full font-serif"
+  >
     <time
       datetime=""
       id="timeDisplay"
@@ -38,5 +40,6 @@ import Card from "./Card/index.astro";
     >
       {formatTimeTo12H(getCurrentTimeInItaly())}
     </time>
+    CET
   </div>
 </Card>
