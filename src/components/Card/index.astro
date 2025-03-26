@@ -27,17 +27,16 @@ const { title, body, colSpan, rowSpan, href, colorText, height, padding } =
 >
   {
     href ? (
-      <a href={href} class={`h-full w-full ${colorText || " "}`}>
+      <a class={`h-full w-full ${colorText || ""}`} href={href}>
         <Icon
-          name="ri:arrow-right-up-line"
-          class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20"
+          class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20"           name="ri:arrow-right-up-line"
         />
-        <Content title={title} body={body}>
+        <Content body={body} title={title}>
           <slot />
         </Content>
       </a>
     ) : (
-      <Content title={title} body={body}>
+      <Content body={body} title={title}>
         <slot />
       </Content>
     )

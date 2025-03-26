@@ -1,0 +1,130 @@
+---
+import { getEntry, render } from "astro:content";
+import { getCollection } from "astro:content";
+import LayoutBlogPost from "../../layouts/LayoutBlogPost.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  return (await getCollection("blog")).map(({ id }) => ({
+    params: { id: id as string },
+  }));
+}
+
+const { id } = Astro.params;
+
+if (!id) {
+  throw new Error("id is missing");
+}
+
+const entry = await getEntry("blog", id);
+
+if (!entry) {
+  return Astro.redirect("/404");
+}
+
+const { Content, remarkPluginFrontmatter } = await render(entry);
+---
+
+<LayoutBlogPost
+  description={entry.data.description!}   minutesRead={remarkPluginFrontmatter.minutesRead}   pubDate={entry.data.pubDate!}   title={`${entry.data.title} | Gianmarco Cavallo`}   url={`blog/${entry.id}`}
+>
+  <Content />
+</LayoutBlogPost>
+
+<style is:global>
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 24px;
+  }
+
+  h4 {
+    font-size: 20px;
+  }
+
+  h5 {
+    font-size: 18px;
+  }
+
+  h6 {
+    font-size: 16px;
+  }
+
+  p {
+    margin: 0 0 10px 0;
+  }
+
+  a {
+    color: #1a0dab;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  ul,
+  ol {
+    margin-left: 20px;
+    margin-bottom: 10px;
+  }
+
+  blockquote {
+    margin: 20px 0;
+    padding-left: 15px;
+    border-left: 5px solid #ccc;
+  }
+
+  pre,
+  code {
+    font-family: "Courier New", monospace;
+    background-color: #f4f4f4;
+    border-radius: 5px;
+  }
+
+  pre {
+    padding: 10px;
+    overflow-x: auto;
+  }
+
+  code {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #d63384;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+</style>

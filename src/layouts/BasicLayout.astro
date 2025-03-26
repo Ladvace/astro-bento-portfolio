@@ -1,85 +1,117 @@
 ---
-import "../style.css";
+import { LINKS } from "../lib/constants";
+
 interface Props {
   title: string;
   description: string;
   page?: "travel";
   slug?: string | undefined;
-  frontmatter?: {
-    file: string;
-    url: string | undefined;
-  } & {
-    title: string;
-    description: string;
-    pubDate: string;
-    minutesRead: string;
-  };
+  pubDate?: string;
 }
 
-const { title, description, page, slug, frontmatter } = Astro.props;
+const { title, description, page, slug, pubDate } = Astro.props;
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
     : `${Astro.url.origin}/og-image.png`;
 
-const schema = {
-  "@context": "http://schema.org",
-  "@type": "Person",
-  name: "Gianmarco",
-  url: "https://gianmarcocavallo.com",
-  sameAs: [
-    "https://www.linkedin.com/in/gianmarco-cavallo",
-    "https://github.com/Ladvace",
-  ],
-  image: "https://gianmarcocavallo.com/og-image.png",
-  jobTitle: "Freelance Frontend Developer",
-  worksFor: {
-    "@type": "Organization",
-    name: "Self-Employed",
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: "Italy",
-      addressCountry: "IT",
-    },
-  },
-  nationality: {
-    "@type": "Country",
-    name: "Italy",
-  },
-};
+const schema =
+  page !== "blog"
+    ? {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        name: "Gianmarco",
+        url: Astro.url.origin,
+        sameAs: [LINKS.linkedin, LINKS.github],
+        image: `${Astro.url.origin}/og-image.png`,
+        jobTitle: "Freelance Frontend Developer",
+        worksFor: {
+          "@type": "Organization",
+          name: "Self-Employed",
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "Italy",
+            addressCountry: "IT",
+          },
+        },
+        nationality: {
+          "@type": "Country",
+          name: "Italy",
+        },
+      }
+    : {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `${Astro.url.origin}/blog/${slug}`,
+        },
+        headline: title || title,
+        description: description || title,
+        image: `${Astro.url.origin}/og-image.png`, //TODO: dynamic
+        author: {
+          "@type": "Person",
+          name: "Gianmarco",
+          url: Astro.url.origin,
+          sameAs: [LINKS.linkedin, LINKS.github],
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Gianmarco",
+          logo: {
+            "@type": "ImageObject",
+            url: `${Astro.url.origin}/og-image.png`,
+          },
+        },
+        datePublished: pubDate || new Date().toISOString(),
+        dateModified: pubDate || new Date().toISOString(),
+      };
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta name="generator" content={Astro.generator} />
+    <meta content="width=device-width" name="viewport" />
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <meta content={Astro.generator} name="generator" />
     <title>{title}</title>
-    <meta name="description" content={description} />
-    <meta name="robots" content="/favicon/sitemap-index.xml" />
-    <link rel="canonical" href={Astro.url.href} />
+    <meta content={description} name="description" />
+    <meta content="index, follow" name="robots" />
     <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url.origin} />
+    <meta content={title} property="og:title" />
+    <meta content={description} property="og:description" />
+    <meta content="website" property="og:type" />
+    <meta content={Astro.url.origin} property="og:url" />
     <meta
+      content={image || `${Astro.url.origin}/og-image.png`}
       property="og:image"
-      content={image || "https://gianmarcocavallo.com/og-image.png"}
     />
     <!-- Basic Twitter Card tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content={title} name="twitter:title" />
+    <meta content={description} name="twitter:description" />
     <meta
+      content={image || `${Astro.url.origin}/og-image.png`}
       name="twitter:image"
-      content={image || "https://gianmarcocavallo.com/og-image.png"}
     />
 
-    <link rel="preconnect" href="https://cdn.fontshare.com" />
-    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <link href="https://cdn.fontshare.com" rel="preconnect" />
+    {
+      page === "travel" && (
+        <link href={`${Astro.url.origin}/travel`} rel="canonical" />
+      )
+    }
+    {
+      page === "blog" && (
+        <link href={`${Astro.url.origin}/blog/${slug}`} rel="canonical" />
+      )
+    }
+    <script
+      is:inline
+      set:html={JSON.stringify(schema)}
+      type="application/ld+json"
+    />
     <script
       defer
       src="https://cloud.umami.is/script.js"

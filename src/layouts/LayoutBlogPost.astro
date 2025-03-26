@@ -1,0 +1,33 @@
+---
+import { formatDate } from "../lib/helpers";
+import BasicLayout from "./BasicLayout.astro";
+
+type Props = {
+  title: string;
+  description: string;
+  pubDate: Date;
+  minutesRead: string;
+  url: string;
+};
+
+const { title, description, pubDate, minutesRead, url } = Astro.props;
+---
+
+<BasicLayout description={description} page="blog" slug={url} title={title}>
+  <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
+    <a
+      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg mb-8"       href="/blog"
+      >Back</a
+    >
+    <div class="my-10">
+      <h1 class="text-5xl font-semibold">{title}</h1>
+      <div class="flex justify-between pt-4 text-gray-500 text-sm">
+        <p>{formatDate(pubDate)}</p>
+        <p>{minutesRead}</p>
+      </div>
+    </div>
+    <article class="prose prose-p:text-red-500 prose-slate prose-invert">
+      <slot />
+    </article>
+  </main>
+</BasicLayout>

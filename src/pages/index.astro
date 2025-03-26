@@ -9,10 +9,18 @@ import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
 import DesignWorksCard from "../components/DesignWorksCard.astro";
+import { getCollection } from "astro:content";
+import { formatDate } from "../lib/helpers";
+
+const posts = (await getCollection("blog"))?.sort(
+  (blogEntryA, blogEntryB) =>
+    (blogEntryB.data.pubDate || new Date()).getTime() -
+    (blogEntryA.data.pubDate || new Date()).getTime()
+);
 ---
 
 <script>
-  import { stagger, spring, timeline, type TimelineDefinition } from "motion";
+  import { stagger, animate, type AnimationSequence } from "motion";
   import { loaderAnimation } from "../lib/constants";
   const cards = document.querySelectorAll(".card");
 
@@ -22,20 +30,19 @@ import DesignWorksCard from "../components/DesignWorksCard.astro";
       cards,
       { y: ["40%", "0%"], opacity: [0, 1] },
       {
+        type: "spring",
         at: "-0.1",
-        duration: 0.4,
-        delay: stagger(0.15),
-        easing: spring({ velocity: 100, stiffness: 50, damping: 10 }),
+        delay: stagger(0.3),
       },
     ],
   ];
 
-  timeline(sequence as TimelineDefinition);
+  animate(sequence as AnimationSequence);
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Freelance front-end Developer"
   description="I'm a developer based in Italy, passionate about user experience and specializing in engaging animations and micro-interactions. My primary tools of choice include: JavaScript, React, Solid.js, Astro, Svelte, and Node.js."
+  title="Gianmarco Cavallo - Freelance front-end Developer"
 >
   <main
     class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
@@ -52,18 +59,11 @@ import DesignWorksCard from "../components/DesignWorksCard.astro";
     </Card>
     <Now />
     <Card
-      href="playground"
+      colorText="text-neutral-900"
       colSpan="md:col-span-1"
-      rowSpan="md:row-span-1"
-      title="Playground"
-    />
-
-    <Card
-      colSpan="md:col-span-1"
+      href="travel"
       rowSpan="md:row-span-1"
       title="Countries I visited"
-      href="travel"
-      colorText="text-neutral-900"
     >
       <div class="h-full w-full absolute inset-0 -z-10">
         <Globe client:media="(min-width: 768px)" />
@@ -71,12 +71,44 @@ import DesignWorksCard from "../components/DesignWorksCard.astro";
       </div>
     </Card>
     <ThemeChangeCard />
+    <Card
+      colSpan="md:col-span-1"
+      href="/blog"
+      rowSpan="md:row-span-2 flex gap-1"
+      title="Blog"
+    >
+      <div class="flex flex-col gap-1">
+        {
+          posts?.slice(0, 3).map((post) => (
+            // <a
+            //   class="text-sm md:text-base decoration-none flex justify-between"
+            //   href={`/blog/${post.id}`}
+            // >
+            <div class="list-none w-full text-neutral-100 hover:text-neutral-400 ease-in-out transition-colors border-b-neutral-400 border-dashed border-b-1 my-0">
+              <p class="inline-block whitespace-nowrap text-xs">
+                {post.data.title}
+              </p>
+              {post.data.pubDate && (
+                <time
+                  class="text-right tabular-nums text-xs"
+                  data-date={post.data.pubDate.toISOString()}
+                  datetime={post.data.pubDate.toISOString()}
+                >
+                  {formatDate(post.data.pubDate)}
+                </time>
+              )}
+            </div>
+            // </a>
+          ))
+        }
+      </div>
+    </Card>
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <p class="text-xs">
         © 2024 · Crafted with ♥️ using <a
+          class="text-red-500"
           href="https://astro.build/"
-          target="_blank"
-          class="text-red-500">Astro</a
+          target="_blank">Astro</a
         > by Gianmarco.
       </p>
     </Card>

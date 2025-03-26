@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import PostRow from "../../components/Blog/PostRow.astro";
+
+const posts = (await getCollection("blog"))?.sort(
+  (blogEntryA, blogEntryB) =>
+    (blogEntryB.data.pubDate || new Date()).getTime() -
+    (blogEntryA.data.pubDate || new Date()).getTime()
+);
+---
+
+<script>
+  import { animate, type AnimationSequence } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
+
+  const sequence = [loaderAnimation];
+
+  animate(sequence as AnimationSequence);
+</script>
+
+<Layout
+  description="Software developer with strong focus on the user experience animations and micro interactions"   title="Gianmarco Cavallo - Blog"
+>
+  <main
+    class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
+  >
+    <a
+      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"       href="/"
+      >Back</a
+    >
+    <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
+    <ul class="w-full">
+      {
+        posts?.map((post) => (
+          <PostRow
+            date={post.data.pubDate || new Date()}             id={post.id}             title={post.data.title || "No title"}
+          />
+        ))
+      }
+    </ul>
+  </main>
+</Layout>
