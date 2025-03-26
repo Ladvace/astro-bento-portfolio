@@ -4,10 +4,10 @@ import Scroll1Component from "../../components/playground/scroll-1/scroll-1.svel
 ---
 
 <script>
-  import { timeline, type TimelineDefinition } from "motion";
+  import { animate, type AnimationSequence } from "motion";
   import { loaderAnimation } from "../../lib/constants";
 
-  timeline([loaderAnimation] as TimelineDefinition);
+  animate([loaderAnimation] as AnimationSequence);
 </script>
 
 <Layout

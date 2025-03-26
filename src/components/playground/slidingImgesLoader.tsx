@@ -1,8 +1,8 @@
 import { createEffect } from "solid-js";
 import {
-  timeline,
-  type AnimationControls,
-  type TimelineDefinition,
+  animate,
+  type AnimationPlaybackControls,
+  type AnimationSequence,
 } from "motion";
 
 const images = [
@@ -69,53 +69,53 @@ export const Column = (props: {
   );
 };
 const SlidingImgesLoader = () => {
-  let customTimeline: AnimationControls;
+  let customTimeline: AnimationPlaybackControls;
   const loaderAnimation = [
-    ["#overlay", { opacity: [1, 0] }, { easing: "ease-in-out", duration: 0.2 }],
+    ["#overlay", { opacity: [1, 0] }, { ease: "easeInOut", duration: 0.2 }],
     [
       "#global-loader",
       { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-in-out", duration: 0.2 },
+      { ease: "easeInOut", duration: 0.2 },
     ],
     [
       "#inner-column-container",
       { height: ["350%", "100%"] },
-      { easing: "ease-in-out", duration: 2.5, at: "<" },
+      { ease: "easeInOut", duration: 2.5, at: "<" },
     ],
     [
       ".isReversed",
       { y: ["-40%", 0] },
-      { easing: "ease-in-out", duration: 2.5, at: "<" },
+      { ease: "easeInOut", duration: 2.5, at: "<" },
     ],
     [
       ".isEdge",
       { y: ["70%", 0] },
-      { easing: "ease-in-out", duration: 2.5, at: "<" },
+      { ease: "easeInOut", duration: 2.5, at: "<" },
     ],
     [
       ".isCenter",
       { y: ["40%", "0"] },
-      { easing: "ease-in-out", duration: 2.5, at: "<" },
+      { ease: "easeInOut", duration: 2.5, at: "<" },
     ],
     [
       "#animation-container",
       { scale: ["0.23", "1"] },
-      { easing: "ease-in-out", duration: 2, delay: 2, at: "<" },
+      { ease: "easeInOut", duration: 2, delay: 2, at: "<" },
     ],
     [
       ".isMiddle img",
       { scale: ["1.5", "1"] },
-      { easing: "ease-in-out", duration: 2, delay: 2, at: "<" },
+      { ease: "easeInOut", duration: 2, delay: 2, at: "<" },
     ],
     [
       "#outer-animation-container",
       { opacity: [1, 0], pointerEvents: "none" },
-      { easing: "ease-in-out" },
+      { ease: "easeInOut" },
     ],
-  ] as TimelineDefinition;
+  ] as AnimationSequence;
 
   createEffect(() => {
-    customTimeline = timeline(loaderAnimation, { duration: 4 });
+    customTimeline = animate(loaderAnimation, { duration: 4 });
   });
 
   return (
