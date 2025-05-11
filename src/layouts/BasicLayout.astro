@@ -10,7 +10,7 @@ interface Props {
   pubDate?: string;
 }
 
-const { title, description, page, slug, pubDate } = Astro.props;
+const { title, description, page, pubDate } = Astro.props;
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
@@ -45,7 +45,7 @@ const schema =
         "@type": "BlogPosting",
         mainEntityOfPage: {
           "@type": "WebPage",
-          "@id": `${Astro.url.origin}/blog/${slug}`,
+          "@id": Astro.url.href,
         },
         headline: title || title,
         description: description || title,
@@ -98,16 +98,8 @@ const schema =
     />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
-    {
-      page === "travel" && (
-        <link href={`${Astro.url.origin}/travel`} rel="canonical" />
-      )
-    }
-    {
-      page === "blog" && (
-        <link href={`${Astro.url.origin}/blog/${slug}`} rel="canonical" />
-      )
-    }
+
+    <link href={Astro.url.href} rel="canonical" />
     <script
       is:inline
       set:html={JSON.stringify(schema)}
@@ -117,7 +109,7 @@ const schema =
       defer
       is:inline
       src="https://cloud.umami.is/script.js"
-      data-website-id="04ef2638-4aac-4bb6-80fd-5ac4e003dfee"></script>
+      data-website-id={import.meta.env.UMAMI_WEBSITE_ID}></script>
 
     <!-- Cal element-click embed code begins -->
     <script is:inline type="text/javascript">

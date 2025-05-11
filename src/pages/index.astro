@@ -9,14 +9,6 @@ import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
 import DesignWorksCard from "../components/DesignWorksCard.astro";
-import { getCollection } from "astro:content";
-import { formatDate } from "../lib/helpers";
-
-const posts = (await getCollection("blog"))?.sort(
-  (blogEntryA, blogEntryB) =>
-    (blogEntryB.data.pubDate || new Date()).getTime() -
-    (blogEntryA.data.pubDate || new Date()).getTime()
-);
 ---
 
 <script>
