@@ -99,13 +99,13 @@ const SlidingImgesLoader = () => {
     ],
     [
       "#animation-container",
-      { scale: ["0.23", "1"] },
-      { ease: "easeInOut", duration: 2, delay: 2, at: "<" },
+      { scale: [0.23, 1] },
+      { easing: "easeInOut", duration: 2, delay: 2, at: "<" },
     ],
     [
       ".isMiddle img",
-      { scale: ["1.5", "1"] },
-      { ease: "easeInOut", duration: 2, delay: 2, at: "<" },
+      { scale: [1.5, 1] },
+      { easing: "easeInOut", duration: 2, delay: 2, at: "<" },
     ],
     [
       "#outer-animation-container",
