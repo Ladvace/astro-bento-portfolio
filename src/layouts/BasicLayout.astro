@@ -9,7 +9,7 @@ interface Props {
   pubDate?: string;
 }
 
-const { title, description, page, slug, pubDate } = Astro.props;
+const { title, description, page, pubDate } = Astro.props;
 const image =
   page === "travel"
     ? `${Astro.url.origin}/globe_preview.webp"`
@@ -44,7 +44,7 @@ const schema =
         "@type": "BlogPosting",
         mainEntityOfPage: {
           "@type": "WebPage",
-          "@id": `${Astro.url.origin}/blog/${slug}`,
+          "@id": Astro.url.href,
         },
         headline: title || title,
         description: description || title,
@@ -97,16 +97,7 @@ const schema =
     />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
-    {
-      page === "travel" && (
-        <link href={`${Astro.url.origin}/travel`} rel="canonical" />
-      )
-    }
-    {
-      page === "blog" && (
-        <link href={`${Astro.url.origin}/blog/${slug}`} rel="canonical" />
-      )
-    }
+    <link href={Astro.url.href} rel="canonical" />
     <script
       is:inline
       set:html={JSON.stringify(schema)}
