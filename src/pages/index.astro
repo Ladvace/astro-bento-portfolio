@@ -57,8 +57,28 @@ import DesignWorksCard from "../components/DesignWorksCard.astro";
       rowSpan="md:row-span-1 "
       title="Blog"
     />
-    <Card colSpan="md:col-span-1" rowSpan="md:row-span-1" padding="p-0">
-      <div class="flex items-center box-border h-full w-full">
+    <Card
+      colSpan="md:col-span-1 overflow-visible"
+      rowSpan="md:row-span-1"
+      padding="p-0"
+      bgColor="bg-[#004d40]"
+    >
+      <a href="https://allinmap.app/">
+        <div class="flex items-center box-border h-full w-full group">
+          <h3 class="my-6 ml-6 mr-10 max-w-10 font-bold">Download AllinMapp</h3>
+          <div
+            class="flex-1 flex justify-start pl-4 items-center absolute right-0 left-0 bottom-0 h-[200px] overflow-hidden"
+          >
+            <img
+              width="100"
+              class="w-[100px] h-auto absolute right-0 -bottom-10 -rotate-10 group-hover:rotate-0 transition duration-100 ease-in-out"
+              alt="allinmap screenshot"
+              src="allinmap_screenshot.png"
+            />
+          </div>
+        </div>
+      </a>
+      <!-- <div class="flex items-center box-border h-full w-full">
         <h3 class="my-6 ml-6 text-xl font-bold">Works</h3>
         <div class="flex-1 flex justify-start pl-4 items-center">
           <img
@@ -69,7 +89,7 @@ import DesignWorksCard from "../components/DesignWorksCard.astro";
             src="https://media.tenor.com/dt1etVruHGAAAAAi/rylsee-tooshytorap.gif"
           />
         </div>
-      </div>
+      </div> -->
     </Card>
     <Card
       colorText="text-neutral-900"
