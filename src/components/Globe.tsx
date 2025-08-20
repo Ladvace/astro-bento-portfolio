@@ -14,6 +14,7 @@ const GlobeComponent = ({ isStatic }: Props) => {
     "China",
     "Italy",
     "Sri Lanka",
+    "Uzbekistan",
     "Turkey",
     "Greece",
     "Malta",
@@ -25,7 +26,6 @@ const GlobeComponent = ({ isStatic }: Props) => {
     "Netherlands",
     "Belgium",
     "Spain",
-  
   ];
 
   onMount(() => {
@@ -91,7 +91,10 @@ const GlobeComponent = ({ isStatic }: Props) => {
 
   return (
     <div class="flex flex-col text-white justify-center items-center w-full h-full">
-      <div class="w-full h-screen flex justify-center items-center" ref={mapContainer}></div>
+      <div
+        class="w-full h-screen flex justify-center items-center"
+        ref={mapContainer}
+      ></div>
     </div>
   );
 };
