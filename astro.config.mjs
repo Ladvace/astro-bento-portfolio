@@ -14,6 +14,37 @@ import svelte from "@astrojs/svelte";
 export default defineConfig({
   experimental: {
     svgo: true,
+    fonts: [
+      {
+        provider: "local",
+        name: "CabinetGrotesk",
+        cssVariable: "--font-cabinet-grotesk",
+        variants: [
+          {
+            weight: "100 1000",
+            style: "normal",
+            src: ["./src/assets/fonts/CabinetGrotesk-Variable.ttf"],
+          },
+        ],
+      },
+      {
+        provider: "local",
+        name: "Satoshi",
+        cssVariable: "--font-satoshi",
+        variants: [
+          {
+            weight: "100 1000",
+            style: "normal",
+            src: ["./src/assets/fonts/Satoshi-Variable.ttf"],
+          },
+          {
+            weight: "100 1000",
+            style: "italic",
+            src: ["./src/assets/fonts/Satoshi-VariableItalic.ttf"],
+          },
+        ],
+      },
+    ],
   },
   site: "https://gianmarcocavallo.com/",
   integrations: [
