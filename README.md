@@ -70,6 +70,15 @@ or
 
 [![Netlify Deploy button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ladvace/astro-bento-portfolio)
 
+## Database Configuration
+
+This project uses Astro DB with Turso for the guestbook feature. Set the following environment variables:
+
+- `ASTRO_DB_REMOTE_URL=libsql://portfolio-ladvace.aws-eu-west-1.turso.io`
+- `ASTRO_DB_APP_TOKEN=your-auth-token-here`
+
+Run `pnpm astro db push` to initialize the database schema.
+
 ## Authors ❤️
 
 - Gianmarco - https://github.com/Ladvace

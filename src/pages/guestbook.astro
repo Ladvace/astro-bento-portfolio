@@ -1,0 +1,358 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { db, Guestbook as GuestbookTable } from "astro:db";
+
+let formError: string | null = null;
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const name = data.get("name")?.toString();
+    const message = data.get("message")?.toString();
+    const website = data.get("website")?.toString();
+
+    if (!name || !message) {
+      formError = "Name and message are required";
+    } else {
+      const sanitizedName = name.trim().slice(0, 100);
+      const sanitizedMessage = message.trim().slice(0, 1000);
+      const sanitizedWebsite = website ? website.trim().slice(0, 200) : null;
+
+      await db.insert(GuestbookTable).values({
+        name: sanitizedName,
+        message: sanitizedMessage,
+        website: sanitizedWebsite || undefined,
+        createdAt: new Date(),
+      });
+
+      return Astro.redirect(Astro.url.pathname);
+    }
+  } catch (error) {
+    console.error("Error creating guestbook entry:", error);
+    formError = "Failed to submit message. Please try again.";
+  }
+}
+
+const allEntries = await db.select().from(GuestbookTable);
+const entries = (
+  allEntries as Array<{
+    id: number;
+    name: string;
+    message: string;
+    website: string | null;
+    createdAt: Date;
+  }>
+).sort(
+  (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+);
+
+const ITEMS_PER_PAGE = 10;
+const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
+---
+
+<script>
+  import { animate, type AnimationSequence } from "motion";
+  import { loaderAnimation } from "../lib/constants";
+
+  animate([loaderAnimation] as AnimationSequence);
+</script>
+
+<script id="entries-data" type="application/json" set:html={JSON.stringify(entries)}></script>
+
+<script is:inline>
+  function toggleForm() {
+    const formContent = document.getElementById("form-content");
+    const toggleButton = document.getElementById("toggle-button");
+    const icon = document.getElementById("toggle-icon");
+    
+    if (formContent && toggleButton && icon) {
+      const isHidden = formContent.classList.contains("hidden");
+      
+      if (isHidden) {
+        formContent.classList.remove("hidden");
+        icon.style.transform = "rotate(180deg)";
+      } else {
+        formContent.classList.add("hidden");
+        icon.style.transform = "rotate(0deg)";
+      }
+    }
+  }
+
+  const ITEMS_PER_PAGE = 10;
+  let currentPage = 1;
+  const allEntries = JSON.parse(document.getElementById("entries-data")?.textContent || "[]");
+  const totalPages = Math.ceil(allEntries.length / ITEMS_PER_PAGE);
+
+  function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function escapeUrl(url) {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.toString();
+    } catch {
+      return "#";
+    }
+  }
+
+  function renderPage(page) {
+    const entriesContainer = document.getElementById("guestbook-entries");
+    const startIndex = (page - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    const pageEntries = allEntries.slice(startIndex, endIndex);
+
+    if (entriesContainer) {
+      entriesContainer.innerHTML = pageEntries.map((entry, index) => {
+        const seed = entry.id || (startIndex + index);
+        const rotation = ((seed * 7) % 6) - 3;
+        const date = new Date(entry.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const escapedName = escapeHtml(entry.name);
+        const escapedMessage = escapeHtml(entry.message);
+        const escapedWebsite = entry.website ? escapeUrl(entry.website) : null;
+
+        return `
+          <div
+            class="bg-darkslate-500 p-6 rounded-lg border border-darkslate-400 guestbook-entry transition-[border-color] duration-300 hover:border-primary-500/60"
+            style="transform: rotate(${rotation}deg);"
+          >
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <h3 class="text-white font-bold">
+                  ${escapedWebsite 
+                    ? `<a href="${escapedWebsite}" target="_blank" rel="noopener noreferrer" class="hover:text-primary-500 transition-colors">${escapedName}</a>`
+                    : escapedName}
+                </h3>
+                <p class="text-darkslate-300 text-sm">${escapeHtml(date)}</p>
+              </div>
+            </div>
+            <p class="text-white whitespace-pre-wrap leading-relaxed">${escapedMessage}</p>
+          </div>
+        `;
+      }).join("");
+
+      if (pageEntries.length === 0) {
+        entriesContainer.innerHTML = `
+          <div class="bg-darkslate-500 p-8 rounded-lg border border-darkslate-400 text-center">
+            <p class="text-darkslate-300">No messages yet. Be the first to leave one! 👋</p>
+          </div>
+        `;
+      }
+    }
+
+    updatePaginationControls();
+  }
+
+  function updatePaginationControls() {
+    const pageInfo = document.getElementById("page-info");
+    const prevButton = document.getElementById("prev-button");
+    const nextButton = document.getElementById("next-button");
+    const pageNumbers = document.getElementById("page-numbers");
+
+    if (pageInfo) {
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    }
+
+    if (prevButton) {
+      prevButton.disabled = currentPage === 1;
+      prevButton.classList.toggle("opacity-50", currentPage === 1);
+      prevButton.classList.toggle("cursor-not-allowed", currentPage === 1);
+    }
+
+    if (nextButton) {
+      nextButton.disabled = currentPage === totalPages;
+      nextButton.classList.toggle("opacity-50", currentPage === totalPages);
+      nextButton.classList.toggle("cursor-not-allowed", currentPage === totalPages);
+    }
+
+    if (pageNumbers && totalPages > 0) {
+      const maxVisiblePages = 5;
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+      if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      pageNumbers.innerHTML = Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+        const page = startPage + i;
+        return `
+          <button
+            onclick="goToPage(${page})"
+            class="px-3 py-1 rounded ${
+              page === currentPage
+                ? "bg-primary-500 text-white"
+                : "bg-darkslate-600 text-white hover:bg-darkslate-500"
+            } transition-colors"
+          >
+            ${page}
+          </button>
+        `;
+      }).join("");
+    }
+  }
+
+  function goToPage(page) {
+    if (page >= 1 && page <= totalPages) {
+      currentPage = page;
+      renderPage(currentPage);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  function nextPage() {
+    if (currentPage < totalPages) {
+      goToPage(currentPage + 1);
+    }
+  }
+
+  function prevPage() {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  }
+
+  window.goToPage = goToPage;
+  window.nextPage = nextPage;
+  window.prevPage = prevPage;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderPage(1);
+  });
+</script>
+
+<Layout
+  title="Gianmarco Cavallo - Guestbook"
+  description="Leave a message in my guestbook"
+>
+  <div class="flex flex-col justify-center items-center p-4 pt-40 pb-20">
+    <a
+      href="/"
+      class="fixed top-10 left-10 text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg z-50"
+      >Back</a
+    >
+    <h1 class="text-white text-3xl font-bold mb-4">Guestbook</h1>
+    <p class="text-white text-center mb-10 max-w-2xl text-darkslate-300">
+      Feel free to leave a message, share your thoughts, or whatever.
+    </p>
+
+    <div class="w-full max-w-2xl mb-12">
+      <div class="bg-darkslate-500 rounded-lg border border-darkslate-400">
+        <button
+          id="toggle-button"
+          onclick="toggleForm()"
+          class="w-full flex items-center justify-between p-6 text-white hover:bg-darkslate-600 transition-colors duration-200"
+        >
+          <span class="text-lg font-medium">Leave a Message</span>
+          <svg
+            id="toggle-icon"
+            class="w-5 h-5 transition-transform duration-200"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
+        <div id="form-content" class="hidden">
+          <form method="POST" class="p-6 pt-0">
+            <div class="mb-4">
+              <label class="block text-white text-sm font-medium mb-2">
+                <span>Name *</span>
+                <input
+                  type="text"
+                  name="name"
+                  required
+                  maxlength="100"
+                  class="w-full px-4 py-2 bg-darkslate-600 border border-darkslate-400 rounded-lg text-white focus:outline-none focus:border-primary-500 mt-2"
+                  placeholder="Your name"
+                />
+              </label>
+            </div>
+            <div class="mb-4">
+              <label class="block text-white text-sm font-medium mb-2">
+                <span>Website (optional)</span>
+                <input
+                  type="url"
+                  name="website"
+                  maxlength="200"
+                  class="w-full px-4 py-2 bg-darkslate-600 border border-darkslate-400 rounded-lg text-white focus:outline-none focus:border-primary-500 mt-2"
+                  placeholder="https://yourwebsite.com"
+                />
+              </label>
+            </div>
+            <div class="mb-4">
+              <label class="block text-white text-sm font-medium mb-2">
+                <span>Message *</span>
+                <textarea
+                  name="message"
+                  required
+                  maxlength="1000"
+                  rows="4"
+                  class="w-full px-4 py-2 bg-darkslate-600 border border-darkslate-400 rounded-lg text-white focus:outline-none focus:border-primary-500 resize-none mt-2"
+                  placeholder="Leave your message here..."></textarea>
+              </label>
+            </div>
+            <button
+              type="submit"
+              class="w-full px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-colors duration-200"
+            >
+              Submit
+            </button>
+            {formError && (
+              <p class="mt-4 text-sm text-center text-red-500">{formError}</p>
+            )}
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="w-full max-w-2xl">
+      <h2 class="text-white text-2xl font-bold mb-6">
+        Messages ({entries.length})
+      </h2>
+      <div id="guestbook-entries" class="space-y-4 mb-6">
+      </div>
+      {totalPages > 1 && (
+        <div class="flex flex-col items-center gap-4 mt-8">
+          <div class="flex items-center gap-2">
+            <button
+              id="prev-button"
+              onclick="prevPage()"
+              class="px-4 py-2 bg-darkslate-600 text-white rounded-lg hover:bg-darkslate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <div id="page-numbers" class="flex items-center gap-2"></div>
+            <button
+              id="next-button"
+              onclick="nextPage()"
+              class="px-4 py-2 bg-darkslate-600 text-white rounded-lg hover:bg-darkslate-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div>
+          <p id="page-info" class="text-darkslate-300 text-sm"></p>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .guestbook-entry {
+    transform-origin: center;
+  }
+</style>
+

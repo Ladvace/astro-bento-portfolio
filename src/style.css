@@ -70,7 +70,7 @@
 }
 
 html {
-  overscroll-behavior-y: none;
+  overscroll-behavior: none;
 }
 
 body::before {
