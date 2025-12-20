@@ -1,13 +1,13 @@
 import { type JSX, Show, createSignal } from "solid-js";
 
 type Props = {
-  children: JSX.Element;
+  children?: JSX.Element;
   class?: string;
 };
 
 function Tooltip(props: Props) {
   const [isVisible, setIsVisible] = createSignal(false);
-  const [clickCount, setClickCount] = createSignal(0);
+  const [clickCount, setClickCount] = createSignal<number>(0);
 
   const messages = [
     "Hi there!",
@@ -44,8 +44,9 @@ function Tooltip(props: Props) {
   };
 
   return (
-    <div class={`relative inline-block ${props.class}`}>
+    <div class={`h-full relative inline-block ${props.class ?? ""}`}>
       <div
+        class="h-full"
         onMouseDown={() => {
           setIsVisible(!isVisible());
           if (isVisible()) {

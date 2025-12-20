@@ -60,6 +60,29 @@ const GlobeComponent = ({ isStatic }: Props) => {
       .attr("cy", height / 2)
       .attr("r", initialScale);
 
+    // Add striped pattern for contested territories
+    const defs = svg.append("defs");
+    const pattern = defs
+      .append("pattern")
+      .attr("id", "stripes")
+      .attr("patternUnits", "userSpaceOnUse")
+      .attr("width", 10)
+      .attr("height", 10)
+      .attr("patternTransform", "rotate(45)");
+    
+    pattern
+      .append("rect")
+      .attr("width", 5)
+      .attr("height", 10)
+      .attr("fill", "#ff6b6b");
+    
+    pattern
+      .append("rect")
+      .attr("x", 5)
+      .attr("width", 5)
+      .attr("height", 10)
+      .attr("fill", "#ffd93d");
+
     let map = svg.append("g");
 
     map
@@ -70,11 +93,14 @@ const GlobeComponent = ({ isStatic }: Props) => {
       .enter()
       .append("path")
       .attr("d", (d: any) => pathGenerator(d as any))
-      .attr("fill", (d: { properties: { name: string } }) =>
-        visitedCountries.includes(d.properties.name)
+      .attr("fill", (d: { properties: { name: string; contested?: boolean } }) => {
+        if (d.properties.contested) {
+          return "url(#stripes)";
+        }
+        return visitedCountries.includes(d.properties.name)
           ? "var(--primary-500)"
-          : "white"
-      )
+          : "white";
+      })
       .style("stroke", "black")
       .style("stroke-width", 0.3)
       .style("opacity", 0.8);

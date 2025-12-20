@@ -12,6 +12,9 @@ import svelte from "@astrojs/svelte";
 
 // https://astro.build/config
 export default defineConfig({
+  experimental: {
+    svgo: true,
+  },
   site: "https://gianmarcocavallo.com/",
   integrations: [
     sitemap(),

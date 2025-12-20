@@ -37,7 +37,7 @@ import MemojiAvatar from "../assets/me.webp";
         <div class="flex gap-2 lg:gap-4">
           <a href={LINKS.github} aria-label="github profile" target="_blank">
             <Button aria-label="github profile">
-              <Icon name="ri:github-fill" class="h-6" />
+              <Icon name="ri:github-fill" />
               <span class="sr-only" data-umami-event="github button"
                 >GitHub Profile</span
               >
@@ -49,7 +49,7 @@ import MemojiAvatar from "../assets/me.webp";
             target="_blank"
           >
             <Button aria-label="linkedin profile">
-              <Icon name="ri:linkedin-box-fill" class="h-6" />
+              <Icon name="ri:linkedin-box-fill" />
               <span class="sr-only" data-umami-event="linkedin button"
                 >Linkedin Profile</span
               >
@@ -57,7 +57,7 @@ import MemojiAvatar from "../assets/me.webp";
           </a>
           <a href={LINKS.dribble} aria-label="dribble profile" target="_blank">
             <Button aria-label="dribble profile">
-              <Icon name="ri:dribbble-fill" class="h-6" />
+              <Icon name="ri:dribbble-fill" />
               <span class="sr-only" data-umami-event="Dribble button"
                 >Dribble Profile</span
               >
@@ -65,7 +65,7 @@ import MemojiAvatar from "../assets/me.webp";
           </a>
           <Tooltip client:visible>
             <Button aria-label="easter egg btn">
-              <Icon name="ri:emotion-laugh-line" class="h-6" />
+              <Icon name="ri:emotion-laugh-line" />
               <span class="sr-only" data-umami-event="Easter egg button"
                 >Easter egg button</span
               >
@@ -82,7 +82,6 @@ import MemojiAvatar from "../assets/me.webp";
       </div>
     </div>
     <Image
-    
       quality="max"
       src={MemojiAvatar}
       class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"

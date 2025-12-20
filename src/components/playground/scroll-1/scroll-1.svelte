@@ -78,7 +78,7 @@
 <Shape4 />
 <Shape4 transform="scale(-1,1)" />
 <div
-  class="columns relative grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 justify-evenly bg-[#101018] z-40"
+  class="columns relative grid grid-cols-1 md:grid-cols-3 gap-5 justify-evenly bg-[#101018] z-40"
 >
   <div class="column flex flex-col gap-6">
     <Shape1 />

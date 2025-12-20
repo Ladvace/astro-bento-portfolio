@@ -69,6 +69,10 @@
   --primary-900: #4a148c;
 }
 
+html {
+  overscroll-behavior-y: none;
+}
+
 body::before {
   --line-color: theme("colors.darkslate.400");
   --line-size: 80px;
