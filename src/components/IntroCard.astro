@@ -5,7 +5,11 @@ import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
 import { Image } from "astro:assets";
-import MemojiAvatar from "../assets/me.webp";
+import MemojiAvatarDefault from "../assets/me.webp";
+import MemojiAvatarBlue from "../assets/me-blue.webp";
+import MemojiAvatarGreen from "../assets/me-green.webp";
+import MemojiAvatarPurple from "../assets/me-purple.webp";
+import MemojiAvatarYellow from "../assets/me-yellow.webp";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4">
@@ -82,10 +86,87 @@ import MemojiAvatar from "../assets/me.webp";
       </div>
     </div>
     <Image
+      id="memoji-avatar"
       quality="max"
-      src={MemojiAvatar}
+      src={MemojiAvatarDefault}
+      data-theme-default={MemojiAvatarDefault.src}
+      data-theme-yellow-theme={MemojiAvatarYellow.src}
+      data-theme-blue-theme={MemojiAvatarBlue.src}
+      data-theme-green-theme={MemojiAvatarGreen.src}
+      data-theme-purple-theme={MemojiAvatarPurple.src}
       class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
       alt="memoji of gianmarco"
+      loading="eager"
     />
   </div>
 </Card>
+
+<script>
+  import { animate } from "motion";
+
+  function updateMemojiImage() {
+    const avatarImg = document.getElementById("memoji-avatar") as HTMLImageElement;
+    if (!avatarImg) return;
+
+    const theme = localStorage.getItem("theme") || "default";
+    const themeClass = theme === "default" ? "default" : theme;
+    const imageSrc = avatarImg.getAttribute(`data-theme-${themeClass}`) || avatarImg.getAttribute("data-theme-default");
+    
+    if (imageSrc && avatarImg.src !== imageSrc) {
+      avatarImg.src = imageSrc;
+      if (avatarImg.srcset) {
+        avatarImg.srcset = "";
+      }
+    }
+  }
+
+  function initLevitatingAnimation() {
+    const avatarImg = document.getElementById("memoji-avatar") as HTMLElement;
+    if (!avatarImg) return;
+
+    animate(
+      avatarImg,
+      { y: [-10, 10, -10] },
+      {
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }
+    );
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      updateMemojiImage();
+      initLevitatingAnimation();
+    });
+  } else {
+    updateMemojiImage();
+    initLevitatingAnimation();
+  }
+
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type === "attributes" && mutation.attributeName === "class") {
+        updateMemojiImage();
+      }
+    });
+  });
+
+  if (document.body) {
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+  } else {
+    document.addEventListener("DOMContentLoaded", () => {
+      observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ["class"],
+      });
+      updateMemojiImage();
+    });
+  }
+
+  document.addEventListener("themechange", updateMemojiImage);
+</script>

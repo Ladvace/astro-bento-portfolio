@@ -5,27 +5,27 @@ import Card from "./Card/index.astro";
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-1 flex gap-4" padding="p-4">
   <div class="flex theme-colors flex justify-between items-center w-full max-w-xs">
     <div
-      class="w-10 h-10 rounded-full bg-[#e63946] cursor-pointer"
+      class="w-10 h-10 rounded-full bg-[#e63946] cursor-pointer border-2 border-transparent"
       data-theme="default"
     >
     </div>
     <div
-      class="w-10 h-10 rounded-full bg-yellow-500 cursor-pointer"
+      class="w-10 h-10 rounded-full bg-yellow-500 cursor-pointer border-2 border-transparent"
       data-theme="yellow-theme"
     >
     </div>
     <div
-      class="w-10 h-10 rounded-full bg-blue-500 cursor-pointer"
+      class="w-10 h-10 rounded-full bg-blue-500 cursor-pointer border-2 border-transparent"
       data-theme="blue-theme"
     >
     </div>
     <div
-      class="w-10 h-10 rounded-full bg-purple-500 cursor-pointer"
+      class="w-10 h-10 rounded-full bg-purple-500 cursor-pointer border-2 border-transparent"
       data-theme="purple-theme"
     >
     </div>
     <div
-      class="w-10 h-10 rounded-full bg-green-500 cursor-pointer"
+      class="w-10 h-10 rounded-full bg-green-500 cursor-pointer border-2 border-transparent"
       data-theme="green-theme"
     >
     </div>
@@ -35,6 +35,22 @@ import Card from "./Card/index.astro";
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     const themeButtons = document.querySelectorAll(".theme-colors > div");
+
+    const updateSelectedTheme = () => {
+      const currentTheme = localStorage.getItem("theme") || "default";
+      themeButtons.forEach((button) => {
+        const themeName = button.getAttribute("data-theme");
+        if (themeName === currentTheme) {
+          button.classList.remove("border-transparent");
+          button.classList.add("border-white");
+        } else {
+          button.classList.remove("border-white");
+          button.classList.add("border-transparent");
+        }
+      });
+    };
+
+    updateSelectedTheme();
 
     themeButtons.forEach((button) => {
       button.addEventListener("click", () => {
@@ -49,9 +65,15 @@ import Card from "./Card/index.astro";
         );
         
         localStorage.setItem("theme", themeName as string)
-        if (!themeName || isDefault) return;
+        if (!themeName || isDefault) {
+          updateSelectedTheme();
+          document.dispatchEvent(new CustomEvent("themechange", { detail: { theme: themeName } }));
+          return;
+        }
         document.body.classList.add(themeName);
-
+        
+        updateSelectedTheme();
+        document.dispatchEvent(new CustomEvent("themechange", { detail: { theme: themeName } }));
       });
     });
   });

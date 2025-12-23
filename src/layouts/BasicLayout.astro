@@ -11,21 +11,19 @@ interface Props {
 }
 
 const { title, description, page, pubDate } = Astro.props;
-const image =
-  page === "travel"
-    ? `${Astro.url.origin}/globe_preview.webp"`
-    : `${Astro.url.origin}/og-image.png`;
+const image = `${Astro.url.origin}/og-image.png`;
 
 const schema =
   page !== "blog"
     ? {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "Person",
-        name: "Gianmarco",
+        name: "Gianmarco Cavallo",
         url: Astro.url.origin,
         sameAs: [LINKS.linkedin, LINKS.github],
         image: `${Astro.url.origin}/og-image.png`,
         jobTitle: "Freelance Frontend Developer",
+        knowsAbout: ["JavaScript", "React", "Astro", "Solid.js", "Svelte", "Node.js", "User Experience", "Web Development"],
         worksFor: {
           "@type": "Organization",
           name: "Self-Employed",
@@ -41,7 +39,7 @@ const schema =
         },
       }
     : {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "BlogPosting",
         mainEntityOfPage: {
           "@type": "WebPage",
@@ -79,19 +77,25 @@ const schema =
     <title>{title}</title>
     <meta content={description} name="description" />
     <meta content="index, follow" name="robots" />
-    <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
+    <meta name="theme-color" content="#171717" />
+    <meta name="author" content="Gianmarco Cavallo" />
+    <meta name="keywords" content="frontend developer, web developer, React, Astro, Solid.js, Svelte, freelance developer, Italy, UX, animations, micro-interactions" />
+    <meta content="website" property="og:type" />
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
-    <meta content="website" property="og:type" />
     <meta content={Astro.url.origin} property="og:url" />
+    <meta property="og:site_name" content="Gianmarco Cavallo" />
+    <meta property="og:locale" content="en_US" />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
       property="og:image"
     />
-    <!-- Basic Twitter Card tags -->
+    <meta property="og:image:alt" content={description} />
+    <meta property="og:image:type" content="image/png" />
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
+    <meta name="twitter:creator" content="@gianmarcocavallo" />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
       name="twitter:image"
@@ -169,6 +173,18 @@ const schema =
     <slot />
   </body>
 </html>
+
+<script>
+  if (typeof document !== "undefined") {
+    document.addEventListener("DOMContentLoaded", () => {
+      const theme = localStorage.getItem("theme");
+
+      if (theme && theme !== "default") {
+        document.body.classList.add(theme);
+      }
+    });
+  }
+</script>
 
 <style is:global>
   body {

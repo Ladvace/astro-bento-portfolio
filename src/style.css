@@ -19,6 +19,9 @@
   --primary-700: #b82534;
   --primary-800: #a01b2b;
   --primary-900: #891321;
+
+  --font-cabinet-grotesk: "CabinetGrotesk", "Cabinet Grotesk", sans-serif;
+  --font-satoshi: "Satoshi", sans-serif;
 }
 
 .yellow-theme {
@@ -73,6 +76,10 @@ html {
   overscroll-behavior: none;
 }
 
+body {
+  min-height: 100vh;
+}
+
 body::before {
   --line-color: theme("colors.darkslate.400");
   --line-size: 80px;
@@ -80,11 +87,13 @@ body::before {
   height: 100vh;
   width: 101vw;
   position: fixed;
-  background: linear-gradient(90deg, var(--line-color) 1px, transparent 1px) 0 0 /
+  background: linear-gradient(90deg, var(--line-color) 1px, transparent 1px) center /
       var(--line-size) var(--line-size),
-    linear-gradient(var(--line-color) 1px, transparent 1px) 0 0 /
+    linear-gradient(var(--line-color) 1px, transparent 1px) center /
       var(--line-size) var(--line-size);
   top: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: -1;
   -webkit-mask: linear-gradient(-360deg, transparent 40%, white);
   mask: linear-gradient(-360deg, transparent 40%, white);

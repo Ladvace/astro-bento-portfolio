@@ -22,6 +22,8 @@
     "@astrojs/svelte": "^7.2.4",
     "@iconify-json/ri": "^1.2.6",
     "@rive-app/canvas": "^2.33.1",
+    "@swup/astro": "^1.7.0",
+    "@swup/overlay-theme": "^2.0.2",
     "astro": "^5.16.6",
     "astro-icon": "^1.1.5",
     "astro-robots-txt": "^1.0.0",
@@ -37,7 +39,7 @@
   },
   "devDependencies": {
     "@types/d3": "^7.4.3",
-    "@typescript-eslint/parser": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.1",
     "@unocss/astro": "^66.5.10",
     "@unocss/postcss": "^66.5.10",
     "@unocss/preset-uno": "^66.5.10",
@@ -47,7 +49,7 @@
     "eslint-plugin-astro": "^1.5.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "husky": "^9.1.7",
-    "lint-staged": "^15.2.11",
+    "lint-staged": "^16.2.7",
     "markdown-it": "^14.1.0",
     "motion": "^12.23.26",
     "sanitize-html": "^2.17.0",
@@ -59,5 +61,5 @@
       "eslint --fix"
     ]
   },
-  "packageManager": "pnpm@10.26.1+sha512.664074abc367d2c9324fdc18037097ce0a8f126034160f709928e9e9f95d98714347044e5c3164d65bd5da6c59c6be362b107546292a8eecb7999196e5ce58fa"
+  "packageManager": "pnpm@10.26.2"
 }

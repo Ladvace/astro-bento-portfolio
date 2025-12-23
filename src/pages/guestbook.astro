@@ -27,8 +27,7 @@ if (Astro.request.method === "POST") {
 
       return Astro.redirect(Astro.url.pathname);
     }
-  } catch (error) {
-    console.error("Error creating guestbook entry:", error);
+  } catch {
     formError = "Failed to submit message. Please try again.";
   }
 }

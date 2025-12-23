@@ -8,14 +8,70 @@ import Card from "./Card/index.astro";
   import { formatTimeTo12H, getCurrentTimeInItaly } from "../lib/helpers";
 
   let interval: ReturnType<typeof setInterval>;
+  const italyTimezone = "Europe/Rome";
+
+  function getVisitorTimezone(): string {
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  }
+
+  function getCurrentTimeInTimezone(timezone: string): Date {
+    return new Date(
+      new Date().toLocaleString("en-US", { timeZone: timezone })
+    );
+  }
+
+  function uses24HourFormat(): boolean {
+    const formatter = new Intl.DateTimeFormat(navigator.language, {
+      hour: "numeric",
+    });
+    const parts = formatter.formatToParts(new Date());
+    const hourPart = parts.find((part) => part.type === "hour");
+    return hourPart ? !parts.some((part) => part.type === "dayPeriod") : false;
+  }
+
+  function formatTimeForTimezone(date: Date, timezone: string, use24Hour: boolean): string {
+    const options: Intl.DateTimeFormatOptions = {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: !use24Hour,
+      timeZone: timezone,
+    };
+    return new Intl.DateTimeFormat(navigator.language, options).format(date);
+  }
+
+  function getTimezoneAbbreviation(timezone: string): string {
+    const date = new Date();
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      timeZoneName: "short",
+    });
+    const parts = formatter.formatToParts(date);
+    const tzName = parts.find((part) => part.type === "timeZoneName");
+    return tzName ? tzName.value : timezone.split("/").pop() || timezone;
+  }
 
   function updateClock() {
-    const timeDisplay = document.getElementById("timeDisplay");
-    const now = getCurrentTimeInItaly();
+    const italyTimeDisplay = document.getElementById("italyTimeDisplay");
+    const visitorTimeDisplay = document.getElementById("visitorTimeDisplay");
+    const visitorTzDisplay = document.getElementById("visitorTzDisplay");
 
-    if (timeDisplay) {
-      timeDisplay.textContent = formatTimeTo12H(now);
-      timeDisplay.setAttribute("datetime", now.toISOString());
+    const visitorTimezone = getVisitorTimezone();
+    const italyTime = getCurrentTimeInItaly();
+    const visitorTime = getCurrentTimeInTimezone(visitorTimezone);
+    const use24Hour = uses24HourFormat();
+
+    if (italyTimeDisplay) {
+      italyTimeDisplay.textContent = formatTimeForTimezone(italyTime, italyTimezone, use24Hour);
+      italyTimeDisplay.setAttribute("datetime", italyTime.toISOString());
+    }
+
+    if (visitorTimeDisplay) {
+      visitorTimeDisplay.textContent = formatTimeForTimezone(visitorTime, visitorTimezone, use24Hour);
+      visitorTimeDisplay.setAttribute("datetime", visitorTime.toISOString());
+    }
+
+    if (visitorTzDisplay) {
+      visitorTzDisplay.textContent = getTimezoneAbbreviation(visitorTimezone);
     }
   }
 
@@ -29,17 +85,35 @@ import Card from "./Card/index.astro";
   });
 </script>
 
-<Card colSpan="lg:col-span-1" rowSpan="md:row-span-1">
-  <div
-    class="flex gap-2 text-2xl items-center justify-center h-full font-serif"
-  >
-    <time
-      datetime=""
-      id="timeDisplay"
-      class="whitespace-nowrap flex items-center"
-    >
-      {formatTimeTo12H(getCurrentTimeInItaly())}
-    </time>
-    CET
+<Card colSpan="lg:col-span-1" rowSpan="md:row-span-2">
+  <div class="flex flex-col gap-2 justify-center h-full">
+    <div class="flex flex-col">
+      <span class="text-sm font-light text-darkslate-300 m-0">my time</span>
+      <div class="flex items-baseline gap-2">
+        <time
+          datetime=""
+          id="italyTimeDisplay"
+          class="whitespace-nowrap text-4xl font-bold tabular-nums"
+        >
+          {formatTimeTo12H(getCurrentTimeInItaly())}
+        </time>
+        <span class="text-sm font-light text-darkslate-300">CET</span>
+      </div>
+    </div>
+    
+    <div class="flex flex-col">
+      <span class="text-sm font-light text-darkslate-300 m-0">your time</span>
+      <div class="flex items-baseline gap-2">
+        <time
+          datetime=""
+          id="visitorTimeDisplay"
+          class="whitespace-nowrap text-4xl font-bold tabular-nums"
+        >
+          {formatTimeTo12H(getCurrentTimeInItaly())}
+        </time>
+        <span id="visitorTzDisplay" class="text-sm font-light text-darkslate-300">UTC</span>
+      </div>
+    </div>
+    
   </div>
 </Card>

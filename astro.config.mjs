@@ -49,12 +49,20 @@ export default defineConfig({
     ],
   },
   site: "https://gianmarcocavallo.com/",
-  integrations: [sitemap(), robotsTxt({
-    sitemap: [
-      "https://gianmarcocavallo.com/sitemap-index.xml",
-      "https://gianmarcocavallo.com/sitemap-0.xml",
-    ],
-  }), solidJs(), UnoCSS({ injectReset: true }), icon(), svelte(), db()],
+  integrations: [
+    sitemap(),
+    robotsTxt({
+      sitemap: [
+        "https://gianmarcocavallo.com/sitemap-index.xml",
+        "https://gianmarcocavallo.com/sitemap-0.xml",
+      ],
+    }),
+    solidJs(),
+    UnoCSS({ injectReset: true }),
+    icon(),
+    svelte(),
+    db(),
+  ],
   markdown: {
     remarkPlugins: [remarkReadingTime],
   },

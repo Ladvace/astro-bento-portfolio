@@ -53,12 +53,12 @@ import AllinMapScreenshot from "../assets/allinmap_screenshot.png";
       rowSpan="md:row-span-1"
       title="Playground"
     />
-    <Card
+    <!-- <Card
       href="/blog"
       colSpan="md:col-span-1"
-      rowSpan="md:row-span-1 "
+      rowSpan="md:row-span-1"
       title="Blog"
-    />
+    /> -->
     <Card
       href="/guestbook"
       colSpan="md:col-span-1"
@@ -75,13 +75,15 @@ import AllinMapScreenshot from "../assets/allinmap_screenshot.png";
         <div class="flex items-center box-border h-full w-full group">
           <h3 class="my-6 ml-6 mr-10 max-w-10 font-bold">Download AllinMapp</h3>
           <div
-            class="flex-1 flex justify-start pl-4 items-center absolute right-0 left-0 bottom-0 h-[200px] overflow-hidden"
+            class="flex-1 flex justify-start pl-4 items-center absolute right-0 left-0 bottom-0 h-[150px] overflow-hidden pointer-events-none"
           >
             <Image
+              quality="max"
               src={AllinMapScreenshot}
               width={100}
-              class="w-[100px] h-auto absolute right-0 -bottom-20 xl:-bottom-10 -rotate-10 group-hover:-bottom-10 group-hover:rotate-0 transition-all duration-300 ease-in-out"
+              class="w-[100px] h-auto absolute right-0 -bottom-20 xl:-bottom-10 -rotate-10 group-hover:-bottom-10 group-hover:rotate-0 transition-all duration-300 ease-in-out pointer-events-auto"
               alt="allinmap screenshot"
+              loading="eager"
             />
           </div>
         </div>
@@ -107,8 +109,12 @@ import AllinMapScreenshot from "../assets/allinmap_screenshot.png";
       title="Countries I visited"
     >
       <div class="h-full w-full absolute inset-0 -z-10">
-        <Globe client:media="(min-width: 768px)" />
-        <Globe client:media="(max-width: 768px)" isStatic={true} />
+        <div class="hidden md:block h-full w-full">
+          <Globe client:media="(min-width: 768px)" />
+        </div>
+        <div class="block md:hidden h-full w-full">
+          <Globe client:media="(max-width: 768px)" isStatic={true} />
+        </div>
       </div>
     </Card>
     <ThemeChangeCard />

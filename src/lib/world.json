@@ -3709,7 +3709,7 @@
     },
     {
       "type": "Feature",
-      "properties": { "name": "Taiwan", "contested": true },
+      "properties": { "name": "Taiwan" },
       "geometry": {
         "type": "Polygon",
         "coordinates": [
