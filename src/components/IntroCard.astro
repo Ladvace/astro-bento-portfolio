@@ -20,20 +20,20 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
 
         <p class="sr-only">
           Hi, I'm Gianmarco Cavallo, a software developer with strong focus on
-          the user experience, animations and micro interactions. Feel free to
-          reach out to me if you have any projects in mind, or just to say
-          hello.
+          the user experience, animations, micro interactions and SEO. Feel
+          free to reach out to me if you have any project in mind, want to
+          collaborate, or just want to say hello.
         </p>
         <p aria-hidden="true" class="m-0 font-light text-md">
           <span>
             Hi, I'm <b class="font-bold">Gianmarco Cavallo</b>, a software
-            developer with strong focus on the user experience, animations and
-            micro interactions.
+            developer with strong focus on the user experience, animations,
+            micro interactions and SEO.
           </span>
           <br />
           <span class="block mt-2">
-            Feel free to reach out to me if you have any projects in mind, or
-            just to say hello.
+            Feel free to reach out to me if you have any project in mind, want
+            to collaborate, or just want to say hello.
           </span>
         </p>
       </div>
@@ -105,13 +105,17 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
   import { animate } from "motion";
 
   function updateMemojiImage() {
-    const avatarImg = document.getElementById("memoji-avatar") as HTMLImageElement;
+    const avatarImg = document.getElementById(
+      "memoji-avatar"
+    ) as HTMLImageElement;
     if (!avatarImg) return;
 
     const theme = localStorage.getItem("theme") || "default";
     const themeClass = theme === "default" ? "default" : theme;
-    const imageSrc = avatarImg.getAttribute(`data-theme-${themeClass}`) || avatarImg.getAttribute("data-theme-default");
-    
+    const imageSrc =
+      avatarImg.getAttribute(`data-theme-${themeClass}`) ||
+      avatarImg.getAttribute("data-theme-default");
+
     if (imageSrc && avatarImg.src !== imageSrc) {
       avatarImg.src = imageSrc;
       if (avatarImg.srcset) {
@@ -147,7 +151,10 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
 
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.type === "attributes" && mutation.attributeName === "class") {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+      ) {
         updateMemojiImage();
       }
     });
