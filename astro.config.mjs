@@ -26,7 +26,7 @@ export default defineConfig({
     svelte(),
   ],
   output: "server",
-  adapter: netlify({ edgeMiddleware: true }),
+  adapter: netlify({ middlewareMode: 'edge' }),
   vite: {
     assetsInclude: "**/*.riv",
     resolve: {

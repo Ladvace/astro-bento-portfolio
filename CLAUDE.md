@@ -10,19 +10,19 @@ This is a personal portfolio website built with Astro, featuring a bento-style, 
 
 ```bash
 # Start development server
-npm run dev
+pnpm dev
 
 # Build for production
-npm run build
+pnpm build
 
 # Type checking
-npm run check
+pnpm check
 
 # Linting
-npm run eslint
+pnpm eslint
 ```
 
-Note: `npm run preview` is not supported due to the Netlify adapter configuration. Use `npm run build` and deploy to Netlify for production testing.
+Note: `pnpm preview` is not supported due to the Netlify adapter configuration. Use `pnpm build` and deploy to Netlify for production testing.
 
 ## Tech Stack & Architecture
 
