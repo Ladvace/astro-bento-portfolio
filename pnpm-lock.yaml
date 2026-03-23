@@ -26,6 +26,9 @@ importers:
       '@astrojs/svelte':
         specifier: ^8.0.3
         version: 8.0.3(@types/node@24.12.0)(astro@6.0.7(@netlify/blobs@10.7.4)(@types/node@24.12.0)(jiti@2.6.1)(rollup@4.59.0)(tsx@4.19.1)(typescript@5.9.3)(yaml@2.8.2))(jiti@2.6.1)(svelte@5.45.6)(tsx@4.19.1)(typescript@5.9.3)(yaml@2.8.2)
+      '@iconify-json/fa6-brands':
+        specifier: ^1.1.22
+        version: 1.2.6
       '@iconify-json/ri':
         specifier: ^1.2.6
         version: 1.2.6
@@ -887,6 +890,9 @@ packages:
 
   '@iarna/toml@2.2.5':
     resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
+
+  '@iconify-json/fa6-brands@1.2.6':
+    resolution: {integrity: sha512-twL3X4KWcxAhbc1vz/mIDsVr+CAItk1/EIfxKUVQtpv6O4eydk5KNYqTZWdvJNHGInUgd6vKg21aWfVgb5DXEg==}
 
   '@iconify-json/ri@1.2.6':
     resolution: {integrity: sha512-tGXRmXtb8oFu8DNg9MsS1pywKFgs9QZ4U6LBzUamBHaw3ePSiPd7ouE64gzHzfEcR16hgVaXoUa+XxD3BB0XOg==}
@@ -6428,6 +6434,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.2': {}
 
   '@iarna/toml@2.2.5': {}
+
+  '@iconify-json/fa6-brands@1.2.6':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify-json/ri@1.2.6':
     dependencies:
