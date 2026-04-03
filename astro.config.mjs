@@ -30,7 +30,7 @@ export default defineConfig({
     remarkPlugins: [remarkReadingTime],
   },
   output: "server",
-  adapter: netlify({ edgeMiddleware: true }),
+  adapter: netlify({ middlewareMode: "edge" }),
   vite: {
     assetsInclude: "**/*.riv",
   },
