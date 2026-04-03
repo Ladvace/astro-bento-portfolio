@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import ArrayGlowComponent from "../../components/playground/arrayGlow";
+import { SITE } from "../../site-config";
 ---
 
 <script>
@@ -11,7 +12,7 @@ import ArrayGlowComponent from "../../components/playground/arrayGlow";
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Playground - Glowing stars effect"
+  title={`${SITE.author.fullName} - Playground - Glowing stars effect`}
   description="Glowing stars effect"
   fullScreen="h-auto"
 >

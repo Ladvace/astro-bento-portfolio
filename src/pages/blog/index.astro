@@ -2,6 +2,7 @@
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import PostRow from "../../components/Blog/PostRow.astro";
+import { SITE } from "../../site-config";
 
 const posts = (await getCollection("blog"))?.sort(
   (blogEntryA, blogEntryB) =>
@@ -21,7 +22,7 @@ const posts = (await getCollection("blog"))?.sort(
 
 <Layout
   description="Software developer with strong focus on the user experience animations and micro interactions"
-  title="Gianmarco Cavallo - Blog"
+  title={`${SITE.author.fullName} - Blog`}
 >
   <main
     class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"

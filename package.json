@@ -8,6 +8,7 @@
     "build": "astro build --remote",
     "preview": "astro preview",
     "astro": "astro",
+    "site-setup": "node scripts/setup.mjs",
     "eslint": "eslint 'src/**/*.{js,astro}'",
     "check": "astro check",
     "prepare": "husky"

@@ -1,6 +1,7 @@
 import { onMount } from "solid-js";
 import * as d3 from "d3";
 import worldData from "../lib/world.json";
+import { SITE } from "../site-config";
 
 type Props = {
   isStatic?: boolean;
@@ -11,24 +12,7 @@ type Props = {
 const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
   let mapContainer: HTMLDivElement | undefined;
 
-  const visitedCountries = [
-    "France",
-    "China",
-    "Italy",
-    "Sri Lanka",
-    "Uzbekistan",
-    "Turkey",
-    "Greece",
-    "Malta",
-    "Hungary",
-    "Portugal",
-    "Morocco",
-    "Greece",
-    "Spain",
-    "Netherlands",
-    "Belgium",
-    "Spain",
-  ];
+  const visitedCountries = SITE.visitedCountries;
 
   onMount(() => {
     if (!mapContainer) return;

@@ -1,6 +1,7 @@
 ---
 import Card from "./Card/index.astro";
 import { LINKS } from "../lib/constants";
+import { SITE } from "../site-config";
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-4">
@@ -12,8 +13,8 @@ import { LINKS } from "../lib/constants";
     </header>
     <address class="flex flex-col mt-4">
       <h2 class="text-darkslate-300">Contact Details</h2>
-      <p class="text-sm">contact@gianmarcocavallo.com</p>
-      <p>Italy</p>
+      <p class="text-sm">{SITE.links.email}</p>
+      <p>{SITE.location.countryName}</p>
     </address>
     <div class="flex flex-col mt-4 w-fit">
       <h2 class="text-darkslate-300">Socials</h2>

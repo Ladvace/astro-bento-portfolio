@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Card from "../../components/Card/index.astro";
+import { SITE } from "../../site-config";
 
 const projects = [
   {
@@ -46,7 +47,7 @@ const projects = [
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Playground"
+  title={`${SITE.author.fullName} - Playground`}
   description="A collection of experiments and creative explorations with different technologies."
 >
   <main

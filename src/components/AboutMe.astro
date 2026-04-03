@@ -1,11 +1,12 @@
 ---
 import Card from "./Card/index.astro";
+import { SITE } from "../site-config";
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-6" title="About me">
   <div class="flex flex-col gap-2">
     <p class="sr-only">
-      Hi, I'm Gianmarco, a full stack software developer (frontend-focused) from Italy. My primary
+      Hi, I'm {SITE.author.firstName}, a full stack software developer (frontend-focused) from {SITE.location.countryName}. My primary
       tools of choice includes: JavaScript, React, Solidjs, Astro, Svelte,
       Nodejs. I also have knowledge of SEO and design. Beyond coding, I'm passionate about design, illustration,
       animation and 3D modelling and traveling. An unusual hobby of mine is
@@ -16,7 +17,7 @@ import Card from "./Card/index.astro";
     </p>
     <div aria-hidden="true" class="text-sm font-light">
       <p class="text-sm font-light">
-        Hi, I'm Gianmarco, a full stack software developer (frontend-focused) from Italy.
+        Hi, I'm {SITE.author.firstName}, a full stack software developer (frontend-focused) from {SITE.location.countryName}.
       </p>
       <br />
       My primary tools of choice includes:

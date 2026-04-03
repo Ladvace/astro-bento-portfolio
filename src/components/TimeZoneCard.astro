@@ -1,23 +1,24 @@
 ---
-import { getCurrentTimeInItaly, formatTimeTo12H } from "../lib/helpers";
+import { getCurrentTimeInTimezone, formatTimeTo12H } from "../lib/helpers";
 import Card from "./Card/index.astro";
+import { SITE } from "../site-config";
 ---
 
 <script>
   import { onCleanup, onMount } from "solid-js";
-  import { formatTimeTo12H, getCurrentTimeInItaly } from "../lib/helpers";
+  import { getCurrentTimeInTimezone } from "../lib/helpers";
 
   let interval: ReturnType<typeof setInterval>;
-  const italyTimezone = "Europe/Rome";
+  let homeTimezone = "";
+
+  function getHomeTimezoneFromDom(): string {
+    const el = document.getElementById("homeTzDisplay");
+    const tz = (el as HTMLSpanElement | null)?.dataset?.timezone;
+    return tz || "";
+  }
 
   function getVisitorTimezone(): string {
     return Intl.DateTimeFormat().resolvedOptions().timeZone;
-  }
-
-  function getCurrentTimeInTimezone(timezone: string): Date {
-    return new Date(
-      new Date().toLocaleString("en-US", { timeZone: timezone })
-    );
   }
 
   function uses24HourFormat(): boolean {
@@ -54,15 +55,18 @@ import Card from "./Card/index.astro";
     const italyTimeDisplay = document.getElementById("italyTimeDisplay");
     const visitorTimeDisplay = document.getElementById("visitorTimeDisplay");
     const visitorTzDisplay = document.getElementById("visitorTzDisplay");
+    const homeTzDisplay = document.getElementById("homeTzDisplay");
+
+    if (!homeTimezone) homeTimezone = getHomeTimezoneFromDom() || "UTC";
 
     const visitorTimezone = getVisitorTimezone();
-    const italyTime = getCurrentTimeInItaly();
+    const homeTime = getCurrentTimeInTimezone(homeTimezone);
     const visitorTime = getCurrentTimeInTimezone(visitorTimezone);
     const use24Hour = uses24HourFormat();
 
     if (italyTimeDisplay) {
-      italyTimeDisplay.textContent = formatTimeForTimezone(italyTime, italyTimezone, use24Hour);
-      italyTimeDisplay.setAttribute("datetime", italyTime.toISOString());
+      italyTimeDisplay.textContent = formatTimeForTimezone(homeTime, homeTimezone, use24Hour);
+      italyTimeDisplay.setAttribute("datetime", homeTime.toISOString());
     }
 
     if (visitorTimeDisplay) {
@@ -72,6 +76,10 @@ import Card from "./Card/index.astro";
 
     if (visitorTzDisplay) {
       visitorTzDisplay.textContent = getTimezoneAbbreviation(visitorTimezone);
+    }
+
+    if (homeTzDisplay) {
+      homeTzDisplay.textContent = getTimezoneAbbreviation(homeTimezone);
     }
   }
 
@@ -95,9 +103,15 @@ import Card from "./Card/index.astro";
           id="italyTimeDisplay"
           class="whitespace-nowrap text-4xl font-bold tabular-nums"
         >
-          {formatTimeTo12H(getCurrentTimeInItaly())}
+          {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
         </time>
-        <span class="text-sm font-light text-darkslate-300">CET</span>
+        <span
+          id="homeTzDisplay"
+          data-timezone={SITE.location.timezone}
+          class="text-sm font-light text-darkslate-300"
+        >
+          ---
+        </span>
       </div>
     </div>
     
@@ -109,9 +123,9 @@ import Card from "./Card/index.astro";
           id="visitorTimeDisplay"
           class="whitespace-nowrap text-4xl font-bold tabular-nums"
         >
-          {formatTimeTo12H(getCurrentTimeInItaly())}
+          {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
         </time>
-        <span id="visitorTzDisplay" class="text-sm font-light text-darkslate-300">UTC</span>
+        <span id="visitorTzDisplay" class="text-sm font-light text-darkslate-300">---</span>
       </div>
     </div>
     

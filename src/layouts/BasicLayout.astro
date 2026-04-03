@@ -1,6 +1,7 @@
 ---
 import "../style.css";
 import { LINKS } from "../lib/constants";
+import { SITE } from "../site-config";
 
 interface Props {
   title: string;
@@ -18,24 +19,24 @@ const schema =
     ? {
         "@context": "https://schema.org",
         "@type": "Person",
-        name: "Gianmarco Cavallo",
+        name: SITE.author.fullName,
         url: Astro.url.origin,
         sameAs: [LINKS.linkedin, LINKS.github],
         image: `${Astro.url.origin}/og-image.png`,
-        jobTitle: "Freelance Full Stack Developer",
+        jobTitle: SITE.author.jobTitle,
         knowsAbout: ["JavaScript", "React", "Astro", "Solid.js", "Svelte", "Node.js", "User Experience", "Web Development"],
         worksFor: {
           "@type": "Organization",
           name: "Self-Employed",
           address: {
             "@type": "PostalAddress",
-            addressLocality: "Italy",
-            addressCountry: "IT",
+            addressLocality: SITE.location.countryName,
+            addressCountry: SITE.location.countryCode,
           },
         },
         nationality: {
           "@type": "Country",
-          name: "Italy",
+          name: SITE.location.countryName,
         },
       }
     : {
@@ -50,13 +51,13 @@ const schema =
         image: `${Astro.url.origin}/og-image.png`, //TODO: dynamic
         author: {
           "@type": "Person",
-          name: "Gianmarco",
+          name: SITE.author.shortName,
           url: Astro.url.origin,
           sameAs: [LINKS.linkedin, LINKS.github],
         },
         publisher: {
           "@type": "Organization",
-          name: "Gianmarco",
+          name: SITE.author.shortName,
           logo: {
             "@type": "ImageObject",
             url: `${Astro.url.origin}/og-image.png`,
@@ -68,7 +69,11 @@ const schema =
 ---
 
 <!doctype html>
-<html lang="en">
+<html
+  lang="en"
+  data-cal-namespace={SITE.cal.durationNamespace}
+  data-cal-origin={SITE.cal.origin}
+>
   <head>
     <meta charset="UTF-8" />
     <meta content="width=device-width" name="viewport" />
@@ -78,13 +83,16 @@ const schema =
     <meta content={description} name="description" />
     <meta content="index, follow" name="robots" />
     <meta name="theme-color" content="#171717" />
-    <meta name="author" content="Gianmarco Cavallo" />
-    <meta name="keywords" content="full stack developer, web developer, React, Astro, Solid.js, Svelte, freelance developer, Italy, UX, animations, micro-interactions" />
+    <meta name="author" content={SITE.author.fullName} />
+    <meta
+      name="keywords"
+      content={`full stack developer, web developer, React, Astro, Solid.js, Svelte, freelance developer, ${SITE.location.countryName}, UX, animations, micro-interactions`}
+    />
     <meta content="website" property="og:type" />
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
     <meta content={Astro.url.origin} property="og:url" />
-    <meta property="og:site_name" content="Gianmarco Cavallo" />
+    <meta property="og:site_name" content={SITE.author.fullName} />
     <meta property="og:locale" content="en_US" />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
@@ -95,7 +103,7 @@ const schema =
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
-    <meta name="twitter:creator" content="@gianmarcocavallo" />
+    <meta name="twitter:creator" content={`@${SITE.author.twitterHandle}`} />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
       name="twitter:image"
@@ -153,14 +161,19 @@ const schema =
             p(cal, ar);
           };
       })(window, "https://app.cal.com/embed/embed.js", "init");
-      Cal("init", "15min", { origin: "https://cal.com" });
+      const calNamespace =
+        document.documentElement.dataset.calNamespace || "15min";
+      const calOrigin =
+        document.documentElement.dataset.calOrigin || "https://cal.com";
+
+      Cal("init", calNamespace, { origin: calOrigin });
 
       // Important: Please add the following attributes to the element that should trigger the calendar to open upon clicking.
       // `data-cal-link="ladvace/15min"`
       // data-cal-namespace="15min"
       // `data-cal-config='{"layout":"month_view"}'`
 
-      Cal.ns["15min"]("ui", {
+      Cal.ns[calNamespace]("ui", {
         styles: { branding: { brandColor: "#000000" } },
         hideEventTypeDetails: false,
         layout: "month_view",

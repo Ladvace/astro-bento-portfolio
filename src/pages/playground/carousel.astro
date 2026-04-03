@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import CarouselComponent from "../../components/playground/carousel";
+import { SITE } from "../../site-config";
 ---
 
 <script>
@@ -11,7 +12,7 @@ import CarouselComponent from "../../components/playground/carousel";
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Playground - Fancy league of legends carousel"
+  title={`${SITE.author.fullName} - Playground - Fancy league of legends carousel`}
   description="Fancy carousel with league of legends champions"
   fullScreen="h-auto"
 >

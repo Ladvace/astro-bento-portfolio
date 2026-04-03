@@ -5,6 +5,7 @@ import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
 import { Image } from "astro:assets";
+import { SITE } from "../site-config";
 import MemojiAvatarDefault from "../assets/me.webp";
 import MemojiAvatarBlue from "../assets/me-blue.webp";
 import MemojiAvatarGreen from "../assets/me-green.webp";
@@ -19,14 +20,14 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
         <h6 class="text-sm font-light m-0 text-darkslate-300">welcome</h6>
 
         <p class="sr-only">
-          Hi, I'm Gianmarco Cavallo, a software developer with strong focus on
+          Hi, I'm {SITE.author.fullName}, a software developer with strong focus on
           the user experience, animations, micro interactions and SEO. Feel
           free to reach out to me if you have any project in mind, want to
           collaborate, or just want to say hello.
         </p>
         <p aria-hidden="true" class="m-0 font-light text-md">
           <span>
-            Hi, I'm <b class="font-bold">Gianmarco Cavallo</b>, a software
+            Hi, I'm <b class="font-bold">{SITE.author.fullName}</b>, a software
             developer with strong focus on the user experience, animations,
             micro interactions and SEO.
           </span>
@@ -76,21 +77,16 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
             </Button>
           </Tooltip>
         </div>
-        <Button aria-label="book a call" data-cal-link="ladvace">
+        <Button
+          aria-label="book a call"
+          data-cal-link={SITE.cal.username}
+        >
           <span
             data-umami-event="Book a call"
-            data-cal-link="ladvace"
+            data-cal-link={SITE.cal.username}
             class="font-bold whitespace-nowrap">Book a call</span
           >
         </Button>
-        <a href="https://ko-fi.com/M4M71O34X" style="width: max-content;display: flex;align-items: center;" target="_blank"
-          ><img
-            height="36"
-            style="border:0px;height:36px;"
-            src="https://storage.ko-fi.com/cdn/kofi6.png?v=6"
-            alt="Buy Me a Coffee at ko-fi.com"
-          /></a
-        >
       </div>
     </div>
     <Image
@@ -103,7 +99,7 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
       data-theme-green-theme={MemojiAvatarGreen.src}
       data-theme-purple-theme={MemojiAvatarPurple.src}
       class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
-      alt="memoji of gianmarco"
+      alt={`memoji of ${SITE.author.firstName}`}
       loading="eager"
     />
   </div>

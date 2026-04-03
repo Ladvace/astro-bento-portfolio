@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import SlidingImagesLoaderComponent from "../../components/playground/slidingImgesLoader";
+import { SITE } from "../../site-config";
 ---
 
 <script>
@@ -11,7 +12,7 @@ import SlidingImagesLoaderComponent from "../../components/playground/slidingImg
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Playground - Sliding images loader"
+  title={`${SITE.author.fullName} - Playground - Sliding images loader`}
   description="Cool sliding images initial loader"
 >
   <div class="flex flex-col items-start h-screen w-screen p-4">

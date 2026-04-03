@@ -16,6 +16,7 @@ import HouseIllustration from "../assets/illustrations/house.webp";
 import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
 import HexElementIllustration1 from "../assets/illustrations/hex_element_1.png";
 import HexElementIllustration2 from "../assets/illustrations/hex_element_2.png";
+import { SITE } from "../site-config";
 ---
 
 <script>
@@ -26,7 +27,7 @@ import HexElementIllustration2 from "../assets/illustrations/hex_element_2.png";
 </script>
 
 <Layout
-  title="Gianmarco Cavallo - Design works"
+  title={`${SITE.author.fullName} - Design works`}
   description="A collection of some of my design works"
 >
   <div class="flex flex-col justify-center items-center just p-4 pt-40">

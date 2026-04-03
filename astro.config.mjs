@@ -12,6 +12,10 @@ import svelte from "@astrojs/svelte";
 
 import db from "@astrojs/db";
 
+const envSiteUrl = process.env.SITE_URL ?? "https://gianmarcocavallo.com/";
+const site = envSiteUrl.endsWith("/") ? envSiteUrl : `${envSiteUrl}/`;
+const siteNoTrailingSlash = site.endsWith("/") ? site.slice(0, -1) : site;
+
 // https://astro.build/config
 export default defineConfig({
   experimental: {
@@ -52,13 +56,13 @@ export default defineConfig({
       },
     },
   ],
-  site: "https://gianmarcocavallo.com/",
+  site,
   integrations: [
     sitemap(),
     robotsTxt({
       sitemap: [
-        "https://gianmarcocavallo.com/sitemap-index.xml",
-        "https://gianmarcocavallo.com/sitemap-0.xml",
+        `${siteNoTrailingSlash}/sitemap-index.xml`,
+        `${siteNoTrailingSlash}/sitemap-0.xml`,
       ],
     }),
     solidJs(),

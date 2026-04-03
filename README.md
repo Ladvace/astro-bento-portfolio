@@ -52,13 +52,24 @@ or
 $ npm run dev
 ```
 
-# Be sure to replace the momoji and all the relative information, such as email, website and other info, if you don't your website is gonna point to my domain and to my info
+# Customize your portfolio
+After installing dependencies, run:
 
-## REMOVE THE umami analytics script tag (or replace it with your id) in `src/layouts/Layout.astro`
+```bash
+$ pnpm run site-setup
+```
+
+This updates `src/site-config.ts` (name, links, email, timezone, etc.) and sets `SITE_URL` in `.env`.
+
+Then start the dev server again (`pnpm run dev`).
+
+Even after `site-setup`, you still need to swap the avatar/memoji images (replace `src/assets/me*.webp` with your own).
+
+## REMOVE THE umami analytics script tag (or replace it with your id) in `src/layouts/BasicLayout.astro`
 
 # Configuration
 
-remember to replace the `site` and other properties with your data in `astro.config.mjs`
+`site` and sitemap/robots URLs are derived from `SITE_URL` (set by `pnpm run site-setup`).
 
 # Deploy on Netlify 🚀
 

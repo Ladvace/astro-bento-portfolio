@@ -9,6 +9,10 @@ export function getCurrentTimeInItaly(): Date {
   return nowInItaly;
 }
 
+export function getCurrentTimeInTimezone(timezone: string): Date {
+  return new Date(new Date().toLocaleString("en-US", { timeZone: timezone }));
+}
+
 export function formatTimeTo12H(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
     hour: "numeric",
