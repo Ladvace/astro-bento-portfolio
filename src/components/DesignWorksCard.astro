@@ -1,0 +1,128 @@
+---
+import Card from "./Card/index.astro";
+import { Image } from "astro:assets";
+import MustangIllustration from "../assets/illustrations/mustangs.webp";
+import RifleIllustration from "../assets/illustrations/rifle.webp";
+import SniperIllustration from "../assets/illustrations/sniper.webp";
+import ShieldLogoIllustration from "../assets/illustrations/shield_logo.webp";
+import RomanShieldIllustration from "../assets/illustrations/roman_shield.webp";
+import RemoteControlIllustration from "../assets/illustrations/remote_control.webp";
+import ProspectiveIllustration from "../assets/illustrations/prospective.webp";
+import Landscape1Illustration from "../assets/illustrations/landscape_1.webp";
+import Landscape2Illustration from "../assets/illustrations/landscape_2.webp";
+import StockMarketDownIllustration from "../assets/illustrations/stock_market_down.webp";
+import StockMarketUpIllustration from "../assets/illustrations/stock_market_up.webp";
+import HouseIllustration from "../assets/illustrations/house.webp";
+import HexElementIllustration from "../assets/illustrations/hex_element.png";
+import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
+---
+
+<Card
+  colSpan="lg:col-span-1"
+  rowSpan="md:row-span-1"
+  title="Design Works"
+  href="/design-works"
+>
+  <div
+    class="absolute inset-0 z-[-1] opacity-20 grid grid-cols-[repeat(4,2.5rem)] grid-rows-[repeat(3,2.5rem)] gap-2 rotate-40 w-fit"
+  >
+    <Image
+      src={MustangIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="mustangs illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={HexElementIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="hex element illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={SniperIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="sniper illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={RifleIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="rifle illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={ShieldLogoIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="shield logo illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={RomanShieldIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="roman shield illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={RemoteControlIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="remote control illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={ProspectiveIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="prospective illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={Landscape1Illustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="landscape 1 illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={Landscape2Illustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="landscape 2 illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={StockMarketDownIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="stock market down illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={StockMarketUpIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="stock market up illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={HouseIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="house illustration"
+      loading="eager"
+      decoding="auto"
+    />
+    <Image
+      src={BoneLogoExplorationIllustration}
+      class="w-10 h-10 rounded-md object-cover"
+      alt="bone logo exploration"
+      loading="eager"
+      decoding="auto"
+    />
+  </div>
+</Card>

@@ -1,4 +1,5 @@
 ---
+import "../style.css";
 import { LINKS } from "../lib/constants";
 
 interface Props {
@@ -10,21 +11,19 @@ interface Props {
 }
 
 const { title, description, page, pubDate } = Astro.props;
-const image =
-  page === "travel"
-    ? `${Astro.url.origin}/globe_preview.webp"`
-    : `${Astro.url.origin}/og-image.png`;
+const image = `${Astro.url.origin}/og-image.png`;
 
 const schema =
   page !== "blog"
     ? {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "Person",
-        name: "Gianmarco",
+        name: "Gianmarco Cavallo",
         url: Astro.url.origin,
         sameAs: [LINKS.linkedin, LINKS.github],
         image: `${Astro.url.origin}/og-image.png`,
-        jobTitle: "Freelance Frontend Developer",
+        jobTitle: "Freelance Full Stack Developer",
+        knowsAbout: ["JavaScript", "React", "Astro", "Solid.js", "Svelte", "Node.js", "User Experience", "Web Development"],
         worksFor: {
           "@type": "Organization",
           name: "Self-Employed",
@@ -40,7 +39,7 @@ const schema =
         },
       }
     : {
-        "@context": "http://schema.org",
+        "@context": "https://schema.org",
         "@type": "BlogPosting",
         mainEntityOfPage: {
           "@type": "WebPage",
@@ -78,61 +77,119 @@ const schema =
     <title>{title}</title>
     <meta content={description} name="description" />
     <meta content="index, follow" name="robots" />
-    <!-- Basic OG tags for sharing your website's content on platforms like Facebook and LinkedIn -->
+    <meta name="theme-color" content="#171717" />
+    <meta name="author" content="Gianmarco Cavallo" />
+    <meta name="keywords" content="full stack developer, web developer, React, Astro, Solid.js, Svelte, freelance developer, Italy, UX, animations, micro-interactions" />
+    <meta content="website" property="og:type" />
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
-    <meta content="website" property="og:type" />
     <meta content={Astro.url.origin} property="og:url" />
+    <meta property="og:site_name" content="Gianmarco Cavallo" />
+    <meta property="og:locale" content="en_US" />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
       property="og:image"
     />
-    <!-- Basic Twitter Card tags -->
+    <meta property="og:image:alt" content={description} />
+    <meta property="og:image:type" content="image/png" />
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
+    <meta name="twitter:creator" content="@gianmarcocavallo" />
     <meta
       content={image || `${Astro.url.origin}/og-image.png`}
       name="twitter:image"
     />
 
     <link href="https://cdn.fontshare.com" rel="preconnect" />
+
     <link href={Astro.url.href} rel="canonical" />
     <script
       is:inline
       set:html={JSON.stringify(schema)}
       type="application/ld+json"
     />
+    <script
+      defer
+      is:inline
+      src="https://cloud.umami.is/script.js"
+      data-website-id={import.meta.env.UMAMI_WEBSITE_ID}></script>
+    <script
+      src="https://analytics.ahrefs.com/analytics.js"
+      data-key={import.meta.env.AHREFS_ANALYTICS_KEY}
+      async></script>
+
+    <!-- Cal element-click embed code begins -->
+    <script is:inline type="text/javascript">
+      (function (C, A, L) {
+        let p = function (a, ar) {
+          a.q.push(ar);
+        };
+        let d = C.document;
+        C.Cal =
+          C.Cal ||
+          function () {
+            let cal = C.Cal;
+            let ar = arguments;
+            if (!cal.loaded) {
+              cal.ns = {};
+              cal.q = cal.q || [];
+              d.head.appendChild(d.createElement("script")).src = A;
+              cal.loaded = true;
+            }
+            if (ar[0] === L) {
+              const api = function () {
+                p(api, arguments);
+              };
+              const namespace = ar[1];
+              api.q = api.q || [];
+              if (typeof namespace === "string") {
+                cal.ns[namespace] = cal.ns[namespace] || api;
+                p(cal.ns[namespace], ar);
+                p(cal, ["initNamespace", namespace]);
+              } else p(cal, ar);
+              return;
+            }
+            p(cal, ar);
+          };
+      })(window, "https://app.cal.com/embed/embed.js", "init");
+      Cal("init", "15min", { origin: "https://cal.com" });
+
+      // Important: Please add the following attributes to the element that should trigger the calendar to open upon clicking.
+      // `data-cal-link="ladvace/15min"`
+      // data-cal-namespace="15min"
+      // `data-cal-config='{"layout":"month_view"}'`
+
+      Cal.ns["15min"]("ui", {
+        styles: { branding: { brandColor: "#000000" } },
+        hideEventTypeDetails: false,
+        layout: "month_view",
+      });
+    </script>
+    <!-- Cal element-click embed code ends -->
   </head>
-  <body
-    class="bg-darkslate-700 md:h-screen flex flex-col justify-center items-center"
-  >
+  <body class="bg-darkslate-700 flex flex-col justify-center items-center">
     <slot name="loader" />
     <slot />
   </body>
 </html>
 
-<style is:global>
-  @font-face {
-    font-family: "CabinetGrotesk";
-    src: url("/fonts/CabinetGrotesk-Variable.ttf") format("truetype-variations");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    font-weight: 100 1000;
-  }
-  @font-face {
-    font-family: "Satoshi";
-    src: url("/fonts/Satoshi-Variable.ttf") format("truetype-variations");
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    font-weight: 100 1000;
-  }
+<script>
+  if (typeof document !== "undefined") {
+    document.addEventListener("DOMContentLoaded", () => {
+      const theme = localStorage.getItem("theme");
 
+      if (theme && theme !== "default") {
+        document.body.classList.add(theme);
+      }
+    });
+  }
+</script>
+
+<style is:global>
   body {
     margin: 0;
-    font-family: "Satoshi", sans-serif;
+    font-family: var(--font-satoshi), "Satoshi", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
@@ -142,10 +199,10 @@ const schema =
   h4,
   h5,
   h6 {
-    font-family: "Cabinet Grotesk", sans-serif;
+    font-family: var(--font-cabinet-grotesk), "Cabinet Grotesk", sans-serif;
   }
   p {
-    font-family: "Satoshi";
+    font-family: var(--font-satoshi), "Satoshi", sans-serif;
   }
 
   b {

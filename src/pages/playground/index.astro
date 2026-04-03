@@ -1,0 +1,78 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card/index.astro";
+
+const projects = [
+  {
+    title: "Rive rifle animation",
+    description: "Interactive rifle animation made in rive.app",
+    slug: "/rifle-1",
+  },
+  {
+    title: "GSAP future svg Scroll experiment",
+    description:
+      "Scroll animation made with GSAP and some custom futuristic svg",
+    slug: "/future-scroll",
+  },
+  {
+    title: "Glowing stars text",
+    description: "Glowing stars text, inspired by the nextjs website",
+    slug: "/glowing-stars",
+  },
+  {
+    title: "Turbulence clip-path header",
+    description: "Header animation made clip-path and turbulence svg filter",
+    slug: "/turbulence-header",
+  },
+  {
+    title: "Fancy card carousel",
+    description: "Fancy carousel with league of legends champions",
+    slug: "/carousel",
+  },
+  {
+    title: "Loader animation inspired by camillemormal.com",
+    description:
+      "I tried to remake the loader animation of camillemormal.com with solidjs and motion one",
+    slug: "/sliding-images-loader",
+  },
+];
+---
+
+<script>
+  import { animate, type AnimationSequence } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
+
+  animate([loaderAnimation] as AnimationSequence);
+</script>
+
+<Layout
+  title="Gianmarco Cavallo - Playground"
+  description="A collection of experiments and creative explorations with different technologies."
+>
+  <main
+    class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8 text-white"
+  >
+    <a
+      href="/"
+      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"
+      >Back</a
+    >
+    <h1 class="text-4xl font-bold mb-4 text-neutral-100">Playground</h1>
+    <div class="grid grid-cols-2 gap-4 w-full">
+      {
+        projects.map((project) => (
+          <Card
+            href={`/playground${project.slug}`}
+            height="h-auto"
+            colSpan="md:col-span-1"
+          >
+            <div class="text-darkslate-50">
+              <h2 class="font-semibold text-2xl">{project.title}</h2>
+              <p class="text-darkslate-300">{project.description}</p>
+            </div>
+          </Card>
+        ))
+      }
+    </div>
+  </main>
+</Layout>

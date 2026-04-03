@@ -1,12 +1,13 @@
 import { type JSX, Show, createSignal } from "solid-js";
 
 type Props = {
-  children: JSX.Element;
+  children?: JSX.Element;
+  class?: string;
 };
 
 function Tooltip(props: Props) {
   const [isVisible, setIsVisible] = createSignal(false);
-  const [clickCount, setClickCount] = createSignal(0);
+  const [clickCount, setClickCount] = createSignal<number>(0);
 
   const messages = [
     "Hi there!",
@@ -43,8 +44,9 @@ function Tooltip(props: Props) {
   };
 
   return (
-    <div class="relative inline-block">
+    <div class={`h-full relative inline-block ${props.class ?? ""}`}>
       <div
+        class="h-full"
         onMouseDown={() => {
           setIsVisible(!isVisible());
           if (isVisible()) {
@@ -68,7 +70,7 @@ function Tooltip(props: Props) {
       </div>
 
       <Show when={isVisible()}>
-        <div class="absolute left-1/2 -translate-x-1/2 -translate-y-24 mt-1 w-auto max-h-[70px] p-2 bg-black text-white text-center rounded-lg z-10 shadow-custom shadow-primary-500 border border-primary-500 whitespace-normal after:content-[''] after:block after:rotate-45 after:w-4 after:h-4 after:shadow-custom after:shadow-primary-500 after:absolute after:-bottom-2 after:-translate-x-1/2 after:left-1/2 after:bg-black after:z-20">
+        <div class="absolute left-1/2 -translate-x-1/2 -translate-y-26 mt-1 w-auto max-h-[70px] p-2 bg-black text-white text-center rounded-lg z-10 shadow-custom shadow-primary-500 border border-primary-500 whitespace-normal after:content-[''] after:block after:rotate-45 after:w-4 after:h-4 after:shadow-custom after:shadow-primary-500 after:absolute after:-bottom-2 after:-translate-x-1/2 after:left-1/2 after:bg-black after:z-20">
           <p class="w-max">{currentMessage()}</p>
         </div>
       </Show>

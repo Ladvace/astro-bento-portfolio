@@ -1,4 +1,4 @@
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import netlify from "@astrojs/netlify";
 import robotsTxt from "astro-robots-txt";
@@ -10,8 +10,48 @@ import { remarkReadingTime } from "./src/lib/remark-reading-time.mjs";
 
 import svelte from "@astrojs/svelte";
 
+import db from "@astrojs/db";
+
 // https://astro.build/config
 export default defineConfig({
+  experimental: {
+    svgo: true,
+  },
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: "CabinetGrotesk",
+      cssVariable: "--font-cabinet-grotesk",
+      options: {
+        variants: [
+          {
+            weight: "100 1000",
+            style: "normal",
+            src: ["./src/assets/fonts/CabinetGrotesk-Variable.ttf"],
+          },
+        ],
+      },
+    },
+    {
+      provider: fontProviders.local(),
+      name: "Satoshi",
+      cssVariable: "--font-satoshi",
+      options: {
+        variants: [
+          {
+            weight: "100 1000",
+            style: "normal",
+            src: ["./src/assets/fonts/Satoshi-Variable.ttf"],
+          },
+          {
+            weight: "100 1000",
+            style: "italic",
+            src: ["./src/assets/fonts/Satoshi-VariableItalic.ttf"],
+          },
+        ],
+      },
+    },
+  ],
   site: "https://gianmarcocavallo.com/",
   integrations: [
     sitemap(),
@@ -25,6 +65,7 @@ export default defineConfig({
     UnoCSS({ injectReset: true }),
     icon(),
     svelte(),
+    db(),
   ],
   markdown: {
     remarkPlugins: [remarkReadingTime],

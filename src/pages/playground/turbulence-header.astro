@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import TurbulenceHeaderComponent from "../../components/playground/turbulenceHeader";
+---
+
+<script>
+  import { animate, type AnimationSequence } from "motion";
+  import { loaderAnimation } from "../../lib/constants";
+
+  animate([loaderAnimation] as AnimationSequence);
+</script>
+
+<Layout
+  title="Gianmarco Cavallo - Playground - Turbolence header tabs animation"
+  description="Turbolence header tabs animation"
+>
+  <div class="flex flex-col items-start h-screen w-screen p-4">
+    <a
+      href="/playground"
+      class="text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
+      >Back</a
+    >
+
+    <div class="w-full h-full flex justify-center items-center">
+      <TurbulenceHeaderComponent client:load />
+    </div>
+  </div>
+</Layout>

@@ -1,4 +1,4 @@
 // postcss.config.cjs
 module.exports = {
-  plugins: {},
+  plugins: [require("@unocss/postcss").default({})],
 };

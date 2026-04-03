@@ -6,7 +6,7 @@
 
 To view a demo example, **[click here](https://sparkly-speculoos-0c9197.netlify.app/)**
 
-or my portfolio **[click here](https://gianmarcocavallo.com)**
+or my portfolio **[click here](https://gianmarcocavallo.com/)**
 
 ## Features
 
@@ -69,6 +69,15 @@ You just need to fork this repo and linking it to your Netlify account.
 or
 
 [![Netlify Deploy button](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ladvace/astro-bento-portfolio)
+
+## Database Configuration
+
+This project uses Astro DB with Turso for the guestbook feature. Set the following environment variables:
+
+- `ASTRO_DB_REMOTE_URL=libsql://portfolio-ladvace.aws-eu-west-1.turso.io`
+- `ASTRO_DB_APP_TOKEN=your-auth-token-here`
+
+Run `pnpm astro db push` to initialize the database schema.
 
 ## Authors ❤️
 
