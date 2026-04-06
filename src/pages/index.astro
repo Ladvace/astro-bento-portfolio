@@ -9,7 +9,11 @@ import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
 import DesignWorksCard from "../components/DesignWorksCard.astro";
+import { Image } from "astro:assets";
+import AllinMapScreenshot from "../assets/allinmap_screenshot.png";
 import { SITE } from "../site-config";
+
+const year = new Date().getFullYear();
 ---
 
 <script>
@@ -38,7 +42,7 @@ import { SITE } from "../site-config";
   title={`${SITE.author.fullName} - ${SITE.author.jobTitle}`}
 >
   <main
-    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4 lg:max-h-[800px]"
+    class="text-white m-auto p-2 grid gap-2 max-w-6xl overflow-hidden relative w-full sm:p-4 sm:gap-2 md:grid-cols-2 md:gap-3 md:p-6 lg:h-screen lg:grid-rows-8 lg:grid-cols-4 lg:gap-4"
   >
     <IntroCard />
     <AboutMe />
@@ -58,12 +62,36 @@ import { SITE } from "../site-config";
       rowSpan="md:row-span-1"
       title="Guestbook"
     />
-    <Card
+    <!-- <Card
       href="/blog"
       colSpan="md:col-span-1"
       rowSpan="md:row-span-1"
       title="Blog"
-    />
+    /> -->
+    <Card
+      colSpan="md:col-span-1 overflow-visible"
+      rowSpan="md:row-span-1"
+      padding="p-0"
+      bgColor="bg-[#004d40]"
+    >
+      <a href="https://allinmap.app?utm_source=gianmarcocavallo.com">
+        <div class="flex items-center box-border h-full w-full group">
+          <h3 class="my-6 ml-6 mr-10 max-w-10 font-bold">Download AllinMapp</h3>
+          <div
+            class="flex-1 flex justify-start pl-4 items-center absolute right-0 left-0 bottom-0 h-[150px] overflow-hidden pointer-events-none"
+          >
+            <Image
+              quality="max"
+              src={AllinMapScreenshot}
+              width={100}
+              class="w-[100px] h-auto absolute right-0 -bottom-20 xl:-bottom-10 -rotate-10 group-hover:-bottom-10 group-hover:rotate-0 transition-all duration-300 ease-in-out pointer-events-auto"
+              alt="allinmap screenshot"
+              loading="eager"
+            />
+          </div>
+        </div>
+      </a>
+    </Card>
     <Card
       colorText="text-neutral-900"
       colSpan="md:col-span-1"

@@ -8,12 +8,17 @@ import Pulse from "./Pulse.astro";
     <div class="flex">
       <h2 class="text-white text-xl font-bold mr-2">Now</h2>
       <a href="https://sive.rs/nowff" target="_blank">
-        <span class="text-xs text-darkslate-300 cursor-pointer text-xs"
+        <span class="text-xs text-darkslate-300 cursor-pointer"
           >what's that ?</span
         >
       </a>
     </div>
     <Pulse />
   </div>
-  <p class="text-xs">Currently working fulltime</p>
+  <div class="flex justify-between items-center">
+    <p class="text-xs whitespace-nowrap">Currently working fulltime</p>
+    <time
+      class="text-xs whitespace-nowrap text-darkslate-300"
+      datetime="2026-04-06">06/04/2026</time>
+  </div>
 </Card>

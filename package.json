@@ -23,8 +23,6 @@
     "@astrojs/svelte": "^8.0.4",
     "@iconify-json/ri": "^1.2.10",
     "@rive-app/canvas": "^2.36.0",
-    "@swup/astro": "^1.8.0",
-    "@swup/overlay-theme": "^2.0.2",
     "astro": "^6.1.3",
     "astro-icon": "^1.1.5",
     "astro-robots-txt": "^1.0.0",
