@@ -13,28 +13,12 @@ import { Image } from "astro:assets";
 import AllinMapScreenshot from "../assets/allinmap_screenshot.png";
 import { SITE } from "../site-config";
 
-const year = new Date().getFullYear();
 ---
 
 <script>
-  import { stagger, animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../lib/constants";
-  const cards = document.querySelectorAll(".card");
+  import { initHomeEntrance } from "../lib/home-entrance";
 
-  const sequence = [
-    loaderAnimation,
-    [
-      cards,
-      { y: ["40%", "0%"], opacity: [0, 1] },
-      {
-        type: "spring",
-        at: "-0.1",
-        delay: stagger(0.2),
-      },
-    ],
-  ];
-
-  animate(sequence as AnimationSequence);
+  initHomeEntrance();
 </script>
 
 <Layout
@@ -58,7 +42,7 @@ const year = new Date().getFullYear();
     />
     <Card
       href="/guestbook"
-      colSpan="md:col-span-1"
+      colSpan="md:col-span-1 w-full"
       rowSpan="md:row-span-1"
       title="Guestbook"
     />

@@ -1,5 +1,6 @@
 ---
 import "../style.css";
+import { ClientRouter } from "astro:transitions";
 import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
 
@@ -76,6 +77,7 @@ const schema =
 >
   <head>
     <meta charset="UTF-8" />
+    <ClientRouter />
     <meta content="width=device-width" name="viewport" />
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
     <meta content={Astro.generator} name="generator" />
@@ -188,6 +190,12 @@ const schema =
 </html>
 
 <script>
+  import {
+    PORTFOLIO_HAS_VISITED_NON_HOME_KEY,
+    PORTFOLIO_LAST_PATH_KEY,
+    normalizePathname,
+  } from "../lib/nav-path";
+
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", () => {
       const theme = localStorage.getItem("theme");
@@ -195,6 +203,23 @@ const schema =
       if (theme && theme !== "default") {
         document.body.classList.add(theme);
       }
+    });
+
+    document.addEventListener("astro:page-load", () => {
+      const loader = document.querySelector(".loader");
+      if (loader instanceof HTMLElement) {
+        loader.style.opacity = "0";
+        loader.style.pointerEvents = "none";
+      }
+
+      const path = normalizePathname(window.location.pathname);
+      if (path !== "/") {
+        sessionStorage.setItem(PORTFOLIO_HAS_VISITED_NON_HOME_KEY, "1");
+      }
+
+      queueMicrotask(() => {
+        sessionStorage.setItem(PORTFOLIO_LAST_PATH_KEY, path);
+      });
     });
   }
 </script>
@@ -220,5 +245,13 @@ const schema =
 
   b {
     font-weight: 700 !important;
+  }
+
+  @supports (view-transition-name: none) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation-duration: 320ms;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
   }
 </style>
