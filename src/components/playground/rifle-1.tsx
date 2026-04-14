@@ -38,7 +38,7 @@ const Illustrations = () => {
       try {
         const [{ Rive }, rivMod] = await Promise.all([
           import("@rive-app/canvas"),
-          import("../../riveAnimations/rifle.riv"),
+          import("../../riveAnimations/rifle.riv?url"),
         ]);
         const rivUrl = rivMod.default as string;
         if (cancelled || !canvas) return;

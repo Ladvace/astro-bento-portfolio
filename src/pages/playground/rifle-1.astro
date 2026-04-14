@@ -1,13 +1,15 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Rifle1Component from "../../components/playground/rifle-1";
-import rifleRiv from "../../riveAnimations/rifle.riv";
+import rifleRivUrl from "../../riveAnimations/rifle.riv?url";
 import { SITE } from "../../site-config";
+
+const rifleRivHref = rifleRivUrl;
 ---
 
 <link
   rel="preload"
-  href={typeof rifleRiv === "string" ? rifleRiv : (rifleRiv as { src: string }).src}
+  href={rifleRivHref}
   as="fetch"
   crossorigin="anonymous"
 />
