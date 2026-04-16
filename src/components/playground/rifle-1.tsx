@@ -1,145 +1,125 @@
-import type { Rive, StateMachineInput } from "@rive-app/canvas";
+import * as riveCanvasModule from "@rive-app/canvas";
+import type { StateMachineInput } from "@rive-app/canvas";
 import { createSignal, onCleanup, onMount } from "solid-js";
 
-const Illustrations = () => {
-  let canvas: HTMLCanvasElement | undefined;
-  const [riveRef, setRiveRef] = createSignal<Rive | undefined>();
-  const [keepShootingInput, setKeepShootingInput] = createSignal<
-    StateMachineInput | undefined
-  >();
-  const [isLoading, setIsLoading] = createSignal(true);
-  const [loadError, setLoadError] = createSignal<string | null>(null);
+const riveCjsExports = riveCanvasModule as Record<string, unknown> & {
+  default?: Record<string, unknown>;
+};
+const { Rive, Layout, Fit, Alignment } = (
+  riveCjsExports.default?.Rive ? riveCjsExports.default : riveCjsExports
+) as typeof import("@rive-app/canvas");
 
-  const [canvasWidth, setCanvasWidth] = createSignal(950);
-  const [canvasHeight, setCanvasHeight] = createSignal(540);
+const rifleDesignAspectRatio = 950 / 540;
 
-  const updateCanvasSize = () => {
-    const screenWidth = window.innerWidth;
-    const newCanvasWidth = Math.min(screenWidth * 0.9, 950);
-    const aspectRatio = 950 / 540;
-    const newCanvasHeight = newCanvasWidth / aspectRatio;
-    setCanvasWidth(newCanvasWidth);
-    setCanvasHeight(newCanvasHeight);
-  };
+export default function Rifle1(props: { rivUrl: string }) {
+  const [canvasElement, setCanvasElement] = createSignal<HTMLCanvasElement | null>(null);
+  const [drawWidth, setDrawWidth] = createSignal(950);
+  const [loadMessage, setLoadMessage] = createSignal<string | null>(null);
 
   onMount(() => {
-    updateCanvasSize();
-    window.addEventListener("resize", updateCanvasSize);
-
+    let riveInstance: InstanceType<typeof Rive> | undefined;
+    let keepShootingInput: StateMachineInput | undefined;
+    let syncCheckboxToRiveInput: (() => void) | undefined;
     const keepShootingCheckbox = document.getElementById(
       "keep-shooting",
     ) as HTMLInputElement | null;
 
-    let rInstance: Rive | undefined;
-    let handleOnChange: (() => void) | undefined;
-    let cancelled = false;
+    const handleWindowResize = () => {
+      setDrawWidth(Math.min(innerWidth * 0.9, 950));
+      riveInstance?.resizeDrawingSurfaceToCanvas();
+    };
 
-    void (async () => {
+    const { rivUrl } = props;
+    if (!rivUrl) {
+      setLoadMessage("Missing animation URL.");
+      return;
+    }
+
+    queueMicrotask(() => {
+      const canvas = canvasElement();
+      if (!canvas) {
+        setLoadMessage("Canvas not ready.");
+        return;
+      }
       try {
-        const [{ Rive }, rivMod] = await Promise.all([
-          import("@rive-app/canvas"),
-          import("../../riveAnimations/rifle.riv?url"),
-        ]);
-        const rivUrl = rivMod.default as string;
-        if (cancelled || !canvas) return;
-
-        handleOnChange = () => {
-          const input = keepShootingInput();
-          if (input && keepShootingCheckbox) {
-            input.value = keepShootingCheckbox.checked;
+        syncCheckboxToRiveInput = () => {
+          if (keepShootingInput && keepShootingCheckbox) {
+            keepShootingInput.value = keepShootingCheckbox.checked;
           }
         };
-
-        const r = new Rive({
+        riveInstance = new Rive({
           src: rivUrl,
-          autoplay: true,
           canvas,
-          stateMachines: ["rifle"],
+          stateMachines: "rifle",
+          autoplay: true,
+          layout: new Layout({ fit: Fit.Contain, alignment: Alignment.Center }),
           onLoad: () => {
-            if (cancelled) return;
-            r.resizeDrawingSurfaceToCanvas();
-            rInstance = r;
-            setRiveRef(r);
-            setIsLoading(false);
-            const inputs = r.stateMachineInputs("rifle");
-            const keep_shooting = inputs?.find((i) => i.name === "keep_shooting");
-            if (keep_shooting) {
-              setKeepShootingInput(keep_shooting);
-            }
-            if (keepShootingCheckbox && handleOnChange) {
-              keepShootingCheckbox.addEventListener("change", handleOnChange);
+            riveInstance?.resizeDrawingSurfaceToCanvas();
+            setLoadMessage("");
+            keepShootingInput = riveInstance
+              ?.stateMachineInputs("rifle")
+              ?.find((input: StateMachineInput) => input.name === "keep_shooting");
+            if (keepShootingCheckbox && syncCheckboxToRiveInput) {
+              keepShootingCheckbox.addEventListener("change", syncCheckboxToRiveInput);
             }
           },
+          onLoadError: () => setLoadMessage("Could not load the Rive file."),
         });
-      } catch (e) {
-        if (!cancelled) {
-          setLoadError(e instanceof Error ? e.message : "Failed to load animation");
-          setIsLoading(false);
-        }
+      } catch (error) {
+        setLoadMessage(error instanceof Error ? error.message : "Failed to load");
       }
-    })();
+    });
+
+    window.addEventListener("resize", handleWindowResize);
+    handleWindowResize();
 
     onCleanup(() => {
-      cancelled = true;
-      window.removeEventListener("resize", updateCanvasSize);
-      if (keepShootingCheckbox && handleOnChange) {
-        keepShootingCheckbox.removeEventListener("change", handleOnChange);
+      window.removeEventListener("resize", handleWindowResize);
+      if (keepShootingCheckbox && syncCheckboxToRiveInput) {
+        keepShootingCheckbox.removeEventListener("change", syncCheckboxToRiveInput);
       }
-      const r = rInstance ?? riveRef();
-      if (r) {
-        r.stopRendering();
-        r.cleanup();
-      }
+      riveInstance?.stopRendering();
+      riveInstance?.cleanup();
     });
   });
 
   return (
     <div class="flex flex-col justify-center w-fit h-fit text-white p-4">
       <h1>Rifle animation</h1>
-      <p>
-        Interactive animation made in rive.app using an illustration made by me
-      </p>
+      <p>Interactive animation made in rive.app using an illustration made by me</p>
       <p>
         click on the rifle or on the <span class="font-bold">S</span> and on the{" "}
         <span class="font-bold">R</span> to reload
       </p>
 
-      {isLoading() ? (
+      {loadMessage() === null ? (
         <p class="text-neutral-400 text-sm mb-2" aria-live="polite">
           Loading animation…
         </p>
       ) : null}
-      {loadError() ? (
+      {loadMessage() && loadMessage()!.length > 0 ? (
         <p class="text-red-400 text-sm mb-2" role="alert">
-          {loadError()}
+          {loadMessage()!}
         </p>
       ) : null}
 
       <div class="flex flex-col relative">
         <div class="flex gap-2 items-center justify-center absolute top-10 left-10 z-10">
-          <input
-            type="checkbox"
-            id="keep-shooting"
-            name="continuous-shooting"
-          />
+          <input type="checkbox" id="keep-shooting" name="continuous-shooting" />
           <label for="keep-shooting">Continuous Shooting</label>
         </div>
-        <div class={isLoading() ? "opacity-40 pointer-events-none" : ""}>
+        <div class={loadMessage() === null ? "opacity-40 pointer-events-none" : ""}>
           <canvas
-            ref={(el) => {
-              canvas = el;
-            }}
-            width={canvasWidth()}
-            height={canvasHeight()}
+            ref={setCanvasElement}
+            width={drawWidth()}
+            height={drawWidth() / rifleDesignAspectRatio}
             style={{
-              width: `${canvasWidth()}px`,
-              height: `${canvasHeight()}px`,
+              width: `${drawWidth()}px`,
+              height: `${drawWidth() / rifleDesignAspectRatio}px`,
             }}
           />
         </div>
       </div>
     </div>
   );
-};
-
-export default Illustrations;
+}
