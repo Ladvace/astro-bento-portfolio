@@ -80,8 +80,14 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
 
   const ITEMS_PER_PAGE = 10;
   let currentPage = 1;
-  const allEntries = JSON.parse(document.getElementById("entries-data")?.textContent || "[]");
-  const totalPages = Math.ceil(allEntries.length / ITEMS_PER_PAGE);
+
+  function readGuestbookEntries() {
+    return JSON.parse(document.getElementById("entries-data")?.textContent || "[]");
+  }
+
+  function guestbookTotalPages() {
+    return Math.ceil(readGuestbookEntries().length / ITEMS_PER_PAGE);
+  }
 
   function escapeHtml(text) {
     const div = document.createElement("div");
@@ -100,6 +106,7 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
 
   function renderPage(page) {
     const entriesContainer = document.getElementById("guestbook-entries");
+    const allEntries = readGuestbookEntries();
     const startIndex = (page - 1) * ITEMS_PER_PAGE;
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const pageEntries = allEntries.slice(startIndex, endIndex);
@@ -107,7 +114,7 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
     if (entriesContainer) {
       entriesContainer.innerHTML = pageEntries.map((entry, index) => {
         const seed = entry.id || (startIndex + index);
-        const rotation = ((seed * 7) % 6) - 3;
+        const rotation = (((seed * 7) % 6) - 3) * 0.35;
         const date = new Date(entry.createdAt).toLocaleDateString("en-US", {
           year: "numeric",
           month: "long",
@@ -155,6 +162,8 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
     const nextButton = document.getElementById("next-button");
     const pageNumbers = document.getElementById("page-numbers");
 
+    const totalPages = guestbookTotalPages();
+
     if (pageInfo) {
       pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
     }
@@ -199,6 +208,7 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   }
 
   function goToPage(page) {
+    const totalPages = guestbookTotalPages();
     if (page >= 1 && page <= totalPages) {
       currentPage = page;
       renderPage(currentPage);
@@ -207,7 +217,7 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   }
 
   function nextPage() {
-    if (currentPage < totalPages) {
+    if (currentPage < guestbookTotalPages()) {
       goToPage(currentPage + 1);
     }
   }
@@ -222,9 +232,14 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
   window.nextPage = nextPage;
   window.prevPage = prevPage;
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function hydrateGuestbookEntries() {
+    if (!document.getElementById("guestbook-entries")) return;
+    currentPage = 1;
     renderPage(1);
-  });
+  }
+
+  document.addEventListener("astro:page-load", hydrateGuestbookEntries);
+  hydrateGuestbookEntries();
 </script>
 
 <Layout
