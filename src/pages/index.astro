@@ -9,6 +9,7 @@ import AboutMe from "../components/AboutMe.astro";
 import Now from "../components/Now.astro";
 import Globe from "../components/Globe";
 import DesignWorksCard from "../components/DesignWorksCard.astro";
+import PixelHeart from "../components/PixelHeart.astro";
 import { SITE } from "../site-config";
 
 ---
@@ -106,6 +107,56 @@ import { SITE } from "../site-config";
   document.addEventListener("astro:before-swap", () => { if (glowInterval) clearInterval(glowInterval); });
 </script>
 
+<script>
+  const GB_CELL = 20;
+  let gbAnimId: number | null = null;
+
+  function initGuestbookGrid() {
+    const container = document.getElementById("guestbook-grid");
+    if (!container) return;
+
+    const cols = Math.ceil(container.clientWidth / GB_CELL);
+    const rows = Math.ceil(container.clientHeight / GB_CELL);
+    const total = cols * rows;
+
+    Object.assign(container.style, {
+      display: "grid",
+      gridTemplateColumns: `repeat(${cols}, ${GB_CELL}px)`,
+      gridTemplateRows: `repeat(${rows}, ${GB_CELL}px)`,
+    });
+    container.innerHTML = "";
+
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement("div");
+      cell.style.cssText = "border-radius:50%;margin:3px;box-sizing:border-box;background:var(--primary-500);";
+      container.appendChild(cell);
+    }
+
+    if (gbAnimId !== null) cancelAnimationFrame(gbAnimId);
+
+    const animate = (t: number) => {
+      const time = t * 0.001;
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const cell = container.children[y * cols + x] as HTMLElement;
+          if (!cell) continue;
+          // Two interfering cosine waves travelling in different directions
+          const w1 = Math.cos(time * 1.1 + x * 0.9 + y * 0.6);
+          const w2 = Math.cos(time * 0.7 - x * 0.5 + y * 1.1);
+          const v = (w1 + w2) / 2; // range -1 to 1
+          cell.style.opacity = (Math.max(0, (v + 1) / 2) * 0.45).toFixed(3);
+        }
+      }
+      gbAnimId = requestAnimationFrame(animate);
+    };
+
+    gbAnimId = requestAnimationFrame(animate);
+  }
+
+  document.addEventListener("astro:page-load", initGuestbookGrid);
+  document.addEventListener("astro:before-swap", () => { if (gbAnimId !== null) cancelAnimationFrame(gbAnimId); });
+</script>
+
 <Layout
   description={`I'm a developer based in ${SITE.location.countryName}, passionate about user experience and specializing in engaging animations and micro-interactions. My primary tools of choice include: JavaScript, React, Solid.js, Astro, Svelte, and Node.js.`}
   title={`${SITE.author.fullName} - ${SITE.author.jobTitle}`}
@@ -128,6 +179,7 @@ import { SITE } from "../site-config";
       </div>
     </Card>
     <Card href="/guestbook" colSpan="md:col-span-1 w-full" rowSpan="md:row-span-1">
+      <div slot="background" id="guestbook-grid" class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true"></div>
       <div class="flex-1 flex items-center">
         <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Guestbook</h2>
       </div>
@@ -158,13 +210,10 @@ import { SITE } from "../site-config";
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <div class="flex h-full items-center justify-center">
         <p class="text-[10px] whitespace-nowrap text-center">
-          © {new Date().getFullYear()} · Crafted with ♥️ using <a
-            class="text-red-500"
-            href="https://astro.build/"
-            target="_blank">Astro</a
-          > by Me.
+          © {new Date().getFullYear()} · Crafted with <PixelHeart /> using <a class="text-red-500" href="https://astro.build/" target="_blank">Astro</a> by Me.
         </p>
       </div>
     </Card>
   </main>
 </Layout>
+

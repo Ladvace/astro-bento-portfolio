@@ -64,10 +64,10 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
     const formContent = document.getElementById("form-content");
     const toggleButton = document.getElementById("toggle-button");
     const icon = document.getElementById("toggle-icon");
-    
+
     if (formContent && toggleButton && icon) {
       const isHidden = formContent.classList.contains("hidden");
-      
+
       if (isHidden) {
         formContent.classList.remove("hidden");
         icon.style.transform = "rotate(180deg)";
@@ -132,7 +132,7 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
             <div class="flex items-start justify-between mb-3">
               <div>
                 <h3 class="text-white font-bold">
-                  ${escapedWebsite 
+                  ${escapedWebsite
                     ? `<a href="${escapedWebsite}" target="_blank" rel="noopener noreferrer" class="hover:text-primary-500 transition-colors">${escapedName}</a>`
                     : escapedName}
                 </h3>
@@ -370,4 +370,3 @@ const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
     transform-origin: center;
   }
 </style>
-
