@@ -32,24 +32,21 @@ import { SITE } from "../site-config";
     <TimeZone />
     <DesignWorksCard />
     <Now />
-    <Card
-      href="playground"
-      colSpan="md:col-span-1"
-      rowSpan="md:row-span-1"
-      title="Playground"
-    />
-    <Card
-      href="/guestbook"
-      colSpan="md:col-span-1 w-full"
-      rowSpan="md:row-span-1"
-      title="Guestbook"
-    />
-    <Card
-      href="/blog"
-      colSpan="md:col-span-1"
-      rowSpan="md:row-span-1"
-      title="Blog"
-    />
+    <Card href="playground" colSpan="md:col-span-1" rowSpan="md:row-span-1">
+      <div class="flex-1 flex items-center">
+        <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Playground</h2>
+      </div>
+    </Card>
+    <Card href="/guestbook" colSpan="md:col-span-1 w-full" rowSpan="md:row-span-1">
+      <div class="flex-1 flex items-center">
+        <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Guestbook</h2>
+      </div>
+    </Card>
+    <Card href="/blog" colSpan="md:col-span-1" rowSpan="md:row-span-1">
+      <div class="flex-1 flex items-center">
+        <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Blog</h2>
+      </div>
+    </Card>
     <Card
       colSpan="md:col-span-1"
       href="travel"

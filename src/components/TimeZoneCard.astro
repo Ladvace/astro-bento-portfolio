@@ -118,7 +118,7 @@ import { SITE } from "../site-config";
   <div class="flex flex-col justify-between h-full">
 
     <!-- My time -->
-    <div class="flex flex-col gap-0.5">
+    <div class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center lg:flex-none lg:items-start lg:justify-start">
       <div class="flex items-center gap-1.5">
         <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span>
         <span class="text-[10px] font-medium uppercase tracking-widest text-darkslate-300">my time</span>
@@ -126,7 +126,7 @@ import { SITE } from "../site-config";
       <time
         datetime=""
         id="italyTimeDisplay"
-        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-[clamp(2.5rem,5vw,4rem)] lg:text-[clamp(1.5rem,2vw,2.5rem)]"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
@@ -145,12 +145,12 @@ import { SITE } from "../site-config";
     </div>
 
     <!-- Your time -->
-    <div class="flex flex-col gap-0.5">
+    <div class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center lg:flex-none lg:items-start lg:justify-start">
       <span class="text-[10px] font-medium uppercase tracking-widest text-darkslate-300">your time</span>
       <time
         datetime=""
         id="visitorTimeDisplay"
-        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-[clamp(2.5rem,5vw,4rem)] lg:text-[clamp(1.5rem,2vw,2.5rem)]"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
