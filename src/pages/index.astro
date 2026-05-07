@@ -19,6 +19,93 @@ import { SITE } from "../site-config";
   initHomeEntrance();
 </script>
 
+<script>
+  const CELL = 20;
+  const TRAIL_LEN = 8;
+  const TRAIL_OPACITY = [0.8, 0.6, 0.45, 0.3, 0.2, 0.12, 0.07, 0.03];
+  let glowInterval: ReturnType<typeof setInterval> | null = null;
+
+  function resetCell(c: HTMLElement) {
+    c.style.background = "";
+    c.style.opacity = "";
+    c.style.transition = "";
+  }
+
+  function initPlaygroundGrid() {
+    const container = document.getElementById("playground-grid");
+    if (!container) return;
+
+    const cols = Math.ceil(container.clientWidth / CELL);
+    const rows = Math.ceil(container.clientHeight / CELL);
+    const total = cols * rows;
+
+    Object.assign(container.style, {
+      display: "grid",
+      gridTemplateColumns: `repeat(${cols}, ${CELL}px)`,
+      gridTemplateRows: `repeat(${rows}, ${CELL}px)`,
+    });
+    container.innerHTML = "";
+
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement("div");
+      cell.style.cssText = "border:1px solid rgba(255,255,255,0.06);transition:background 0.4s,opacity 0.4s;";
+      container.appendChild(cell);
+    }
+
+    if (glowInterval) clearInterval(glowInterval);
+    glowInterval = setInterval(() => {
+      const cell = container.children[Math.floor(Math.random() * total)] as HTMLElement;
+      if (!cell) return;
+      cell.style.background = "var(--primary-500)";
+      cell.style.opacity = "0.5";
+      setTimeout(() => {
+        cell.style.background = "";
+        cell.style.opacity = "0.06";
+        setTimeout(() => { cell.style.opacity = ""; }, 400);
+      }, 600);
+    }, 250);
+
+    const cardEl = document.querySelector<HTMLElement>('a[href="playground"]')?.closest<HTMLElement>(".card");
+    let trail: number[] = [];
+
+    const applyTrail = () => trail.forEach((idx, i) => {
+      const cell = container.children[idx] as HTMLElement;
+      if (!cell) return;
+      cell.style.transition = "none";
+      cell.style.background = "var(--primary-500)";
+      cell.style.opacity = String(TRAIL_OPACITY[i] ?? 0);
+    });
+
+    const clearTrail = () => {
+      trail.forEach(idx => {
+        const cell = container.children[idx] as HTMLElement;
+        if (cell) { cell.style.transition = "opacity 0.1s"; cell.style.opacity = "0"; }
+      });
+      setTimeout(() => { trail.forEach(idx => { const c = container.children[idx] as HTMLElement; if (c) resetCell(c); }); trail = []; }, 100);
+    };
+
+    cardEl?.addEventListener("mousemove", (e: MouseEvent) => {
+      if (!window.matchMedia("(pointer: fine)").matches) return;
+      const rect = container.getBoundingClientRect();
+      const idx = Math.floor((e.clientY - rect.top) / CELL) * cols + Math.floor((e.clientX - rect.left) / CELL);
+      if (idx === trail[0] || idx < 0 || idx >= total) return;
+      trail = [idx, ...trail.filter(i => i !== idx)];
+      if (trail.length > TRAIL_LEN) {
+        trail.splice(TRAIL_LEN).forEach(i => {
+          const c = container.children[i] as HTMLElement;
+          if (c) { c.style.transition = "opacity 0.1s"; c.style.opacity = "0"; setTimeout(() => resetCell(c), 100); }
+        });
+      }
+      applyTrail();
+    });
+
+    cardEl?.addEventListener("mouseleave", clearTrail);
+  }
+
+  document.addEventListener("astro:page-load", initPlaygroundGrid);
+  document.addEventListener("astro:before-swap", () => { if (glowInterval) clearInterval(glowInterval); });
+</script>
+
 <Layout
   description={`I'm a developer based in ${SITE.location.countryName}, passionate about user experience and specializing in engaging animations and micro-interactions. My primary tools of choice include: JavaScript, React, Solid.js, Astro, Svelte, and Node.js.`}
   title={`${SITE.author.fullName} - ${SITE.author.jobTitle}`}
@@ -33,6 +120,9 @@ import { SITE } from "../site-config";
     <DesignWorksCard />
     <Now />
     <Card href="playground" colSpan="md:col-span-1" rowSpan="md:row-span-1">
+      <div slot="background" class="absolute inset-0 -z-10 overflow-hidden">
+        <div id="playground-grid" class="absolute inset-0"></div>
+      </div>
       <div class="flex-1 flex items-center">
         <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Playground</h2>
       </div>
