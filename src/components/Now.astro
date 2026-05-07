@@ -3,22 +3,19 @@ import Card from "./Card/index.astro";
 import Pulse from "./Pulse.astro";
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-1" padding="p-4">
-  <div class="flex justify-between w-full items-start mb-1">
-    <div class="flex">
-      <h2 class="text-white text-xl font-bold mr-2">Now</h2>
-      <a href="https://sive.rs/nowff" target="_blank">
-        <span class="text-xs text-darkslate-300 cursor-pointer"
-          >what's that ?</span
-        >
+<Card colSpan="md:col-span-1" rowSpan="md:row-span-1" padding="p-3">
+  <div class="flex justify-between items-center w-full mb-1">
+    <div class="flex items-baseline gap-2">
+      <h2 class="text-white text-lg font-bold">Now</h2>
+      <a href="https://sive.rs/nowff" target="_blank"
+        class="text-[10px] text-darkslate-300 hover:text-darkslate-100 transition-colors">
+        what's this?
       </a>
     </div>
     <Pulse />
   </div>
-  <div class="flex justify-between items-center">
-    <p class="text-xs whitespace-nowrap">Currently working fulltime</p>
-    <time
-      class="text-xs whitespace-nowrap text-darkslate-300"
-      datetime="2026-04-06">06/04/2026</time>
+  <div class="flex justify-between items-baseline">
+    <p class="text-xs">Currently working fulltime</p>
+    <time class="text-[10px] text-darkslate-300 whitespace-nowrap" datetime="2026-05-07">May 7, 2026</time>
   </div>
 </Card>

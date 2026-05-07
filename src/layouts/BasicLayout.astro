@@ -186,8 +186,71 @@ const schema =
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">
     <slot name="loader" />
     <slot />
+    <button
+      id="sound-toggle"
+      aria-label="Toggle sound"
+      title="Toggle sound"
+      class="fixed bottom-4 right-4 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+    >
+      <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+      </svg>
+      <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+        <line x1="23" y1="9" x2="17" y2="15"/>
+        <line x1="17" y1="9" x2="23" y2="15"/>
+      </svg>
+    </button>
   </body>
 </html>
+
+<script>
+  let audioCtx: AudioContext | null = null;
+  let soundEnabled = true;
+
+  function getAudioCtx(): AudioContext {
+    if (!audioCtx) audioCtx = new AudioContext();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  }
+
+  function playCardHover() {
+    if (!soundEnabled) return;
+    const ctx = getAudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(1100, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + 0.018);
+    gain.gain.setValueAtTime(0.12, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.018);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.018);
+  }
+
+  function updateToggleIcon() {
+    document.getElementById("sound-icon-on")?.classList.toggle("hidden", !soundEnabled);
+    document.getElementById("sound-icon-off")?.classList.toggle("hidden", soundEnabled);
+  }
+
+  function attachCardSounds() {
+    document.querySelectorAll<HTMLElement>(".card").forEach((card) => {
+      card.removeEventListener("mouseenter", playCardHover);
+      card.addEventListener("mouseenter", playCardHover);
+    });
+
+    document.getElementById("sound-toggle")?.addEventListener("click", () => {
+      soundEnabled = !soundEnabled;
+      updateToggleIcon();
+    });
+  }
+
+  document.addEventListener("astro:page-load", attachCardSounds);
+</script>
 
 <script>
   import {

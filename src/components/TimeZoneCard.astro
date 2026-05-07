@@ -95,7 +95,7 @@ import { SITE } from "../site-config";
     }
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("astro:page-load", () => {
     updateClock();
     interval = setInterval(updateClock, 60_000);
   });

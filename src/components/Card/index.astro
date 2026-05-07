@@ -35,19 +35,20 @@ const {
     colSpan || "md:col-span-2"
   } ${rowSpan || ""} ${padding || "p-6"}`}
 >
+  <slot name="background" />
   {
     href ? (
       <a
-        class={`h-full w-full flex justify-between items-center ${colorText || ""}`}
+        class={`h-full w-full flex flex-col justify-start relative ${colorText || ""}`}
         href={href}
       >
+        <Icon
+          class="h-5 w-5 absolute top-0 right-0 group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20 flex-shrink-0"
+          name="ri:arrow-right-up-line"
+        />
         <Content body={body} title={title}>
           <slot />
         </Content>
-        <Icon
-          class="h-6 float-right group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20"
-          name="ri:arrow-right-up-line"
-        />
       </a>
     ) : (
       <Content body={body} title={title}>

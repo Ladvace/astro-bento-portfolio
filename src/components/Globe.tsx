@@ -18,7 +18,7 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
     if (!mapContainer) return;
 
     const width = mapContainer.clientWidth;
-    const height = 500;
+    const height = mapContainer.clientHeight || 500;
     const sensitivity = 75;
 
     let projection = d3
@@ -37,11 +37,21 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
       .attr("width", width)
       .attr("height", height);
 
+    const defs = svg.append("defs");
+    const pattern = defs.append("pattern")
+      .attr("id", "taiwan-stripes")
+      .attr("width", 3)
+      .attr("height", 3)
+      .attr("patternUnits", "userSpaceOnUse")
+      .attr("patternTransform", "rotate(45)");
+    pattern.append("rect").attr("width", 3).attr("height", 3).attr("fill", "#1a2e42");
+    pattern.append("rect").attr("width", 1.5).attr("height", 3).attr("fill", "var(--primary-500)").attr("opacity", "0.5");
+
     svg
       .append("circle")
-      .attr("fill", "#EEE")
-      .attr("stroke", "#000")
-      .attr("stroke-width", "0.2")
+      .attr("fill", "#0d1b2a")
+      .attr("stroke", "#1e3a52")
+      .attr("stroke-width", "0.3")
       .attr("cx", width / 2)
       .attr("cy", height / 2)
       .attr("r", initialScale);
@@ -57,11 +67,11 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
       .append("path")
       .attr("d", (d: any) => pathGenerator(d as any))
       .style("fill", (d: { properties: { name: string } }) => {
-        return visitedCountries.includes(d.properties.name)
-          ? "var(--primary-500)"
-          : "white";
+        const name = d.properties.name;
+        if (name === "Taiwan") return "url(#taiwan-stripes)";
+        return visitedCountries.includes(name) ? "var(--primary-500)" : "#1a2e42";
       })
-      .style("stroke", "black")
+      .style("stroke", "#2a4a63")
       .style("stroke-width", 0.3)
       .style("opacity", 0.8);
 
@@ -86,8 +96,8 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
           const isVisited = visitedCountries.includes(data.properties.name);
           const element = d3.select(this);
           
-          if (!isVisited) {
-            element.style("fill", "var(--primary-200)");
+          if (!isVisited && data.properties.name !== "Taiwan") {
+            element.style("fill", "#2a4a63");
           }
           element
             .style("opacity", 1)
@@ -109,8 +119,10 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
           const isVisited = visitedCountries.includes(data.properties.name);
           const element = d3.select(this);
           
-          if (!isVisited) {
-            element.style("fill", "white");
+          if (data.properties.name === "Taiwan") {
+            element.style("fill", "url(#taiwan-stripes)");
+          } else if (!isVisited) {
+            element.style("fill", "#1a2e42");
           }
           element
             .style("opacity", 0.8)

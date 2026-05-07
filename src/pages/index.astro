@@ -51,13 +51,12 @@ import { SITE } from "../site-config";
       title="Blog"
     />
     <Card
-      colorText="text-neutral-900"
       colSpan="md:col-span-1"
       href="travel"
       rowSpan="md:row-span-1"
       title="Countries I visited"
     >
-      <div class="h-full w-full absolute inset-0 -z-10">
+      <div slot="background" class="absolute inset-0 -z-10">
         <div class="hidden md:block h-full w-full">
           <Globe client:media="(min-width: 768px)" />
         </div>
@@ -65,6 +64,7 @@ import { SITE } from "../site-config";
           <Globe client:media="(max-width: 768px)" isStatic={true} />
         </div>
       </div>
+      <span class="text-xs text-white/60">{SITE.visitedCountries.length} countries</span>
     </Card>
     <ThemeChangeCard />
 
