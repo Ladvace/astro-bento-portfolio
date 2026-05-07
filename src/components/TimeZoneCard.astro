@@ -5,7 +5,6 @@ import { SITE } from "../site-config";
 ---
 
 <script>
-  import { onCleanup, onMount } from "solid-js";
   import { getCurrentTimeInTimezone } from "../lib/helpers";
 
   let interval: ReturnType<typeof setInterval>;
@@ -13,8 +12,7 @@ import { SITE } from "../site-config";
 
   function getHomeTimezoneFromDom(): string {
     const el = document.getElementById("homeTzDisplay");
-    const tz = (el as HTMLSpanElement | null)?.dataset?.timezone;
-    return tz || "";
+    return (el as HTMLSpanElement | null)?.dataset?.timezone || "";
   }
 
   function getVisitorTimezone(): string {
@@ -22,33 +20,46 @@ import { SITE } from "../site-config";
   }
 
   function uses24HourFormat(): boolean {
-    const formatter = new Intl.DateTimeFormat(navigator.language, {
-      hour: "numeric",
-    });
+    const formatter = new Intl.DateTimeFormat(navigator.language, { hour: "numeric" });
     const parts = formatter.formatToParts(new Date());
-    const hourPart = parts.find((part) => part.type === "hour");
-    return hourPart ? !parts.some((part) => part.type === "dayPeriod") : false;
+    const hourPart = parts.find((p) => p.type === "hour");
+    return hourPart ? !parts.some((p) => p.type === "dayPeriod") : false;
   }
 
   function formatTimeForTimezone(date: Date, timezone: string, use24Hour: boolean): string {
-    const options: Intl.DateTimeFormatOptions = {
+    return new Intl.DateTimeFormat(navigator.language, {
       hour: "numeric",
       minute: "2-digit",
       hour12: !use24Hour,
       timeZone: timezone,
-    };
-    return new Intl.DateTimeFormat(navigator.language, options).format(date);
+    }).format(date);
   }
 
   function getTimezoneAbbreviation(timezone: string): string {
-    const date = new Date();
-    const formatter = new Intl.DateTimeFormat("en-US", {
+    const parts = new Intl.DateTimeFormat("en-US", {
       timeZone: timezone,
       timeZoneName: "short",
-    });
-    const parts = formatter.formatToParts(date);
-    const tzName = parts.find((part) => part.type === "timeZoneName");
+    }).formatToParts(new Date());
+    const tzName = parts.find((p) => p.type === "timeZoneName");
     return tzName ? tzName.value : timezone.split("/").pop() || timezone;
+  }
+
+  function getOffsetLabel(homeTimezone: string, visitorTimezone: string): string {
+    const now = new Date();
+    const toMins = (tz: string) => {
+      const d = new Date(now.toLocaleString("en-US", { timeZone: tz }));
+      return d.getHours() * 60 + d.getMinutes();
+    };
+    let diff = toMins(homeTimezone) - toMins(visitorTimezone);
+    if (diff > 720) diff -= 1440;
+    if (diff < -720) diff += 1440;
+
+    if (diff === 0) return "same timezone";
+    const abs = Math.abs(diff);
+    const h = Math.floor(abs / 60);
+    const m = abs % 60;
+    const label = m > 0 ? `${h}h ${m}m` : `${h}h`;
+    return diff > 0 ? `${label} ahead of you` : `${label} behind you`;
   }
 
   function updateClock() {
@@ -56,6 +67,7 @@ import { SITE } from "../site-config";
     const visitorTimeDisplay = document.getElementById("visitorTimeDisplay");
     const visitorTzDisplay = document.getElementById("visitorTzDisplay");
     const homeTzDisplay = document.getElementById("homeTzDisplay");
+    const offsetDisplay = document.getElementById("offsetDisplay");
 
     if (!homeTimezone) homeTimezone = getHomeTimezoneFromDom() || "UTC";
 
@@ -68,66 +80,73 @@ import { SITE } from "../site-config";
       italyTimeDisplay.textContent = formatTimeForTimezone(homeTime, homeTimezone, use24Hour);
       italyTimeDisplay.setAttribute("datetime", homeTime.toISOString());
     }
-
     if (visitorTimeDisplay) {
       visitorTimeDisplay.textContent = formatTimeForTimezone(visitorTime, visitorTimezone, use24Hour);
       visitorTimeDisplay.setAttribute("datetime", visitorTime.toISOString());
     }
-
     if (visitorTzDisplay) {
       visitorTzDisplay.textContent = getTimezoneAbbreviation(visitorTimezone);
     }
-
     if (homeTzDisplay) {
       homeTzDisplay.textContent = getTimezoneAbbreviation(homeTimezone);
     }
+    if (offsetDisplay) {
+      offsetDisplay.textContent = getOffsetLabel(homeTimezone, visitorTimezone);
+    }
   }
 
-  onMount(() => {
+  document.addEventListener("DOMContentLoaded", () => {
     updateClock();
     interval = setInterval(updateClock, 60_000);
   });
 
-  onCleanup(() => {
+  document.addEventListener("astro:before-swap", () => {
     clearInterval(interval);
   });
 </script>
 
-<Card colSpan="lg:col-span-1" rowSpan="md:row-span-2">
-  <div class="flex flex-col gap-2 justify-center h-full">
-    <div class="flex flex-col">
-      <span class="text-sm font-light text-darkslate-300 m-0">my time</span>
-      <div class="flex items-baseline gap-2">
-        <time
-          datetime=""
-          id="italyTimeDisplay"
-          class="whitespace-nowrap text-4xl font-bold tabular-nums"
-        >
-          {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
-        </time>
-        <span
-          id="homeTzDisplay"
-          data-timezone={SITE.location.timezone}
-          class="text-sm font-light text-darkslate-300"
-        >
-          ---
-        </span>
+<Card colSpan="lg:col-span-1" rowSpan="md:row-span-2" padding="p-4">
+  <div class="flex flex-col justify-between h-full">
+
+    <!-- My time -->
+    <div class="flex flex-col gap-0.5">
+      <div class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0"></span>
+        <span class="text-[10px] font-medium uppercase tracking-widest text-darkslate-300">my time</span>
+      </div>
+      <time
+        datetime=""
+        id="italyTimeDisplay"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight"
+      >
+        {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
+      </time>
+      <div class="flex items-center gap-1 text-[10px] text-darkslate-300">
+        <span id="homeTzDisplay" data-timezone={SITE.location.timezone}>---</span>
+        <span class="opacity-40">·</span>
+        <span>{SITE.location.countryName}</span>
       </div>
     </div>
-    
-    <div class="flex flex-col">
-      <span class="text-sm font-light text-darkslate-300 m-0">your time</span>
-      <div class="flex items-baseline gap-2">
-        <time
-          datetime=""
-          id="visitorTimeDisplay"
-          class="whitespace-nowrap text-4xl font-bold tabular-nums"
-        >
-          {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
-        </time>
-        <span id="visitorTzDisplay" class="text-sm font-light text-darkslate-300">---</span>
-      </div>
+
+    <!-- Offset divider -->
+    <div class="flex items-center gap-2">
+      <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
+      <span id="offsetDisplay" class="text-[10px] text-darkslate-300 whitespace-nowrap">---</span>
+      <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
     </div>
-    
+
+    <!-- Your time -->
+    <div class="flex flex-col gap-0.5">
+      <span class="text-[10px] font-medium uppercase tracking-widest text-darkslate-300">your time</span>
+      <time
+        datetime=""
+        id="visitorTimeDisplay"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight"
+      >
+        {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
+      </time>
+      <span id="visitorTzDisplay" class="text-[10px] text-darkslate-300">---</span>
+    </div>
+
   </div>
 </Card>

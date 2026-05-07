@@ -173,42 +173,6 @@ const defaultVariant = WIPE_VARIANT_LIST[0];
 			return tl;
 		}
 
-		function createPixelCoverTimeline() {
-			showPixelOverlay();
-			gsap.killTweensOf(pixelCells);
-			gsap.set(pixelCells, { opacity: 0 });
-			return gsap.timeline().to(pixelCells, {
-				opacity: 1,
-				duration: 0.08,
-				/* numeric stagger = reliable; order still reads as random-ish noise */
-				stagger: {
-					each: 0.025,
-					from: "random",
-				},
-				ease: "none",
-			});
-		}
-
-		function createPixelRevealTimeline() {
-			showPixelOverlay();
-			gsap.killTweensOf(pixelCells);
-			gsap.set(pixelCells, { opacity: 1 });
-			return gsap.timeline({
-				onComplete: () => {
-					hidePixelOverlay();
-					gsap.set(pixelCells, { opacity: 0 });
-				},
-			}).to(pixelCells, {
-				opacity: 0,
-				duration: 0.08,
-				stagger: {
-					each: 0.025,
-					from: "random",
-				},
-				ease: "none",
-			});
-		}
-
 		async function runLeave() {
 			if (playing) return;
 			playing = true;
