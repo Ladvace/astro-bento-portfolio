@@ -1,14 +1,6 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
-import PostRow from "../../components/Blog/PostRow.astro";
 import { SITE } from "../../site-config";
-
-const posts = (await getCollection("blog"))?.sort(
-  (blogEntryA, blogEntryB) =>
-    (blogEntryB.data.pubDate || new Date()).getTime() -
-    (blogEntryA.data.pubDate || new Date()).getTime()
-);
 ---
 
 <script>
@@ -32,16 +24,6 @@ const posts = (await getCollection("blog"))?.sort(
       href="/">Back</a
     >
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
-    <ul class="w-full">
-      {
-        posts?.map((post) => (
-          <PostRow
-            date={post.data.pubDate || new Date()}
-            id={post.id}
-            title={post.data.title || "No title"}
-          />
-        ))
-      }
-    </ul>
+    <p class="text-darkslate-300 text-sm">Nothing to say right now... check back later (or don't, no pressure 🙃)</p>
   </main>
 </Layout>

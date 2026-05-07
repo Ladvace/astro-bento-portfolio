@@ -17,12 +17,29 @@ import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_e
 import HexElementIllustration1 from "../assets/illustrations/hex_element_1.png";
 import HexElementIllustration2 from "../assets/illustrations/hex_element_2.png";
 import { SITE } from "../site-config";
+
+const illustrations = [
+  { src: MustangIllustration, alt: "Mustangs illustration" },
+  { src: HexElementIllustration1, alt: "Hex element 1" },
+  { src: SniperIllustration, alt: "Sniper illustration" },
+  { src: RifleIllustration, alt: "Rifle illustration" },
+  { src: HexElementIllustration2, alt: "Hex element 2" },
+  { src: ShieldLogoIllustration, alt: "Shield logo" },
+  { src: RomanShieldIllustration, alt: "Roman shield" },
+  { src: RemoteControlIllustration, alt: "Remote control" },
+  { src: ProspectiveIllustration, alt: "Prospective" },
+  { src: Landscape1Illustration, alt: "Landscape 1" },
+  { src: Landscape2Illustration, alt: "Landscape 2" },
+  { src: StockMarketDownIllustration, alt: "Stock market down" },
+  { src: StockMarketUpIllustration, alt: "Stock market up" },
+  { src: HouseIllustration, alt: "House" },
+  { src: BoneLogoExplorationIllustration, alt: "Bone logo exploration" },
+];
 ---
 
 <script>
   import { animate, type AnimationSequence } from "motion";
   import { loaderAnimation } from "../lib/constants";
-
   animate([loaderAnimation] as AnimationSequence);
 </script>
 
@@ -30,123 +47,62 @@ import { SITE } from "../site-config";
   title={`${SITE.author.fullName} - Design works`}
   description="A collection of some of my design works"
 >
-  <div class="flex flex-col justify-center items-center just p-4 pt-40">
+  <main class="w-full max-w-5xl mx-auto px-6 py-10 text-white">
     <a
       href="/"
-      class="fixed top-10 left-10 text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
-      >Back</a
-    >
-    <p class="text-white mb-10">
-      here you can see some of the illustrations/logos/exploration/graphic stuff
-      I did during the years.
+      class="inline-block mb-8 text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border border-neutral-600 rounded-lg transition-colors"
+    >Back</a>
+
+    <h1 class="text-4xl font-bold mb-2">Design works</h1>
+    <p class="text-darkslate-300 text-sm mb-10">
+      Illustrations, logos, explorations and graphic work I've done over the years.
     </p>
 
-    <div class="w-fit grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-      <Image
-        src={MustangIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="mustangs illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={HexElementIllustration1}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="hex element 1 illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={HexElementIllustration2}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="hex element 2 illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={SniperIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="sniper illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={RifleIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="rifle illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={ShieldLogoIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="shield logo illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={RomanShieldIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="roman shield illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={RemoteControlIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="remote control illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={ProspectiveIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="prospective illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={Landscape1Illustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="landscape 1 illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={Landscape2Illustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="landscape 2 illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={StockMarketDownIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="stock market down illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={StockMarketUpIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="stock market up illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={HouseIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="house illustration"
-        loading="eager"
-        decoding="auto"
-      />
-      <Image
-        src={BoneLogoExplorationIllustration}
-        class="w-80 h-80 rounded-md object-cover"
-        alt="bone logo exploration"
-        loading="eager"
-        decoding="auto"
-      />
+    <div class="masonry">
+      {illustrations.map(({ src, alt }) => (
+        <div class="masonry-item">
+          <Image
+            src={src}
+            alt={alt}
+            class="w-full h-auto rounded-xl object-cover"
+            loading="eager"
+            decoding="auto"
+          />
+        </div>
+      ))}
     </div>
-  </div>
+  </main>
 </Layout>
+
+<style>
+  .masonry {
+    columns: 1;
+    column-gap: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .masonry { columns: 2; }
+  }
+
+  @media (min-width: 1024px) {
+    .masonry { columns: 3; }
+  }
+
+  .masonry-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    position: relative;
+  }
+
+  .masonry-item img {
+    display: block;
+    transition: transform 0.4s ease, filter 0.4s ease;
+  }
+
+  .masonry-item:hover img {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+  }
+</style>

@@ -15,114 +15,59 @@ import StockMarketUpIllustration from "../assets/illustrations/stock_market_up.w
 import HouseIllustration from "../assets/illustrations/house.webp";
 import HexElementIllustration from "../assets/illustrations/hex_element.png";
 import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
+
+const row1 = [
+  { src: MustangIllustration, alt: "mustangs" },
+  { src: HexElementIllustration, alt: "hex element" },
+  { src: SniperIllustration, alt: "sniper" },
+  { src: RifleIllustration, alt: "rifle" },
+  { src: ShieldLogoIllustration, alt: "shield logo" },
+  { src: RomanShieldIllustration, alt: "roman shield" },
+  { src: RemoteControlIllustration, alt: "remote control" },
+];
+
+const row2 = [
+  { src: ProspectiveIllustration, alt: "prospective" },
+  { src: Landscape1Illustration, alt: "landscape 1" },
+  { src: Landscape2Illustration, alt: "landscape 2" },
+  { src: StockMarketDownIllustration, alt: "stock market down" },
+  { src: StockMarketUpIllustration, alt: "stock market up" },
+  { src: HouseIllustration, alt: "house" },
+  { src: BoneLogoExplorationIllustration, alt: "bone logo" },
+];
 ---
 
-<Card
-  colSpan="lg:col-span-1"
-  rowSpan="md:row-span-1"
-  title="Design Works"
-  href="/design-works"
->
-  <div
-    class="absolute inset-0 z-[-1] opacity-20 grid grid-cols-[repeat(4,2.5rem)] grid-rows-[repeat(3,2.5rem)] gap-2 rotate-40 w-fit"
-  >
-    <Image
-      src={MustangIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="mustangs illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={HexElementIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="hex element illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={SniperIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="sniper illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={RifleIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="rifle illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={ShieldLogoIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="shield logo illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={RomanShieldIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="roman shield illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={RemoteControlIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="remote control illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={ProspectiveIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="prospective illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={Landscape1Illustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="landscape 1 illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={Landscape2Illustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="landscape 2 illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={StockMarketDownIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="stock market down illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={StockMarketUpIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="stock market up illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={HouseIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="house illustration"
-      loading="eager"
-      decoding="auto"
-    />
-    <Image
-      src={BoneLogoExplorationIllustration}
-      class="w-10 h-10 rounded-md object-cover"
-      alt="bone logo exploration"
-      loading="eager"
-      decoding="auto"
-    />
+<Card colSpan="lg:col-span-1" rowSpan="md:row-span-1" title="Design Works" href="/design-works">
+  <div slot="background" class="absolute inset-0 -z-10 overflow-hidden flex flex-col justify-center gap-2 opacity-30">
+    <!-- fade edges -->
+    <div class="absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-darkslate-500 to-transparent pointer-events-none"></div>
+    <div class="absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-darkslate-500 to-transparent pointer-events-none"></div>
+
+    <!-- row 1: left -->
+    <div class="flex gap-2 marquee-left">
+      {[...row1, ...row1].map(({ src, alt }) => (
+        <Image src={src} class="w-14 h-14 rounded-lg object-cover flex-shrink-0" alt={alt} loading="eager" decoding="auto" />
+      ))}
+    </div>
+
+    <!-- row 2: right -->
+    <div class="flex gap-2 marquee-right">
+      {[...row2, ...row2].map(({ src, alt }) => (
+        <Image src={src} class="w-14 h-14 rounded-lg object-cover flex-shrink-0" alt={alt} loading="eager" decoding="auto" />
+      ))}
+    </div>
   </div>
 </Card>
+
+<style>
+  @keyframes marquee-left {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marquee-right {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+  .marquee-left  { animation: marquee-left  18s linear infinite; }
+  .marquee-right { animation: marquee-right 14s linear infinite; }
+</style>
