@@ -190,7 +190,7 @@ const schema =
       id="sound-toggle"
       aria-label="Toggle sound"
       title="Toggle sound"
-      class="fixed bottom-4 right-4 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+      class="fixed bottom-4 right-4 md:bottom-6 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
     >
       <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
@@ -208,7 +208,7 @@ const schema =
 
 <script>
   let audioCtx: AudioContext | null = null;
-  let soundEnabled = true;
+  let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 
   function getAudioCtx(): AudioContext {
     if (!audioCtx) audioCtx = new AudioContext();
@@ -245,11 +245,41 @@ const schema =
 
     document.getElementById("sound-toggle")?.addEventListener("click", () => {
       soundEnabled = !soundEnabled;
+      localStorage.setItem("soundEnabled", String(soundEnabled));
       updateToggleIcon();
     });
   }
 
-  document.addEventListener("astro:page-load", attachCardSounds);
+  document.addEventListener("astro:page-load", () => {
+    soundEnabled = localStorage.getItem("soundEnabled") !== "false";
+    updateToggleIcon();
+    attachCardSounds();
+  });
+
+  console.log(
+    "%c\n" +
+    "  .-. (  ) .-.   .-. (  ) .-.   .-.\n" +
+    " (* *)( ** )* *) (* *)( ** )(* *) (* *)\n" +
+    "  `-'  `--' `-'   `-'  `--' `-'   `-'\n" +
+    "   |    |    |     |    |    |     |\n" +
+    "   |    |    |     |    |    |     |\n" +
+    "---+----+----+-----+----+----+-----+---\n" +
+    " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+    "   ~    ~    ~     ~    ~    ~     ~\n",
+    "color:#51cf66;font-family:monospace;font-size:11px;line-height:1.5;"
+  );
+  console.log(
+    "%cMate, what are you looking for here? 😄",
+    "color:#ffd43b;font-size:15px;font-weight:bold;"
+  );
+  console.log(
+    "%cJust send me a message, I'd love to connect.\n",
+    "color:#adb5bd;font-size:12px;"
+  );
+  console.log(
+    "%c💼  linkedin.com/in/gianmarco-cavallo\n📧  contact@gianmarcocavallo.com",
+    "color:#74c0fc;font-size:12px;line-height:2;"
+  );
 </script>
 
 <script>
@@ -260,15 +290,12 @@ const schema =
   } from "../lib/nav-path";
 
   if (typeof document !== "undefined") {
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("astro:page-load", () => {
       const theme = localStorage.getItem("theme");
-
       if (theme && theme !== "default") {
         document.body.classList.add(theme);
       }
-    });
 
-    document.addEventListener("astro:page-load", () => {
       const loader = document.querySelector(".loader");
       if (loader instanceof HTMLElement) {
         loader.style.opacity = "0";

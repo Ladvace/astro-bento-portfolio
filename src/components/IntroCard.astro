@@ -143,41 +143,20 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
     );
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => {
-      updateMemojiImage();
-      initLevitatingAnimation();
-    });
-  } else {
-    updateMemojiImage();
-    initLevitatingAnimation();
-  }
-
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (
-        mutation.type === "attributes" &&
-        mutation.attributeName === "class"
-      ) {
+      if (mutation.type === "attributes" && mutation.attributeName === "class") {
         updateMemojiImage();
       }
     });
   });
 
-  if (document.body) {
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-  } else {
-    document.addEventListener("DOMContentLoaded", () => {
-      observer.observe(document.body, {
-        attributes: true,
-        attributeFilter: ["class"],
-      });
-      updateMemojiImage();
-    });
-  }
+  document.addEventListener("astro:page-load", () => {
+    updateMemojiImage();
+    initLevitatingAnimation();
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  });
 
+  document.addEventListener("astro:before-swap", () => observer.disconnect());
   document.addEventListener("themechange", updateMemojiImage);
 </script>

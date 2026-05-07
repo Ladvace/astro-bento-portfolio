@@ -62,13 +62,21 @@ import { SITE } from "../site-config";
     return diff > 0 ? `${label} ahead of you` : `${label} behind you`;
   }
 
-  function updateClock() {
-    const italyTimeDisplay = document.getElementById("italyTimeDisplay");
-    const visitorTimeDisplay = document.getElementById("visitorTimeDisplay");
-    const visitorTzDisplay = document.getElementById("visitorTzDisplay");
-    const homeTzDisplay = document.getElementById("homeTzDisplay");
-    const offsetDisplay = document.getElementById("offsetDisplay");
+  let italyTimeDisplay: HTMLElement | null = null;
+  let visitorTimeDisplay: HTMLElement | null = null;
+  let visitorTzDisplay: HTMLElement | null = null;
+  let homeTzDisplay: HTMLElement | null = null;
+  let offsetDisplay: HTMLElement | null = null;
 
+  function cacheDomRefs() {
+    italyTimeDisplay = document.getElementById("italyTimeDisplay");
+    visitorTimeDisplay = document.getElementById("visitorTimeDisplay");
+    visitorTzDisplay = document.getElementById("visitorTzDisplay");
+    homeTzDisplay = document.getElementById("homeTzDisplay");
+    offsetDisplay = document.getElementById("offsetDisplay");
+  }
+
+  function updateClock() {
     if (!homeTimezone) homeTimezone = getHomeTimezoneFromDom() || "UTC";
 
     const visitorTimezone = getVisitorTimezone();
@@ -96,6 +104,7 @@ import { SITE } from "../site-config";
   }
 
   document.addEventListener("astro:page-load", () => {
+    cacheDomRefs();
     updateClock();
     interval = setInterval(updateClock, 60_000);
   });

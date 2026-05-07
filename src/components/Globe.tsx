@@ -133,7 +133,6 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
     }
 
     let isPaused = false;
-    let isDragging = false;
     let previousMousePosition: [number, number] | null = null;
 
     const updatePaths = () => {
@@ -150,7 +149,6 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
         })
         .call(d3.drag<SVGSVGElement, unknown>()
           .on("start", function(event) {
-            isDragging = true;
             isPaused = true;
             previousMousePosition = [event.x, event.y];
           })
@@ -169,7 +167,6 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
             }
           })
           .on("end", function() {
-            isDragging = false;
             previousMousePosition = null;
           }));
     }
