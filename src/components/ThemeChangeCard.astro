@@ -50,19 +50,19 @@ import Card from "./Card/index.astro";
   function playThemeSound() {
     if (localStorage.getItem("soundEnabled") === "false") return;
     const ctx = new AudioContext();
-    const notes = [523, 659];
-    notes.forEach((freq, i) => {
+    [440, 554, 659].forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
-      osc.type = "sine";
+      osc.type = "triangle";
       osc.frequency.value = freq;
-      const t = ctx.currentTime + i * 0.06;
-      gain.gain.setValueAtTime(0.12, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+      const t = ctx.currentTime + i * 0.055;
+      gain.gain.setValueAtTime(0.0, t);
+      gain.gain.linearRampToValueAtTime(0.09, t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
       osc.start(t);
-      osc.stop(t + 0.12);
+      osc.stop(t + 0.18);
     });
   }
 
