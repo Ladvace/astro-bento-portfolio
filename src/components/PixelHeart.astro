@@ -65,30 +65,34 @@ const height = Math.round(size * (6 / 7));
     osc.stop(t + 0.12);
   }
 
-  document.querySelectorAll(".pixel-heart").forEach((heart) => {
-    const beat = () => {
-      heart.classList.remove("beating");
-      void (heart as HTMLElement).offsetWidth;
-      heart.classList.add("beating");
+  function attachHearts() {
+    document.querySelectorAll(".pixel-heart").forEach((heart) => {
+      const beat = () => {
+        heart.classList.remove("beating");
+        void (heart as HTMLElement).offsetWidth;
+        heart.classList.add("beating");
+        heart.addEventListener(
+          "animationend",
+          () => heart.classList.remove("beating"),
+          { once: true },
+        );
+        if (localStorage.getItem("soundEnabled") !== "false") {
+          const ctx = new AudioContext();
+          pulse(ctx, 0);
+          pulse(ctx, 0.18);
+        }
+      };
+      heart.addEventListener("click", beat);
       heart.addEventListener(
-        "animationend",
-        () => heart.classList.remove("beating"),
-        { once: true },
+        "touchstart",
+        (e) => {
+          e.preventDefault();
+          beat();
+        },
+        { passive: false },
       );
-      if (localStorage.getItem("soundEnabled") !== "false") {
-        const ctx = new AudioContext();
-        pulse(ctx, 0);
-        pulse(ctx, 0.18);
-      }
-    };
-    heart.addEventListener("click", beat);
-    heart.addEventListener(
-      "touchstart",
-      (e) => {
-        e.preventDefault();
-        beat();
-      },
-      { passive: false },
-    );
-  });
+    });
+  }
+
+  document.addEventListener("astro:page-load", attachHearts);
 </script>
