@@ -23,14 +23,18 @@ import { SITE } from "../site-config";
     container: HTMLElement,
     cellSize: number,
     cellStyle: string,
+    stretch = false,
   ) {
     const cols = Math.floor(container.clientWidth / cellSize);
-    const rows = Math.floor(container.clientHeight / cellSize);
+    const actualSize = stretch ? container.clientWidth / cols : cellSize;
+    const rows = Math.floor(container.clientHeight / actualSize);
     const total = cols * rows;
     Object.assign(container.style, {
       display: "grid",
-      gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gridTemplateRows: `repeat(${rows}, 1fr)`,
+      gridTemplateColumns: stretch
+        ? `repeat(${cols}, 1fr)`
+        : `repeat(${cols}, ${cellSize}px)`,
+      gridTemplateRows: `repeat(${rows}, ${actualSize}px)`,
     });
     container.innerHTML = "";
     for (let i = 0; i < total; i++) {
@@ -61,6 +65,7 @@ import { SITE } from "../site-config";
       container,
       20,
       "border:0.5px solid rgba(255,255,255,0.03);transition:background 0.4s,opacity 0.4s;",
+      true,
     );
 
     if (glowInterval) clearInterval(glowInterval);
@@ -139,11 +144,22 @@ import { SITE } from "../site-config";
     const container = document.getElementById("guestbook-grid");
     if (!container) return;
 
-    const { cols, rows } = setupGrid(
-      container,
-      20,
-      "border-radius:50%;margin:3px;box-sizing:border-box;background:var(--primary-500);",
-    );
+    const cols =
+      window.innerWidth < 768 ? 18 : window.innerWidth < 1024 ? 16 : 13;
+    const rows = 4;
+    const total = cols * rows;
+    Object.assign(container.style, {
+      display: "grid",
+      gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      gridTemplateRows: `repeat(${rows}, 1fr)`,
+    });
+    container.innerHTML = "";
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement("div");
+      cell.style.cssText =
+        "border-radius:50%;margin:3px;box-sizing:border-box;background:var(--primary-500);";
+      container.appendChild(cell);
+    }
 
     if (gbAnimId !== null) cancelAnimationFrame(gbAnimId);
 
