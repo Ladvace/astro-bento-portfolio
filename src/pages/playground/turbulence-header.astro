@@ -1,15 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import TurbulenceHeaderComponent from "../../components/playground/turbulenceHeader";
 import { SITE } from "../../site-config";
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  animate([loaderAnimation] as AnimationSequence);
-</script>
+<LoaderAnimation />
 
 <Layout
   title={`${SITE.author.fullName} - Playground - Turbolence header tabs animation`}
@@ -21,7 +17,6 @@ import { SITE } from "../../site-config";
       class="text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
       >Back</a
     >
-
     <div class="w-full h-full flex justify-center items-center">
       <TurbulenceHeaderComponent client:load />
     </div>

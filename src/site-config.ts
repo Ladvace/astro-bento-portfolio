@@ -19,8 +19,8 @@ export const SITE = {
     github: "https://github.com/Ladvace",
     linkedin: "https://www.linkedin.com/in/gianmarco-cavallo/",
     medium: "https://ladvace.medium.com/",
-    discord: "https://discordapp.com/users/163300027618295808",
-    dribble: "https://dribbble.com/Ladvace_Jace",
+    dribbble: "https://dribbble.com/Ladvace_Jace",
+    behance: "https://www.behance.net/Ladvace",
     email: "contact@gianmarcocavallo.com",
   },
   cal: {

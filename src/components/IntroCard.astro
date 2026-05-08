@@ -20,8 +20,8 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
         <h6 class="text-sm font-light m-0 text-darkslate-300">welcome</h6>
 
         <p class="sr-only">
-          Hi, I'm {SITE.author.fullName}, a software developer with strong focus on
-          the user experience, animations, micro interactions and SEO. Feel
+          Hi, I'm {SITE.author.fullName}, a software developer with strong focus
+          on the user experience, animations, micro interactions and SEO. Feel
           free to reach out to me if you have any project in mind, want to
           collaborate, or just want to say hello.
         </p>
@@ -60,11 +60,15 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
               >
             </Button>
           </a>
-          <a href={LINKS.dribble} aria-label="dribble profile" target="_blank">
-            <Button aria-label="dribble profile">
+          <a
+            href={LINKS.dribbble}
+            aria-label="dribbble profile"
+            target="_blank"
+          >
+            <Button aria-label="dribbble profile">
               <Icon name="ri:dribbble-fill" />
-              <span class="sr-only" data-umami-event="Dribble button"
-                >Dribble Profile</span
+              <span class="sr-only" data-umami-event="Dribbble button"
+                >Dribbble Profile</span
               >
             </Button>
           </a>
@@ -77,10 +81,7 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
             </Button>
           </Tooltip>
         </div>
-        <Button
-          aria-label="book a call"
-          data-cal-link={SITE.cal.username}
-        >
+        <Button aria-label="book a call" data-cal-link={SITE.cal.username}>
           <span
             data-umami-event="Book a call"
             data-cal-link={SITE.cal.username}
@@ -110,7 +111,7 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
 
   function updateMemojiImage() {
     const avatarImg = document.getElementById(
-      "memoji-avatar"
+      "memoji-avatar",
     ) as HTMLImageElement;
     if (!avatarImg) return;
 
@@ -139,13 +140,16 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
         duration: 3,
         repeat: Infinity,
         ease: "easeInOut",
-      }
+      },
     );
   }
 
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.type === "attributes" && mutation.attributeName === "class") {
+      if (
+        mutation.type === "attributes" &&
+        mutation.attributeName === "class"
+      ) {
         updateMemojiImage();
       }
     });
@@ -154,7 +158,10 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
   document.addEventListener("astro:page-load", () => {
     updateMemojiImage();
     initLevitatingAnimation();
-    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
   });
 
   document.addEventListener("astro:before-swap", () => observer.disconnect());

@@ -32,27 +32,32 @@ const stack = [
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-6" title="About me">
   <div class="flex flex-col gap-4">
-
     <p class="text-sm font-light">
-      Hi, I'm <b class="font-bold">{SITE.author.firstName}</b>, a full stack software developer (frontend-focused) from {SITE.location.countryName}.
+      Hi, I'm <b class="font-bold">{SITE.author.firstName}</b>, a full stack
+      software developer (frontend-focused) from {SITE.location.countryName}.
     </p>
 
     <div class="flex flex-col gap-2">
-      <span class="text-[10px] uppercase tracking-widest text-darkslate-300 font-medium">Stack & tools</span>
+      <span
+        class="text-[10px] uppercase tracking-widest text-darkslate-300 font-medium"
+        >Stack & tools</span
+      >
       <div class="flex flex-wrap gap-1.5">
-        {stack.map(({ label }) => (
-          <span class="text-[11px] px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-100 hover:border-primary-500 hover:text-white transition-colors duration-150 cursor-default">
-            {label}
-          </span>
-        ))}
+        {
+          stack.map(({ label }) => (
+            <span class="text-[11px] px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-100 hover:border-primary-500 hover:text-white transition-colors duration-150 cursor-default">
+              {label}
+            </span>
+          ))
+        }
       </div>
     </div>
 
     <p class="text-sm font-light">
-      Beyond coding, I'm passionate about design, illustration, animation and parametric 3D modelling.
-      I love travelling and photography, and I have an unusual hobby of collecting vintage
-      passports, they're interesting pieces of history to me.
+      Beyond coding, I'm passionate about design, illustration, animation,
+      photography, and parametric 3D modelling. I love travelling, and I have an
+      unusual hobby of collecting vintage passports, fascinating pieces of
+      history.
     </p>
-
   </div>
 </Card>

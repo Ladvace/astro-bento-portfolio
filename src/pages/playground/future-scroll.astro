@@ -1,15 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import Scroll1Component from "../../components/playground/scroll-1/scroll-1.svelte";
 import { SITE } from "../../site-config";
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  animate([loaderAnimation] as AnimationSequence);
-</script>
+<LoaderAnimation />
 
 <Layout
   title={`${SITE.author.fullName} - Playground - Gsap future scroll`}
@@ -24,7 +20,6 @@ import { SITE } from "../../site-config";
         >Back</a
       >
     </header>
-
     <div>
       <Scroll1Component client:load />
     </div>

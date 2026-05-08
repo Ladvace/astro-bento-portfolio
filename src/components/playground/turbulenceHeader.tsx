@@ -73,7 +73,7 @@ const turbulenceHeader = () => {
                       {
                         duration: 180,
                         fill: "forwards",
-                      }
+                      },
                     );
                     setSelectedRoute(route.label);
                   }}

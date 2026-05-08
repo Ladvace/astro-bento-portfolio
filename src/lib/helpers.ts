@@ -4,7 +4,7 @@ export function trimText(input: string, maxLength: number = 100): string {
 }
 export function getCurrentTimeInItaly(): Date {
   const nowInItaly = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "Europe/Rome" })
+    new Date().toLocaleString("en-US", { timeZone: "Europe/Rome" }),
   );
   return nowInItaly;
 }

@@ -119,7 +119,7 @@ const WireframeGlobePlayground: Component = () => {
   const tiltRad = () => (tiltDeg() * Math.PI) / 180;
 
   return (
-    <div class="flex flex-col xl:flex-row gap-10 xl:gap-14 items-start justify-center w-full max-w-6xl mx-auto">
+    <div class="flex flex-col lg:flex-row gap-10 items-start justify-center w-full max-w-6xl mx-auto">
       <div class="flex-shrink-0 mx-auto xl:mx-0">
         <WireframeGlobe
           size={GLOBE_SIZE_PX}
@@ -219,7 +219,7 @@ const WireframeGlobePlayground: Component = () => {
                     autocapitalize="off"
                     autocomplete="off"
                   />
-                </div>
+                </div>,
               )}
               <SliderField
                 label="Front opacity"
@@ -287,7 +287,7 @@ const WireframeGlobePlayground: Component = () => {
                   <span class="text-sm text-neutral-200">
                     Spin the globe continuously
                   </span>
-                </label>
+                </label>,
               )}
             </div>
           </section>

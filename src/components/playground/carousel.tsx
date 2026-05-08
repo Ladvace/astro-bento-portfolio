@@ -43,7 +43,7 @@ const Carousel = () => {
 
   const getZindex = (array: CarouselItem[], index: number): number[] =>
     array.map((_, i) =>
-      index === i ? array.length : array.length - Math.abs(index - i)
+      index === i ? array.length : array.length - Math.abs(index - i),
     );
 
   const animate = (): void => {
@@ -78,7 +78,7 @@ const Carousel = () => {
   const handleMouseDown = (e: MouseEvent | TouchEvent): void => {
     setIsDown(true);
     setStartX(
-      "clientX" in e ? e.clientX : e.touches ? e.touches[0].clientX : 0
+      "clientX" in e ? e.clientX : e.touches ? e.touches[0].clientX : 0,
     );
   };
 

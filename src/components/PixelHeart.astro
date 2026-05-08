@@ -11,15 +11,84 @@ const height = Math.round(size * (6 / 7));
   width={size}
   height={height}
   viewBox="0 0 7 6"
-  class="inline-block align-middle mx-1"
+  class="pixel-heart inline-block align-middle mx-1 cursor-pointer"
   shape-rendering="crispEdges"
   style="image-rendering:pixelated"
 >
-  <rect x="1" y="0" width="2" height="1" fill="#ef4444" />
-  <rect x="4" y="0" width="2" height="1" fill="#ef4444" />
-  <rect x="0" y="1" width="7" height="1" fill="#ef4444" />
-  <rect x="0" y="2" width="7" height="1" fill="#ef4444" />
-  <rect x="1" y="3" width="5" height="1" fill="#ef4444" />
-  <rect x="2" y="4" width="3" height="1" fill="#ef4444" />
-  <rect x="3" y="5" width="1" height="1" fill="#ef4444" />
+  <rect x="1" y="0" width="2" height="1" fill="#ef4444"></rect>
+  <rect x="4" y="0" width="2" height="1" fill="#ef4444"></rect>
+  <rect x="0" y="1" width="7" height="1" fill="#ef4444"></rect>
+  <rect x="0" y="2" width="7" height="1" fill="#ef4444"></rect>
+  <rect x="1" y="3" width="5" height="1" fill="#ef4444"></rect>
+  <rect x="2" y="4" width="3" height="1" fill="#ef4444"></rect>
+  <rect x="3" y="5" width="1" height="1" fill="#ef4444"></rect>
 </svg>
+
+<style>
+  @keyframes heart-pulse {
+    0% {
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.6);
+    }
+    40% {
+      transform: scale(1);
+    }
+    60% {
+      transform: scale(1.35);
+    }
+    80% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  .pixel-heart.beating {
+    animation: heart-pulse 0.6s ease-in-out;
+  }
+</style>
+
+<script>
+  function pulse(ctx: AudioContext, delay: number) {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 80;
+    const t = ctx.currentTime + delay;
+    gain.gain.setValueAtTime(0.18, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+    osc.start(t);
+    osc.stop(t + 0.12);
+  }
+
+  document.querySelectorAll(".pixel-heart").forEach((heart) => {
+    const beat = () => {
+      heart.classList.remove("beating");
+      void (heart as HTMLElement).offsetWidth;
+      heart.classList.add("beating");
+      heart.addEventListener(
+        "animationend",
+        () => heart.classList.remove("beating"),
+        { once: true },
+      );
+      if (localStorage.getItem("soundEnabled") !== "false") {
+        const ctx = new AudioContext();
+        pulse(ctx, 0);
+        pulse(ctx, 0.18);
+      }
+    };
+    heart.addEventListener("click", beat);
+    heart.addEventListener(
+      "touchstart",
+      (e) => {
+        e.preventDefault();
+        beat();
+      },
+      { passive: false },
+    );
+  });
+</script>

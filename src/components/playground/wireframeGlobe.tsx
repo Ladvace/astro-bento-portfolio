@@ -37,7 +37,7 @@ const WireframeGlobe: Component<WireframeGlobeProps> = (props) => {
       autoRotate: true,
       initialAngle: 0,
     },
-    props
+    props,
   );
 
   const stateRef = {
@@ -68,7 +68,7 @@ const WireframeGlobe: Component<WireframeGlobeProps> = (props) => {
     sinT: number,
     radius: number,
     cx: number,
-    cy: number
+    cy: number,
   ) => {
     const phi = (lat * Math.PI) / 180;
     const theta = ((lon + rotAngle) * Math.PI) / 180;
@@ -115,7 +115,7 @@ const WireframeGlobe: Component<WireframeGlobeProps> = (props) => {
       radius: number,
       cx: number,
       cy: number,
-      logicalSize: number
+      logicalSize: number,
     ) => {
       const tilt = merged.tilt;
       const latLines = merged.latLines;
@@ -134,7 +134,7 @@ const WireframeGlobe: Component<WireframeGlobeProps> = (props) => {
         lat1: number,
         lon1: number,
         lat2: number,
-        lon2: number
+        lon2: number,
       ) => {
         const p1 = project(lat1, lon1, rotDeg, cosT, sinT, radius, cx, cy);
         const p2 = project(lat2, lon2, rotDeg, cosT, sinT, radius, cx, cy);

@@ -12,7 +12,8 @@ const { Rive, Layout, Fit, Alignment } = (
 const rifleDesignAspectRatio = 950 / 540;
 
 export default function Rifle1(props: { rivUrl: string }) {
-  const [canvasElement, setCanvasElement] = createSignal<HTMLCanvasElement | null>(null);
+  const [canvasElement, setCanvasElement] =
+    createSignal<HTMLCanvasElement | null>(null);
   const [drawWidth, setDrawWidth] = createSignal(950);
   const [loadMessage, setLoadMessage] = createSignal<string | null>(null);
 
@@ -58,15 +59,22 @@ export default function Rifle1(props: { rivUrl: string }) {
             setLoadMessage("");
             keepShootingInput = riveInstance
               ?.stateMachineInputs("rifle")
-              ?.find((input: StateMachineInput) => input.name === "keep_shooting");
+              ?.find(
+                (input: StateMachineInput) => input.name === "keep_shooting",
+              );
             if (keepShootingCheckbox && syncCheckboxToRiveInput) {
-              keepShootingCheckbox.addEventListener("change", syncCheckboxToRiveInput);
+              keepShootingCheckbox.addEventListener(
+                "change",
+                syncCheckboxToRiveInput,
+              );
             }
           },
           onLoadError: () => setLoadMessage("Could not load the Rive file."),
         });
       } catch (error) {
-        setLoadMessage(error instanceof Error ? error.message : "Failed to load");
+        setLoadMessage(
+          error instanceof Error ? error.message : "Failed to load",
+        );
       }
     });
 
@@ -76,7 +84,10 @@ export default function Rifle1(props: { rivUrl: string }) {
     onCleanup(() => {
       window.removeEventListener("resize", handleWindowResize);
       if (keepShootingCheckbox && syncCheckboxToRiveInput) {
-        keepShootingCheckbox.removeEventListener("change", syncCheckboxToRiveInput);
+        keepShootingCheckbox.removeEventListener(
+          "change",
+          syncCheckboxToRiveInput,
+        );
       }
       riveInstance?.stopRendering();
       riveInstance?.cleanup();
@@ -86,7 +97,9 @@ export default function Rifle1(props: { rivUrl: string }) {
   return (
     <div class="flex flex-col justify-center w-fit h-fit text-white p-4">
       <h1>Rifle animation</h1>
-      <p>Interactive animation made in rive.app using an illustration made by me</p>
+      <p>
+        Interactive animation made in rive.app using an illustration made by me
+      </p>
       <p>
         click on the rifle or on the <span class="font-bold">S</span> and on the{" "}
         <span class="font-bold">R</span> to reload
@@ -105,10 +118,16 @@ export default function Rifle1(props: { rivUrl: string }) {
 
       <div class="flex flex-col relative">
         <div class="flex gap-2 items-center justify-center absolute top-10 left-10 z-10">
-          <input type="checkbox" id="keep-shooting" name="continuous-shooting" />
+          <input
+            type="checkbox"
+            id="keep-shooting"
+            name="continuous-shooting"
+          />
           <label for="keep-shooting">Continuous Shooting</label>
         </div>
-        <div class={loadMessage() === null ? "opacity-40 pointer-events-none" : ""}>
+        <div
+          class={loadMessage() === null ? "opacity-40 pointer-events-none" : ""}
+        >
           <canvas
             ref={setCanvasElement}
             width={drawWidth()}

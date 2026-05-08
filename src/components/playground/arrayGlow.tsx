@@ -36,7 +36,7 @@ const ArrayGlow = () => {
     const interval = setInterval(() => {
       indices.forEach((index) => {
         const light = ref.querySelector<HTMLDivElement>(
-          `[data-index="${index}"]`
+          `[data-index="${index}"]`,
         );
 
         if (!light) {
@@ -58,13 +58,13 @@ const ArrayGlow = () => {
           timeoutIds.push(
             setTimeout(() => {
               light.style.transform = "scale(2)";
-            }, delay)
+            }, delay),
           );
 
           timeoutIds.push(
             setTimeout(() => {
               light.style.transform = "scale(1)";
-            }, transitionDuration + delay)
+            }, transitionDuration + delay),
           );
         }
 

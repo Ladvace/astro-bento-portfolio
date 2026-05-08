@@ -22,7 +22,8 @@ const { title, date, id } = Astro.props;
     </p>
     <time
       class="text-right tabular-nums"
-      data-date={date.toISOString()}       datetime={date.toISOString()}
+      data-date={date.toISOString()}
+      datetime={date.toISOString()}
     >
       {formatDate(date)}
     </time>

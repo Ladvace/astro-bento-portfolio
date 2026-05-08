@@ -4,10 +4,11 @@ import type { APIRoute } from "astro";
 export const GET: APIRoute = async () => {
   try {
     const allEntries = await db.select().from(GuestbookTable);
-    const entries = allEntries.sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    const entries = allEntries.sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
-    
+
     return new Response(JSON.stringify(entries), {
       status: 200,
       headers: {
@@ -16,12 +17,15 @@ export const GET: APIRoute = async () => {
     });
   } catch (error) {
     console.error("Error fetching guestbook entries:", error);
-    return new Response(JSON.stringify({ error: "Failed to fetch guestbook entries" }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
+    return new Response(
+      JSON.stringify({ error: "Failed to fetch guestbook entries" }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
   }
 };
 
@@ -38,7 +42,7 @@ export const POST: APIRoute = async ({ request }) => {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
     }
 
@@ -46,12 +50,15 @@ export const POST: APIRoute = async ({ request }) => {
     const sanitizedMessage = message.trim().slice(0, 1000);
     const sanitizedWebsite = website ? website.trim().slice(0, 200) : null;
 
-    const result = await db.insert(GuestbookTable).values({
-      name: sanitizedName,
-      message: sanitizedMessage,
-      website: sanitizedWebsite || undefined,
-      createdAt: new Date(),
-    }).returning();
+    const result = await db
+      .insert(GuestbookTable)
+      .values({
+        name: sanitizedName,
+        message: sanitizedMessage,
+        website: sanitizedWebsite || undefined,
+        createdAt: new Date(),
+      })
+      .returning();
 
     return new Response(JSON.stringify(result[0]), {
       status: 201,
@@ -68,8 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   }
 };
-

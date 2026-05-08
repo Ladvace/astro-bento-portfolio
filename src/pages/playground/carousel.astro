@@ -1,15 +1,11 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import CarouselComponent from "../../components/playground/carousel";
 import { SITE } from "../../site-config";
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  animate([loaderAnimation] as AnimationSequence);
-</script>
+<LoaderAnimation />
 
 <Layout
   title={`${SITE.author.fullName} - Playground - Fancy league of legends carousel`}
@@ -26,7 +22,6 @@ import { SITE } from "../../site-config";
         >Back</a
       >
     </header>
-
     <div class="h-full w-full">
       <CarouselComponent client:load />
     </div>

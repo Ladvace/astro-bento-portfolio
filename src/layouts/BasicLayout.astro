@@ -3,6 +3,7 @@ import "../style.css";
 import { ClientRouter } from "astro:transitions";
 import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
+import GridTransition from "../components/GridTransition.astro";
 
 interface Props {
   title: string;
@@ -10,9 +11,10 @@ interface Props {
   page?: "travel" | "blog";
   slug?: string | undefined;
   pubDate?: string;
+  hideSoundToggle?: boolean;
 }
 
-const { title, description, page, pubDate } = Astro.props;
+const { title, description, page, pubDate, hideSoundToggle } = Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
 
 const schema =
@@ -22,10 +24,19 @@ const schema =
         "@type": "Person",
         name: SITE.author.fullName,
         url: Astro.url.origin,
-        sameAs: [LINKS.linkedin, LINKS.github],
+        sameAs: [LINKS.linkedin, LINKS.github, LINKS.dribbble, LINKS.behance],
         image: `${Astro.url.origin}/og-image.png`,
         jobTitle: SITE.author.jobTitle,
-        knowsAbout: ["JavaScript", "React", "Astro", "Solid.js", "Svelte", "Node.js", "User Experience", "Web Development"],
+        knowsAbout: [
+          "JavaScript",
+          "React",
+          "Astro",
+          "Solid.js",
+          "Svelte",
+          "Node.js",
+          "User Experience",
+          "Web Development",
+        ],
         worksFor: {
           "@type": "Organization",
           name: "Self-Employed",
@@ -90,7 +101,10 @@ const schema =
       name="keywords"
       content={`full stack developer, web developer, React, Astro, Solid.js, Svelte, freelance developer, ${SITE.location.countryName}, UX, animations, micro-interactions`}
     />
-    <meta content="website" property="og:type" />
+    <meta
+      content={page === "blog" ? "article" : "website"}
+      property="og:type"
+    />
     <meta content={title} property="og:title" />
     <meta content={description} property="og:description" />
     <meta content={Astro.url.origin} property="og:url" />
@@ -102,6 +116,8 @@ const schema =
     />
     <meta property="og:image:alt" content={description} />
     <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta content="summary_large_image" name="twitter:card" />
     <meta content={title} name="twitter:title" />
     <meta content={description} name="twitter:description" />
@@ -123,7 +139,8 @@ const schema =
       defer
       is:inline
       src="https://cloud.umami.is/script.js"
-      data-website-id={import.meta.env.UMAMI_WEBSITE_ID}></script>
+      data-website-id={import.meta.env.UMAMI_WEBSITE_ID}
+      data-domains="gianmarcocavallo.com"></script>
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key={import.meta.env.AHREFS_ANALYTICS_KEY}
@@ -184,25 +201,53 @@ const schema =
     <!-- Cal element-click embed code ends -->
   </head>
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">
+    <GridTransition />
     <slot name="loader" />
     <slot />
-    <button
-      id="sound-toggle"
-      aria-label="Toggle sound"
-      title="Toggle sound"
-      class="fixed bottom-4 right-4 md:bottom-6 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
-    >
-      <svg id="sound-icon-on" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-      </svg>
-      <svg id="sound-icon-off" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-        <line x1="23" y1="9" x2="17" y2="15"/>
-        <line x1="17" y1="9" x2="23" y2="15"/>
-      </svg>
-    </button>
+    {
+      !hideSoundToggle && (
+        <button
+          id="sound-toggle"
+          aria-label="Toggle sound"
+          title="Toggle sound"
+          class="fixed bottom-4 right-4 md:bottom-6 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+        >
+          <svg
+            id="sound-icon-on"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg>
+          <svg
+            id="sound-icon-off"
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="hidden"
+          >
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <line x1="23" y1="9" x2="17" y2="15" />
+            <line x1="17" y1="9" x2="23" y2="15" />
+          </svg>
+        </button>
+      )
+    }
   </body>
 </html>
 
@@ -233,8 +278,12 @@ const schema =
   }
 
   function updateToggleIcon() {
-    document.getElementById("sound-icon-on")?.classList.toggle("hidden", !soundEnabled);
-    document.getElementById("sound-icon-off")?.classList.toggle("hidden", soundEnabled);
+    document
+      .getElementById("sound-icon-on")
+      ?.classList.toggle("hidden", !soundEnabled);
+    document
+      .getElementById("sound-icon-off")
+      ?.classList.toggle("hidden", soundEnabled);
   }
 
   function attachCardSounds() {
@@ -258,27 +307,27 @@ const schema =
 
   console.log(
     "%c\n" +
-    "  .-. (  ) .-.   .-. (  ) .-.   .-.\n" +
-    " (* *)( ** )* *) (* *)( ** )(* *) (* *)\n" +
-    "  `-'  `--' `-'   `-'  `--' `-'   `-'\n" +
-    "   |    |    |     |    |    |     |\n" +
-    "   |    |    |     |    |    |     |\n" +
-    "---+----+----+-----+----+----+-----+---\n" +
-    " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-    "   ~    ~    ~     ~    ~    ~     ~\n",
-    "color:var(--primary-500);font-family:monospace;font-size:11px;line-height:1.5;"
+      "  .-. (  ) .-.   .-. (  ) .-.   .-.\n" +
+      " (* *)( ** )* *) (* *)( ** )(* *) (* *)\n" +
+      "  `-'  `--' `-'   `-'  `--' `-'   `-'\n" +
+      "   |    |    |     |    |    |     |\n" +
+      "   |    |    |     |    |    |     |\n" +
+      "---+----+----+-----+----+----+-----+---\n" +
+      " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
+      "   ~    ~    ~     ~    ~    ~     ~\n",
+    "color:var(--primary-500);font-family:monospace;font-size:11px;line-height:1.5;",
   );
   console.log(
     "%cMate, what are you looking for here? 😄",
-    "color:var(--primary-400);font-size:15px;font-weight:bold;"
+    "color:var(--primary-400);font-size:15px;font-weight:bold;",
   );
   console.log(
     "%cJust send me a message, I'd love to connect.\n",
-    "color:var(--darkslate-200);font-size:12px;"
+    "color:var(--darkslate-200);font-size:12px;",
   );
   console.log(
     "%c💼  linkedin.com/in/gianmarco-cavallo\n📧  contact@gianmarcocavallo.com",
-    "color:var(--primary-300);font-size:12px;line-height:2;"
+    "color:var(--primary-300);font-size:12px;line-height:2;",
   );
 </script>
 

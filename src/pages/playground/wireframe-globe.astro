@@ -1,24 +1,18 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import WireframeGlobePlayground from "../../components/playground/wireframeGlobePlayground";
 import { SITE } from "../../site-config";
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  animate([loaderAnimation] as AnimationSequence);
-</script>
+<LoaderAnimation />
 
 <Layout
   title={`${SITE.author.fullName} - Playground - Wireframe globe`}
   description="Canvas wireframe globe with latitude and longitude lines."
   fullScreen="h-auto"
 >
-  <div
-    class="flex flex-col px-4 pb-4 overscroll-none w-full min-h-screen overflow-auto"
-  >
+  <div class="flex flex-col px-4 pb-8 w-full min-h-screen">
     <header class="sticky top-0 inset-x-0 z-60 p-4">
       <a
         href="/playground"
@@ -26,8 +20,7 @@ import { SITE } from "../../site-config";
         >Back</a
       >
     </header>
-
-    <div class="flex flex-1 w-full items-center justify-center p-8">
+    <div class="flex w-full justify-center p-8">
       <WireframeGlobePlayground client:load />
     </div>
   </div>

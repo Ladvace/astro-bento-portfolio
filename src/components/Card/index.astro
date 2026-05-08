@@ -13,6 +13,7 @@ interface Props {
   width?: string;
   padding?: string;
   bgColor?: string;
+  arrowCorner?: boolean;
 }
 
 const {
@@ -25,6 +26,7 @@ const {
   height,
   padding,
   bgColor,
+  arrowCorner,
 } = Astro.props;
 ---
 
@@ -43,7 +45,7 @@ const {
         href={href}
       >
         <Icon
-          class="h-5 w-5 absolute inset-y-0 my-auto right-0 group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20 flex-shrink-0"
+          class={`h-5 w-5 absolute right-0 group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20 flex-shrink-0 ${arrowCorner ? "top-0" : "inset-y-0 my-auto"}`}
           name="ri:arrow-right-up-line"
         />
         <Content body={body} title={title}>

@@ -38,14 +38,24 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
       .attr("height", height);
 
     const defs = svg.append("defs");
-    const pattern = defs.append("pattern")
+    const pattern = defs
+      .append("pattern")
       .attr("id", "taiwan-stripes")
       .attr("width", 3)
       .attr("height", 3)
       .attr("patternUnits", "userSpaceOnUse")
       .attr("patternTransform", "rotate(45)");
-    pattern.append("rect").attr("width", 3).attr("height", 3).attr("fill", "#1a2e42");
-    pattern.append("rect").attr("width", 1.5).attr("height", 3).attr("fill", "var(--primary-500)").attr("opacity", "0.5");
+    pattern
+      .append("rect")
+      .attr("width", 3)
+      .attr("height", 3)
+      .attr("fill", "#1a2e42");
+    pattern
+      .append("rect")
+      .attr("width", 1.5)
+      .attr("height", 3)
+      .attr("fill", "var(--primary-500)")
+      .attr("opacity", "0.5");
 
     svg
       .append("circle")
@@ -69,14 +79,17 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
       .style("fill", (d: { properties: { name: string } }) => {
         const name = d.properties.name;
         if (name === "Taiwan") return "url(#taiwan-stripes)";
-        return visitedCountries.includes(name) ? "var(--primary-500)" : "#1a2e42";
+        return visitedCountries.includes(name)
+          ? "var(--primary-500)"
+          : "#1a2e42";
       })
       .style("stroke", "#2a4a63")
       .style("stroke-width", 0.3)
       .style("opacity", 0.8);
 
     if (enableHover) {
-      const tooltip = d3.select("body")
+      const tooltip = d3
+        .select("body")
         .append("div")
         .attr("class", "globe-tooltip")
         .style("position", "absolute")
@@ -91,42 +104,38 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
 
       paths
         .style("cursor", "pointer")
-        .on("mouseover", function(event, d: any) {
+        .on("mouseover", function (event, d: any) {
           const data = d as { properties: { name: string } };
           const isVisited = visitedCountries.includes(data.properties.name);
           const element = d3.select(this);
-          
+
           if (!isVisited && data.properties.name !== "Taiwan") {
             element.style("fill", "#2a4a63");
           }
-          element
-            .style("opacity", 1)
-            .style("stroke-width", 0.5);
+          element.style("opacity", 1).style("stroke-width", 0.5);
 
           tooltip
             .html(data.properties.name)
             .style("opacity", 1)
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 10) + "px");
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 10 + "px");
         })
-        .on("mousemove", function(event) {
+        .on("mousemove", function (event) {
           tooltip
-            .style("left", (event.pageX + 10) + "px")
-            .style("top", (event.pageY - 10) + "px");
+            .style("left", event.pageX + 10 + "px")
+            .style("top", event.pageY - 10 + "px");
         })
-        .on("mouseout", function(event, d: any) {
+        .on("mouseout", function (event, d: any) {
           const data = d as { properties: { name: string } };
           const isVisited = visitedCountries.includes(data.properties.name);
           const element = d3.select(this);
-          
+
           if (data.properties.name === "Taiwan") {
             element.style("fill", "url(#taiwan-stripes)");
           } else if (!isVisited) {
             element.style("fill", "#1a2e42");
           }
-          element
-            .style("opacity", 0.8)
-            .style("stroke-width", 0.3);
+          element.style("opacity", 0.8).style("stroke-width", 0.3);
 
           tooltip.style("opacity", 0);
         });
@@ -141,34 +150,37 @@ const GlobeComponent = ({ isStatic, class: className, enableHover }: Props) => {
 
     if (enableHover) {
       svg
-        .on("mouseenter", function() {
+        .on("mouseenter", function () {
           isPaused = true;
         })
-        .on("mouseleave", function() {
+        .on("mouseleave", function () {
           isPaused = false;
         })
-        .call(d3.drag<SVGSVGElement, unknown>()
-          .on("start", function(event) {
-            isPaused = true;
-            previousMousePosition = [event.x, event.y];
-          })
-          .on("drag", function(event) {
-            if (previousMousePosition) {
-              const rotate = projection.rotate();
-              const dx = event.x - previousMousePosition[0];
-              const dy = event.y - previousMousePosition[1];
-              const k = sensitivity / projection.scale();
-              projection.rotate([
-                rotate[0] + dx * k,
-                Math.max(-90, Math.min(90, rotate[1] - dy * k))
-              ]);
+        .call(
+          d3
+            .drag<SVGSVGElement, unknown>()
+            .on("start", function (event) {
+              isPaused = true;
               previousMousePosition = [event.x, event.y];
-              updatePaths();
-            }
-          })
-          .on("end", function() {
-            previousMousePosition = null;
-          }));
+            })
+            .on("drag", function (event) {
+              if (previousMousePosition) {
+                const rotate = projection.rotate();
+                const dx = event.x - previousMousePosition[0];
+                const dy = event.y - previousMousePosition[1];
+                const k = sensitivity / projection.scale();
+                projection.rotate([
+                  rotate[0] + dx * k,
+                  Math.max(-90, Math.min(90, rotate[1] - dy * k)),
+                ]);
+                previousMousePosition = [event.x, event.y];
+                updatePaths();
+              }
+            })
+            .on("end", function () {
+              previousMousePosition = null;
+            }),
+        );
     }
 
     d3.timer(() => {

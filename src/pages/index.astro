@@ -11,20 +11,41 @@ import Globe from "../components/Globe";
 import DesignWorksCard from "../components/DesignWorksCard.astro";
 import PixelHeart from "../components/PixelHeart.astro";
 import { SITE } from "../site-config";
-
 ---
 
 <script>
   import { initHomeEntrance } from "../lib/home-entrance";
-
   initHomeEntrance();
 </script>
 
 <script>
-  const CELL = 20;
+  function setupGrid(
+    container: HTMLElement,
+    cellSize: number,
+    cellStyle: string,
+  ) {
+    const cols = Math.ceil(container.clientWidth / cellSize) + 1;
+    const rows = Math.ceil(container.clientHeight / cellSize) + 1;
+    const total = cols * rows;
+    Object.assign(container.style, {
+      display: "grid",
+      gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
+      gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
+    });
+    container.innerHTML = "";
+    for (let i = 0; i < total; i++) {
+      const cell = document.createElement("div");
+      cell.style.cssText = cellStyle;
+      container.appendChild(cell);
+    }
+    return { cols, rows, total };
+  }
+
   const TRAIL_LEN = 8;
   const TRAIL_OPACITY = [0.8, 0.6, 0.45, 0.3, 0.2, 0.12, 0.07, 0.03];
   let glowInterval: ReturnType<typeof setInterval> | null = null;
+  let gbAnimId: number | null = null;
+  let blogAnimId: number | null = null;
 
   function resetCell(c: HTMLElement) {
     c.style.background = "";
@@ -36,65 +57,76 @@ import { SITE } from "../site-config";
     const container = document.getElementById("playground-grid");
     if (!container) return;
 
-    const cols = Math.ceil(container.clientWidth / CELL);
-    const rows = Math.ceil(container.clientHeight / CELL);
-    const total = cols * rows;
-
-    Object.assign(container.style, {
-      display: "grid",
-      gridTemplateColumns: `repeat(${cols}, ${CELL}px)`,
-      gridTemplateRows: `repeat(${rows}, ${CELL}px)`,
-    });
-    container.innerHTML = "";
-
-    for (let i = 0; i < total; i++) {
-      const cell = document.createElement("div");
-      cell.style.cssText = "border:1px solid rgba(255,255,255,0.06);transition:background 0.4s,opacity 0.4s;";
-      container.appendChild(cell);
-    }
+    const { cols, total } = setupGrid(
+      container,
+      20,
+      "border:0.5px solid rgba(255,255,255,0.03);transition:background 0.4s,opacity 0.4s;",
+    );
 
     if (glowInterval) clearInterval(glowInterval);
     glowInterval = setInterval(() => {
-      const cell = container.children[Math.floor(Math.random() * total)] as HTMLElement;
+      const cell = container.children[
+        Math.floor(Math.random() * total)
+      ] as HTMLElement;
       if (!cell) return;
       cell.style.background = "var(--primary-500)";
       cell.style.opacity = "0.5";
       setTimeout(() => {
         cell.style.background = "";
         cell.style.opacity = "0.06";
-        setTimeout(() => { cell.style.opacity = ""; }, 400);
+        setTimeout(() => {
+          cell.style.opacity = "";
+        }, 400);
       }, 600);
     }, 250);
 
-    const cardEl = document.querySelector<HTMLElement>('a[href="playground"]')?.closest<HTMLElement>(".card");
+    const cardEl = document
+      .querySelector<HTMLElement>('a[href="playground"]')
+      ?.closest<HTMLElement>(".card");
     let trail: number[] = [];
 
-    const applyTrail = () => trail.forEach((idx, i) => {
-      const cell = container.children[idx] as HTMLElement;
-      if (!cell) return;
-      cell.style.transition = "none";
-      cell.style.background = "var(--primary-500)";
-      cell.style.opacity = String(TRAIL_OPACITY[i] ?? 0);
-    });
+    const applyTrail = () =>
+      trail.forEach((idx, i) => {
+        const cell = container.children[idx] as HTMLElement;
+        if (!cell) return;
+        cell.style.transition = "none";
+        cell.style.background = "var(--primary-500)";
+        cell.style.opacity = String(TRAIL_OPACITY[i] ?? 0);
+      });
 
     const clearTrail = () => {
-      trail.forEach(idx => {
+      trail.forEach((idx) => {
         const cell = container.children[idx] as HTMLElement;
-        if (cell) { cell.style.transition = "opacity 0.1s"; cell.style.opacity = "0"; }
+        if (cell) {
+          cell.style.transition = "opacity 0.1s";
+          cell.style.opacity = "0";
+        }
       });
-      setTimeout(() => { trail.forEach(idx => { const c = container.children[idx] as HTMLElement; if (c) resetCell(c); }); trail = []; }, 100);
+      setTimeout(() => {
+        trail.forEach((idx) => {
+          const c = container.children[idx] as HTMLElement;
+          if (c) resetCell(c);
+        });
+        trail = [];
+      }, 100);
     };
 
     cardEl?.addEventListener("mousemove", (e: MouseEvent) => {
       if (!window.matchMedia("(pointer: fine)").matches) return;
       const rect = container.getBoundingClientRect();
-      const idx = Math.floor((e.clientY - rect.top) / CELL) * cols + Math.floor((e.clientX - rect.left) / CELL);
+      const idx =
+        Math.floor((e.clientY - rect.top) / 20) * cols +
+        Math.floor((e.clientX - rect.left) / 20);
       if (idx === trail[0] || idx < 0 || idx >= total) return;
-      trail = [idx, ...trail.filter(i => i !== idx)];
+      trail = [idx, ...trail.filter((i) => i !== idx)];
       if (trail.length > TRAIL_LEN) {
-        trail.splice(TRAIL_LEN).forEach(i => {
+        trail.splice(TRAIL_LEN).forEach((i) => {
           const c = container.children[i] as HTMLElement;
-          if (c) { c.style.transition = "opacity 0.1s"; c.style.opacity = "0"; setTimeout(() => resetCell(c), 100); }
+          if (c) {
+            c.style.transition = "opacity 0.1s";
+            c.style.opacity = "0";
+            setTimeout(() => resetCell(c), 100);
+          }
         });
       }
       applyTrail();
@@ -103,58 +135,83 @@ import { SITE } from "../site-config";
     cardEl?.addEventListener("mouseleave", clearTrail);
   }
 
-  document.addEventListener("astro:page-load", initPlaygroundGrid);
-  document.addEventListener("astro:before-swap", () => { if (glowInterval) clearInterval(glowInterval); });
-</script>
-
-<script>
-  const GB_CELL = 20;
-  let gbAnimId: number | null = null;
-
   function initGuestbookGrid() {
     const container = document.getElementById("guestbook-grid");
     if (!container) return;
 
-    const cols = Math.ceil(container.clientWidth / GB_CELL);
-    const rows = Math.ceil(container.clientHeight / GB_CELL);
-    const total = cols * rows;
-
-    Object.assign(container.style, {
-      display: "grid",
-      gridTemplateColumns: `repeat(${cols}, ${GB_CELL}px)`,
-      gridTemplateRows: `repeat(${rows}, ${GB_CELL}px)`,
-    });
-    container.innerHTML = "";
-
-    for (let i = 0; i < total; i++) {
-      const cell = document.createElement("div");
-      cell.style.cssText = "border-radius:50%;margin:3px;box-sizing:border-box;background:var(--primary-500);";
-      container.appendChild(cell);
-    }
+    const { cols, rows } = setupGrid(
+      container,
+      20,
+      "border-radius:50%;margin:3px;box-sizing:border-box;background:var(--primary-500);",
+    );
 
     if (gbAnimId !== null) cancelAnimationFrame(gbAnimId);
 
-    const animate = (t: number) => {
+    const tick = (t: number) => {
       const time = t * 0.001;
       for (let y = 0; y < rows; y++) {
         for (let x = 0; x < cols; x++) {
           const cell = container.children[y * cols + x] as HTMLElement;
           if (!cell) continue;
-          // Two interfering cosine waves travelling in different directions
           const w1 = Math.cos(time * 1.1 + x * 0.9 + y * 0.6);
           const w2 = Math.cos(time * 0.7 - x * 0.5 + y * 1.1);
-          const v = (w1 + w2) / 2; // range -1 to 1
-          cell.style.opacity = (Math.max(0, (v + 1) / 2) * 0.45).toFixed(3);
+          cell.style.opacity = (Math.max(0, (w1 + w2 + 2) / 4) * 0.45).toFixed(
+            3,
+          );
         }
       }
-      gbAnimId = requestAnimationFrame(animate);
+      gbAnimId = requestAnimationFrame(tick);
     };
 
-    gbAnimId = requestAnimationFrame(animate);
+    gbAnimId = requestAnimationFrame(tick);
   }
 
-  document.addEventListener("astro:page-load", initGuestbookGrid);
-  document.addEventListener("astro:before-swap", () => { if (gbAnimId !== null) cancelAnimationFrame(gbAnimId); });
+  function initBlogBg() {
+    const container = document.getElementById("blog-bg");
+    if (!container) return;
+
+    const { cols, rows } = setupGrid(
+      container,
+      18,
+      "border-radius:50%;margin:4px;box-sizing:border-box;border:1px solid var(--primary-500);opacity:0;",
+    );
+
+    const cx = -cols * 0.3;
+    const cy = -rows * 0.3;
+    const maxDist = Math.sqrt(cx * cx + cy * cy);
+
+    if (blogAnimId !== null) cancelAnimationFrame(blogAnimId);
+
+    const tick = (t: number) => {
+      const time = t * 0.0007;
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          const cell = container.children[y * cols + x] as HTMLElement;
+          if (!cell) continue;
+          const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) / maxDist;
+          cell.style.opacity = Math.max(
+            0,
+            Math.cos(time * 2.2 - dist * 7) * 0.35,
+          ).toFixed(3);
+        }
+      }
+      blogAnimId = requestAnimationFrame(tick);
+    };
+
+    blogAnimId = requestAnimationFrame(tick);
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    initPlaygroundGrid();
+    initGuestbookGrid();
+    initBlogBg();
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    if (glowInterval) clearInterval(glowInterval);
+    if (gbAnimId !== null) cancelAnimationFrame(gbAnimId);
+    if (blogAnimId !== null) cancelAnimationFrame(blogAnimId);
+  });
 </script>
 
 <Layout
@@ -178,13 +235,30 @@ import { SITE } from "../site-config";
         <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Playground</h2>
       </div>
     </Card>
-    <Card href="/guestbook" colSpan="md:col-span-1 w-full" rowSpan="md:row-span-1">
-      <div slot="background" id="guestbook-grid" class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true"></div>
+    <Card
+      href="/guestbook"
+      colSpan="md:col-span-1 w-full"
+      rowSpan="md:row-span-1"
+    >
+      <div
+        slot="background"
+        id="guestbook-grid"
+        class="absolute inset-0 overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
+      </div>
       <div class="flex-1 flex items-center">
         <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Guestbook</h2>
       </div>
     </Card>
     <Card href="/blog" colSpan="md:col-span-1" rowSpan="md:row-span-1">
+      <div
+        slot="background"
+        id="blog-bg"
+        class="absolute inset-0 overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
+      </div>
       <div class="flex-1 flex items-center">
         <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Blog</h2>
       </div>
@@ -203,17 +277,21 @@ import { SITE } from "../site-config";
           <Globe client:media="(max-width: 768px)" isStatic={true} />
         </div>
       </div>
-      <span class="text-xs text-white/60">{SITE.visitedCountries.length} countries</span>
+      <span class="text-xs text-white/60"
+        >{SITE.visitedCountries.length} countries</span
+      >
     </Card>
     <ThemeChangeCard />
-
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
       <div class="flex h-full items-center justify-center">
         <p class="text-[10px] whitespace-nowrap text-center">
-          © {new Date().getFullYear()} · Crafted with <PixelHeart /> using <a class="text-red-500" href="https://astro.build/" target="_blank">Astro</a> by Me.
+          © {new Date().getFullYear()} · Crafted with <PixelHeart /> using <a
+            class="text-red-500"
+            href="https://astro.build/"
+            target="_blank">Astro</a
+          > by Me.
         </p>
       </div>
     </Card>
   </main>
 </Layout>
-

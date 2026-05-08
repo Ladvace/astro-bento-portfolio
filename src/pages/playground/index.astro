@@ -1,5 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import Card from "../../components/Card/index.astro";
 import { SITE } from "../../site-config";
 
@@ -8,55 +9,57 @@ const projects = [
     title: "Rive rifle animation",
     description: "Interactive rifle animation made in rive.app",
     slug: "/rifle-1",
+    tags: ["Rive"],
   },
   {
     title: "GSAP future svg Scroll experiment",
     description:
       "Scroll animation made with GSAP and some custom futuristic svg",
     slug: "/future-scroll",
+    tags: ["GSAP", "SVG"],
   },
   {
     title: "Glowing stars text",
     description: "Glowing stars text, inspired by the nextjs website",
     slug: "/glowing-stars",
+    tags: ["SolidJS", "Canvas"],
   },
   {
     title: "Turbulence clip-path header",
     description: "Header animation made clip-path and turbulence svg filter",
     slug: "/turbulence-header",
+    tags: ["SVG", "CSS"],
   },
   {
     title: "Fancy card carousel",
     description: "Fancy carousel with league of legends champions",
     slug: "/carousel",
+    tags: ["SolidJS", "Motion"],
   },
   {
-    title: "Loader animation inspired by camillemormal.com",
+    title: "Sliding images loader",
     description:
-      "I tried to remake the loader animation of camillemormal.com with solidjs and motion one",
+      "Loader animation inspired by camillemormal.com, built with SolidJS and Motion One",
     slug: "/sliding-images-loader",
+    tags: ["SolidJS", "Motion"],
   },
   {
     title: "Wireframe globe",
     description:
       "Rotating canvas wireframe sphere with latitude and longitude lines",
     slug: "/wireframe-globe",
+    tags: ["Canvas", "SolidJS"],
   },
   {
     title: "Morph & pixel wipe",
-    description:
-      "SVG morph wipes or a staggered pixel-grid cover/reveal — GSAP",
+    description: "SVG morph wipes or a staggered pixel-grid cover/reveal",
     slug: "/morph-wipe",
+    tags: ["GSAP", "SVG"],
   },
 ];
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  animate([loaderAnimation] as AnimationSequence);
-</script>
+<LoaderAnimation />
 
 <Layout
   title={`${SITE.author.fullName} - Playground`}
@@ -73,15 +76,32 @@ const projects = [
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Playground</h1>
     <div class="grid grid-cols-2 gap-4 w-full">
       {
-        projects.map((project) => (
+        projects.map((project, i) => (
           <Card
             href={`/playground${project.slug}`}
             height="h-auto"
-            colSpan="md:col-span-1"
+            colSpan="col-span-2 md:col-span-1"
+            arrowCorner={true}
           >
-            <div class="text-darkslate-50">
-              <h2 class="font-semibold text-2xl">{project.title}</h2>
-              <p class="text-darkslate-300">{project.description}</p>
+            <div class="flex flex-col gap-3">
+              <span class="text-[10px] font-medium tabular-nums text-darkslate-400 tracking-widest">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <h2 class="font-semibold text-lg leading-snug text-darkslate-50">
+                  {project.title}
+                </h2>
+                <p class="text-darkslate-300 text-sm mt-1">
+                  {project.description}
+                </p>
+              </div>
+              <div class="flex flex-wrap gap-1.5 mt-1">
+                {project.tags.map((tag) => (
+                  <span class="text-[10px] font-medium px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-300">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
           </Card>
         ))

@@ -1,16 +1,10 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import { SITE } from "../../site-config";
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../../lib/constants";
-
-  const sequence = [loaderAnimation];
-
-  animate(sequence as AnimationSequence);
-</script>
+<LoaderAnimation />
 
 <Layout
   description="Software developer with strong focus on the user experience animations and micro interactions"
@@ -24,6 +18,8 @@ import { SITE } from "../../site-config";
       href="/">Back</a
     >
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
-    <p class="text-darkslate-300 text-sm">Nothing to say right now... check back later (or don't, no pressure 🙃)</p>
+    <p class="text-darkslate-300 text-sm">
+      Nothing to say right now... check back later (or don't, no pressure 🙃)
+    </p>
   </main>
 </Layout>

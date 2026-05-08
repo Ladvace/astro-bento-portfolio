@@ -1,73 +1,82 @@
 ---
 import Card from "./Card/index.astro";
 import { Image } from "astro:assets";
-import MustangIllustration from "../assets/illustrations/mustangs.webp";
-import RifleIllustration from "../assets/illustrations/rifle.webp";
-import SniperIllustration from "../assets/illustrations/sniper.webp";
-import ShieldLogoIllustration from "../assets/illustrations/shield_logo.webp";
-import RomanShieldIllustration from "../assets/illustrations/roman_shield.webp";
-import RemoteControlIllustration from "../assets/illustrations/remote_control.webp";
-import ProspectiveIllustration from "../assets/illustrations/prospective.webp";
-import Landscape1Illustration from "../assets/illustrations/landscape_1.webp";
-import Landscape2Illustration from "../assets/illustrations/landscape_2.webp";
-import StockMarketDownIllustration from "../assets/illustrations/stock_market_down.webp";
-import StockMarketUpIllustration from "../assets/illustrations/stock_market_up.webp";
-import HouseIllustration from "../assets/illustrations/house.webp";
-import HexElementIllustration from "../assets/illustrations/hex_element.png";
-import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
-
-const row1 = [
-  { src: MustangIllustration, alt: "mustangs" },
-  { src: HexElementIllustration, alt: "hex element" },
-  { src: SniperIllustration, alt: "sniper" },
-  { src: RifleIllustration, alt: "rifle" },
-  { src: ShieldLogoIllustration, alt: "shield logo" },
-  { src: RomanShieldIllustration, alt: "roman shield" },
-  { src: RemoteControlIllustration, alt: "remote control" },
-];
-
-const row2 = [
-  { src: ProspectiveIllustration, alt: "prospective" },
-  { src: Landscape1Illustration, alt: "landscape 1" },
-  { src: Landscape2Illustration, alt: "landscape 2" },
-  { src: StockMarketDownIllustration, alt: "stock market down" },
-  { src: StockMarketUpIllustration, alt: "stock market up" },
-  { src: HouseIllustration, alt: "house" },
-  { src: BoneLogoExplorationIllustration, alt: "bone logo" },
-];
+import { illustrationsRow1, illustrationsRow2 } from "../lib/illustrations";
 ---
 
-<Card colSpan="lg:col-span-1" rowSpan="md:row-span-1" title="Design Works" href="/design-works">
-  <div slot="background" class="absolute inset-0 -z-10 overflow-hidden flex flex-col justify-center gap-2 opacity-30">
+<Card
+  colSpan="lg:col-span-1"
+  rowSpan="md:row-span-1"
+  title="Design Works"
+  href="/design-works"
+>
+  <div
+    slot="background"
+    class="absolute inset-0 -z-10 overflow-hidden flex flex-col justify-center gap-2 opacity-30"
+  >
     <!-- fade edges -->
-    <div class="absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-darkslate-500 to-transparent pointer-events-none"></div>
-    <div class="absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-darkslate-500 to-transparent pointer-events-none"></div>
+    <div
+      class="absolute inset-y-0 left-0 w-10 z-10 bg-gradient-to-r from-darkslate-500 to-transparent pointer-events-none"
+    >
+    </div>
+    <div
+      class="absolute inset-y-0 right-0 w-10 z-10 bg-gradient-to-l from-darkslate-500 to-transparent pointer-events-none"
+    >
+    </div>
 
     <!-- row 1: left -->
     <div class="flex gap-2 marquee-left">
-      {[...row1, ...row1].map(({ src, alt }) => (
-        <Image src={src} class="w-14 h-14 rounded-lg object-cover flex-shrink-0" alt={alt} loading="eager" decoding="auto" />
-      ))}
+      {
+        [...illustrationsRow1, ...illustrationsRow1].map(({ src, alt }) => (
+          <Image
+            src={src}
+            class="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+            alt={alt}
+            loading="eager"
+            decoding="auto"
+          />
+        ))
+      }
     </div>
 
     <!-- row 2: right -->
     <div class="flex gap-2 marquee-right">
-      {[...row2, ...row2].map(({ src, alt }) => (
-        <Image src={src} class="w-14 h-14 rounded-lg object-cover flex-shrink-0" alt={alt} loading="eager" decoding="auto" />
-      ))}
+      {
+        [...illustrationsRow2, ...illustrationsRow2].map(({ src, alt }) => (
+          <Image
+            src={src}
+            class="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+            alt={alt}
+            loading="eager"
+            decoding="auto"
+          />
+        ))
+      }
     </div>
   </div>
 </Card>
 
 <style>
   @keyframes marquee-left {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
   @keyframes marquee-right {
-    0%   { transform: translateX(-50%); }
-    100% { transform: translateX(0); }
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
-  .marquee-left  { animation: marquee-left  18s linear infinite; }
-  .marquee-right { animation: marquee-right 14s linear infinite; }
+  .marquee-left {
+    animation: marquee-left 18s linear infinite;
+  }
+  .marquee-right {
+    animation: marquee-right 14s linear infinite;
+  }
 </style>

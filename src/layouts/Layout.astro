@@ -6,16 +6,16 @@ interface Props {
   description: string;
   page?: "travel";
   fullScreen?: string;
+  hideSoundToggle?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, hideSoundToggle } = Astro.props;
 ---
 
-<BasicLayout description={description} title={title}>
-  <div
-    class="loader bg-darkslate-700 text-neutral-50 text-3xl font-black uppercase flex justify-center items-center w-screen h-screen z-50 fixed top-0 bottom-0 right-0 left-0"     slot="loader"
-  >
-  </div>
+<BasicLayout
+  description={description}
+  title={title}
+  hideSoundToggle={hideSoundToggle}
+>
   <slot />
 </BasicLayout>
-

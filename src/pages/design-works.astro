@@ -1,75 +1,109 @@
 ---
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import MustangIllustration from "../assets/illustrations/mustangs.webp";
-import RifleIllustration from "../assets/illustrations/rifle.webp";
-import SniperIllustration from "../assets/illustrations/sniper.webp";
-import ShieldLogoIllustration from "../assets/illustrations/shield_logo.webp";
-import RomanShieldIllustration from "../assets/illustrations/roman_shield.webp";
-import RemoteControlIllustration from "../assets/illustrations/remote_control.webp";
-import ProspectiveIllustration from "../assets/illustrations/prospective.webp";
-import Landscape1Illustration from "../assets/illustrations/landscape_1.webp";
-import Landscape2Illustration from "../assets/illustrations/landscape_2.webp";
-import StockMarketDownIllustration from "../assets/illustrations/stock_market_down.webp";
-import StockMarketUpIllustration from "../assets/illustrations/stock_market_up.webp";
-import HouseIllustration from "../assets/illustrations/house.webp";
-import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
-import HexElementIllustration1 from "../assets/illustrations/hex_element_1.png";
-import HexElementIllustration2 from "../assets/illustrations/hex_element_2.png";
+import LoaderAnimation from "../components/LoaderAnimation.astro";
+import { illustrationsAll } from "../lib/illustrations";
 import { SITE } from "../site-config";
-
-const illustrations = [
-  { src: MustangIllustration, alt: "Mustangs illustration" },
-  { src: HexElementIllustration1, alt: "Hex element 1" },
-  { src: SniperIllustration, alt: "Sniper illustration" },
-  { src: RifleIllustration, alt: "Rifle illustration" },
-  { src: HexElementIllustration2, alt: "Hex element 2" },
-  { src: ShieldLogoIllustration, alt: "Shield logo" },
-  { src: RomanShieldIllustration, alt: "Roman shield" },
-  { src: RemoteControlIllustration, alt: "Remote control" },
-  { src: ProspectiveIllustration, alt: "Prospective" },
-  { src: Landscape1Illustration, alt: "Landscape 1" },
-  { src: Landscape2Illustration, alt: "Landscape 2" },
-  { src: StockMarketDownIllustration, alt: "Stock market down" },
-  { src: StockMarketUpIllustration, alt: "Stock market up" },
-  { src: HouseIllustration, alt: "House" },
-  { src: BoneLogoExplorationIllustration, alt: "Bone logo exploration" },
-];
 ---
 
+<LoaderAnimation />
+
 <script>
-  import { animate, type AnimationSequence } from "motion";
-  import { loaderAnimation } from "../lib/constants";
-  animate([loaderAnimation] as AnimationSequence);
+  function initLightbox() {
+    const overlay = document.getElementById("lightbox-overlay") as HTMLElement;
+    const lightboxImg = document.getElementById(
+      "lightbox-img",
+    ) as HTMLImageElement;
+    const lightboxAlt = document.getElementById("lightbox-alt") as HTMLElement;
+
+    function open(src: string, alt: string) {
+      lightboxImg.src = src;
+      lightboxImg.alt = alt;
+      lightboxAlt.textContent = alt;
+      overlay.classList.remove("opacity-0", "pointer-events-none");
+      overlay.classList.add("opacity-100");
+      document.body.style.overflow = "hidden";
+    }
+
+    function close() {
+      overlay.classList.add("opacity-0", "pointer-events-none");
+      overlay.classList.remove("opacity-100");
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll<HTMLElement>(".masonry-item").forEach((item) => {
+      item.style.cursor = "zoom-in";
+      item.addEventListener("click", () => {
+        const img = item.querySelector("img");
+        if (img) open(img.src, img.alt);
+      });
+    });
+
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
+
+    document.getElementById("lightbox-close")?.addEventListener("click", close);
+  }
+
+  document.addEventListener("astro:page-load", initLightbox);
 </script>
 
 <Layout
   title={`${SITE.author.fullName} - Design works`}
   description="A collection of some of my design works"
+  hideSoundToggle={true}
 >
+  <div
+    id="lightbox-overlay"
+    class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 opacity-0 pointer-events-none transition-opacity duration-300 p-4"
+  >
+    <button
+      id="lightbox-close"
+      class="absolute top-4 right-4 text-white/60 hover:text-white transition-colors text-sm border border-white/20 hover:border-white/50 rounded-lg px-3 py-1.5"
+    >
+      esc
+    </button>
+    <img
+      id="lightbox-img"
+      src=""
+      alt=""
+      class="max-w-full max-h-[85vh] rounded-xl object-contain shadow-2xl"
+    />
+    <p id="lightbox-alt" class="mt-4 text-white/40 text-xs"></p>
+  </div>
+
   <main class="w-full max-w-5xl mx-auto px-6 py-10 text-white">
     <a
       href="/"
       class="inline-block mb-8 text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border border-neutral-600 rounded-lg transition-colors"
-    >Back</a>
+      >Back</a
+    >
 
     <h1 class="text-4xl font-bold mb-2">Design works</h1>
     <p class="text-darkslate-300 text-sm mb-10">
-      Illustrations, logos, explorations and graphic work I've done over the years.
+      Illustrations, logos, explorations and graphic work I've done over the
+      years.
     </p>
 
     <div class="masonry">
-      {illustrations.map(({ src, alt }) => (
-        <div class="masonry-item">
-          <Image
-            src={src}
-            alt={alt}
-            class="w-full h-auto rounded-xl object-cover"
-            loading="eager"
-            decoding="auto"
-          />
-        </div>
-      ))}
+      {
+        illustrationsAll.map(({ src, alt }) => (
+          <div class="masonry-item">
+            <Image
+              src={src}
+              alt={alt}
+              class="w-full h-auto rounded-xl object-cover"
+              loading="eager"
+              decoding="auto"
+            />
+          </div>
+        ))
+      }
     </div>
   </main>
 </Layout>
@@ -81,11 +115,15 @@ const illustrations = [
   }
 
   @media (min-width: 640px) {
-    .masonry { columns: 2; }
+    .masonry {
+      columns: 2;
+    }
   }
 
   @media (min-width: 1024px) {
-    .masonry { columns: 3; }
+    .masonry {
+      columns: 3;
+    }
   }
 
   .masonry-item {
@@ -98,7 +136,9 @@ const illustrations = [
 
   .masonry-item img {
     display: block;
-    transition: transform 0.4s ease, filter 0.4s ease;
+    transition:
+      transform 0.4s ease,
+      filter 0.4s ease;
   }
 
   .masonry-item:hover img {
