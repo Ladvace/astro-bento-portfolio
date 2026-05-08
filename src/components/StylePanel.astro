@@ -1,65 +1,125 @@
 ---
 const DOT = "w-1 h-1 rounded-full bg-current";
-const BTN = "style-btn relative w-full h-9 flex items-center justify-center hover:bg-white/5 transition-all duration-200 outline-none";
+const BTN =
+  "style-btn relative w-full h-9 flex items-center justify-center hover:bg-white/5 transition-all duration-200 outline-none";
 
 const styles = [
-  { id: "default",     label: "Default", n: 1 },
-  { id: "style-glass", label: "Glass",   n: 2 },
-  { id: "style-sharp", label: "Sharp",   n: 3 },
-  { id: "style-neon",  label: "Neon",    n: 4 },
-  { id: "style-paper", label: "Paper",   n: 5 },
+  { id: "default", label: "Default", n: 1 },
+  { id: "style-glass", label: "Glass", n: 2 },
+  { id: "style-sharp", label: "Sharp", n: 3 },
+  { id: "style-neon", label: "Neon", n: 4 },
+  { id: "style-paper", label: "Paper", n: 5 },
 ];
 ---
 
-<div class="style-btn-panel w-9 flex flex-col items-center rounded-lg bg-darkslate-500 border border-darkslate-400 shadow-lg overflow-hidden">
+<div
+  class="style-btn-panel w-9 flex flex-col items-center rounded-lg bg-darkslate-500 border border-darkslate-400 shadow-lg overflow-hidden"
+>
   <button
     id="style-panel-toggle"
     class="style-btn w-full h-9 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/5 transition-all duration-200 outline-none"
     aria-label="Toggle style panel"
     title="Styles"
   >
-    <svg id="style-icon-sliders" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/>
-      <circle cx="12" cy="12" r="3"/>
+    <svg
+      id="style-icon-sliders"
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"></path>
+      <circle cx="12" cy="12" r="3"></circle>
     </svg>
-    <svg id="style-icon-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="hidden">
-      <polyline points="6,9 12,15 18,9"/>
+    <svg
+      id="style-icon-arrow"
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="hidden"
+    >
+      <polyline points="6,9 12,15 18,9"></polyline>
     </svg>
   </button>
 
-  <div id="style-btn-list" class="w-full overflow-hidden" style="max-height:0;transition:max-height 250ms ease">
+  <div
+    id="style-btn-list"
+    class="w-full overflow-hidden"
+    style="max-height:0;transition:max-height 250ms ease"
+  >
     <div class="w-full h-px bg-white/5"></div>
-    {styles.map(({ id, label, n }) => (
-      <button class={BTN} data-style={id} aria-label={`${label} style`} title={label}>
-        {n === 1 && <span class={DOT} />}
-        {n === 2 && <span class="flex gap-1"><span class={DOT} /><span class={DOT} /></span>}
-        {n === 3 && (
-          <span class="flex flex-col items-center gap-1">
-            <span class={DOT} />
-            <span class="flex gap-1"><span class={DOT} /><span class={DOT} /></span>
+    {
+      styles.map(({ id, label, n }) => (
+        <button
+          class={BTN}
+          data-style={id}
+          aria-label={`${label} style`}
+          title={label}
+        >
+          {n === 1 && <span class={DOT} />}
+          {n === 2 && (
+            <span class="flex gap-1">
+              <span class={DOT} />
+              <span class={DOT} />
+            </span>
+          )}
+          {n === 3 && (
+            <span class="flex flex-col items-center gap-1">
+              <span class={DOT} />
+              <span class="flex gap-1">
+                <span class={DOT} />
+                <span class={DOT} />
+              </span>
+            </span>
+          )}
+          {n === 4 && (
+            <span class="grid grid-cols-2 gap-1">
+              <span class={DOT} />
+              <span class={DOT} />
+              <span class={DOT} />
+              <span class={DOT} />
+            </span>
+          )}
+          {n === 5 && (
+            <span class="grid grid-cols-3 gap-0.5">
+              <span class={DOT} />
+              <span />
+              <span class={DOT} />
+              <span />
+              <span class={DOT} />
+              <span />
+              <span class={DOT} />
+              <span />
+              <span class={DOT} />
+            </span>
+          )}
+          <span class="absolute top-1 right-1.5 text-[7px] opacity-40 leading-none">
+            {n}
           </span>
-        )}
-        {n === 4 && (
-          <span class="grid grid-cols-2 gap-1">
-            <span class={DOT} /><span class={DOT} />
-            <span class={DOT} /><span class={DOT} />
-          </span>
-        )}
-        {n === 5 && (
-          <span class="grid grid-cols-3 gap-0.5">
-            <span class={DOT} /><span /><span class={DOT} />
-            <span /><span class={DOT} /><span />
-            <span class={DOT} /><span /><span class={DOT} />
-          </span>
-        )}
-        <span class="absolute top-1 right-1.5 text-[7px] opacity-40 leading-none">{n}</span>
-      </button>
-    ))}
+        </button>
+      ))
+    }
   </div>
 </div>
 
 <script>
-  const ALL_STYLES = ["style-glass", "style-sharp", "style-neon", "style-paper"];
+  const ALL_STYLES = [
+    "style-glass",
+    "style-sharp",
+    "style-neon",
+    "style-paper",
+  ];
 
   function playStyleSound() {
     if (localStorage.getItem("soundEnabled") === "false") return;
@@ -102,7 +162,8 @@ const styles = [
 
   document.addEventListener("astro:page-load", () => {
     const savedStyle = localStorage.getItem("portfolioStyle");
-    if (savedStyle && savedStyle !== "default") document.body.classList.add(savedStyle);
+    if (savedStyle && savedStyle !== "default")
+      document.body.classList.add(savedStyle);
 
     updateStyleBtns();
     setPanelOpen(localStorage.getItem("stylePanelOpen") === "true");
@@ -119,10 +180,13 @@ const styles = [
       });
     });
 
-    document.getElementById("style-panel-toggle")?.addEventListener("click", () => {
-      const list = document.getElementById("style-btn-list");
-      const isOpen = list?.style.maxHeight !== "0px" && list?.style.maxHeight !== "0";
-      setPanelOpen(!isOpen);
-    });
+    document
+      .getElementById("style-panel-toggle")
+      ?.addEventListener("click", () => {
+        const list = document.getElementById("style-btn-list");
+        const isOpen =
+          list?.style.maxHeight !== "0px" && list?.style.maxHeight !== "0";
+        setPanelOpen(!isOpen);
+      });
   });
 </script>

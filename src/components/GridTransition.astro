@@ -44,7 +44,12 @@
     );
     if (theme && theme !== "default") document.body.classList.add(theme);
     const portfolioStyle = localStorage.getItem("portfolioStyle");
-    document.body.classList.remove("style-glass", "style-sharp", "style-neon", "style-paper");
+    document.body.classList.remove(
+      "style-glass",
+      "style-sharp",
+      "style-neon",
+      "style-paper",
+    );
     if (portfolioStyle && portfolioStyle !== "default")
       document.body.classList.add(portfolioStyle);
     const color = getComputedStyle(document.body)

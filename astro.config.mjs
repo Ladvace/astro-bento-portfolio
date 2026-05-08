@@ -71,6 +71,10 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [remarkReadingTime],
   },
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   output: "server",
   adapter: netlify({ middlewareMode: "edge" }),
   vite: {
