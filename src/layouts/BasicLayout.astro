@@ -4,6 +4,7 @@ import { ClientRouter } from "astro:transitions";
 import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
 import GridTransition from "../components/GridTransition.astro";
+import StylePanel from "../components/StylePanel.astro";
 
 interface Props {
   title: string;
@@ -206,12 +207,14 @@ const schema =
     <slot />
     {
       !hideSoundToggle && (
-        <button
-          id="sound-toggle"
-          aria-label="Toggle sound"
-          title="Toggle sound"
-          class="fixed bottom-4 right-4 md:bottom-6 z-50 w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
-        >
+        <div class="fixed bottom-4 right-4 md:bottom-6 z-50 flex flex-col items-center gap-2">
+          <StylePanel />
+          <button
+            id="sound-toggle"
+            aria-label="Toggle sound"
+            title="Toggle sound"
+            class="w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+          >
           <svg
             id="sound-icon-on"
             xmlns="http://www.w3.org/2000/svg"
@@ -246,6 +249,7 @@ const schema =
             <line x1="17" y1="9" x2="23" y2="15" />
           </svg>
         </button>
+        </div>
       )
     }
   </body>

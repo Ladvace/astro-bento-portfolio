@@ -24,13 +24,13 @@ import { SITE } from "../site-config";
     cellSize: number,
     cellStyle: string,
   ) {
-    const cols = Math.ceil(container.clientWidth / cellSize) + 1;
-    const rows = Math.ceil(container.clientHeight / cellSize) + 1;
+    const cols = Math.floor(container.clientWidth / cellSize);
+    const rows = Math.floor(container.clientHeight / cellSize);
     const total = cols * rows;
     Object.assign(container.style, {
       display: "grid",
-      gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
-      gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
+      gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      gridTemplateRows: `repeat(${rows}, 1fr)`,
     });
     container.innerHTML = "";
     for (let i = 0; i < total; i++) {

@@ -72,6 +72,317 @@
   --primary-900: #4a148c;
 }
 
+/* ── Glass style ─────────────────────────────────────────── */
+.style-glass {
+  background: #060a12 !important;
+}
+
+.style-glass::before {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 50% -10%,
+      color-mix(in srgb, var(--primary-500) 18%, transparent) 0%,
+      transparent 70%
+    ),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary-500) 7%, transparent) 1px, transparent 1px) center / 80px 80px,
+    linear-gradient(color-mix(in srgb, var(--primary-500) 7%, transparent) 1px, transparent 1px) center / 80px 80px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+  opacity: 1 !important;
+}
+
+.style-glass .card {
+  background: rgba(12, 20, 40, 0.4) !important;
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-color: color-mix(in srgb, var(--primary-500) 14%, transparent) !important;
+  border-radius: 16px !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.style-glass .card:hover {
+  border-color: color-mix(in srgb, var(--primary-500) 50%, transparent) !important;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 0 1px color-mix(in srgb, var(--primary-500) 20%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.style-glass .card * {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif !important;
+}
+
+.style-glass #sound-toggle,
+.style-glass .style-btn-panel {
+  background: rgba(12, 20, 40, 0.5) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-color: color-mix(in srgb, var(--primary-500) 14%, transparent) !important;
+  border-radius: 16px !important;
+}
+
+.style-glass .card button:not(.theme-btn) {
+  background: rgba(12, 20, 40, 0.5) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: color-mix(in srgb, var(--primary-500) 22%, transparent) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+  color: #fff !important;
+}
+.style-glass .card button:not(.theme-btn):hover { border-color: color-mix(in srgb, var(--primary-500) 55%, transparent) !important; }
+
+/* ── Sharp / Brutalist style ──────────────────────────────── */
+.style-sharp {
+  background: #0a0a0a !important;
+}
+
+.style-sharp::before {
+  --line-color: rgba(255, 255, 255, 0.06) !important;
+  --line-size: 40px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+.style-sharp .card {
+  border-radius: 0 !important;
+  background: #111111 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.06) !important;
+  transition:
+    box-shadow 100ms ease,
+    border-color 100ms ease !important;
+}
+
+.style-sharp .card:hover {
+  border-color: var(--primary-500) !important;
+  box-shadow: 4px 4px 0 var(--primary-500) !important;
+}
+
+.style-sharp .card *,
+.style-sharp .bg-neutral-900 {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+
+.style-sharp .rounded-full {
+  border-radius: 0 !important;
+  padding: 0 3px !important;
+}
+
+.style-sharp #sound-toggle,
+.style-sharp .style-btn-panel {
+  border-radius: 0 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.style-sharp .card button:not(.theme-btn) {
+  border-radius: 0 !important;
+  background: #111 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 3px 3px 0 rgba(255,255,255,0.06) !important;
+  color: #fff !important;
+}
+.style-sharp .card button:not(.theme-btn):hover {
+  border-color: var(--primary-500) !important;
+  box-shadow: 3px 3px 0 var(--primary-500) !important;
+}
+
+/* ── Neon / Cyberpunk style ───────────────────────────────── */
+.style-neon {
+  background: #020408 !important;
+}
+
+.style-neon::before {
+  --line-size: 60px !important;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 100%, color-mix(in srgb, var(--primary-500) 12%, transparent) 0%, transparent 70%),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary-500) 6%, transparent) 1px, transparent 1px) center / 60px 60px,
+    linear-gradient(color-mix(in srgb, var(--primary-500) 6%, transparent) 1px, transparent 1px) center / 60px 60px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+.style-neon .card {
+  background: #080c14 !important;
+  border: 1px solid color-mix(in srgb, var(--primary-500) 35%, transparent) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  transition: border-color 200ms ease !important;
+}
+
+.style-neon .card:hover {
+  border-color: var(--primary-500) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary-500) 15%, transparent) !important;
+}
+
+.style-neon .card * {
+  font-family: "Trebuchet MS", "Century Gothic", "Gill Sans", sans-serif !important;
+}
+
+.style-neon h1, .style-neon h2, .style-neon h3,
+.style-neon h4, .style-neon h5, .style-neon h6 {
+  color: var(--primary-400) !important;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--primary-500) 60%, transparent);
+}
+
+.style-neon #sound-toggle,
+.style-neon .style-btn-panel {
+  background: rgba(2, 4, 8, 0.9) !important;
+  border-color: var(--primary-500) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary-500) 30%, transparent) !important;
+}
+
+.style-neon .card button:not(.theme-btn) {
+  background: rgba(2, 4, 8, 0.9) !important;
+  border-color: var(--primary-500) !important;
+  border-radius: 4px !important;
+  color: var(--primary-400) !important;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--primary-500) 25%, transparent) !important;
+}
+.style-neon .card button:not(.theme-btn):hover {
+  box-shadow: 0 0 16px color-mix(in srgb, var(--primary-500) 50%, transparent), 0 0 32px color-mix(in srgb, var(--primary-500) 15%, transparent) !important;
+}
+
+/* ── Paper style ──────────────────────────────────────────── */
+.style-paper {
+  background: #f0ebe0 !important;
+}
+
+.style-paper::before {
+  --line-color: rgba(0, 0, 0, 0.06) !important;
+  --line-size: 32px !important;
+  background:
+    linear-gradient(90deg, var(--line-color) 1px, transparent 1px) center / 32px 32px,
+    linear-gradient(var(--line-color) 1px, transparent 1px) center / 32px 32px !important;
+  -webkit-mask: none !important;
+  mask: none !important;
+}
+
+.style-paper .card {
+  background: #faf7f2 !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 6px !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+  transition: box-shadow 150ms ease !important;
+}
+
+.style-paper .card:hover {
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+.style-paper .card * {
+  font-family: Georgia, "Times New Roman", Times, serif !important;
+}
+
+.style-paper h1, .style-paper h2, .style-paper h3,
+.style-paper h4, .style-paper h5, .style-paper h6,
+.style-paper p, .style-paper span, .style-paper time, .style-paper a {
+  color: #1a1208 !important;
+}
+
+.style-paper #sound-toggle,
+.style-paper .style-btn-panel {
+  background: #faf7f2 !important;
+  border-color: rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.style-paper #sound-toggle { color: #1a1208 !important; }
+.style-paper .style-btn { color: rgba(26, 18, 8, 0.4) !important; }
+.style-paper .style-btn:hover { color: rgba(26, 18, 8, 0.9) !important; }
+
+.style-paper .card button:not(.theme-btn) {
+  background: #faf7f2 !important;
+  border-color: rgba(26, 18, 8, 0.2) !important;
+  border-radius: 6px !important;
+  color: #1a1208 !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08) !important;
+  font-family: var(--font-satoshi), "Satoshi", sans-serif !important;
+}
+.style-paper .card button:not(.theme-btn):hover {
+  background: #f0ebe0 !important;
+  border-color: rgba(26, 18, 8, 0.35) !important;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12) !important;
+}
+
+/* ── Globe per-style filters ─────────────────────────────── */
+.style-glass .card svg   { filter: brightness(1.05) saturate(1.2); }
+.style-sharp .card svg   { filter: contrast(1.3) brightness(0.85) grayscale(0.25); }
+.style-neon .card svg    { filter: brightness(0.95) saturate(1.3) hue-rotate(-5deg); }
+.style-paper .card svg   { filter: sepia(1) brightness(1.8) contrast(0.75) saturate(0.35); }
+
+/* ── ThemeChangeCard active ring per-style ───────────────── */
+.style-glass .theme-btn.active {
+  box-shadow: 0 0 0 2px rgba(120,180,255,0.2), 0 0 0 3.5px rgba(120,180,255,0.7) !important;
+}
+.style-sharp .theme-btn.active {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.1), 0 0 0 3.5px white !important;
+}
+.style-neon .theme-btn.active {
+  box-shadow: 0 0 0 2px rgba(230,57,70,0.2), 0 0 0 3.5px var(--primary-500), 0 0 8px rgba(230,57,70,0.4) !important;
+}
+.style-paper .theme-btn.active {
+  box-shadow: 0 0 0 2px rgba(26,18,8,0.1), 0 0 0 3.5px rgba(26,18,8,0.5) !important;
+}
+
+/* ── Back button per-style overrides ──────────────────────── */
+.style-glass .bg-neutral-900 {
+  background: rgba(12, 20, 40, 0.5) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  color: #fff !important;
+  border-color: rgba(120, 180, 255, 0.18) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08) !important;
+}
+.style-glass .bg-neutral-900:hover {
+  background: rgba(12, 20, 40, 0.7) !important;
+  border-color: rgba(120, 180, 255, 0.35) !important;
+}
+
+.style-sharp .bg-neutral-900 {
+  background: #111 !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+  border-color: rgba(255,255,255,0.2) !important;
+  box-shadow: 4px 4px 0 rgba(255,255,255,0.06) !important;
+}
+.style-sharp .bg-neutral-900:hover {
+  border-color: var(--primary-500) !important;
+  box-shadow: 4px 4px 0 var(--primary-500) !important;
+}
+
+.style-neon .bg-neutral-900 {
+  background: rgba(2, 4, 8, 0.95) !important;
+  color: var(--primary-400) !important;
+  border-color: var(--primary-500) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 8px rgba(230, 57, 70, 0.3) !important;
+}
+.style-neon .bg-neutral-900:hover {
+  box-shadow: 0 0 16px rgba(230, 57, 70, 0.5) !important;
+}
+
+.style-paper .bg-neutral-900 {
+  background: #faf7f2 !important;
+  color: #1a1208 !important;
+  border-color: rgba(26, 18, 8, 0.2) !important;
+  border-radius: 6px !important;
+  box-shadow: 2px 2px 0 rgba(0,0,0,0.08) !important;
+  font-family: var(--font-satoshi), "Satoshi", sans-serif !important;
+}
+.style-paper .bg-neutral-900:hover {
+  background: #f0ebe0 !important;
+  border-color: rgba(26, 18, 8, 0.35) !important;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.12) !important;
+}
+
 html {
   overscroll-behavior: none;
 }
