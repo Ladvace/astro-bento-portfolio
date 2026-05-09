@@ -19,59 +19,92 @@ import { SITE } from "../site-config";
 </script>
 
 <script>
-  function setupGrid(
+  // --- Shared state ---
+  const CURSOR_TRAIL_LENGTH = 8;
+  const CURSOR_TRAIL_OPACITY = [0.8, 0.6, 0.45, 0.3, 0.2, 0.12, 0.07, 0.03];
+
+  let glowInterval: ReturnType<typeof setInterval> | null = null;
+  let guestbookRafId: number | null = null;
+  let blogRafId: number | null = null;
+  let playgroundObserver: ResizeObserver | null = null;
+  let guestbookObserver: ResizeObserver | null = null;
+
+  // --- Helpers ---
+  function buildFixedGrid(
     container: HTMLElement,
     cellSize: number,
     cellStyle: string,
-    stretch = false,
+    extraRows = 0,
   ) {
-    const cols = Math.floor(container.clientWidth / cellSize);
-    const actualSize = stretch ? container.clientWidth / cols : cellSize;
-    const rows = Math.floor(container.clientHeight / actualSize);
-    const total = cols * rows;
+    const cols = Math.max(1, Math.floor(container.clientWidth / cellSize));
+    const rows = Math.max(1, Math.floor(container.clientHeight / cellSize)) + extraRows;
     Object.assign(container.style, {
       display: "grid",
-      gridTemplateColumns: stretch
-        ? `repeat(${cols}, 1fr)`
-        : `repeat(${cols}, ${cellSize}px)`,
-      gridTemplateRows: `repeat(${rows}, ${actualSize}px)`,
+      gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
+      gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
+      placeContent: "center",
     });
     container.innerHTML = "";
-    for (let i = 0; i < total; i++) {
+    for (let i = 0; i < cols * rows; i++) {
       const cell = document.createElement("div");
       cell.style.cssText = cellStyle;
       container.appendChild(cell);
     }
-    return { cols, rows, total };
+    return { cols, rows };
   }
 
-  const TRAIL_LEN = 8;
-  const TRAIL_OPACITY = [0.8, 0.6, 0.45, 0.3, 0.2, 0.12, 0.07, 0.03];
-  let glowInterval: ReturnType<typeof setInterval> | null = null;
-  let gbAnimId: number | null = null;
-  let blogAnimId: number | null = null;
-
-  function resetCell(c: HTMLElement) {
-    c.style.background = "";
-    c.style.opacity = "";
-    c.style.transition = "";
+  function clearCellStyle(cell: HTMLElement) {
+    cell.style.background = "";
+    cell.style.opacity = "";
+    cell.style.transition = "";
   }
 
+  // --- Playground: square cell grid with cursor trail ---
   function initPlaygroundGrid() {
-    const container = document.getElementById("playground-grid");
-    if (!container) return;
+    const el = document.getElementById("playground-grid");
+    if (!el) return;
+    const container = el as HTMLElement;
 
-    const { cols, total } = setupGrid(
-      container,
-      20,
-      "border:0.5px solid rgba(255,255,255,0.03);transition:background 0.4s,opacity 0.4s;",
-      true,
-    );
+    const TARGET_CELL_SIZE = 20;
+    let cols = 1;
+    let cellWidth = TARGET_CELL_SIZE;
+    let cellHeight = TARGET_CELL_SIZE;
+    let totalCells = 1;
 
+    function rebuild() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (!w || !h) return;
+      cols = Math.max(1, Math.round(w / TARGET_CELL_SIZE));
+      const rows = Math.max(1, Math.round(h / TARGET_CELL_SIZE));
+      cellWidth = w / cols;
+      cellHeight = h / rows;
+      totalCells = cols * rows;
+      Object.assign(container.style, {
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+      });
+      container.innerHTML = "";
+      for (let i = 0; i < totalCells; i++) {
+        const cell = document.createElement("div");
+        cell.style.cssText =
+          "border:0.5px solid rgba(255,255,255,0.03);transition:background 0.4s,opacity 0.4s;";
+        container.appendChild(cell);
+      }
+    }
+
+    rebuild();
+
+    if (playgroundObserver) playgroundObserver.disconnect();
+    playgroundObserver = new ResizeObserver(rebuild);
+    playgroundObserver.observe(container);
+
+    // Random glow pulses
     if (glowInterval) clearInterval(glowInterval);
     glowInterval = setInterval(() => {
       const cell = container.children[
-        Math.floor(Math.random() * total)
+        Math.floor(Math.random() * totalCells)
       ] as HTMLElement;
       if (!cell) return;
       cell.style.background = "var(--primary-500)";
@@ -79,154 +112,174 @@ import { SITE } from "../site-config";
       setTimeout(() => {
         cell.style.background = "";
         cell.style.opacity = "0.06";
-        setTimeout(() => {
-          cell.style.opacity = "";
-        }, 400);
+        setTimeout(() => { cell.style.opacity = ""; }, 400);
       }, 600);
     }, 250);
 
-    const cardEl = document
+    // Cursor trail
+    const card = document
       .querySelector<HTMLElement>('a[href="playground"]')
       ?.closest<HTMLElement>(".card");
-    let trail: number[] = [];
+    let trailIndices: number[] = [];
 
-    const applyTrail = () =>
-      trail.forEach((idx, i) => {
-        const cell = container.children[idx] as HTMLElement;
+    const paintTrail = () =>
+      trailIndices.forEach((cellIndex, trailPos) => {
+        const cell = container.children[cellIndex] as HTMLElement;
         if (!cell) return;
         cell.style.transition = "none";
         cell.style.background = "var(--primary-500)";
-        cell.style.opacity = String(TRAIL_OPACITY[i] ?? 0);
+        cell.style.opacity = String(CURSOR_TRAIL_OPACITY[trailPos] ?? 0);
       });
 
-    const clearTrail = () => {
-      trail.forEach((idx) => {
-        const cell = container.children[idx] as HTMLElement;
+    const fadeAndClearTrail = () => {
+      trailIndices.forEach((cellIndex) => {
+        const cell = container.children[cellIndex] as HTMLElement;
         if (cell) {
           cell.style.transition = "opacity 0.1s";
           cell.style.opacity = "0";
         }
       });
       setTimeout(() => {
-        trail.forEach((idx) => {
-          const c = container.children[idx] as HTMLElement;
-          if (c) resetCell(c);
+        trailIndices.forEach((cellIndex) => {
+          const cell = container.children[cellIndex] as HTMLElement;
+          if (cell) clearCellStyle(cell);
         });
-        trail = [];
+        trailIndices = [];
       }, 100);
     };
 
-    cardEl?.addEventListener("mousemove", (e: MouseEvent) => {
+    card?.addEventListener("mousemove", (e: MouseEvent) => {
       if (!window.matchMedia("(pointer: fine)").matches) return;
       const rect = container.getBoundingClientRect();
-      const idx =
-        Math.floor((e.clientY - rect.top) / 20) * cols +
-        Math.floor((e.clientX - rect.left) / 20);
-      if (idx === trail[0] || idx < 0 || idx >= total) return;
-      trail = [idx, ...trail.filter((i) => i !== idx)];
-      if (trail.length > TRAIL_LEN) {
-        trail.splice(TRAIL_LEN).forEach((i) => {
-          const c = container.children[i] as HTMLElement;
-          if (c) {
-            c.style.transition = "opacity 0.1s";
-            c.style.opacity = "0";
-            setTimeout(() => resetCell(c), 100);
+      const cellIndex =
+        Math.floor((e.clientY - rect.top) / cellHeight) * cols +
+        Math.floor((e.clientX - rect.left) / cellWidth);
+      if (cellIndex === trailIndices[0] || cellIndex < 0 || cellIndex >= totalCells) return;
+      trailIndices = [cellIndex, ...trailIndices.filter((i) => i !== cellIndex)];
+      if (trailIndices.length > CURSOR_TRAIL_LENGTH) {
+        trailIndices.splice(CURSOR_TRAIL_LENGTH).forEach((i) => {
+          const cell = container.children[i] as HTMLElement;
+          if (cell) {
+            cell.style.transition = "opacity 0.1s";
+            cell.style.opacity = "0";
+            setTimeout(() => clearCellStyle(cell), 100);
           }
         });
       }
-      applyTrail();
+      paintTrail();
     });
 
-    cardEl?.addEventListener("mouseleave", clearTrail);
+    card?.addEventListener("mouseleave", fadeAndClearTrail);
   }
 
+  // --- Guestbook: circle dot grid with wave animation ---
   function initGuestbookGrid() {
-    const container = document.getElementById("guestbook-grid");
-    if (!container) return;
+    const el = document.getElementById("guestbook-grid");
+    if (!el) return;
+    const container = el as HTMLElement;
 
-    const cols =
-      window.innerWidth < 768 ? 18 : window.innerWidth < 1024 ? 16 : 13;
-    const rows = 4;
-    const total = cols * rows;
-    Object.assign(container.style, {
-      display: "grid",
-      gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gridTemplateRows: `repeat(${rows}, 1fr)`,
-    });
-    container.innerHTML = "";
-    for (let i = 0; i < total; i++) {
-      const cell = document.createElement("div");
-      cell.style.cssText =
-        "border-radius:50%;margin:3px;box-sizing:border-box;background:var(--primary-500);";
-      container.appendChild(cell);
+    const TARGET_DOT_SIZE = 28;
+    const DOT_GAP = 6;
+    let cols = 1;
+    let rows = 1;
+
+    function rebuild() {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (!w || !h) return;
+      cols = Math.max(1, Math.round(w / TARGET_DOT_SIZE));
+      const cellWidth = w / cols;
+      rows = Math.max(1, Math.round(h / cellWidth));
+      const cellHeight = h / rows;
+      const dotSize = Math.min(cellWidth, cellHeight) - DOT_GAP;
+      Object.assign(container.style, {
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridTemplateRows: `repeat(${rows}, 1fr)`,
+      });
+      container.innerHTML = "";
+      for (let i = 0; i < cols * rows; i++) {
+        const cell = document.createElement("div");
+        cell.style.cssText = "display:flex;align-items:center;justify-content:center;";
+        const dot = document.createElement("div");
+        dot.style.cssText = `border-radius:50%;background:var(--primary-500);width:${dotSize}px;height:${dotSize}px;flex-shrink:0;`;
+        cell.appendChild(dot);
+        container.appendChild(cell);
+      }
     }
 
-    if (gbAnimId !== null) cancelAnimationFrame(gbAnimId);
+    rebuild();
 
-    const tick = (t: number) => {
-      const time = t * 0.001;
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const cell = container.children[y * cols + x] as HTMLElement;
+    if (guestbookObserver) guestbookObserver.disconnect();
+    guestbookObserver = new ResizeObserver(rebuild);
+    guestbookObserver.observe(container);
+
+    if (guestbookRafId !== null) cancelAnimationFrame(guestbookRafId);
+
+    const animate = (timestamp: number) => {
+      const time = timestamp * 0.001;
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const cell = container.children[row * cols + col] as HTMLElement;
           if (!cell) continue;
-          const w1 = Math.cos(time * 1.1 + x * 0.9 + y * 0.6);
-          const w2 = Math.cos(time * 0.7 - x * 0.5 + y * 1.1);
-          cell.style.opacity = (Math.max(0, (w1 + w2 + 2) / 4) * 0.45).toFixed(
-            3,
-          );
+          const wave1 = Math.cos(time * 1.1 + col * 0.9 + row * 0.6);
+          const wave2 = Math.cos(time * 0.7 - col * 0.5 + row * 1.1);
+          cell.style.opacity = (Math.max(0, (wave1 + wave2 + 2) / 4) * 0.45).toFixed(3);
         }
       }
-      gbAnimId = requestAnimationFrame(tick);
+      guestbookRafId = requestAnimationFrame(animate);
     };
 
-    gbAnimId = requestAnimationFrame(tick);
+    guestbookRafId = requestAnimationFrame(animate);
   }
 
-  function initBlogBg() {
+  // --- Blog: circle dot grid with ripple animation ---
+  function initBlogGrid() {
     const container = document.getElementById("blog-bg");
     if (!container) return;
 
-    const { cols, rows } = setupGrid(
+    const { cols, rows } = buildFixedGrid(
       container,
       18,
       "border-radius:50%;margin:4px;box-sizing:border-box;border:1px solid var(--primary-500);opacity:0;",
+      2,
     );
 
-    const cx = -cols * 0.3;
-    const cy = -rows * 0.3;
-    const maxDist = Math.sqrt(cx * cx + cy * cy);
+    // Ripple origin offset from top-left corner
+    const originCol = -cols * 0.3;
+    const originRow = -rows * 0.3;
+    const maxDist = Math.sqrt(originCol ** 2 + originRow ** 2);
 
-    if (blogAnimId !== null) cancelAnimationFrame(blogAnimId);
+    if (blogRafId !== null) cancelAnimationFrame(blogRafId);
 
-    const tick = (t: number) => {
-      const time = t * 0.0007;
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const cell = container.children[y * cols + x] as HTMLElement;
+    const animate = (timestamp: number) => {
+      const time = timestamp * 0.0007;
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const cell = container.children[row * cols + col] as HTMLElement;
           if (!cell) continue;
-          const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2) / maxDist;
-          cell.style.opacity = Math.max(
-            0,
-            Math.cos(time * 2.2 - dist * 7) * 0.35,
-          ).toFixed(3);
+          const dist = Math.sqrt((col - originCol) ** 2 + (row - originRow) ** 2) / maxDist;
+          cell.style.opacity = Math.max(0, Math.cos(time * 2.2 - dist * 7) * 0.35).toFixed(3);
         }
       }
-      blogAnimId = requestAnimationFrame(tick);
+      blogRafId = requestAnimationFrame(animate);
     };
 
-    blogAnimId = requestAnimationFrame(tick);
+    blogRafId = requestAnimationFrame(animate);
   }
 
   document.addEventListener("astro:page-load", () => {
     initPlaygroundGrid();
     initGuestbookGrid();
-    initBlogBg();
+    initBlogGrid();
   });
 
   document.addEventListener("astro:before-swap", () => {
     if (glowInterval) clearInterval(glowInterval);
-    if (gbAnimId !== null) cancelAnimationFrame(gbAnimId);
-    if (blogAnimId !== null) cancelAnimationFrame(blogAnimId);
+    if (guestbookRafId !== null) cancelAnimationFrame(guestbookRafId);
+    if (blogRafId !== null) cancelAnimationFrame(blogRafId);
+    if (playgroundObserver) { playgroundObserver.disconnect(); playgroundObserver = null; }
+    if (guestbookObserver) { guestbookObserver.disconnect(); guestbookObserver = null; }
   });
 </script>
 
