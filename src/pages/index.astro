@@ -37,7 +37,8 @@ import { SITE } from "../site-config";
     extraRows = 0,
   ) {
     const cols = Math.max(1, Math.floor(container.clientWidth / cellSize));
-    const rows = Math.max(1, Math.floor(container.clientHeight / cellSize)) + extraRows;
+    const rows =
+      Math.max(1, Math.floor(container.clientHeight / cellSize)) + extraRows;
     Object.assign(container.style, {
       display: "grid",
       gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
@@ -112,7 +113,9 @@ import { SITE } from "../site-config";
       setTimeout(() => {
         cell.style.background = "";
         cell.style.opacity = "0.06";
-        setTimeout(() => { cell.style.opacity = ""; }, 400);
+        setTimeout(() => {
+          cell.style.opacity = "";
+        }, 400);
       }, 600);
     }, 250);
 
@@ -154,8 +157,16 @@ import { SITE } from "../site-config";
       const cellIndex =
         Math.floor((e.clientY - rect.top) / cellHeight) * cols +
         Math.floor((e.clientX - rect.left) / cellWidth);
-      if (cellIndex === trailIndices[0] || cellIndex < 0 || cellIndex >= totalCells) return;
-      trailIndices = [cellIndex, ...trailIndices.filter((i) => i !== cellIndex)];
+      if (
+        cellIndex === trailIndices[0] ||
+        cellIndex < 0 ||
+        cellIndex >= totalCells
+      )
+        return;
+      trailIndices = [
+        cellIndex,
+        ...trailIndices.filter((i) => i !== cellIndex),
+      ];
       if (trailIndices.length > CURSOR_TRAIL_LENGTH) {
         trailIndices.splice(CURSOR_TRAIL_LENGTH).forEach((i) => {
           const cell = container.children[i] as HTMLElement;
@@ -180,6 +191,7 @@ import { SITE } from "../site-config";
 
     const TARGET_DOT_SIZE = 28;
     const DOT_GAP = 6;
+    const MIN_ROWS = 4;
     let cols = 1;
     let rows = 1;
 
@@ -189,7 +201,7 @@ import { SITE } from "../site-config";
       if (!w || !h) return;
       cols = Math.max(1, Math.round(w / TARGET_DOT_SIZE));
       const cellWidth = w / cols;
-      rows = Math.max(1, Math.round(h / cellWidth));
+      rows = Math.max(MIN_ROWS, Math.round(h / cellWidth));
       const cellHeight = h / rows;
       const dotSize = Math.min(cellWidth, cellHeight) - DOT_GAP;
       Object.assign(container.style, {
@@ -200,7 +212,8 @@ import { SITE } from "../site-config";
       container.innerHTML = "";
       for (let i = 0; i < cols * rows; i++) {
         const cell = document.createElement("div");
-        cell.style.cssText = "display:flex;align-items:center;justify-content:center;";
+        cell.style.cssText =
+          "display:flex;align-items:center;justify-content:center;";
         const dot = document.createElement("div");
         dot.style.cssText = `border-radius:50%;background:var(--primary-500);width:${dotSize}px;height:${dotSize}px;flex-shrink:0;`;
         cell.appendChild(dot);
@@ -224,7 +237,9 @@ import { SITE } from "../site-config";
           if (!cell) continue;
           const wave1 = Math.cos(time * 1.1 + col * 0.9 + row * 0.6);
           const wave2 = Math.cos(time * 0.7 - col * 0.5 + row * 1.1);
-          cell.style.opacity = (Math.max(0, (wave1 + wave2 + 2) / 4) * 0.45).toFixed(3);
+          cell.style.opacity = (
+            Math.max(0, (wave1 + wave2 + 2) / 4) * 0.45
+          ).toFixed(3);
         }
       }
       guestbookRafId = requestAnimationFrame(animate);
@@ -258,8 +273,13 @@ import { SITE } from "../site-config";
         for (let col = 0; col < cols; col++) {
           const cell = container.children[row * cols + col] as HTMLElement;
           if (!cell) continue;
-          const dist = Math.sqrt((col - originCol) ** 2 + (row - originRow) ** 2) / maxDist;
-          cell.style.opacity = Math.max(0, Math.cos(time * 2.2 - dist * 7) * 0.35).toFixed(3);
+          const dist =
+            Math.sqrt((col - originCol) ** 2 + (row - originRow) ** 2) /
+            maxDist;
+          cell.style.opacity = Math.max(
+            0,
+            Math.cos(time * 2.2 - dist * 7) * 0.35,
+          ).toFixed(3);
         }
       }
       blogRafId = requestAnimationFrame(animate);
@@ -278,8 +298,14 @@ import { SITE } from "../site-config";
     if (glowInterval) clearInterval(glowInterval);
     if (guestbookRafId !== null) cancelAnimationFrame(guestbookRafId);
     if (blogRafId !== null) cancelAnimationFrame(blogRafId);
-    if (playgroundObserver) { playgroundObserver.disconnect(); playgroundObserver = null; }
-    if (guestbookObserver) { guestbookObserver.disconnect(); guestbookObserver = null; }
+    if (playgroundObserver) {
+      playgroundObserver.disconnect();
+      playgroundObserver = null;
+    }
+    if (guestbookObserver) {
+      guestbookObserver.disconnect();
+      guestbookObserver = null;
+    }
   });
 </script>
 

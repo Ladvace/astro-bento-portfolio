@@ -166,7 +166,7 @@ const styles = [
       document.body.classList.add(savedStyle);
 
     updateStyleBtns();
-    setPanelOpen(localStorage.getItem("stylePanelOpen") === "true");
+    setPanelOpen(false);
 
     document.querySelectorAll<HTMLElement>(".style-btn").forEach((btn) => {
       btn.addEventListener("click", () => {

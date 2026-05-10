@@ -2,7 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import LoaderAnimation from "../components/LoaderAnimation.astro";
 import { SITE } from "../site-config";
-import { db, Guestbook as GuestbookTable, desc } from "astro:db";
+import { db, Guestbook as GuestbookTable, desc, count } from "astro:db";
+
+const ITEMS_PER_PAGE = 10;
 
 let formError: string | null = null;
 
@@ -29,24 +31,35 @@ if (Astro.request.method === "POST") {
   }
 }
 
-const entries = await db
+if (Astro.request.method === "GET") {
+  Astro.response.headers.set(
+    "Cache-Control",
+    "public, max-age=60, stale-while-revalidate=300",
+  );
+}
+
+const [{ total }] = await db.select({ total: count() }).from(GuestbookTable);
+const initialEntries = await db
   .select()
   .from(GuestbookTable)
-  .orderBy(desc(GuestbookTable.createdAt));
+  .orderBy(desc(GuestbookTable.createdAt))
+  .limit(ITEMS_PER_PAGE);
+
+const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
 ---
 
 <LoaderAnimation />
 
 <script
-  id="entries-data"
+  id="initial-data"
   is:inline
   type="application/json"
-  set:html={JSON.stringify(entries)}
+  set:html={JSON.stringify({ entries: initialEntries, total, totalPages })}
 />
 
 <script is:inline>
-  const ITEMS_PER_PAGE = 10;
   let currentPage = 1;
+  let totalPages = 1;
 
   function getInitials(name) {
     return name
@@ -86,16 +99,6 @@ const entries = await db
     }
   }
 
-  function readEntries() {
-    return JSON.parse(
-      document.getElementById("entries-data")?.textContent || "[]",
-    );
-  }
-
-  function totalPages() {
-    return Math.ceil(readEntries().length / ITEMS_PER_PAGE);
-  }
-
   function timeAgo(dateStr) {
     const diffDays = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
     if (diffDays === 0) return "today";
@@ -105,15 +108,11 @@ const entries = await db
     return `${Math.floor(diffDays / 365)}y ago`;
   }
 
-  function renderPage(page) {
+  function renderEntries(entries) {
     const container = document.getElementById("guestbook-entries");
-    const allEntries = readEntries();
-    const start = (page - 1) * ITEMS_PER_PAGE;
-    const pageEntries = allEntries.slice(start, start + ITEMS_PER_PAGE);
-
     if (!container) return;
 
-    if (pageEntries.length === 0) {
+    if (entries.length === 0) {
       container.innerHTML = `
         <div class="col-span-2 flex flex-col items-center gap-3 py-20">
           <svg class="w-10 h-10 text-darkslate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,9 +123,9 @@ const entries = await db
       return;
     }
 
-    container.innerHTML = pageEntries
+    container.innerHTML = entries
       .map((entry, i) => {
-        const seed = entry.id ?? start + i;
+        const seed = entry.id ?? i;
         const rotation = (((seed * 7) % 6) - 3) * 0.4;
         const initials = getInitials(entry.name);
         const colorClass = getAvatarColor(seed);
@@ -172,21 +171,37 @@ const entries = await db
   }
 
   function updatePagination() {
-    const tp = totalPages();
     const pageInfo = document.getElementById("page-info");
-    if (pageInfo) pageInfo.textContent = `${currentPage} / ${tp}`;
+    if (pageInfo) pageInfo.textContent = `${currentPage} / ${totalPages}`;
     setDisabled(document.getElementById("prev-button"), currentPage === 1);
     setDisabled(
       document.getElementById("next-button"),
-      currentPage === tp || tp === 0,
+      currentPage === totalPages || totalPages === 0,
     );
   }
 
-  function goToPage(page) {
-    const tp = totalPages();
-    if (page >= 1 && page <= tp) {
-      currentPage = page;
-      renderPage(currentPage);
+  async function goToPage(page) {
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+
+    if (page === 1) {
+      const initial = JSON.parse(
+        document.getElementById("initial-data")?.textContent || "{}",
+      );
+      renderEntries(initial.entries ?? []);
+      return;
+    }
+
+    const container = document.getElementById("guestbook-entries");
+    if (container) container.style.opacity = "0.5";
+
+    try {
+      const res = await fetch(`/api/guestbook?page=${page}`);
+      const data = await res.json();
+      if (container) container.style.opacity = "1";
+      renderEntries(data.entries ?? []);
+    } catch {
+      if (container) container.style.opacity = "1";
     }
   }
 
@@ -206,12 +221,15 @@ const entries = await db
   }
   window.toggleForm = toggleForm;
 
-  document.addEventListener("astro:page-load", setup);
-
   function setup() {
-    goToPage(1);
+    const initial = JSON.parse(
+      document.getElementById("initial-data")?.textContent || "{}",
+    );
+    totalPages = initial.totalPages ?? 1;
+    renderEntries(initial.entries ?? []);
   }
 
+  document.addEventListener("astro:page-load", setup);
   setup();
 </script>
 
@@ -318,16 +336,17 @@ const entries = await db
 
     <div class="w-full max-w-3xl">
       <div class="flex items-center justify-between mb-4">
-        <h2 id="entries-count" class="text-white text-sm font-semibold">
-          {entries.length} messages
-        </h2>
+        <h2 class="text-white text-sm font-semibold">{total} messages</h2>
       </div>
 
-      <div id="guestbook-entries" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div
+        id="guestbook-entries"
+        class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-opacity duration-150"
+      >
       </div>
 
       {
-        entries.length > 10 && (
+        totalPages > 1 && (
           <div class="flex items-center justify-between mt-8 pt-4 border-t border-darkslate-500/50">
             <button
               id="prev-button"
