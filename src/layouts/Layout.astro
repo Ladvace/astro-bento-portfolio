@@ -7,15 +7,17 @@ interface Props {
   page?: "travel";
   fullScreen?: string;
   hideSoundToggle?: boolean;
+  hideCal?: boolean;
 }
 
-const { title, description, hideSoundToggle } = Astro.props;
+const { title, description, hideSoundToggle, hideCal } = Astro.props;
 ---
 
 <BasicLayout
   description={description}
   title={title}
   hideSoundToggle={hideSoundToggle}
+  hideCal={hideCal}
 >
   <slot />
 </BasicLayout>

@@ -13,9 +13,10 @@ interface Props {
   slug?: string | undefined;
   pubDate?: string;
   hideSoundToggle?: boolean;
+  hideCal?: boolean;
 }
 
-const { title, description, page, pubDate, hideSoundToggle } = Astro.props;
+const { title, description, page, pubDate, hideSoundToggle, hideCal } = Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
 
 const schema =
@@ -128,7 +129,8 @@ const schema =
       name="twitter:image"
     />
 
-    <link href="https://cdn.fontshare.com" rel="preconnect" />
+    <link href="https://cdn.fontshare.com" rel="preconnect" crossorigin />
+    <link href="https://api.fontshare.com" rel="preconnect" crossorigin />
 
     <link href={Astro.url.href} rel="canonical" />
     <script
@@ -148,7 +150,7 @@ const schema =
       async></script>
 
     <!-- Cal element-click embed code begins -->
-    <script is:inline type="text/javascript">
+    {!hideCal && <script is:inline type="text/javascript">
       (function (C, A, L) {
         let p = function (a, ar) {
           a.q.push(ar);
@@ -188,17 +190,12 @@ const schema =
 
       Cal("init", calNamespace, { origin: calOrigin });
 
-      // Important: Please add the following attributes to the element that should trigger the calendar to open upon clicking.
-      // `data-cal-link="ladvace/15min"`
-      // data-cal-namespace="15min"
-      // `data-cal-config='{"layout":"month_view"}'`
-
       Cal.ns[calNamespace]("ui", {
         styles: { branding: { brandColor: "#000000" } },
         hideEventTypeDetails: false,
         layout: "month_view",
       });
-    </script>
+    </script>}
     <!-- Cal element-click embed code ends -->
   </head>
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">

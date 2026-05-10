@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import LoaderAnimation from "../components/LoaderAnimation.astro";
 import { SITE } from "../site-config";
-import { db, Guestbook as GuestbookTable } from "astro:db";
+import { db, Guestbook as GuestbookTable, desc } from "astro:db";
 
 let formError: string | null = null;
 
@@ -29,10 +29,10 @@ if (Astro.request.method === "POST") {
   }
 }
 
-const entries = (await db.select().from(GuestbookTable)).sort(
-  (a: { createdAt: Date }, b: { createdAt: Date }) =>
-    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-);
+const entries = await db
+  .select()
+  .from(GuestbookTable)
+  .orderBy(desc(GuestbookTable.createdAt));
 ---
 
 <LoaderAnimation />
@@ -218,6 +218,7 @@ const entries = (await db.select().from(GuestbookTable)).sort(
 <Layout
   title={`${SITE.author.fullName} - Guestbook`}
   description="Leave a message in my guestbook"
+  hideCal={true}
 >
   <div class="flex flex-col items-center px-4 pt-36 pb-24">
     <a

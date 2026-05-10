@@ -1,18 +1,18 @@
-import { db, Guestbook as GuestbookTable } from "astro:db";
+import { db, Guestbook as GuestbookTable, desc } from "astro:db";
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async () => {
   try {
-    const allEntries = await db.select().from(GuestbookTable);
-    const entries = allEntries.sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    );
+    const entries = await db
+      .select()
+      .from(GuestbookTable)
+      .orderBy(desc(GuestbookTable.createdAt));
 
     return new Response(JSON.stringify(entries), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
+        "Cache-Control": "public, max-age=60, stale-while-revalidate=300",
       },
     });
   } catch (error) {
