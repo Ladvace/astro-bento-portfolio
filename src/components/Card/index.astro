@@ -14,6 +14,7 @@ interface Props {
   padding?: string;
   bgColor?: string;
   arrowCorner?: boolean;
+  prefetch?: "hover" | "viewport" | "load" | "tap";
 }
 
 const {
@@ -27,6 +28,7 @@ const {
   padding,
   bgColor,
   arrowCorner,
+  prefetch,
 } = Astro.props;
 ---
 
@@ -43,6 +45,7 @@ const {
       <a
         class={`h-full w-full flex flex-col justify-start relative ${colorText || ""}`}
         href={href}
+        data-astro-prefetch={prefetch}
       >
         <Icon
           class={`h-5 w-5 absolute right-0 group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20 flex-shrink-0 ${arrowCorner ? "top-0" : "inset-y-0 my-auto"}`}
