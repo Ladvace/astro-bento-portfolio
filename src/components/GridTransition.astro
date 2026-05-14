@@ -85,6 +85,7 @@
 
   function cover(): Promise<void> {
     phase = Math.random() * Math.PI * 2;
+    applyTheme();
     return new Promise((resolve) => {
       overlay.style.pointerEvents = "all";
       gsap.killTweensOf(cells);
@@ -124,13 +125,32 @@
   gsap.set(cells, { opacity: 1 });
   reveal();
 
-  document.addEventListener("astro:before-preparation", (e) => {
-    const event = e as any;
-    const originalLoader = event.loader;
-    event.loader = () => Promise.all([cover(), originalLoader()]);
+  type NavigationLoader = () => Promise<unknown>;
+  type AstroBeforePreparationEvent = Event & {
+    sourceElement?: HTMLElement | null;
+    loader: NavigationLoader;
+  };
+
+  let skipNextTransition = false;
+
+  document.addEventListener("astro:before-preparation", (preparationEvent) => {
+    const navigationEvent = preparationEvent as AstroBeforePreparationEvent;
+    const triggeringElement =
+      navigationEvent.sourceElement?.closest<HTMLElement>("[data-skip-loader]");
+    if (triggeringElement) {
+      skipNextTransition = true;
+      return;
+    }
+    const originalLoader = navigationEvent.loader;
+    navigationEvent.loader = () => Promise.all([cover(), originalLoader()]);
   });
 
   document.addEventListener("astro:after-swap", () => {
+    if (skipNextTransition) {
+      skipNextTransition = false;
+      applyTheme();
+      return;
+    }
     reveal(0.35);
   });
 </script>

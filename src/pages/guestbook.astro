@@ -1,237 +1,35 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import LoaderAnimation from "../components/LoaderAnimation.astro";
 import { SITE } from "../site-config";
 import { db, Guestbook as GuestbookTable, desc, count } from "astro:db";
+import GuestbookCard from "../components/guestbook/GuestbookCard.astro";
+import GuestbookForm from "../components/guestbook/GuestbookForm.astro";
+import GuestbookPagination from "../components/guestbook/GuestbookPagination.astro";
+import { ENTRIES_PER_PAGE, type GuestbookEntry } from "../lib/guestbook";
 
-const ITEMS_PER_PAGE = 10;
+const requestedPage = Math.max(
+  1,
+  parseInt(Astro.url.searchParams.get("page") ?? "1", 10),
+);
 
-let formError: string | null = null;
+Astro.response.headers.set(
+  "Cache-Control",
+  "private, max-age=0, must-revalidate",
+);
 
-if (Astro.request.method === "POST") {
-  try {
-    const data = await Astro.request.formData();
-    const name = data.get("name")?.toString().trim();
-    const message = data.get("message")?.toString().trim();
-    const website = data.get("website")?.toString().trim();
+const [{ total: totalEntries }] = await db
+  .select({ total: count() })
+  .from(GuestbookTable);
 
-    if (!name || !message) {
-      formError = "Name and message are required";
-    } else {
-      await db.insert(GuestbookTable).values({
-        name: name.slice(0, 100),
-        message: message.slice(0, 1000),
-        website: website ? website.slice(0, 200) : undefined,
-        createdAt: new Date(),
-      });
-      return Astro.redirect(Astro.url.pathname);
-    }
-  } catch {
-    formError = "Failed to submit. Please try again.";
-  }
-}
-
-if (Astro.request.method === "GET") {
-  Astro.response.headers.set(
-    "Cache-Control",
-    "public, max-age=60, stale-while-revalidate=300",
-  );
-}
-
-const [{ total }] = await db.select({ total: count() }).from(GuestbookTable);
-const initialEntries = await db
+const entries: GuestbookEntry[] = await db
   .select()
   .from(GuestbookTable)
   .orderBy(desc(GuestbookTable.createdAt))
-  .limit(ITEMS_PER_PAGE);
+  .limit(ENTRIES_PER_PAGE)
+  .offset((requestedPage - 1) * ENTRIES_PER_PAGE);
 
-const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
 ---
-
-<LoaderAnimation />
-
-<script
-  id="initial-data"
-  is:inline
-  type="application/json"
-  set:html={JSON.stringify({ entries: initialEntries, total, totalPages })}
-/>
-
-<script is:inline>
-  let currentPage = 1;
-  let totalPages = 1;
-
-  function getInitials(name) {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  }
-
-  const avatarColors = [
-    "bg-violet-500",
-    "bg-sky-500",
-    "bg-emerald-500",
-    "bg-amber-500",
-    "bg-rose-500",
-    "bg-indigo-500",
-    "bg-teal-500",
-    "bg-orange-500",
-  ];
-
-  function getAvatarColor(id) {
-    return avatarColors[id % avatarColors.length];
-  }
-
-  function escapeHtml(text) {
-    const div = document.createElement("div");
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  function escapeUrl(url) {
-    try {
-      return new URL(url).toString();
-    } catch {
-      return "#";
-    }
-  }
-
-  function timeAgo(dateStr) {
-    const diffDays = Math.floor((Date.now() - new Date(dateStr)) / 86400000);
-    if (diffDays === 0) return "today";
-    if (diffDays === 1) return "yesterday";
-    if (diffDays < 30) return `${diffDays}d ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)}mo ago`;
-    return `${Math.floor(diffDays / 365)}y ago`;
-  }
-
-  function renderEntries(entries) {
-    const container = document.getElementById("guestbook-entries");
-    if (!container) return;
-
-    if (entries.length === 0) {
-      container.innerHTML = `
-        <div class="col-span-2 flex flex-col items-center gap-3 py-20">
-          <svg class="w-10 h-10 text-darkslate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-          <p class="text-darkslate-300 text-sm">No messages yet — be the first to leave one.</p>
-        </div>`;
-      return;
-    }
-
-    container.innerHTML = entries
-      .map((entry, i) => {
-        const seed = entry.id ?? i;
-        const rotation = (((seed * 7) % 6) - 3) * 0.4;
-        const initials = getInitials(entry.name);
-        const colorClass = getAvatarColor(seed);
-        const escapedName = escapeHtml(entry.name);
-        const escapedMessage = escapeHtml(entry.message);
-        const escapedWebsite = entry.website ? escapeUrl(entry.website) : null;
-        const ago = timeAgo(entry.createdAt);
-
-        const nameEl = escapedWebsite
-          ? `<a href="${escapedWebsite}" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-primary-400 transition-colors text-sm">${escapedName}</a>`
-          : `<span class="font-semibold text-white text-sm">${escapedName}</span>`;
-
-        return `
-        <div
-          class="guestbook-card bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3"
-          style="transform: rotate(${rotation}deg);"
-        >
-          <p class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap flex-1">${escapedMessage}</p>
-          <div class="flex items-center gap-2.5 pt-2 border-t border-darkslate-400/50">
-            <div class="flex-shrink-0 w-7 h-7 rounded-full ${colorClass} flex items-center justify-center text-white text-xs font-bold select-none">
-              ${initials}
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="flex items-baseline gap-1.5 flex-wrap">
-                ${nameEl}
-                <span class="text-darkslate-300 text-xs">${ago}</span>
-              </div>
-              ${escapedWebsite ? `<a href="${escapedWebsite}" target="_blank" rel="noopener noreferrer" class="text-xs text-darkslate-300 hover:text-primary-400 transition-colors truncate block max-w-[180px]">${escapedWebsite.replace(/^https?:\/\//, "")}</a>` : ""}
-            </div>
-          </div>
-        </div>`;
-      })
-      .join("");
-
-    updatePagination();
-  }
-
-  function setDisabled(btn, disabled) {
-    if (!btn) return;
-    btn.disabled = disabled;
-    btn.classList.toggle("opacity-30", disabled);
-    btn.classList.toggle("cursor-not-allowed", disabled);
-  }
-
-  function updatePagination() {
-    const pageInfo = document.getElementById("page-info");
-    if (pageInfo) pageInfo.textContent = `${currentPage} / ${totalPages}`;
-    setDisabled(document.getElementById("prev-button"), currentPage === 1);
-    setDisabled(
-      document.getElementById("next-button"),
-      currentPage === totalPages || totalPages === 0,
-    );
-  }
-
-  async function goToPage(page) {
-    if (page < 1 || page > totalPages) return;
-    currentPage = page;
-
-    if (page === 1) {
-      const initial = JSON.parse(
-        document.getElementById("initial-data")?.textContent || "{}",
-      );
-      renderEntries(initial.entries ?? []);
-      return;
-    }
-
-    const container = document.getElementById("guestbook-entries");
-    if (container) container.style.opacity = "0.5";
-
-    try {
-      const res = await fetch(`/api/guestbook?page=${page}`);
-      const data = await res.json();
-      if (container) container.style.opacity = "1";
-      renderEntries(data.entries ?? []);
-    } catch {
-      if (container) container.style.opacity = "1";
-    }
-  }
-
-  window.nextPage = () => goToPage(currentPage + 1);
-  window.prevPage = () => goToPage(currentPage - 1);
-
-  function setFormOpen(open) {
-    document.getElementById("form-content")?.classList.toggle("hidden", !open);
-    const icon = document.getElementById("toggle-icon");
-    if (icon) icon.style.transform = open ? "rotate(45deg)" : "rotate(0deg)";
-  }
-
-  function toggleForm() {
-    setFormOpen(
-      document.getElementById("form-content")?.classList.contains("hidden"),
-    );
-  }
-  window.toggleForm = toggleForm;
-
-  function setup() {
-    const initial = JSON.parse(
-      document.getElementById("initial-data")?.textContent || "{}",
-    );
-    totalPages = initial.totalPages ?? 1;
-    renderEntries(initial.entries ?? []);
-  }
-
-  document.addEventListener("astro:page-load", setup);
-  setup();
-</script>
 
 <Layout
   title={`${SITE.author.fullName} - Guestbook`}
@@ -241,131 +39,45 @@ const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
   <div class="flex flex-col items-center px-4 pt-36 pb-24">
     <a
       href="/"
-      class="fixed top-10 left-10 text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border border-neutral-700 rounded-lg z-50 text-sm transition-colors"
+      class="fixed top-10 left-10 text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border border-neutral-700 rounded-lg z-50 text-sm transition-colors"
       >Back</a
     >
 
-    <div class="w-full max-w-xl mb-12 text-center">
+    <header class="w-full max-w-xl mb-12 text-center">
       <h1 class="text-white text-3xl font-bold tracking-tight mb-3">
         Guestbook
       </h1>
       <p class="text-darkslate-300 text-sm leading-relaxed">
         Drop a note, say hi, or share your thoughts. I read every message.
       </p>
-    </div>
+    </header>
 
-    <div class="w-full max-w-xl mb-12">
-      <div
-        class="rounded-xl border border-darkslate-500 bg-darkslate-600/40 overflow-hidden"
-      >
-        <button
-          onclick="toggleForm()"
-          class="w-full flex items-center justify-between px-5 py-4 text-white hover:bg-darkslate-500/30 transition-colors"
-        >
-          <span class="text-sm font-medium">Leave a message</span>
-          <svg
-            id="toggle-icon"
-            class="w-4 h-4 text-darkslate-300 transition-transform duration-200"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 5v14M5 12h14"></path>
-          </svg>
-        </button>
+    <GuestbookForm class="w-full max-w-xl mb-12" />
 
-        <div id="form-content" class="hidden border-t border-darkslate-500">
-          <form method="POST" class="p-5 flex flex-col gap-3">
-            <div class="flex gap-3">
-              <label class="flex-1">
-                <span class="block text-xs text-darkslate-300 mb-1.5"
-                  >Name *</span
-                >
-                <input
-                  type="text"
-                  name="name"
-                  required
-                  maxlength="100"
-                  class="w-full px-3 py-2 bg-darkslate-700 border border-darkslate-500 rounded-lg text-white text-sm placeholder:text-darkslate-400 focus:outline-none focus:border-primary-500/60 transition-colors"
-                  placeholder="Your name"
-                />
-              </label>
-              <label class="flex-1">
-                <span class="block text-xs text-darkslate-300 mb-1.5"
-                  >Website</span
-                >
-                <input
-                  type="url"
-                  name="website"
-                  maxlength="200"
-                  class="w-full px-3 py-2 bg-darkslate-700 border border-darkslate-500 rounded-lg text-white text-sm placeholder:text-darkslate-400 focus:outline-none focus:border-primary-500/60 transition-colors"
-                  placeholder="https://..."
-                />
-              </label>
-            </div>
+    <section class="w-full max-w-3xl">
+      <h2 id="entries-count" class="text-white text-sm font-semibold mb-4">
+        {totalEntries} messages
+      </h2>
 
-            <label>
-              <span class="block text-xs text-darkslate-300 mb-1.5"
-                >Message *</span
-              >
-              <textarea
-                name="message"
-                required
-                maxlength="1000"
-                rows="3"
-                class="w-full px-3 py-2 bg-darkslate-700 border border-darkslate-500 rounded-lg text-white text-sm placeholder:text-darkslate-400 focus:outline-none focus:border-primary-500/60 resize-none transition-colors"
-                placeholder="Say something..."></textarea>
-            </label>
-
-            {formError && <p class="text-red-400 text-xs">{formError}</p>}
-
-            <button
-              type="submit"
-              class="self-end px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-colors"
+      <div id="entries" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {
+          entries.length === 0 ? (
+            <p
+              data-empty-state
+              class="col-span-2 text-center py-20 text-darkslate-300 text-sm"
             >
-              Send
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <div class="w-full max-w-3xl">
-      <div class="flex items-center justify-between mb-4">
-        <h2 class="text-white text-sm font-semibold">{total} messages</h2>
+              No messages yet — be the first to leave one.
+            </p>
+          ) : (
+            entries.map((entry) => <GuestbookCard entry={entry} />)
+          )
+        }
       </div>
 
-      <div
-        id="guestbook-entries"
-        class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-opacity duration-150"
-      >
-      </div>
-
-      {
-        totalPages > 1 && (
-          <div class="flex items-center justify-between mt-8 pt-4 border-t border-darkslate-500/50">
-            <button
-              id="prev-button"
-              onclick="prevPage()"
-              class="px-3 py-1.5 text-xs text-darkslate-200 bg-darkslate-600 hover:bg-darkslate-500 rounded-lg transition-colors"
-            >
-              ← Prev
-            </button>
-            <span id="page-info" class="text-xs text-darkslate-300" />
-            <button
-              id="next-button"
-              onclick="nextPage()"
-              class="px-3 py-1.5 text-xs text-darkslate-200 bg-darkslate-600 hover:bg-darkslate-500 rounded-lg transition-colors"
-            >
-              Next →
-            </button>
-          </div>
-        )
-      }
-    </div>
+      <GuestbookPagination
+        currentPage={requestedPage}
+        totalPages={totalPages}
+      />
+    </section>
   </div>
 </Layout>

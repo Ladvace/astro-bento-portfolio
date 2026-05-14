@@ -1,0 +1,51 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  currentPage: number;
+  totalPages: number;
+}
+
+const { currentPage, totalPages } = Astro.props;
+const hasPreviousPage = currentPage > 1;
+const hasNextPage = currentPage < totalPages;
+
+const linkClasses =
+  "inline-flex items-center gap-1.5 px-3 py-1.5 text-darkslate-200 bg-darkslate-600 hover:bg-darkslate-500 rounded-lg transition-colors";
+---
+
+{
+  totalPages > 1 && (
+    <nav class="flex items-center justify-between mt-8 pt-4 border-t border-darkslate-500/50 text-xs">
+      {hasPreviousPage ? (
+        <a
+          href={`?page=${currentPage - 1}`}
+          aria-label="Previous page"
+          data-skip-loader
+          class={linkClasses}
+        >
+          <Icon name="ri:arrow-left-line" class="w-3.5 h-3.5" />
+          Prev
+        </a>
+      ) : (
+        <span />
+      )}
+      <span class="text-darkslate-300">
+        {currentPage} / {totalPages}
+      </span>
+      {hasNextPage ? (
+        <a
+          href={`?page=${currentPage + 1}`}
+          aria-label="Next page"
+          data-skip-loader
+          class={linkClasses}
+        >
+          Next
+          <Icon name="ri:arrow-right-line" class="w-3.5 h-3.5" />
+        </a>
+      ) : (
+        <span />
+      )}
+    </nav>
+  )
+}

@@ -1,0 +1,231 @@
+---
+const inputClasses =
+  "w-full px-3 py-2 bg-darkslate-700 border border-darkslate-500 rounded-lg text-white text-sm placeholder:text-darkslate-400 focus:outline-none focus:border-primary-500/60 transition-colors";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<details
+  class:list={[
+    "group rounded-xl border border-darkslate-500 bg-darkslate-600/40 overflow-hidden",
+    className,
+  ]}
+>
+  <summary
+    class="flex items-center justify-between px-5 py-4 text-white hover:bg-darkslate-500/30 transition-colors cursor-pointer list-none"
+  >
+    <span class="text-sm font-medium">Leave a message</span>
+    <svg
+      class="w-4 h-4 text-darkslate-300 transition-transform duration-200 group-open:rotate-45"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M12 5v14M5 12h14"></path>
+    </svg>
+  </summary>
+
+  <form
+    id="guestbook-form"
+    class="p-5 flex flex-col gap-3 border-t border-darkslate-500"
+  >
+    <div class="flex gap-3">
+      <label class="flex-1">
+        <span class="block text-xs text-darkslate-300 mb-1.5">Name *</span>
+        <input
+          type="text"
+          name="name"
+          required
+          maxlength="100"
+          class={inputClasses}
+          placeholder="Your name"
+        />
+      </label>
+      <label class="flex-1">
+        <span class="block text-xs text-darkslate-300 mb-1.5">Website</span>
+        <input
+          type="url"
+          name="website"
+          maxlength="200"
+          class={inputClasses}
+          placeholder="https://..."
+        />
+      </label>
+    </div>
+
+    <label>
+      <span class="block text-xs text-darkslate-300 mb-1.5">Message *</span>
+      <textarea
+        name="message"
+        required
+        maxlength="1000"
+        rows="3"
+        class:list={[inputClasses, "resize-none"]}
+        placeholder="Say something..."></textarea>
+    </label>
+
+    <p id="form-error" class="text-red-400 text-xs hidden"></p>
+
+    <button
+      type="submit"
+      class="self-end px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      Send
+    </button>
+  </form>
+</details>
+
+<script>
+  import {
+    avatarColorForSeed,
+    getInitials,
+    rotationFromSeed,
+  } from "../../lib/guestbook";
+
+  type CreatedGuestbookEntry = {
+    id: number;
+    name: string;
+    message: string;
+    website: string | null;
+  };
+
+  type GuestbookErrorBody = {
+    error?: string;
+  };
+
+  type GuestbookSubmission = {
+    name: string;
+    message: string;
+    website: string | undefined;
+  };
+
+  const GENERIC_ERROR_MESSAGE = "Failed to submit. Please try again.";
+
+  const escapeHtml = (untrustedText: string): string => {
+    const placeholder = document.createElement("div");
+    placeholder.textContent = untrustedText;
+    return placeholder.innerHTML;
+  };
+
+  const buildNewEntryCardHtml = (entry: CreatedGuestbookEntry): string => {
+    const rotationDegrees = rotationFromSeed(entry.id);
+    const avatarColor = avatarColorForSeed(entry.id);
+    const avatarInitials = getInitials(entry.name);
+    const escapedName = escapeHtml(entry.name);
+    const nameMarkup = entry.website
+      ? `<a href="${escapeHtml(entry.website)}" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-primary-400 transition-colors text-sm">${escapedName}</a>`
+      : `<span class="font-semibold text-white text-sm">${escapedName}</span>`;
+
+    return `
+      <article class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3" style="transform: rotate(${rotationDegrees}deg);">
+        <p class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap flex-1">${escapeHtml(entry.message)}</p>
+        <footer class="flex items-center gap-2.5 pt-2 border-t border-darkslate-400/50">
+          <div class="flex-shrink-0 w-7 h-7 rounded-full ${avatarColor} flex items-center justify-center text-white text-xs font-bold select-none">${avatarInitials}</div>
+          <div class="min-w-0 flex-1 flex items-baseline gap-1.5 flex-wrap">
+            ${nameMarkup}
+            <span class="text-darkslate-300 text-xs">today</span>
+          </div>
+        </footer>
+      </article>`;
+  };
+
+  const readSubmission = (form: HTMLFormElement): GuestbookSubmission => {
+    const formData = new FormData(form);
+    const website = (formData.get("website") ?? "").toString().trim();
+    return {
+      name: (formData.get("name") ?? "").toString().trim(),
+      message: (formData.get("message") ?? "").toString().trim(),
+      website: website || undefined,
+    };
+  };
+
+  const prependEntryToGrid = (entry: CreatedGuestbookEntry): void => {
+    const entriesGrid = document.getElementById("entries");
+    if (!entriesGrid) return;
+    entriesGrid.querySelector("[data-empty-state]")?.remove();
+    entriesGrid.insertAdjacentHTML("afterbegin", buildNewEntryCardHtml(entry));
+  };
+
+  const incrementEntriesCount = (): void => {
+    const entriesCountHeading = document.getElementById("entries-count");
+    if (!entriesCountHeading) return;
+    const nextCount = parseInt(entriesCountHeading.textContent ?? "0", 10) + 1;
+    entriesCountHeading.textContent = `${nextCount} messages`;
+  };
+
+  function attachFormHandler(): void {
+    const form = document.getElementById(
+      "guestbook-form",
+    ) as HTMLFormElement | null;
+    if (!form || form.dataset.handlerAttached === "1") return;
+    form.dataset.handlerAttached = "1";
+
+    const errorElement = document.getElementById(
+      "form-error",
+    ) as HTMLElement | null;
+
+    const showError = (errorMessage: string | null): void => {
+      if (!errorElement) return;
+      errorElement.textContent = errorMessage ?? "";
+      errorElement.classList.toggle("hidden", !errorMessage);
+    };
+
+    const submitButton = form.querySelector(
+      "button[type=submit]",
+    ) as HTMLButtonElement;
+
+    const setSubmitting = (isSubmitting: boolean): void => {
+      submitButton.disabled = isSubmitting;
+      submitButton.textContent = isSubmitting ? "Sending..." : "Send";
+    };
+
+    form.addEventListener("submit", async (submitEvent) => {
+      submitEvent.preventDefault();
+      showError(null);
+
+      const submission = readSubmission(form);
+      if (!submission.name || !submission.message) {
+        showError("Name and message are required");
+        return;
+      }
+
+      setSubmitting(true);
+      try {
+        const response = await fetch("/api/guestbook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(submission),
+        });
+
+        if (!response.ok) {
+          const errorBody: GuestbookErrorBody = await response
+            .json()
+            .catch(() => ({}));
+          showError(errorBody.error ?? GENERIC_ERROR_MESSAGE);
+          return;
+        }
+
+        const createdEntry: CreatedGuestbookEntry = await response.json();
+        prependEntryToGrid(createdEntry);
+        incrementEntriesCount();
+
+        form.reset();
+        form.closest("details")?.removeAttribute("open");
+      } catch {
+        showError(GENERIC_ERROR_MESSAGE);
+      } finally {
+        setSubmitting(false);
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", attachFormHandler);
+</script>

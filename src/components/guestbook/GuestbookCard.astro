@@ -1,0 +1,59 @@
+---
+import {
+  avatarColorForSeed,
+  formatTimeAgo,
+  getInitials,
+  rotationFromSeed,
+  type GuestbookEntry,
+} from "../../lib/guestbook";
+
+interface Props {
+  entry: GuestbookEntry;
+}
+
+const { entry } = Astro.props;
+const rotationDegrees = rotationFromSeed(entry.id);
+const avatarColor = avatarColorForSeed(entry.id);
+const avatarInitials = getInitials(entry.name);
+const postedAgo = formatTimeAgo(entry.createdAt);
+---
+
+<article
+  class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3"
+  style={`transform: rotate(${rotationDegrees}deg);`}
+>
+  <p
+    class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap flex-1"
+  >
+    {entry.message}
+  </p>
+  <footer
+    class="flex items-center gap-2.5 pt-2 border-t border-darkslate-400/50"
+  >
+    <div
+      class:list={[
+        "flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold select-none",
+        avatarColor,
+      ]}
+    >
+      {avatarInitials}
+    </div>
+    <div class="min-w-0 flex-1 flex items-baseline gap-1.5 flex-wrap">
+      {
+        entry.website ? (
+          <a
+            href={entry.website}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-semibold text-white hover:text-primary-400 transition-colors text-sm"
+          >
+            {entry.name}
+          </a>
+        ) : (
+          <span class="font-semibold text-white text-sm">{entry.name}</span>
+        )
+      }
+      <span class="text-darkslate-300 text-xs">{postedAgo}</span>
+    </div>
+  </footer>
+</article>
