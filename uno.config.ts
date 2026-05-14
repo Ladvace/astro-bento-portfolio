@@ -5,11 +5,21 @@ export default defineConfig({
   content: {
     filesystem: [
       // Narrow scope to specific directories
-      "src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
-      "src/components/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
-      "src/pages/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}",
-      "src/layouts/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}}"
+      "src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+      "src/components/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+      "src/pages/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
+      "src/layouts/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}"
     ],  },
+  safelist: [
+    "bg-violet-500",
+    "bg-sky-500",
+    "bg-emerald-500",
+    "bg-amber-500",
+    "bg-rose-500",
+    "bg-indigo-500",
+    "bg-teal-500",
+    "bg-orange-500",
+  ],
   theme: {
     boxShadow: {
       custom: `2px 2px 0`,
