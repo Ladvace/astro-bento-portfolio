@@ -7,6 +7,7 @@
     z-index: 9999;
     pointer-events: none;
     display: grid;
+    overflow: hidden;
     background: #111111;
   }
 </style>
@@ -24,8 +25,8 @@
   function buildGrid() {
     gridCols = Math.ceil(window.innerWidth / CELL_SIZE) + 1;
     gridRows = Math.ceil(window.innerHeight / CELL_SIZE) + 1;
-    overlay.style.gridTemplateColumns = `repeat(${gridCols}, 1fr)`;
-    overlay.style.gridTemplateRows = `repeat(${gridRows}, 1fr)`;
+    overlay.style.gridTemplateColumns = `repeat(${gridCols}, ${CELL_SIZE}px)`;
+    overlay.style.gridTemplateRows = `repeat(${gridRows}, ${CELL_SIZE}px)`;
     overlay.innerHTML = "";
     cells = Array.from({ length: gridCols * gridRows }, () => {
       const cell = document.createElement("div");
