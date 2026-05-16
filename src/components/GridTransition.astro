@@ -15,7 +15,7 @@
 <script>
   import gsap from "gsap";
 
-  const CELL_SIZE = 50;
+  const TARGET_CELL_SIZE = 50;
   const overlay = document.getElementById("grid-transition") as HTMLElement;
   let cells: HTMLElement[] = [];
   let gridCols = 0;
@@ -23,10 +23,11 @@
   let phase = Math.random() * Math.PI * 2;
 
   function buildGrid() {
-    gridCols = Math.ceil(window.innerWidth / CELL_SIZE) + 1;
-    gridRows = Math.ceil(window.innerHeight / CELL_SIZE) + 1;
-    overlay.style.gridTemplateColumns = `repeat(${gridCols}, ${CELL_SIZE}px)`;
-    overlay.style.gridTemplateRows = `repeat(${gridRows}, ${CELL_SIZE}px)`;
+    gridCols = Math.max(1, Math.round(window.innerWidth / TARGET_CELL_SIZE));
+    const cellSize = window.innerWidth / gridCols;
+    gridRows = Math.ceil(window.innerHeight / cellSize) + 1;
+    overlay.style.gridTemplateColumns = `repeat(${gridCols}, ${cellSize}px)`;
+    overlay.style.gridTemplateRows = `repeat(${gridRows}, ${cellSize}px)`;
     overlay.innerHTML = "";
     cells = Array.from({ length: gridCols * gridRows }, () => {
       const cell = document.createElement("div");
@@ -125,6 +126,16 @@
   applyTheme();
   gsap.set(cells, { opacity: 1 });
   reveal();
+
+  let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+  window.addEventListener("resize", () => {
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      buildGrid();
+      applyTheme();
+      gsap.set(cells, { opacity: 0 });
+    }, 150);
+  });
 
   type NavigationLoader = () => Promise<unknown>;
   type AstroBeforePreparationEvent = Event & {

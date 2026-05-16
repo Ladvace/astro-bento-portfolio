@@ -12,7 +12,7 @@ import { SITE } from "../../site-config";
   description="Glowing stars effect"
   fullScreen="h-auto"
 >
-  <div class="flex flex-col px-4 pb-4 overscroll-none h-screen">
+  <div class="flex flex-col px-4 pb-4 overscroll-none h-screen w-full">
     <header class="sticky top-0 inset-x-0 z-60 p-4">
       <a
         href="/playground"
@@ -20,7 +20,7 @@ import { SITE } from "../../site-config";
         >Back</a
       >
     </header>
-    <div class="h-full flex justify-center items-center">
+    <div class="h-full w-full flex justify-center items-center overflow-hidden">
       <ArrayGlowComponent client:load />
     </div>
   </div>

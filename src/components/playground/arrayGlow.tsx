@@ -88,7 +88,7 @@ const ArrayGlow = () => {
       class="switchboard"
       style={{
         display: "grid",
-        gap: `${columns}px`,
+        gap: "clamp(6px, 2.5vw, 25px)",
         "grid-template-columns": `repeat(${columns}, 1fr)`,
       }}
     >

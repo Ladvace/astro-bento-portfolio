@@ -504,8 +504,9 @@ body::before {
 
 .switchboard {
   background-color: theme("colors.darkslate.900");
-  padding: 40px;
+  padding: clamp(12px, 4vw, 40px);
   border-radius: 20px;
+  max-width: 100%;
 }
 
 .switchboard .star {
