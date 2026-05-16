@@ -23,6 +23,9 @@ export default defineConfig({
       provider: fontProviders.local(),
       name: "CabinetGrotesk",
       cssVariable: "--font-cabinet-grotesk",
+      display: "swap",
+      fallbacks: ["system-ui", "sans-serif"],
+      optimizedFallbacks: true,
       options: {
         variants: [
           {
@@ -37,6 +40,9 @@ export default defineConfig({
       provider: fontProviders.local(),
       name: "Satoshi",
       cssVariable: "--font-satoshi",
+      display: "swap",
+      fallbacks: ["system-ui", "sans-serif"],
+      optimizedFallbacks: true,
       options: {
         variants: [
           {

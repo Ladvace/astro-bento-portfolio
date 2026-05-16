@@ -367,10 +367,10 @@ import { SITE } from "../site-config";
     >
       <div slot="background" class="absolute inset-0 -z-10">
         <div class="hidden md:block h-full w-full">
-          <Globe client:media="(min-width: 768px)" />
+          <Globe client:visible />
         </div>
         <div class="block md:hidden h-full w-full">
-          <Globe client:media="(max-width: 768px)" isStatic={true} />
+          <Globe client:visible isStatic={true} />
         </div>
       </div>
       <span class="text-xs text-white/60"
