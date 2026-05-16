@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import LoaderAnimation from "../../components/LoaderAnimation.astro";
+import BackLink from "../../components/BackLink.astro";
 import Scroll1Component from "../../components/playground/scroll-1/scroll-1.svelte";
 import { SITE } from "../../site-config";
 ---
@@ -14,11 +15,7 @@ import { SITE } from "../../site-config";
 >
   <div class="flex flex-col px-4 pb-4 overscroll-none">
     <header class="sticky top-0 inset-x-0 z-60 p-4">
-      <a
-        href="/playground"
-        class="text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
-        >Back</a
-      >
+      <BackLink />
     </header>
     <div>
       <Scroll1Component client:load />

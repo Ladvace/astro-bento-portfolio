@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import LoaderAnimation from "../../components/LoaderAnimation.astro";
+import BackLink from "../../components/BackLink.astro";
 import { WIPE_VARIANT_LIST } from "../../lib/constants-wipe";
 import { SITE } from "../../site-config";
 
@@ -16,11 +17,7 @@ const defaultVariant = WIPE_VARIANT_LIST[0];
 >
   <div class="morph-wipe-page w-full self-stretch">
     <header class="morph-wipe-header">
-      <a
-        href="/playground"
-        class="text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border border-solid border-neutral-600 rounded-lg"
-        >Back</a
-      >
+      <BackLink />
     </header>
 
     <p class="hint">

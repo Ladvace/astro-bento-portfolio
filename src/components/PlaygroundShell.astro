@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+import LoaderAnimation from "./LoaderAnimation.astro";
+import BackLink from "./BackLink.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Use min-h-screen for scrollable pages; default h-screen pins to viewport. */
+  scrollable?: boolean;
+  /** Overlay the Back link absolutely (for full-bleed demos like sliding-images). */
+  floatingBack?: boolean;
+}
+
+const {
+  title,
+  description,
+  scrollable = false,
+  floatingBack = false,
+} = Astro.props;
+
+const heightClass = scrollable ? "min-h-screen" : "h-screen";
+---
+
+<LoaderAnimation />
+
+<Layout title={title} description={description}>
+  <div
+    class:list={[
+      "relative flex flex-col w-full p-4 overscroll-none",
+      heightClass,
+    ]}
+  >
+    {
+      floatingBack ? (
+        <BackLink class="absolute left-4 top-4 z-20" />
+      ) : (
+        <BackLink />
+      )
+    }
+    <div class="flex-1 w-full flex justify-center items-center overflow-hidden">
+      <slot />
+    </div>
+  </div>
+</Layout>

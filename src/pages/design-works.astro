@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import LoaderAnimation from "../components/LoaderAnimation.astro";
+import BackLink from "../components/BackLink.astro";
 import { illustrationsAll } from "../lib/illustrations";
 import { SITE } from "../site-config";
 ---
@@ -78,11 +79,7 @@ import { SITE } from "../site-config";
   </div>
 
   <main class="w-full max-w-5xl mx-auto px-6 py-10 text-white">
-    <a
-      href="/"
-      class="inline-block mb-8 text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border border-neutral-600 rounded-lg transition-colors"
-      >Back</a
-    >
+    <BackLink href="/" class="mb-8" />
 
     <h1 class="text-4xl font-bold mb-2">Design works</h1>
     <p class="text-darkslate-300 text-sm mb-10">

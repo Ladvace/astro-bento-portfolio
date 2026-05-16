@@ -392,10 +392,7 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
         }
         const p0 = projection([d.lon, d.lat]);
         const pE = projection([d.lon + ORIENT_EPS_DEG, d.lat]);
-        const pS = projection([
-          d.lon,
-          Math.max(-89, d.lat - ORIENT_EPS_DEG),
-        ]);
+        const pS = projection([d.lon, Math.max(-89, d.lat - ORIENT_EPS_DEG)]);
         if (!p0 || !pE || !pS) {
           el.style.display = "none";
           return;
@@ -448,7 +445,6 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
       .style("stroke", COUNTRY_STROKE)
       .style("stroke-width", 0.3)
       .style("opacity", 0.8);
-
 
     // --- hover (cartouche-style tooltip) -----------------------------
     let isPaused = false;

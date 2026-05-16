@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import BackLink from "../components/BackLink.astro";
 import { SITE } from "../site-config";
 import { db, Guestbook as GuestbookTable, desc, count } from "astro:db";
 import GuestbookCard from "../components/guestbook/GuestbookCard.astro";
@@ -37,11 +38,7 @@ const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
   hideCal={true}
 >
   <div class="flex flex-col items-center px-4 pt-36 pb-24">
-    <a
-      href="/"
-      class="fixed top-10 left-10 text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 border border-neutral-700 rounded-lg z-50 text-sm transition-colors"
-      >Back</a
-    >
+    <BackLink href="/" class="fixed top-10 left-10 z-50 text-sm" />
 
     <header class="w-full max-w-xl mb-12 text-center">
       <h1 class="text-white text-3xl font-bold tracking-tight mb-3">

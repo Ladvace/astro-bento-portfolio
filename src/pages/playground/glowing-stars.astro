@@ -1,27 +1,12 @@
 ---
-import Layout from "../../layouts/Layout.astro";
-import LoaderAnimation from "../../components/LoaderAnimation.astro";
+import PlaygroundShell from "../../components/PlaygroundShell.astro";
 import ArrayGlowComponent from "../../components/playground/arrayGlow";
 import { SITE } from "../../site-config";
 ---
 
-<LoaderAnimation />
-
-<Layout
+<PlaygroundShell
   title={`${SITE.author.fullName} - Playground - Glowing stars effect`}
   description="Glowing stars effect"
-  fullScreen="h-auto"
 >
-  <div class="flex flex-col px-4 pb-4 overscroll-none h-screen w-full">
-    <header class="sticky top-0 inset-x-0 z-60 p-4">
-      <a
-        href="/playground"
-        class="text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
-        >Back</a
-      >
-    </header>
-    <div class="h-full w-full flex justify-center items-center overflow-hidden">
-      <ArrayGlowComponent client:load />
-    </div>
-  </div>
-</Layout>
+  <ArrayGlowComponent client:load />
+</PlaygroundShell>

@@ -1,0 +1,23 @@
+---
+interface Props {
+  href?: string;
+  class?: string;
+  label?: string;
+}
+
+const {
+  href = "/playground",
+  class: extraClass = "",
+  label = "Back",
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class:list={[
+    "text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg transition-colors",
+    extraClass,
+  ]}
+>
+  {label}
+</a>

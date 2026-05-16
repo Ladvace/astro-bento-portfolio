@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import LoaderAnimation from "../../components/LoaderAnimation.astro";
+import BackLink from "../../components/BackLink.astro";
 import { SITE } from "../../site-config";
 ---
 
@@ -13,10 +14,7 @@ import { SITE } from "../../site-config";
   <main
     class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
   >
-    <a
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"
-      href="/">Back</a
-    >
+    <BackLink href="/" class="mb-8" />
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
     <p class="text-darkslate-300 text-sm">
       Nothing to say right now... check back later (or don't, no pressure 🙃)

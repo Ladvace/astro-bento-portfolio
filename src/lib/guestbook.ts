@@ -42,4 +42,7 @@ export const rotationFromSeed = (seed: number): number =>
   (((seed * 7) % 6) - 3) * 0.4;
 
 export const avatarColorForSeed = (seed: number): string =>
-  AVATAR_COLORS[((seed % AVATAR_COLORS.length) + AVATAR_COLORS.length) % AVATAR_COLORS.length];
+  AVATAR_COLORS[
+    ((seed % AVATAR_COLORS.length) + AVATAR_COLORS.length) %
+      AVATAR_COLORS.length
+  ];

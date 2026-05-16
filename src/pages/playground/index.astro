@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import LoaderAnimation from "../../components/LoaderAnimation.astro";
+import BackLink from "../../components/BackLink.astro";
 import Card from "../../components/Card/index.astro";
 import { SITE } from "../../site-config";
 
@@ -68,11 +69,7 @@ const projects = [
   <main
     class="w-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8 text-white"
   >
-    <a
-      href="/"
-      class="text-white bg-neutral-900 hover:bg-neutral-800 px-4 py-2 mb-8 border-1 border-solid border-neutral-600 rounded-lg"
-      >Back</a
-    >
+    <BackLink href="/" class="mb-8" />
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Playground</h1>
     <div class="grid grid-cols-2 gap-4 w-full">
       {
