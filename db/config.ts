@@ -6,6 +6,8 @@ const Guestbook = defineTable({
     name: column.text(),
     message: column.text(),
     website: column.text({ optional: true }),
+    parentId: column.number({ optional: true, deprecated: true }),
+    heartCount: column.number({ optional: true }),
     createdAt: column.date(),
   },
 });

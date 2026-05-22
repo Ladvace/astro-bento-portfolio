@@ -88,6 +88,7 @@ const { class: className } = Astro.props;
     avatarColorForSeed,
     getInitials,
     rotationFromSeed,
+    PIXEL_HEART_SVG,
   } from "../../lib/guestbook";
 
   type CreatedGuestbookEntry = {
@@ -115,6 +116,9 @@ const { class: className } = Astro.props;
     return placeholder.innerHTML;
   };
 
+  const buildHeartButtonHtml = (): string =>
+    `<button type="button" data-heart-button data-heart-count="0" aria-label="Send love" title="Send love" class="heart-btn flex items-center gap-1 px-2 py-1 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-xs">${PIXEL_HEART_SVG}<span class="heart-count tabular-nums">0</span></button>`;
+
   const buildNewEntryCardHtml = (entry: CreatedGuestbookEntry): string => {
     const rotationDegrees = rotationFromSeed(entry.id);
     const avatarColor = avatarColorForSeed(entry.id);
@@ -125,7 +129,7 @@ const { class: className } = Astro.props;
       : `<span class="font-semibold text-white text-sm">${escapedName}</span>`;
 
     return `
-      <article class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3" style="transform: rotate(${rotationDegrees}deg);">
+      <article data-entry-id="${entry.id}" class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3" style="transform: rotate(${rotationDegrees}deg);">
         <p class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap flex-1">${escapeHtml(entry.message)}</p>
         <footer class="flex items-center gap-2.5 pt-2 border-t border-darkslate-400/50">
           <div class="flex-shrink-0 w-7 h-7 rounded-full ${avatarColor} flex items-center justify-center text-white text-xs font-bold select-none">${avatarInitials}</div>
@@ -133,6 +137,7 @@ const { class: className } = Astro.props;
             ${nameMarkup}
             <span class="text-darkslate-300 text-xs">today</span>
           </div>
+          ${buildHeartButtonHtml()}
         </footer>
       </article>`;
   };

@@ -4,6 +4,7 @@ import {
   formatTimeAgo,
   getInitials,
   rotationFromSeed,
+  PIXEL_HEART_SVG,
   type GuestbookEntry,
 } from "../../lib/guestbook";
 
@@ -16,9 +17,11 @@ const rotationDegrees = rotationFromSeed(entry.id);
 const avatarColor = avatarColorForSeed(entry.id);
 const avatarInitials = getInitials(entry.name);
 const postedAgo = formatTimeAgo(entry.createdAt);
+const heartCount = entry.heartCount ?? 0;
 ---
 
 <article
+  data-entry-id={entry.id}
   class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3"
   style={`transform: rotate(${rotationDegrees}deg);`}
 >
@@ -55,5 +58,179 @@ const postedAgo = formatTimeAgo(entry.createdAt);
       }
       <span class="text-darkslate-300 text-xs">{postedAgo}</span>
     </div>
+    <button
+      type="button"
+      data-heart-button
+      data-heart-count={heartCount}
+      aria-label="Send love"
+      title="Send love"
+      class="heart-btn flex items-center gap-1 px-2 py-1 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-xs"
+    >
+      <Fragment set:html={PIXEL_HEART_SVG} />
+      <span class="heart-count tabular-nums">{heartCount}</span>
+    </button>
   </footer>
 </article>
+
+<style is:global>
+  .heart-svg {
+    display: inline-block;
+    transform-origin: 50% 60%;
+  }
+  .heart-svg rect {
+    fill: currentColor;
+    transition: fill 200ms ease;
+  }
+  .heart-btn.is-active {
+    color: #ef4444;
+  }
+  .heart-btn.is-firing .heart-svg {
+    animation: heart-pulse 0.6s ease-in-out;
+  }
+  @keyframes heart-pulse {
+    0% {
+      transform: scale(1);
+    }
+    20% {
+      transform: scale(1.6);
+    }
+    40% {
+      transform: scale(1);
+    }
+    60% {
+      transform: scale(1.35);
+    }
+    80% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = "guestbookHearts";
+
+  const readHearted = (): string[] => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw) as unknown;
+      return Array.isArray(parsed) ? (parsed as string[]) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const writeHearted = (ids: string[]): void => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const playHeartbeat = (): void => {
+    if (localStorage.getItem("soundEnabled") === "false") return;
+    try {
+      const ctx = new AudioContext();
+      const pulse = (delay: number): void => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 80;
+        const t = ctx.currentTime + delay;
+        gain.gain.setValueAtTime(0.18, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+        osc.start(t);
+        osc.stop(t + 0.12);
+      };
+      pulse(0);
+      pulse(0.18);
+    } catch {
+      /* ignore audio errors */
+    }
+  };
+
+  const fireAnimation = (button: HTMLButtonElement): void => {
+    button.classList.remove("is-firing");
+    void button.offsetWidth;
+    button.classList.add("is-firing");
+    window.setTimeout(() => button.classList.remove("is-firing"), 700);
+  };
+
+  const initButtonState = (button: HTMLButtonElement): void => {
+    const article = button.closest<HTMLElement>("article[data-entry-id]");
+    const entryId = article?.dataset.entryId;
+    if (!entryId) return;
+    const hearted = readHearted();
+    if (hearted.includes(entryId)) button.classList.add("is-active");
+  };
+
+  const handleHeartClick = async (button: HTMLButtonElement): Promise<void> => {
+    const article = button.closest<HTMLElement>("article[data-entry-id]");
+    const entryId = article?.dataset.entryId;
+    if (!entryId) return;
+
+    const hearted = readHearted();
+    fireAnimation(button);
+    playHeartbeat();
+
+    if (hearted.includes(entryId)) return;
+
+    writeHearted([...hearted, entryId]);
+    button.classList.add("is-active");
+
+    const countEl = button.querySelector<HTMLElement>(".heart-count");
+    const optimistic = parseInt(button.dataset.heartCount ?? "0", 10) + 1;
+    button.dataset.heartCount = String(optimistic);
+    if (countEl) countEl.textContent = String(optimistic);
+
+    try {
+      const response = await fetch("/api/reactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: parseInt(entryId, 10) }),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const updated = (await response.json()) as {
+        heartCount: number | null;
+      };
+      const serverCount = updated.heartCount ?? optimistic;
+      button.dataset.heartCount = String(serverCount);
+      if (countEl) countEl.textContent = String(serverCount);
+    } catch {
+      const rollback = readHearted().filter((id) => id !== entryId);
+      writeHearted(rollback);
+      button.classList.remove("is-active");
+      const fallback = Math.max(0, optimistic - 1);
+      button.dataset.heartCount = String(fallback);
+      if (countEl) countEl.textContent = String(fallback);
+    }
+  };
+
+  function attachHeartDelegation(): void {
+    if (document.body.dataset.guestbookHeartsHandler === "1") return;
+    document.body.dataset.guestbookHeartsHandler = "1";
+
+    document.addEventListener("click", (clickEvent) => {
+      const target = clickEvent.target as HTMLElement | null;
+      const button = target?.closest<HTMLButtonElement>("[data-heart-button]");
+      if (!button) return;
+      clickEvent.preventDefault();
+      void handleHeartClick(button);
+    });
+  }
+
+  function hydrateHeartButtons(): void {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-heart-button]")
+      .forEach(initButtonState);
+  }
+
+  attachHeartDelegation();
+  hydrateHeartButtons();
+  document.addEventListener("astro:page-load", hydrateHeartButtons);
+</script>
