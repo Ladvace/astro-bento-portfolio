@@ -11,6 +11,7 @@ import { remarkReadingTime } from "./src/lib/remark-reading-time.mjs";
 import svelte from "@astrojs/svelte";
 
 import db from "@astrojs/db";
+import { unified } from "@astrojs/markdown-remark";
 
 const envSiteUrl = process.env.SITE_URL ?? "https://gianmarcocavallo.com/";
 const site = envSiteUrl.endsWith("/") ? envSiteUrl : `${envSiteUrl}/`;
@@ -74,9 +75,9 @@ export default defineConfig({
     svelte(),
     db(),
   ],
-  markdown: {
+  markdown: unified({
     remarkPlugins: [remarkReadingTime],
-  },
+  }),
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",
