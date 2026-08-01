@@ -39,10 +39,3 @@ export const WIPE_VARIANT_LIST: readonly WipeVariantPaths[] = [
 
 export const WIPE_VARIANTS: Readonly<Record<string, WipeVariantPaths>> =
   Object.fromEntries(WIPE_VARIANT_LIST.map((v) => [v.id, v]));
-
-/** @deprecated Use {@link WIPE_VARIANT_LIST} — kept for quick reference */
-export const WIPE_COLLAPSED_BOTTOM = classic.collapsedBottom;
-export const WIPE_ENTER_FROM_BOTTOM = classic.enterFromBottom;
-export const WIPE_FILLED_FROM_BOTTOM = classic.filledFromBottom;
-export const WIPE_LEAVE_FROM_TOP = classic.leaveFromTop;
-export const WIPE_UNFILLED_TOP = classic.unfilledTop;
