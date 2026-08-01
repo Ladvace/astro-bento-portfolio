@@ -37,8 +37,10 @@ const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
   description="Leave a message in my guestbook"
   hideCal={true}
 >
-  <div class="flex flex-col items-center px-4 pt-36 pb-24">
-    <BackLink href="/" class="fixed top-10 left-10 z-50 text-sm" />
+  <div class="flex flex-col items-center px-4 pt-8 pb-24">
+    <div class="w-full max-w-3xl mb-16">
+      <BackLink href="/" />
+    </div>
 
     <header class="w-full max-w-xl mb-12 text-center">
       <h1 class="text-white text-3xl font-bold tracking-tight mb-3">
