@@ -2,6 +2,9 @@
 import Card from "./Card/index.astro";
 import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
+
+const socialLinkClass =
+  "inline-block w-fit text-darkslate-100 hover:text-primary-400 hover:translate-x-0.5 transition-all duration-150";
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-4">
@@ -20,19 +23,29 @@ import { SITE } from "../site-config";
       <h2 class="text-darkslate-300">Socials</h2>
       <ul>
         <li>
-          <a href={LINKS.linkedin} target="_blank">Linkedin</a>
+          <a href={LINKS.linkedin} target="_blank" class={socialLinkClass}
+            >Linkedin</a
+          >
         </li>
         <li>
-          <a href={LINKS.github} target="_blank">Github</a>
+          <a href={LINKS.github} target="_blank" class={socialLinkClass}
+            >Github</a
+          >
         </li>
         <li>
-          <a href={LINKS.medium} target="_blank">Medium</a>
+          <a href={LINKS.medium} target="_blank" class={socialLinkClass}
+            >Medium</a
+          >
         </li>
         <li>
-          <a href={LINKS.dribbble} target="_blank">Dribbble</a>
+          <a href={LINKS.dribbble} target="_blank" class={socialLinkClass}
+            >Dribbble</a
+          >
         </li>
         <li>
-          <a href={LINKS.behance} target="_blank">Behance</a>
+          <a href={LINKS.behance} target="_blank" class={socialLinkClass}
+            >Behance</a
+          >
         </li>
       </ul>
     </div>
