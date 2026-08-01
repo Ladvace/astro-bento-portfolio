@@ -105,7 +105,10 @@ const Carousel = () => {
     document.removeEventListener("mousedown", handleMouseDown as EventListener);
     document.removeEventListener("mousemove", handleMouseMove as EventListener);
     document.removeEventListener("mouseup", handleMouseUp);
-    document.removeEventListener("touchstart", handleMouseDown as EventListener);
+    document.removeEventListener(
+      "touchstart",
+      handleMouseDown as EventListener,
+    );
     document.removeEventListener("touchmove", handleMouseMove as EventListener);
     document.removeEventListener("touchend", handleMouseUp);
   });

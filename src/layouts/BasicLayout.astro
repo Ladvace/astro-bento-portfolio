@@ -16,8 +16,58 @@ interface Props {
   hideCal?: boolean;
 }
 
-const { title, description, page, pubDate, hideSoundToggle, hideCal } = Astro.props;
+const { title, description, page, pubDate, hideSoundToggle, hideCal } =
+  Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
+
+// Cal.com element-click embed. Kept as a string + set:html so Prettier's Astro
+// parser doesn't try to parse the raw IIFE as JSX (which breaks formatting).
+const calEmbedScript = `
+  (function (C, A, L) {
+    let p = function (a, ar) {
+      a.q.push(ar);
+    };
+    let d = C.document;
+    C.Cal =
+      C.Cal ||
+      function () {
+        let cal = C.Cal;
+        let ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {};
+          cal.q = cal.q || [];
+          d.head.appendChild(d.createElement("script")).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () {
+            p(api, arguments);
+          };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === "string") {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ["initNamespace", namespace]);
+          } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+  })(window, "https://app.cal.com/embed/embed.js", "init");
+  const calNamespace =
+    document.documentElement.dataset.calNamespace || "15min";
+  const calOrigin =
+    document.documentElement.dataset.calOrigin || "https://cal.com";
+
+  Cal("init", calNamespace, { origin: calOrigin });
+
+  Cal.ns[calNamespace]("ui", {
+    styles: { branding: { brandColor: "#000000" } },
+    hideEventTypeDetails: false,
+    layout: "month_view",
+  });
+`;
 
 const schema =
   page !== "blog"
@@ -95,11 +145,7 @@ const schema =
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="shortcut icon" href="/favicon.ico" />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="/apple-touch-icon.png"
-    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-title" content="Gianmarco Cavallo" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta content={Astro.generator} name="generator" />
@@ -156,52 +202,11 @@ const schema =
       async></script>
 
     <!-- Cal element-click embed code begins -->
-    {!hideCal && <script is:inline type="text/javascript">
-      (function (C, A, L) {
-        let p = function (a, ar) {
-          a.q.push(ar);
-        };
-        let d = C.document;
-        C.Cal =
-          C.Cal ||
-          function () {
-            let cal = C.Cal;
-            let ar = arguments;
-            if (!cal.loaded) {
-              cal.ns = {};
-              cal.q = cal.q || [];
-              d.head.appendChild(d.createElement("script")).src = A;
-              cal.loaded = true;
-            }
-            if (ar[0] === L) {
-              const api = function () {
-                p(api, arguments);
-              };
-              const namespace = ar[1];
-              api.q = api.q || [];
-              if (typeof namespace === "string") {
-                cal.ns[namespace] = cal.ns[namespace] || api;
-                p(cal.ns[namespace], ar);
-                p(cal, ["initNamespace", namespace]);
-              } else p(cal, ar);
-              return;
-            }
-            p(cal, ar);
-          };
-      })(window, "https://app.cal.com/embed/embed.js", "init");
-      const calNamespace =
-        document.documentElement.dataset.calNamespace || "15min";
-      const calOrigin =
-        document.documentElement.dataset.calOrigin || "https://cal.com";
-
-      Cal("init", calNamespace, { origin: calOrigin });
-
-      Cal.ns[calNamespace]("ui", {
-        styles: { branding: { brandColor: "#000000" } },
-        hideEventTypeDetails: false,
-        layout: "month_view",
-      });
-    </script>}
+    {
+      !hideCal && (
+        <script is:inline type="text/javascript" set:html={calEmbedScript} />
+      )
+    }
     <!-- Cal element-click embed code ends -->
   </head>
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">
