@@ -11,6 +11,7 @@ const projects = [
     description: "Interactive rifle animation made in rive.app",
     slug: "/rifle-1",
     tags: ["Rive"],
+    date: "2026-04-03",
   },
   {
     title: "GSAP future svg Scroll experiment",
@@ -18,24 +19,28 @@ const projects = [
       "Scroll animation made with GSAP and some custom futuristic svg",
     slug: "/future-scroll",
     tags: ["GSAP", "SVG"],
+    date: "2026-04-03",
   },
   {
     title: "Glowing stars text",
     description: "Glowing stars text, inspired by the nextjs website",
     slug: "/glowing-stars",
     tags: ["SolidJS", "Canvas"],
+    date: "2026-04-03",
   },
   {
     title: "Turbulence clip-path header",
     description: "Header animation made clip-path and turbulence svg filter",
     slug: "/turbulence-header",
     tags: ["SVG", "CSS"],
+    date: "2026-04-03",
   },
   {
     title: "Fancy card carousel",
     description: "Fancy carousel with league of legends champions",
     slug: "/carousel",
     tags: ["SolidJS", "Motion"],
+    date: "2026-04-03",
   },
   {
     title: "Sliding images loader",
@@ -43,6 +48,7 @@ const projects = [
       "Loader animation inspired by camillemormal.com, built with SolidJS and Motion One",
     slug: "/sliding-images-loader",
     tags: ["SolidJS", "Motion"],
+    date: "2026-04-03",
   },
   {
     title: "Wireframe globe",
@@ -50,14 +56,30 @@ const projects = [
       "Rotating canvas wireframe sphere with latitude and longitude lines",
     slug: "/wireframe-globe",
     tags: ["Canvas", "SolidJS"],
+    date: "2026-04-03",
   },
   {
     title: "Morph & pixel wipe",
     description: "SVG morph wipes or a staggered pixel-grid cover/reveal",
     slug: "/morph-wipe",
     tags: ["GSAP", "SVG"],
+    date: "2026-04-16",
+  },
+  {
+    title: "Fanned cards",
+    description:
+      "Three fanned cards with the middle one zooming in and settling on load",
+    slug: "/fanned-cards",
+    tags: ["SolidJS", "Motion"],
+    date: "2026-08-01",
   },
 ];
+
+const formatDate = (iso: string) =>
+  new Date(iso).toLocaleDateString("en-US", {
+    month: "short",
+    year: "numeric",
+  });
 ---
 
 <LoaderAnimation />
@@ -80,7 +102,7 @@ const projects = [
             colSpan="col-span-2 md:col-span-1"
             arrowCorner={true}
           >
-            <div class="flex flex-col gap-3">
+            <div class="flex flex-col gap-3 h-full">
               <span class="text-[10px] font-medium tabular-nums text-darkslate-400 tracking-widest">
                 {String(i + 1).padStart(2, "0")}
               </span>
@@ -92,12 +114,15 @@ const projects = [
                   {project.description}
                 </p>
               </div>
-              <div class="flex flex-wrap gap-1.5 mt-1">
+              <div class="flex flex-wrap items-center gap-1.5 mt-auto pt-1">
                 {project.tags.map((tag) => (
                   <span class="text-[10px] font-medium px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-300">
                     {tag}
                   </span>
                 ))}
+                <span class="ml-auto text-[10px] font-medium tabular-nums text-darkslate-400 tracking-widest">
+                  {formatDate(project.date)}
+                </span>
               </div>
             </div>
           </Card>

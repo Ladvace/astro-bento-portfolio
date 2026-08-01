@@ -1,0 +1,12 @@
+---
+import PlaygroundShell from "../../components/PlaygroundShell.astro";
+import FannedCards from "../../components/playground/fannedCards";
+import { SITE } from "../../site-config";
+---
+
+<PlaygroundShell
+  title={`${SITE.author.fullName} - Playground - Fanned cards`}
+  description="Three fanned cards with the middle one zooming in on load"
+>
+  <FannedCards client:load />
+</PlaygroundShell>
