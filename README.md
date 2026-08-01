@@ -4,7 +4,7 @@ A modern, bento-style personal portfolio built with **[Astro](https://astro.buil
 
 ![astro-bento-portfolio — a bento-like personal portfolio template](public/preview.png)
 
-**Live demo:** [sparkly-speculoos-0c9197.netlify.app](https://sparkly-speculoos-0c9197.netlify.app/) · **My portfolio:** [gianmarcocavallo.com](https://gianmarcocavallo.com/)
+**Live:** [gianmarcocavallo.com](https://gianmarcocavallo.com/)
 
 ---
 
