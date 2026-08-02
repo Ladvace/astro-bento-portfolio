@@ -15,19 +15,22 @@ const PARAMS = {
   easeX2: 0.3,
   easeY2: 1,
   hdr: false,
+  hdrReal: false,
 };
 
 const Card = (props: {
   class?: string;
   center?: boolean;
   hdr?: boolean;
+  hdrReal?: boolean;
+  hdrSupported?: boolean;
   ref?: (el: HTMLDivElement) => void;
   onEnter?: () => void;
   onLeave?: () => void;
 }) => (
   <div
     ref={props.ref}
-    class={`group cursor-pointer drop-shadow-[0_22px_45px_rgba(0,0,0,0.85)] ${props.class ?? ""}`}
+    class={`group relative cursor-pointer drop-shadow-[0_22px_45px_rgba(0,0,0,0.85)] ${props.class ?? ""}`}
     style={{
       opacity: 0,
       "transform-origin": props.center ? "center" : "bottom center",
@@ -41,11 +44,11 @@ const Card = (props: {
       viewBox="0 0 279 403"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      class={`block h-auto transition-[filter] duration-200 group-hover:brightness-150 ${
+      class={`relative z-10 block h-auto transition-[filter] duration-200 group-hover:brightness-150 ${
         props.hdr
           ? "brightness-150 saturate-[1.8] drop-shadow-[0_0_16px_rgba(230,45,60,0.9)]"
           : ""
-      }`}
+      } ${props.hdrReal && !props.hdrSupported ? "brightness-110" : ""}`}
     >
       <path
         d="M271.687 367.378C271.687 382.776 259.204 395.259 243.806 395.26C239.14 395.26 234.742 394.112 230.877 392.086C230.244 391.753 229.485 391.753 228.851 392.086C224.987 394.112 220.589 395.26 215.923 395.26C205.303 395.26 196.069 389.321 191.361 380.584C190.997 379.908 190.302 379.465 189.534 379.465L89.1529 379.465C88.3848 379.465 87.6899 379.908 87.3256 380.584C82.6177 389.322 73.3831 395.26 62.7627 395.26C58.097 395.26 53.6996 394.112 49.8355 392.086C49.2016 391.753 48.4429 391.753 47.809 392.086C43.9447 394.112 39.5468 395.26 34.8808 395.26C19.4825 395.26 6.99924 382.776 6.99901 367.378C6.99901 362.712 8.14614 358.315 10.1721 354.451C10.5045 353.817 10.5045 353.058 10.1722 352.424C8.14638 348.561 6.99908 344.163 6.99901 339.498C6.99911 328.877 12.9386 319.642 21.6772 314.935C22.3536 314.571 22.7969 313.876 22.7969 313.108L22.7969 89.1531C22.7969 88.3849 22.3536 87.6899 21.6772 87.3256C12.9384 82.6183 6.99902 73.3833 6.99902 62.7617C6.99903 58.096 8.14605 53.6986 10.1721 49.8344C10.5045 49.2005 10.5045 48.442 10.1721 47.8081C8.14623 43.9442 6.99907 39.5472 6.99902 34.8818C6.99902 19.4833 19.4823 7.00004 34.8809 6.99999C39.5468 7.00005 43.9447 8.14678 47.809 10.173C48.443 10.5054 49.2016 10.5054 49.8355 10.173C53.6996 8.14699 58.0971 7.00007 62.7627 6.99999C73.3836 6.99999 82.618 12.9385 87.3256 21.6764C87.6899 22.3526 88.3848 22.7959 89.153 22.7959L189.534 22.7959C190.302 22.7959 190.997 22.3527 191.361 21.6764C196.069 12.9388 205.302 7.00002 215.923 7C220.589 7.00007 224.987 8.14688 228.851 10.173C229.485 10.5054 230.244 10.5054 230.877 10.173C234.742 8.14693 239.14 7 243.806 7C259.204 7.00034 271.687 19.4835 271.687 34.8818C271.687 39.5469 270.541 43.9444 268.515 47.8082C268.183 48.442 268.183 49.2005 268.515 49.8344C270.541 53.6984 271.687 58.0963 271.687 62.7617C271.687 73.3833 265.747 82.6174 257.008 87.3247C256.332 87.689 255.889 88.3839 255.889 89.1521L255.889 313.108C255.889 313.876 256.332 314.571 257.008 314.935C265.747 319.642 271.687 328.876 271.687 339.498C271.687 344.163 270.541 348.561 268.515 352.424C268.183 353.058 268.183 353.817 268.515 354.451C270.541 358.315 271.687 362.713 271.687 367.378Z"
@@ -72,8 +75,45 @@ const Card = (props: {
         fill="#0E0E0E"
       />
     </svg>
+    {/* Real HDR glow. A tiny solid-white AVIF is multiplied over the emblem
+        through a luminance mask of the red shapes; on an HDR display the
+        multiply pushes the emblem's own red past SDR white, so it emits real
+        light. Painted above the SVG (so the emblem is its backdrop) and masked
+        so only the red circle/border glow, not the dark sword.
+
+        The glow only exists because the AVIF is tagged with the PQ transfer
+        function (SMPTE ST 2084, CICP 9/16/9 — BT.2020 primaries + PQ). PQ is
+        absolute: code values map to fixed nits up to 10,000, so our white pixel
+        means a literal ~1,000 nits regardless of the display — far above SDR
+        white (~100-300 nits). A normal sRGB AVIF has no such scale — its white
+        is just "display max," so it can never exceed it. */}
+    {props.hdrReal && (
+      <div
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 z-20 transition-opacity duration-200"
+        style={{
+          "background-image": "url(/hdr-glow.avif)",
+          "background-size": "cover",
+          "mix-blend-mode": "multiply",
+          "-webkit-mask-image": "url(/emblem-mask.svg)",
+          "mask-image": "url(/emblem-mask.svg)",
+          "mask-mode": "luminance",
+          "-webkit-mask-size": "100% 100%",
+          "mask-size": "100% 100%",
+          "-webkit-mask-position": "center",
+          "mask-position": "center",
+        }}
+      />
+    )}
   </div>
 );
+
+// A wide-gamut display (or >=30-bit color) is treated as HDR-capable. When
+// false, the multiply glow can't exceed SDR white, so we fall back to a mild
+// brightness bump instead.
+const detectHDRSupport = () =>
+  window.matchMedia("(color-gamut: rec2020)").matches ||
+  window.screen.colorDepth >= 30;
 
 const FannedCards = () => {
   let stage!: HTMLDivElement;
@@ -82,14 +122,16 @@ const FannedCards = () => {
   let right!: HTMLDivElement;
 
   const [hdr, setHdr] = createSignal(PARAMS.hdr);
+  const [hdrReal, setHdrReal] = createSignal(PARAMS.hdrReal);
+  const [hdrSupported, setHdrSupported] = createSignal(true);
 
   const animateIn = () => {
-    const ease = [PARAMS.easeX1, PARAMS.easeY1, PARAMS.easeX2, PARAMS.easeY2] as [
-      number,
-      number,
-      number,
-      number,
-    ];
+    const ease = [
+      PARAMS.easeX1,
+      PARAMS.easeY1,
+      PARAMS.easeX2,
+      PARAMS.easeY2,
+    ] as [number, number, number, number];
 
     const fillScale =
       (stage.clientHeight * PARAMS.overscan) /
@@ -107,9 +149,15 @@ const FannedCards = () => {
   };
 
   const hover = (el: HTMLDivElement, on: boolean) =>
-    animate(el, { y: on ? -7 : 0 }, { duration: 0.3, ease: [0.22, 1, 0.36, 1] });
+    animate(
+      el,
+      { y: on ? -7 : 0 },
+      { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
+    );
 
   onMount(() => {
+    setHdrSupported(detectHDRSupport());
+
     let started = false;
     const start = () => {
       if (started) return;
@@ -133,8 +181,11 @@ const FannedCards = () => {
     easing.addBinding(PARAMS, "easeX2", { min: 0, max: 1, step: 0.01 });
     easing.addBinding(PARAMS, "easeY2", { min: -1, max: 2, step: 0.01 });
     pane
-      .addBinding(PARAMS, "hdr", { label: "HDR glow" })
+      .addBinding(PARAMS, "hdr", { label: "Brightness glow" })
       .on("change", (e) => setHdr(e.value));
+    pane
+      .addBinding(PARAMS, "hdrReal", { label: "Real HDR (AVIF)" })
+      .on("change", (e) => setHdrReal(e.value));
     pane.addButton({ title: "Replay" }).on("click", animateIn);
 
     onCleanup(() => {
@@ -149,9 +200,21 @@ const FannedCards = () => {
       ref={stage}
       class="relative grid aspect-square w-[min(88vw,560px)] place-items-center overflow-hidden rounded-2xl bg-[#0E0E0E]"
     >
+      {/* Rendering a real HDR image element nudges the browser to composite the
+          page in HDR, so the multiplied glow layers can exceed SDR white. */}
+      {hdrReal() && (
+        <img
+          src="/hdr-glow.avif"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none fixed left-0 top-0 h-px w-px opacity-[0.001]"
+        />
+      )}
       <Card
         class="z-10 [grid-area:1/1]"
         hdr={hdr()}
+        hdrReal={hdrReal()}
+        hdrSupported={hdrSupported()}
         ref={(el) => (left = el)}
         onEnter={() => hover(left, true)}
         onLeave={() => hover(left, false)}
@@ -159,6 +222,8 @@ const FannedCards = () => {
       <Card
         class="z-10 [grid-area:1/1]"
         hdr={hdr()}
+        hdrReal={hdrReal()}
+        hdrSupported={hdrSupported()}
         ref={(el) => (right = el)}
         onEnter={() => hover(right, true)}
         onLeave={() => hover(right, false)}
@@ -167,6 +232,8 @@ const FannedCards = () => {
         center
         class="z-20 [grid-area:1/1]"
         hdr={hdr()}
+        hdrReal={hdrReal()}
+        hdrSupported={hdrSupported()}
         ref={(el) => (middle = el)}
         onEnter={() => hover(middle, true)}
         onLeave={() => hover(middle, false)}
