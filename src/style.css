@@ -19,9 +19,6 @@
   --primary-700: #b82534;
   --primary-800: #a01b2b;
   --primary-900: #891321;
-
-  --font-cabinet-grotesk: "CabinetGrotesk", "Cabinet Grotesk", sans-serif;
-  --font-satoshi: "Satoshi", sans-serif;
 }
 
 .yellow-theme {
@@ -72,7 +69,6 @@
   --primary-900: #4a148c;
 }
 
-/* ── Glass style ─────────────────────────────────────────── */
 .style-glass {
   background: #060a12 !important;
 }
@@ -169,7 +165,6 @@
   ) !important;
 }
 
-/* ── Sharp / Brutalist style ──────────────────────────────── */
 .style-sharp {
   background: #0a0a0a !important;
 }
@@ -225,7 +220,6 @@
   box-shadow: 3px 3px 0 var(--primary-500) !important;
 }
 
-/* ── Neon / Cyberpunk style ───────────────────────────────── */
 .style-neon {
   background: #020408 !important;
 }
@@ -302,7 +296,6 @@
     0 0 32px color-mix(in srgb, var(--primary-500) 15%, transparent) !important;
 }
 
-/* ── Paper style ──────────────────────────────────────────── */
 .style-paper {
   background: #f0ebe0 !important;
 }
@@ -375,7 +368,7 @@
   border-radius: 6px !important;
   color: #1a1208 !important;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08) !important;
-  font-family: var(--font-satoshi), "Satoshi", sans-serif !important;
+  font-family: var(--font-satoshi) !important;
 }
 .style-paper .card button:not(.theme-btn):hover {
   background: #f0ebe0 !important;
@@ -383,7 +376,6 @@
   box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12) !important;
 }
 
-/* ── Globe per-style filters ─────────────────────────────── */
 .style-glass .card svg {
   filter: brightness(1.05) saturate(1.2);
 }
@@ -397,7 +389,6 @@
   filter: sepia(1) brightness(1.8) contrast(0.75) saturate(0.35);
 }
 
-/* ── ThemeChangeCard active ring per-style ───────────────── */
 .style-glass .theme-btn.active {
   box-shadow:
     0 0 0 2px rgba(120, 180, 255, 0.2),
@@ -420,7 +411,6 @@
     0 0 0 3.5px rgba(26, 18, 8, 0.5) !important;
 }
 
-/* ── Back button per-style overrides ──────────────────────── */
 .style-glass .bg-neutral-900 {
   background: rgba(12, 20, 40, 0.5) !important;
   backdrop-filter: blur(24px) !important;
@@ -466,7 +456,7 @@
   border-color: rgba(26, 18, 8, 0.2) !important;
   border-radius: 6px !important;
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08) !important;
-  font-family: var(--font-satoshi), "Satoshi", sans-serif !important;
+  font-family: var(--font-satoshi) !important;
 }
 .style-paper .bg-neutral-900:hover {
   background: #f0ebe0 !important;
@@ -549,4 +539,118 @@ body::before {
 
 .switchboard .star[data-state="high"]::after {
   opacity: 1;
+}
+
+:root {
+  --ns-fill: var(--darkslate-500);
+  --ns-rail: var(--darkslate-400);
+  --ns-pad: 1.625rem;
+}
+
+.cards-custom .card--ns {
+  background-color: var(--ns-fill) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: var(--ns-pad-y, var(--ns-pad)) var(--ns-pad-x, var(--ns-pad));
+  min-width: var(--ns-min);
+  min-height: var(--ns-min);
+}
+
+.cards-custom .card--ns::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -20;
+  border: var(--ns-border) solid transparent;
+  border-image-source: var(--ns-image);
+  border-image-slice: var(--ns-slice) fill;
+  border-image-repeat: stretch;
+  pointer-events: none;
+}
+
+.cards-custom .card--ns:hover {
+  --ns-rail: var(--primary-500);
+}
+
+@supports (
+  -webkit-mask-box-image: linear-gradient(#000, #000) 10 fill / 10px stretch
+) {
+  .cards-custom .card--ns {
+    -webkit-mask-box-image: var(--ns-mask) var(--ns-slice) fill /
+      var(--ns-border) stretch;
+  }
+
+  .cards-custom .card--ns::before {
+    z-index: 2;
+    border-image-source: none;
+    background-color: var(--ns-rail);
+    -webkit-mask-box-image: var(--ns-rail-mask) var(--ns-slice) fill /
+      var(--ns-border) stretch;
+    transition: background-color 200ms ease;
+  }
+}
+
+body.ns-js-shape .card--ns {
+  -webkit-mask-box-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+body.ns-js-shape .card--ns::before {
+  opacity: 0 !important;
+}
+
+.ns-morph-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.ns-morph-outline {
+  fill: none;
+  stroke: var(--ns-rail, var(--darkslate-400));
+  stroke-width: 2;
+  transition: stroke 200ms ease;
+}
+
+.cards-custom #formatToggle {
+  top: var(--ns-pad-y, var(--ns-pad));
+  right: var(--ns-pad-x, var(--ns-pad));
+}
+
+@media (min-width: 1024px) {
+  .card.pad-lg {
+    padding: 1.875rem;
+    --ns-pad: 1.875rem;
+  }
+}
+
+@supports (
+  -webkit-mask-box-image: linear-gradient(#000, #000) 10 fill / 10px stretch
+) {
+  .cards-custom .theme-btn {
+    --sw-rotate: 45deg;
+    position: relative;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    -webkit-mask-box-image: var(--sw-mask) var(--sw-slice) fill /
+      var(--sw-border) stretch;
+  }
+
+  .cards-custom .theme-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--sw-rail, var(--darkslate-400));
+    -webkit-mask-box-image: var(--sw-rail-mask) var(--sw-slice) fill /
+      var(--sw-border) stretch;
+  }
+
+  .cards-custom .theme-btn.active {
+    --sw-rotate: 0deg;
+    --sw-rail: #fff;
+  }
 }

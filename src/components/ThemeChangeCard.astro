@@ -1,10 +1,28 @@
 ---
 import Card from "./Card/index.astro";
+import {
+  cssVars,
+  nineSliceDataUri,
+  nineSliceGeometry,
+  nineSliceRailMaskDataUri,
+} from "../lib/nine-slice";
+
+// Half the 24px swatch, so the four corner motifs meet with no rails between.
+const CORNER = 12;
+const BORDER = 1 / nineSliceGeometry(0, CORNER).scale;
+const shared = { borderWidth: BORDER, cornerSize: CORNER };
+
+const swatchVars = cssVars({
+  "--sw-mask": nineSliceDataUri({ ...shared, fill: "#fff", stroke: "#fff" }),
+  "--sw-rail-mask": nineSliceRailMaskDataUri(shared),
+  "--sw-slice": `${CORNER}`,
+  "--sw-border": `${CORNER}px`,
+});
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-1" padding="p-4">
   <div class="flex flex-col items-center justify-center h-full gap-2">
-    <div class="theme-colors flex items-center gap-3">
+    <div class="theme-colors flex items-center gap-3" style={swatchVars}>
       <button
         class="theme-btn w-6 h-6 rounded-full bg-[#e63946] transition-all duration-200"
         data-theme="default"
@@ -33,16 +51,16 @@ import Card from "./Card/index.astro";
   .theme-btn {
     outline: none;
     box-shadow: 0 0 0 2px transparent;
-    transform: scale(1);
+    transform: rotate(var(--sw-rotate, 0deg)) scale(1);
   }
   .theme-btn:hover {
-    transform: scale(1.2);
+    transform: rotate(var(--sw-rotate, 0deg)) scale(1.2);
   }
   .theme-btn.active {
     box-shadow:
       0 0 0 2px rgba(255, 255, 255, 0.15),
       0 0 0 3.5px white;
-    transform: scale(1.15);
+    transform: rotate(var(--sw-rotate, 0deg)) scale(1.15);
   }
 </style>
 
