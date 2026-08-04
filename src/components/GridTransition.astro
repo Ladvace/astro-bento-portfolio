@@ -1,6 +1,10 @@
 <div id="grid-transition" aria-hidden="true" transition:persist></div>
 
 <style is:global>
+  #grid-transition > div {
+    background: var(--grid-cell);
+  }
+
   #grid-transition {
     position: fixed;
     inset: 0;
@@ -57,7 +61,7 @@
     const color = getComputedStyle(document.body)
       .getPropertyValue("--primary-500")
       .trim();
-    cells.forEach((c) => (c.style.background = color));
+    overlay.style.setProperty("--grid-cell", color);
     overlay.style.background = "transparent";
   }
 
@@ -93,15 +97,15 @@
       gsap.killTweensOf(cells);
       gsap.to(cells, {
         opacity: 1,
-        duration: 0.2,
-        stagger: cellDelay(0.35),
+        duration: 0.1,
+        stagger: cellDelay(0.18),
         ease: "steps(1)",
         onComplete: resolve,
       });
     });
   }
 
-  function reveal(spread = 0.9): Promise<void> {
+  function reveal(spread = 0.45): Promise<void> {
     phase = Math.random() * Math.PI * 2;
     applyTheme();
     document.dispatchEvent(new CustomEvent("grid:reveal-start"));
@@ -109,7 +113,7 @@
       gsap.killTweensOf(cells);
       gsap.to(cells, {
         opacity: 0,
-        duration: 0.25,
+        duration: 0.12,
         stagger: cellDelay(spread),
         ease: "steps(1)",
         onComplete: () => {
@@ -163,6 +167,6 @@
       applyTheme();
       return;
     }
-    reveal(0.35);
+    reveal(0.18);
   });
 </script>
