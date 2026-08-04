@@ -12,7 +12,9 @@
     "eslint": "eslint 'src/**/*.{js,astro}'",
     "check": "astro check",
     "format": "prettier --write \"src/**/*.{astro,ts,tsx,js,jsx,css,md}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "serve:dist": "python3 -m http.server 4322 --directory dist",
+    "preview:netlify": "netlify dev"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",
