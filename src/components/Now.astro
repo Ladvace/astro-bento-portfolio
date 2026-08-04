@@ -3,9 +3,14 @@ import Card from "./Card/index.astro";
 import Pulse from "./Pulse.astro";
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-1" padding="py-3 px-6">
-  <div class="flex flex-col justify-between h-full">
-    <div class="flex flex-col gap-1">
+<Card
+  colSpan="md:col-span-1"
+  rowSpan="md:row-span-1"
+  padding="py-3 px-6"
+  nsPadY="0.75rem"
+>
+  <div class="flex flex-col justify-center h-full">
+    <div class="flex flex-col gap-1 h-fit">
       <div class="flex justify-between items-center w-full">
         <div class="flex items-baseline gap-2">
           <h2 class="text-white text-lg font-bold">Now</h2>
