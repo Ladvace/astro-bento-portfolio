@@ -1,64 +1,70 @@
 ---
 import Card from "./Card/index.astro";
-import { SITE } from "../site-config";
 
 const stack = [
-  { label: "JavaScript", category: "lang" },
-  { label: "TypeScript", category: "lang" },
-  { label: "React", category: "frontend" },
-  { label: "Solid.js", category: "frontend" },
-  { label: "Svelte", category: "frontend" },
-  { label: "Astro", category: "frontend" },
-  { label: "CSS / UnoCSS", category: "frontend" },
-  { label: "GSAP", category: "frontend" },
-  { label: "Motion", category: "frontend" },
-  { label: "Rive", category: "frontend" },
-  { label: "D3.js", category: "frontend" },
-  { label: "Three.js", category: "frontend" },
-  { label: "React Native", category: "frontend" },
-  { label: "Electron", category: "frontend" },
-  { label: "Next.js", category: "frontend" },
-  { label: "Node.js", category: "backend" },
-  { label: "NestJS", category: "backend" },
-  { label: "Express", category: "backend" },
-  { label: "PostgreSQL", category: "backend" },
-  { label: "wagmi", category: "web3" },
-  { label: "Figma", category: "design" },
-  { label: "Adobe Illustrator", category: "design" },
-  { label: "SEO", category: "other" },
-  { label: "Programmatic SEO", category: "other" },
-  { label: "UX / UI", category: "other" },
+  { group: "Languages", items: ["TypeScript", "CSS / SCSS"] },
+  {
+    group: "Frontend",
+    items: [
+      "React",
+      "Next.js",
+      "Astro",
+      "Solid.js",
+      "Svelte",
+      "Qwik",
+      "React Native",
+      "Electron",
+    ],
+  },
+  {
+    group: "Styling & motion",
+    items: ["Tailwind", "UnoCSS", "GSAP", "Motion", "Rive", "Three.js"],
+  },
+  {
+    group: "Backend & APIs",
+    items: ["Node.js", "NestJS", "Express", "tRPC", "better-auth"],
+  },
+  {
+    group: "Databases",
+    items: ["PostgreSQL", "MongoDB", "Prisma"],
+  },
+  {
+    group: "Design & content",
+    items: [
+      "Figma",
+      "Adobe Illustrator",
+      "Blender",
+      "Strapi",
+      "UX / UI",
+      "SEO",
+    ],
+  },
 ];
+
+const CHIP =
+  "text-[11px] px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-100 hover:border-primary-500 hover:text-white transition-colors duration-150 cursor-default";
 ---
 
-<Card colSpan="md:col-span-1" rowSpan="md:row-span-6" title="About me">
-  <div class="flex flex-col gap-4">
-    <p class="text-sm font-light">
-      Hi, I'm <b class="font-bold">{SITE.author.firstName}</b>, a full stack
-      software developer (frontend-focused) from {SITE.location.countryName}.
-    </p>
-
-    <div class="flex flex-col gap-2">
-      <span
-        class="text-[10px] uppercase tracking-widest text-darkslate-300 font-medium"
-        >Stack & tools</span
-      >
-      <div class="flex flex-wrap gap-1.5">
-        {
-          stack.map(({ label }) => (
-            <span class="text-[11px] px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-100 hover:border-primary-500 hover:text-white transition-colors duration-150 cursor-default">
-              {label}
-            </span>
-          ))
-        }
-      </div>
-    </div>
-
-    <p class="text-sm font-light">
-      Beyond coding, I'm passionate about design, illustration, animation,
-      photography, and parametric 3D modelling. I love travelling, and I have an
-      unusual hobby of collecting vintage passports, fascinating pieces of
-      history.
-    </p>
+<Card
+  colSpan="md:col-span-1"
+  rowSpan="md:row-span-6"
+  title="Stack & tools"
+  class="pad-lg"
+>
+  <div class="flex flex-col gap-3">
+    {
+      stack.map(({ group, items }) => (
+        <div class="flex flex-col gap-1.5">
+          <span class="text-[9px] uppercase tracking-wider text-darkslate-400">
+            {group}
+          </span>
+          <div class="flex flex-wrap gap-1.5">
+            {items.map((label) => (
+              <span class={CHIP}>{label}</span>
+            ))}
+          </div>
+        </div>
+      ))
+    }
   </div>
 </Card>
