@@ -32,7 +32,7 @@ export default defineConfig({
           {
             weight: "100 1000",
             style: "normal",
-            src: ["./src/assets/fonts/CabinetGrotesk-Variable.ttf"],
+            src: ["./src/assets/fonts/CabinetGrotesk-Variable.woff2"],
           },
         ],
       },
@@ -49,12 +49,12 @@ export default defineConfig({
           {
             weight: "100 1000",
             style: "normal",
-            src: ["./src/assets/fonts/Satoshi-Variable.ttf"],
+            src: ["./src/assets/fonts/Satoshi-Variable.woff2"],
           },
           {
             weight: "100 1000",
             style: "italic",
-            src: ["./src/assets/fonts/Satoshi-VariableItalic.ttf"],
+            src: ["./src/assets/fonts/Satoshi-VariableItalic.woff2"],
           },
         ],
       },

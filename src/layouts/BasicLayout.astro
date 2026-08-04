@@ -1,6 +1,7 @@
 ---
 import "../style.css";
 import { ClientRouter } from "astro:transitions";
+import { Font } from "astro:assets";
 import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
 import GridTransition from "../components/GridTransition.astro";
@@ -140,7 +141,16 @@ const schema =
 >
   <head>
     <meta charset="UTF-8" />
+    <Font cssVariable="--font-cabinet-grotesk" preload />
+    <Font cssVariable="--font-satoshi" preload />
     <ClientRouter />
+    {/* Render-blocking: the cards must not paint with the wrong chrome. */}
+    <script is:inline>
+      try {
+        if ((localStorage.getItem("cardBorder") ?? "custom") === "custom")
+          document.documentElement.classList.add("cards-custom");
+      } catch {}
+    </script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -378,7 +388,7 @@ const schema =
 <style is:global>
   body {
     margin: 0;
-    font-family: var(--font-satoshi), "Satoshi", sans-serif;
+    font-family: var(--font-satoshi);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -388,10 +398,10 @@ const schema =
   h4,
   h5,
   h6 {
-    font-family: var(--font-cabinet-grotesk), "Cabinet Grotesk", sans-serif;
+    font-family: var(--font-cabinet-grotesk);
   }
   p {
-    font-family: var(--font-satoshi), "Satoshi", sans-serif;
+    font-family: var(--font-satoshi);
   }
 
   b {
