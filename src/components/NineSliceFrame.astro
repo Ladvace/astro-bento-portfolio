@@ -1,0 +1,61 @@
+---
+import {
+  cssVars,
+  nineSliceVars,
+  NINE_SLICE_BORDER,
+  NINE_SLICE_FILL,
+  NINE_SLICE_STROKE,
+} from "../lib/nine-slice";
+
+interface Props {
+  fill?: string;
+  stroke?: string;
+  borderWidth?: number;
+  cornerSize?: number;
+  padding?: string;
+  class?: string;
+}
+
+const {
+  fill = NINE_SLICE_FILL,
+  stroke = NINE_SLICE_STROKE,
+  borderWidth = NINE_SLICE_BORDER,
+  cornerSize,
+  padding = "2rem",
+  class: className,
+} = Astro.props;
+
+const style = cssVars({
+  ...nineSliceVars({ fill, stroke, borderWidth, cornerSize }),
+  "--ns-pad": padding,
+});
+---
+
+<div class:list={["nine-slice", className]} style={style}>
+  <div class="nine-slice__content"><slot /></div>
+</div>
+
+<style>
+  .nine-slice {
+    position: relative;
+    min-width: var(--ns-min);
+    min-height: var(--ns-min);
+  }
+
+  .nine-slice::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--ns-border) solid transparent;
+    border-image-source: var(--ns-image);
+    border-image-slice: var(--ns-slice) fill;
+    border-image-repeat: stretch;
+    pointer-events: none;
+  }
+
+  .nine-slice__content {
+    position: relative;
+    height: 100%;
+    padding: var(--ns-pad);
+  }
+</style>

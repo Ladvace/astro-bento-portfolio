@@ -73,6 +73,14 @@ const projects = [
     tags: ["SolidJS", "Motion"],
     date: "2026-08-01",
   },
+  {
+    title: "Nine-slice frame",
+    description:
+      "The fanned-card frame as a resizable container — corners stay exact at any size",
+    slug: "/nine-slice",
+    tags: ["SVG", "CSS"],
+    date: "2026-08-04",
+  },
 ];
 
 const formatDate = (iso: string) =>
@@ -80,6 +88,8 @@ const formatDate = (iso: string) =>
     month: "short",
     year: "numeric",
   });
+
+export const prerender = true;
 ---
 
 <LoaderAnimation />

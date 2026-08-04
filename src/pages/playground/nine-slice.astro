@@ -1,0 +1,239 @@
+---
+import PlaygroundShell from "../../components/PlaygroundShell.astro";
+import NineSliceFrame from "../../components/NineSliceFrame.astro";
+import { nineSliceDataUri } from "../../lib/nine-slice";
+import { SITE } from "../../site-config";
+
+// Same image as the frame; the comparison box only scales it differently.
+const naiveImage = nineSliceDataUri();
+
+export const prerender = true;
+---
+
+<PlaygroundShell
+  title={`${SITE.author.fullName} - Playground - Nine-slice frame`}
+  description="The fanned-card frame rebuilt as a resizable nine-slice container"
+>
+  <div class="ns-stage" id="ns-stage">
+    <figure class="ns-figure">
+      <figcaption class="ns-label">Nine-slice</figcaption>
+      <NineSliceFrame class="ns-box" padding="2rem">
+        <div class="ns-copy">
+          <h1>Nine-slice</h1>
+          <p>
+            Corners are pinned and never resampled. Only the straight rails
+            between them stretch — which is lossless, because they are straight
+            lines.
+          </p>
+          <p class="ns-dims"><span id="ns-readout">420 &times; 320</span></p>
+        </div>
+      </NineSliceFrame>
+    </figure>
+
+    <figure class="ns-figure" id="ns-compare" hidden>
+      <figcaption class="ns-label ns-label--warn">Naive stretch</figcaption>
+      <div class="ns-box ns-naive" style={`--ns-naive-image:${naiveImage};`}>
+        <div class="ns-copy">
+          <h1>Naive stretch</h1>
+          <p>
+            The same SVG scaled to fill the box. The corner motifs smear and the
+            rail thickness drifts.
+          </p>
+        </div>
+      </div>
+    </figure>
+  </div>
+</PlaygroundShell>
+
+<style>
+  .ns-stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+
+    /* Driven by Tweakpane. */
+    --w: 420px;
+    --h: 320px;
+  }
+
+  .ns-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 0;
+  }
+
+  .ns-figure[hidden] {
+    display: none;
+  }
+
+  .ns-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--darkslate-300);
+  }
+
+  .ns-label--warn {
+    color: var(--primary-500);
+  }
+
+  .ns-stage :global(.ns-box) {
+    width: var(--w);
+    height: var(--h);
+  }
+
+  .ns-naive {
+    position: relative;
+    background-image: var(--ns-naive-image);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    padding: 2rem;
+  }
+
+  .ns-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    overflow: hidden;
+    color: var(--darkslate-100);
+  }
+
+  .ns-copy h1 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .ns-copy p {
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--darkslate-300);
+    margin: 0;
+  }
+
+  .ns-dims {
+    margin-top: auto !important;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.08em;
+  }
+
+  /* A border of exactly --ns-pad paints the padding band and nothing else. */
+  .ns-stage.show-pad :global(.nine-slice__content)::after,
+  .ns-stage.show-pad .ns-naive::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: var(--ns-pad, 2rem) solid
+      color-mix(in srgb, var(--primary-500) 40%, transparent);
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  import { Pane } from "tweakpane";
+  import {
+    nineSliceGeometry,
+    nineSliceVars,
+    NINE_SLICE_BORDER,
+    NINE_SLICE_FILL,
+    NINE_SLICE_STROKE,
+  } from "../../lib/nine-slice";
+
+  const PARAMS = {
+    width: 420,
+    height: 320,
+    borderWidth: NINE_SLICE_BORDER,
+    padding: 32,
+    fill: NINE_SLICE_FILL,
+    stroke: NINE_SLICE_STROKE,
+    showPadding: false,
+    compare: false,
+  };
+
+  let pane: Pane | null = null;
+
+  function initNineSlice() {
+    const stage = document.getElementById("ns-stage");
+    const compare = document.getElementById("ns-compare");
+    const readout = document.getElementById("ns-readout");
+    const frame = stage?.querySelector<HTMLElement>(".nine-slice");
+    const naive = stage?.querySelector<HTMLElement>(".ns-naive");
+    if (!stage || !compare || !readout || !frame || !naive) return;
+
+    const applySize = () => {
+      // A thicker rail needs a bigger slice, which raises the minimum box.
+      const { min } = nineSliceGeometry(PARAMS.borderWidth);
+      const clamped = PARAMS.width < min || PARAMS.height < min;
+      PARAMS.width = Math.max(PARAMS.width, min);
+      PARAMS.height = Math.max(PARAMS.height, min);
+      stage.style.setProperty("--w", `${PARAMS.width}px`);
+      stage.style.setProperty("--h", `${PARAMS.height}px`);
+      readout.textContent = `${PARAMS.width} × ${PARAMS.height}  ·  min ${min}`;
+      // Pull the sliders back in line when a thicker rail raised the floor.
+      if (clamped) pane?.refresh();
+    };
+
+    const applyImage = () => {
+      const options = {
+        fill: PARAMS.fill,
+        stroke: PARAMS.stroke,
+        borderWidth: PARAMS.borderWidth,
+      };
+      const vars = nineSliceVars(options);
+      Object.entries(vars).forEach(([k, v]) => frame.style.setProperty(k, v));
+      naive.style.setProperty("--ns-naive-image", vars["--ns-image"]);
+    };
+
+    const applyPadding = () => {
+      frame.style.setProperty("--ns-pad", `${PARAMS.padding}px`);
+      naive.style.setProperty("--ns-pad", `${PARAMS.padding}px`);
+      naive.style.padding = `${PARAMS.padding}px`;
+    };
+
+    applySize();
+    applyImage();
+    applyPadding();
+
+    pane = new Pane({ title: "Nine-slice" });
+
+    pane
+      .addBinding(PARAMS, "width", { min: 180, max: 900, step: 1 })
+      .on("change", applySize);
+    pane
+      .addBinding(PARAMS, "height", { min: 180, max: 700, step: 1 })
+      .on("change", applySize);
+    pane
+      .addBinding(PARAMS, "borderWidth", { min: 0, max: 40, step: 0.5 })
+      .on("change", () => {
+        applyImage();
+        applySize();
+      });
+    pane
+      .addBinding(PARAMS, "padding", { min: 0, max: 120, step: 1 })
+      .on("change", applyPadding);
+    pane.addBinding(PARAMS, "fill", { view: "color" }).on("change", applyImage);
+    pane
+      .addBinding(PARAMS, "stroke", { view: "color" })
+      .on("change", applyImage);
+    pane.addBinding(PARAMS, "showPadding").on("change", () => {
+      stage.classList.toggle("show-pad", PARAMS.showPadding);
+    });
+    pane.addBinding(PARAMS, "compare").on("change", () => {
+      compare.hidden = !PARAMS.compare;
+    });
+  }
+
+  function disposeNineSlice() {
+    pane?.dispose();
+    pane = null;
+  }
+
+  document.addEventListener("astro:page-load", initNineSlice);
+  document.addEventListener("astro:before-swap", disposeNineSlice);
+</script>
