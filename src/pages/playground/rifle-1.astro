@@ -3,6 +3,8 @@ import PlaygroundShell from "../../components/PlaygroundShell.astro";
 import Rifle1Component from "../../components/playground/rifle-1";
 import rifleRivUrl from "../../riveAnimations/rifle.riv?url";
 import { SITE } from "../../site-config";
+
+export const prerender = true;
 ---
 
 <link rel="preload" href={rifleRivUrl} as="fetch" crossorigin="anonymous" />
