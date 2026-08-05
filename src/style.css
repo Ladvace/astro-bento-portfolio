@@ -587,7 +587,7 @@ body::before {
     background-color: var(--ns-rail);
     -webkit-mask-box-image: var(--ns-rail-mask) var(--ns-slice) fill /
       var(--ns-border) stretch;
-    transition: background-color 200ms ease;
+    transition: background-color 150ms ease-out;
   }
 }
 
@@ -613,7 +613,7 @@ body.ns-js-shape .card--ns::before {
   fill: none;
   stroke: var(--ns-rail, var(--darkslate-400));
   stroke-width: 2;
-  transition: stroke 200ms ease;
+  transition: stroke 150ms ease-out;
 }
 
 .cards-custom #formatToggle {
@@ -652,5 +652,89 @@ body.ns-js-shape .card--ns::before {
   .cards-custom .theme-btn.active {
     --sw-rotate: 0deg;
     --sw-rail: #fff;
+  }
+
+  .cards-custom .btn--ns,
+  .cards-custom .tt--ns,
+  .cards-custom .chrome--ns {
+    position: relative;
+    border-radius: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    min-width: var(--bt-min);
+    min-height: var(--bt-min);
+    -webkit-mask-box-image: var(--bt-mask) var(--bt-slice) fill /
+      var(--bt-border) stretch;
+  }
+
+  .cards-custom .btn--ns::before,
+  .cards-custom .tt--ns::before,
+  .cards-custom .chrome--ns::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: var(--bt-rail, var(--primary-500));
+    -webkit-mask-box-image: var(--bt-rail-mask) var(--bt-slice) fill /
+      var(--bt-border) stretch;
+    transition: background-color 150ms ease-out;
+  }
+
+  .cards-custom .chrome--ns {
+    --bt-rail: var(--darkslate-400);
+  }
+
+  .cards-custom .chrome--ns:hover {
+    --bt-rail: var(--primary-500);
+  }
+
+  .cards-custom .tt--ns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.9rem;
+  }
+
+  .cards-custom .tt--ns::after {
+    display: none;
+  }
+
+  .cards-custom .btn-shell,
+  .cards-custom .tt-shell {
+    --bt-lift: drop-shadow(1px 1px 0 var(--primary-500));
+    filter: var(--bt-lift) var(--bt-lift) var(--bt-lift);
+  }
+
+  .cards-custom .btn-shell:has(.btn--ns:active) {
+    filter: none;
+  }
+
+  .cards-custom .tt-shell {
+    transform: translate(-50%, -7.5rem);
+  }
+
+  .cards-custom .tt-shell::before,
+  .cards-custom .tt-shell::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    border-radius: 50%;
+    background: #000;
+    border: 1.5px solid var(--primary-500);
+  }
+
+  .cards-custom .tt-shell::before {
+    width: 11px;
+    height: 11px;
+    bottom: -14px;
+    transform: translateX(-70%);
+  }
+
+  .cards-custom .tt-shell::after {
+    width: 6px;
+    height: 6px;
+    bottom: -26px;
+    transform: translateX(-140%);
   }
 }

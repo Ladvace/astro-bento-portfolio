@@ -147,36 +147,41 @@ import { SITE } from "../site-config";
   });
 </script>
 
-<Card colSpan="lg:col-span-1" rowSpan="md:row-span-2" padding="p-4">
-  <div class="flex flex-col h-fit">
+<Card
+  colSpan="xl:col-span-1"
+  rowSpan="md:row-span-2"
+  padding="p-4"
+  nsPadY="1rem"
+>
+  <div class="flex flex-col h-full justify-center gap-2">
     <button
       id="formatToggle"
-      class="absolute top-4 right-4 text-[9px] font-medium uppercase tracking-widest text-darkslate-300 hover:text-white border border-darkslate-400 hover:border-darkslate-200 rounded px-1.5 leading-[13px] transition-colors z-10"
+      class="absolute top-4 right-4 text-[8px] font-medium uppercase tracking-widest text-darkslate-300 hover:text-white border border-darkslate-400 hover:border-darkslate-200 rounded px-1.5 leading-[13px] transition-colors z-10"
     >
       24h
     </button>
 
     <!-- My time -->
     <div
-      class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center lg:flex-none lg:items-start lg:justify-start"
+      class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
     >
       <div class="flex items-center gap-1.5">
         <span
           class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse flex-shrink-0"
         ></span>
         <span
-          class="text-[10px] font-medium uppercase tracking-widest text-darkslate-300"
+          class="text-[9px] font-medium uppercase tracking-widest text-darkslate-300"
           >my time</span
         >
       </div>
       <time
         datetime=""
         id="italyTimeDisplay"
-        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-[clamp(2.5rem,5vw,4rem)] lg:text-[clamp(1.5rem,2vw,2.5rem)]"
+        class="whitespace-nowrap text-xl font-bold tabular-nums leading-tight md:text-[clamp(2.125rem,4.25vw,3.4rem)] xl:text-[clamp(1.25rem,1.7vw,2.125rem)]"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
-      <div class="flex items-center gap-1 text-[10px] text-darkslate-300">
+      <div class="flex items-center gap-1 text-[9px] text-darkslate-300">
         <span id="homeTzDisplay" data-timezone={SITE.location.timezone}
           >---</span
         >
@@ -190,27 +195,27 @@ import { SITE } from "../site-config";
       <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
       <span
         id="offsetDisplay"
-        class="text-[10px] text-darkslate-300 whitespace-nowrap">---</span
+        class="text-[9px] text-darkslate-300 whitespace-nowrap">---</span
       >
       <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
     </div>
 
     <!-- Your time -->
     <div
-      class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center lg:flex-none lg:items-start lg:justify-start"
+      class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
     >
       <span
-        class="text-[10px] font-medium uppercase tracking-widest text-darkslate-300"
+        class="text-[9px] font-medium uppercase tracking-widest text-darkslate-300"
         >your time</span
       >
       <time
         datetime=""
         id="visitorTimeDisplay"
-        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-[clamp(2.5rem,5vw,4rem)] lg:text-[clamp(1.5rem,2vw,2.5rem)]"
+        class="whitespace-nowrap text-xl font-bold tabular-nums leading-tight md:text-[clamp(2.125rem,4.25vw,3.4rem)] xl:text-[clamp(1.25rem,1.7vw,2.125rem)]"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
-      <span id="visitorTzDisplay" class="text-[10px] text-darkslate-300"
+      <span id="visitorTzDisplay" class="text-[9px] text-darkslate-300"
         >---</span
       >
     </div>

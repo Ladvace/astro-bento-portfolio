@@ -519,9 +519,17 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
 
     // --- drag --------------------------------------------------------
     if (enableHover) {
+      const isOverSphere = (x: number, y: number) => {
+        const dx = x - cx;
+        const dy = y - cy;
+        return dx * dx + dy * dy <= PROJECTION_SCALE * PROJECTION_SCALE;
+      };
+
       svg
-        .on("mouseenter", () => {
-          isPaused = true;
+        .on("mousemove", (event) => {
+          if (dragStart) return;
+          const [px, py] = d3.pointer(event, svg.node());
+          isPaused = isOverSphere(px, py);
         })
         .on("mouseleave", () => {
           isPaused = false;
@@ -546,8 +554,9 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
               dragStart = [event.x, event.y];
               updatePaths();
             })
-            .on("end", () => {
+            .on("end", (event) => {
               dragStart = null;
+              isPaused = isOverSphere(event.x, event.y);
             }),
         );
     }

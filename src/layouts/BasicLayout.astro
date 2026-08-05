@@ -6,6 +6,9 @@ import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
 import GridTransition from "../components/GridTransition.astro";
 import StylePanel from "../components/StylePanel.astro";
+import { BUTTON_FRAME, cssVars } from "../lib/nine-slice";
+
+const buttonFrameVars = `:root{${cssVars(BUTTON_FRAME.vars)}}`;
 
 interface Props {
   title: string;
@@ -218,6 +221,8 @@ const schema =
       )
     }
     <!-- Cal element-click embed code ends -->
+
+    <style is:inline set:html={buttonFrameVars}></style>
   </head>
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">
     <GridTransition />
@@ -231,7 +236,7 @@ const schema =
             id="sound-toggle"
             aria-label="Toggle sound"
             title="Toggle sound"
-            class="w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+            class="chrome--ns w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
           >
             <svg
               id="sound-icon-on"

@@ -212,6 +212,23 @@ export function nineSliceVars(options: NineSliceOptions = {}) {
   };
 }
 
+export const BUTTON_FRAME = (() => {
+  const cornerSize = 20;
+  const borderWidth = 1.5 / nineSliceGeometry(0, cornerSize).scale;
+  const opts = { borderWidth, cornerSize };
+
+  return {
+    cornerSize,
+    vars: {
+      "--bt-mask": nineSliceDataUri({ ...opts, fill: "#fff", stroke: "#fff" }),
+      "--bt-rail-mask": nineSliceRailMaskDataUri(opts),
+      "--bt-slice": `${cornerSize}`,
+      "--bt-border": `${cornerSize}px`,
+      "--bt-min": `${cornerSize * 2}px`,
+    },
+  };
+})();
+
 export const CARD_FRAME = (() => {
   const cornerSize = 40;
   // Art units render at borderWidth * scale; solve for a 1px rail.
