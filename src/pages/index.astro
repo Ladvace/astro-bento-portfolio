@@ -22,10 +22,18 @@ export const prerender = true;
 
 <script>
   // --- Shared state ---
-  const CURSOR_TRAIL_LENGTH = 8;
-  const CURSOR_TRAIL_OPACITY = [0.8, 0.6, 0.45, 0.3, 0.2, 0.12, 0.07, 0.03];
+  const CURSOR_TRAIL_LENGTH = 12;
+  const CURSOR_TRAIL_OPACITY = [
+    0.8, 0.7, 0.6, 0.5, 0.42, 0.34, 0.27, 0.21, 0.15, 0.1, 0.06, 0.03,
+  ];
 
-  let glowInterval: ReturnType<typeof setInterval> | null = null;
+  const RIPPLE_STEP_MS = 90;
+  const RIPPLE_SPAWN_CHANCE = 0.055;
+  const RIPPLE_MAX_ACTIVE = 3;
+  const RIPPLE_THICKNESS = 1.1;
+  const RIPPLE_PEAK_OPACITY = 0.5;
+
+  let rippleInterval: ReturnType<typeof setInterval> | null = null;
   let guestbookRafId: number | null = null;
   let blogRafId: number | null = null;
   let playgroundObserver: ResizeObserver | null = null;
@@ -56,30 +64,81 @@ export const prerender = true;
     return { cols, rows };
   }
 
-  function clearCellStyle(cell: HTMLElement) {
-    cell.style.background = "";
-    cell.style.opacity = "";
-    cell.style.transition = "";
-  }
-
   // --- Playground: square cell grid with cursor trail ---
   function initPlaygroundGrid() {
     const el = document.getElementById("playground-grid");
     if (!el) return;
     const container = el as HTMLElement;
 
-    const TARGET_CELL_SIZE = 20;
+    const TARGET_CELL_SIZE = 12;
     let cols = 1;
+    let rows = 1;
     let cellWidth = TARGET_CELL_SIZE;
     let cellHeight = TARGET_CELL_SIZE;
     let totalCells = 1;
+
+    let level = new Float32Array(0);
+    let ripples: { cx: number; cy: number; radius: number; reach: number }[] =
+      [];
+
+    function paintCell(index: number, opacity: number) {
+      const cell = container.children[index] as HTMLElement | undefined;
+      if (!cell) return;
+      cell.style.background = opacity > 0 ? "var(--primary-500)" : "";
+      cell.style.opacity = opacity > 0 ? String(opacity) : "";
+    }
+
+    function step() {
+      if (
+        ripples.length < RIPPLE_MAX_ACTIVE &&
+        Math.random() < RIPPLE_SPAWN_CHANCE
+      ) {
+        ripples.push({
+          cx: Math.random() * cols,
+          cy: Math.random() * rows,
+          radius: 0,
+          reach: Math.max(cols, rows) * (0.45 + Math.random() * 0.35),
+        });
+      }
+      if (!ripples.length) return;
+
+      const touched = new Map<number, number>();
+      for (const ripple of ripples) {
+        ripple.radius += 0.5;
+        const strength =
+          RIPPLE_PEAK_OPACITY * (1 - ripple.radius / ripple.reach);
+        if (strength <= 0) continue;
+
+        const lo = Math.max(0, Math.floor(ripple.cy - ripple.radius - 1));
+        const hi = Math.min(rows - 1, Math.ceil(ripple.cy + ripple.radius + 1));
+        for (let y = lo; y <= hi; y++) {
+          for (let x = 0; x < cols; x++) {
+            const dx = x + 0.5 - ripple.cx;
+            const dy = y + 0.5 - ripple.cy;
+            const offset = Math.abs(Math.hypot(dx, dy) - ripple.radius);
+            if (offset > RIPPLE_THICKNESS) continue;
+            const value = strength * (1 - offset / RIPPLE_THICKNESS);
+            const i = y * cols + x;
+            touched.set(i, Math.max(touched.get(i) ?? 0, value));
+          }
+        }
+      }
+      ripples = ripples.filter((r) => r.radius < r.reach);
+
+      for (let i = 0; i < totalCells; i++) {
+        const value = touched.get(i) ?? 0;
+        if (Math.abs(value - level[i]) < 0.02) continue;
+        level[i] = value;
+        paintCell(i, Math.round(value * 100) / 100);
+      }
+    }
 
     function rebuild() {
       const w = container.clientWidth;
       const h = container.clientHeight;
       if (!w || !h) return;
       cols = Math.max(1, Math.round(w / TARGET_CELL_SIZE));
-      const rows = Math.max(1, Math.round(h / TARGET_CELL_SIZE));
+      rows = Math.max(1, Math.round(h / TARGET_CELL_SIZE));
       cellWidth = w / cols;
       cellHeight = h / rows;
       totalCells = cols * rows;
@@ -95,6 +154,8 @@ export const prerender = true;
           "border:0.5px solid rgba(255,255,255,0.03);transition:background 0.4s,opacity 0.4s;";
         container.appendChild(cell);
       }
+      level = new Float32Array(totalCells);
+      ripples = [];
     }
 
     rebuild();
@@ -103,29 +164,23 @@ export const prerender = true;
     playgroundObserver = new ResizeObserver(rebuild);
     playgroundObserver.observe(container);
 
-    // Random glow pulses
-    if (glowInterval) clearInterval(glowInterval);
-    glowInterval = setInterval(() => {
-      const cell = container.children[
-        Math.floor(Math.random() * totalCells)
-      ] as HTMLElement;
-      if (!cell) return;
-      cell.style.background = "var(--primary-500)";
-      cell.style.opacity = "0.5";
-      setTimeout(() => {
-        cell.style.background = "";
-        cell.style.opacity = "0.06";
-        setTimeout(() => {
-          cell.style.opacity = "";
-        }, 400);
-      }, 600);
-    }, 250);
+    if (rippleInterval) clearInterval(rippleInterval);
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      rippleInterval = setInterval(step, RIPPLE_STEP_MS);
+    }
 
     // Cursor trail
     const card = document
       .querySelector<HTMLElement>('a[href="playground"]')
       ?.closest<HTMLElement>(".card");
     let trailIndices: number[] = [];
+
+    const releaseCell = (cellIndex: number) => {
+      const cell = container.children[cellIndex] as HTMLElement | undefined;
+      if (!cell) return;
+      cell.style.transition = "";
+      paintCell(cellIndex, level[cellIndex]);
+    };
 
     const paintTrail = () =>
       trailIndices.forEach((cellIndex, trailPos) => {
@@ -145,10 +200,7 @@ export const prerender = true;
         }
       });
       setTimeout(() => {
-        trailIndices.forEach((cellIndex) => {
-          const cell = container.children[cellIndex] as HTMLElement;
-          if (cell) clearCellStyle(cell);
-        });
+        trailIndices.forEach(releaseCell);
         trailIndices = [];
       }, 100);
     };
@@ -175,7 +227,7 @@ export const prerender = true;
           if (cell) {
             cell.style.transition = "opacity 0.1s";
             cell.style.opacity = "0";
-            setTimeout(() => clearCellStyle(cell), 100);
+            setTimeout(() => releaseCell(i), 100);
           }
         });
       }
@@ -297,7 +349,7 @@ export const prerender = true;
   });
 
   document.addEventListener("astro:before-swap", () => {
-    if (glowInterval) clearInterval(glowInterval);
+    if (rippleInterval) clearInterval(rippleInterval);
     if (guestbookRafId !== null) cancelAnimationFrame(guestbookRafId);
     if (blogRafId !== null) cancelAnimationFrame(blogRafId);
     if (playgroundObserver) {
