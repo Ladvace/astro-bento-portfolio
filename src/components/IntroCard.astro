@@ -4,13 +4,12 @@ import Button from "./Button.astro";
 import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
-import { Image } from "astro:assets";
 import { SITE } from "../site-config";
-import MemojiAvatarDefault from "../assets/me.webp";
-import MemojiAvatarBlue from "../assets/me-blue.webp";
-import MemojiAvatarGreen from "../assets/me-green.webp";
-import MemojiAvatarPurple from "../assets/me-purple.webp";
-import MemojiAvatarYellow from "../assets/me-yellow.webp";
+import MemojiAvatarDefault from "../assets/me-dither.webp";
+import MemojiAvatarBlue from "../assets/me-dither-blue.webp";
+import MemojiAvatarGreen from "../assets/me-dither-green.webp";
+import MemojiAvatarPurple from "../assets/me-dither-purple.webp";
+import MemojiAvatarYellow from "../assets/me-dither-yellow.webp";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4" class="pad-lg">
@@ -103,10 +102,11 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
         </Button>
       </div>
     </div>
-    <Image
+    <img
       id="memoji-avatar"
-      quality="max"
-      src={MemojiAvatarDefault}
+      src={MemojiAvatarDefault.src}
+      width={MemojiAvatarDefault.width}
+      height={MemojiAvatarDefault.height}
       data-theme-default={MemojiAvatarDefault.src}
       data-theme-yellow-theme={MemojiAvatarYellow.src}
       data-theme-blue-theme={MemojiAvatarBlue.src}
@@ -116,6 +116,7 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
       alt={`memoji of ${SITE.author.firstName}`}
       loading="eager"
       fetchpriority="high"
+      decoding="async"
     />
   </div>
 </Card>
@@ -130,17 +131,16 @@ import MemojiAvatarYellow from "../assets/me-yellow.webp";
     if (!avatarImg) return;
 
     const theme = localStorage.getItem("theme") || "default";
-    const themeClass = theme === "default" ? "default" : theme;
     const imageSrc =
-      avatarImg.getAttribute(`data-theme-${themeClass}`) ||
+      avatarImg.getAttribute(`data-theme-${theme}`) ??
       avatarImg.getAttribute("data-theme-default");
+    if (!imageSrc) return;
 
-    if (imageSrc && avatarImg.src !== imageSrc) {
-      avatarImg.src = imageSrc;
-      if (avatarImg.srcset) {
-        avatarImg.srcset = "";
-      }
-    }
+    const next = new URL(imageSrc, location.href).href;
+    if (avatarImg.src === next) return;
+
+    if (avatarImg.srcset) avatarImg.srcset = "";
+    avatarImg.src = next;
   }
 
   function initLevitatingAnimation() {

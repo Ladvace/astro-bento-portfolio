@@ -27,6 +27,7 @@ const image = `${Astro.url.origin}/og-image.png`;
 // Cal.com element-click embed. Kept as a string + set:html so Prettier's Astro
 // parser doesn't try to parse the raw IIFE as JSX (which breaks formatting).
 const calEmbedScript = `
+  function initCal() {
   (function (C, A, L) {
     let p = function (a, ar) {
       a.q.push(ar);
@@ -70,6 +71,20 @@ const calEmbedScript = `
     styles: { branding: { brandColor: "#000000" } },
     hideEventTypeDetails: false,
     layout: "month_view",
+  });
+  }
+
+  var calStarted = false;
+  function startCal(event) {
+    if (calStarted) return;
+    var target = event.target;
+    if (!target || !target.closest || !target.closest("[data-cal-link]")) return;
+    calStarted = true;
+    initCal();
+  }
+
+  ["pointerover", "touchstart", "focusin", "click"].forEach(function (type) {
+    document.addEventListener(type, startCal, { passive: true });
   });
 `;
 
@@ -208,7 +223,7 @@ const schema =
       is:inline
       src="https://cloud.umami.is/script.js"
       data-website-id={import.meta.env.UMAMI_WEBSITE_ID}
-      data-domains="gianmarcocavallo.com"></script>
+      data-domains={SITE.site.domain}></script>
     <script
       src="https://analytics.ahrefs.com/analytics.js"
       data-key={import.meta.env.AHREFS_ANALYTICS_KEY}
@@ -225,6 +240,17 @@ const schema =
     <style is:inline set:html={buttonFrameVars}></style>
   </head>
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">
+    <script is:inline>
+      try {
+        var b = document.body;
+        var t = localStorage.getItem("theme");
+        if (t && t !== "default") b.classList.add(t);
+        if ((localStorage.getItem("cardBorder") ?? "custom") !== "custom") {
+          var s = localStorage.getItem("portfolioStyle");
+          if (s && s !== "default") b.classList.add(s);
+        }
+      } catch {}
+    </script>
     <GridTransition />
     <slot name="loader" />
     <slot />
@@ -279,6 +305,8 @@ const schema =
 </html>
 
 <script>
+  import { SITE } from "../site-config";
+
   let audioCtx: AudioContext | null = null;
   let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 
@@ -353,7 +381,7 @@ const schema =
     "color:var(--darkslate-200);font-size:12px;",
   );
   console.log(
-    "%c💼  linkedin.com/in/gianmarco-cavallo\n📧  contact@gianmarcocavallo.com",
+    `%c💼  ${SITE.links.linkedin.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, "")}\n📧  ${SITE.links.email}`,
     "color:var(--primary-300);font-size:12px;line-height:2;",
   );
 </script>
@@ -367,11 +395,6 @@ const schema =
 
   if (typeof document !== "undefined") {
     document.addEventListener("astro:page-load", () => {
-      const theme = localStorage.getItem("theme");
-      if (theme && theme !== "default") {
-        document.body.classList.add(theme);
-      }
-
       const loader = document.querySelector(".loader");
       if (loader instanceof HTMLElement) {
         loader.style.opacity = "0";

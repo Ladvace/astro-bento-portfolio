@@ -19,7 +19,12 @@
 <script>
   import gsap from "gsap";
 
-  const TARGET_CELL_SIZE = 50;
+  const TARGET_CELL_SIZE = 40;
+  const COVER_DURATION = 0.2;
+  const COVER_SPREAD = 0.35;
+  const REVEAL_DURATION = 0.25;
+  const REVEAL_SPREAD = 0.35;
+  const FIRST_LOAD_SPREAD = 0.9;
   const overlay = document.getElementById("grid-transition") as HTMLElement;
   let cells: HTMLElement[] = [];
   let gridCols = 0;
@@ -56,7 +61,9 @@
       "style-neon",
       "style-paper",
     );
-    if (portfolioStyle && portfolioStyle !== "default")
+    const customBorder =
+      (localStorage.getItem("cardBorder") ?? "custom") === "custom";
+    if (!customBorder && portfolioStyle && portfolioStyle !== "default")
       document.body.classList.add(portfolioStyle);
     const color = getComputedStyle(document.body)
       .getPropertyValue("--primary-500")
@@ -97,15 +104,15 @@
       gsap.killTweensOf(cells);
       gsap.to(cells, {
         opacity: 1,
-        duration: 0.1,
-        stagger: cellDelay(0.18),
+        duration: COVER_DURATION,
+        stagger: cellDelay(COVER_SPREAD),
         ease: "steps(1)",
         onComplete: resolve,
       });
     });
   }
 
-  function reveal(spread = 0.45): Promise<void> {
+  function reveal(spread = FIRST_LOAD_SPREAD): Promise<void> {
     phase = Math.random() * Math.PI * 2;
     applyTheme();
     document.dispatchEvent(new CustomEvent("grid:reveal-start"));
@@ -113,7 +120,7 @@
       gsap.killTweensOf(cells);
       gsap.to(cells, {
         opacity: 0,
-        duration: 0.12,
+        duration: REVEAL_DURATION,
         stagger: cellDelay(spread),
         ease: "steps(1)",
         onComplete: () => {
@@ -167,6 +174,6 @@
       applyTheme();
       return;
     }
-    reveal(0.18);
+    reveal(REVEAL_SPREAD);
   });
 </script>

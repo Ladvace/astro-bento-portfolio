@@ -2,6 +2,15 @@
 import { getCurrentTimeInTimezone, formatTimeTo12H } from "../lib/helpers";
 import Card from "./Card/index.astro";
 import { SITE } from "../site-config";
+
+const homeTzAbbr =
+  new Intl.DateTimeFormat("en-US", {
+    timeZone: SITE.location.timezone,
+    timeZoneName: "short",
+  })
+    .formatToParts(new Date())
+    .find((p) => p.type === "timeZoneName")?.value ??
+  SITE.location.timezone.split("/").pop();
 ---
 
 <script>
@@ -153,17 +162,10 @@ import { SITE } from "../site-config";
   padding="p-4"
   nsPadY="1rem"
 >
-  <div class="flex flex-col h-full justify-center gap-2">
-    <button
-      id="formatToggle"
-      class="absolute top-4 right-4 text-[8px] font-medium uppercase tracking-widest text-darkslate-300 hover:text-white border border-darkslate-400 hover:border-darkslate-200 rounded px-1.5 leading-[13px] transition-colors z-10"
-    >
-      24h
-    </button>
-
+  <div class="flex flex-col h-full justify-center gap-0">
     <!-- My time -->
     <div
-      class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
+      class="flex flex-col gap-0 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
     >
       <div class="flex items-center gap-1.5">
         <span
@@ -173,17 +175,23 @@ import { SITE } from "../site-config";
           class="text-[9px] font-medium uppercase tracking-widest text-darkslate-300"
           >my time</span
         >
+        <button
+          id="formatToggle"
+          class="text-[8px] font-medium uppercase tracking-widest text-darkslate-300 hover:text-white border border-darkslate-400 hover:border-darkslate-200 rounded px-1.5 leading-[13px] transition-colors"
+        >
+          24h
+        </button>
       </div>
       <time
         datetime=""
         id="italyTimeDisplay"
-        class="whitespace-nowrap text-xl font-bold tabular-nums leading-tight md:text-[clamp(2.125rem,4.25vw,3.4rem)] xl:text-[clamp(1.25rem,1.7vw,2.125rem)]"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-[clamp(2.375rem,4.75vw,3.8rem)] xl:text-[clamp(1.4rem,1.9vw,2.375rem)]"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
       <div class="flex items-center gap-1 text-[9px] text-darkslate-300">
         <span id="homeTzDisplay" data-timezone={SITE.location.timezone}
-          >---</span
+          >{homeTzAbbr}</span
         >
         <span class="opacity-40">·</span>
         <span>{SITE.location.countryName}</span>
@@ -195,14 +203,15 @@ import { SITE } from "../site-config";
       <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
       <span
         id="offsetDisplay"
-        class="text-[9px] text-darkslate-300 whitespace-nowrap">---</span
+        class="inline-block min-w-[13ch] text-center text-[9px] text-darkslate-300 whitespace-nowrap"
+        >&nbsp;</span
       >
       <div class="flex-1 h-px bg-darkslate-400 opacity-40"></div>
     </div>
 
     <!-- Your time -->
     <div
-      class="flex flex-col gap-0.5 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
+      class="flex flex-col gap-0 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
     >
       <span
         class="text-[9px] font-medium uppercase tracking-widest text-darkslate-300"
@@ -211,12 +220,14 @@ import { SITE } from "../site-config";
       <time
         datetime=""
         id="visitorTimeDisplay"
-        class="whitespace-nowrap text-xl font-bold tabular-nums leading-tight md:text-[clamp(2.125rem,4.25vw,3.4rem)] xl:text-[clamp(1.25rem,1.7vw,2.125rem)]"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-[clamp(2.375rem,4.75vw,3.8rem)] xl:text-[clamp(1.4rem,1.9vw,2.375rem)]"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
-      <span id="visitorTzDisplay" class="text-[9px] text-darkslate-300"
-        >---</span
+      <span
+        id="visitorTzDisplay"
+        class="inline-block min-w-[4ch] text-[9px] text-darkslate-300"
+        >&nbsp;</span
       >
     </div>
   </div>

@@ -1,6 +1,9 @@
+export const DOMAIN = "gianmarcocavallo.com";
+
 export const SITE = {
   site: {
-    url: "https://gianmarcocavallo.com/",
+    domain: DOMAIN,
+    url: `https://${DOMAIN}/`,
   },
   author: {
     firstName: "Gianmarco",
@@ -21,7 +24,7 @@ export const SITE = {
     medium: "https://ladvace.medium.com/",
     dribbble: "https://dribbble.com/Ladvace_Jace",
     behance: "https://www.behance.net/Ladvace",
-    email: "contact@gianmarcocavallo.com",
+    email: `contact@${DOMAIN}`,
   },
   cal: {
     username: "ladvace",

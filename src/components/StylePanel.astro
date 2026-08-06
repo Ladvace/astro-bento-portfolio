@@ -255,7 +255,17 @@ const styles = [
   // already or the cards flick through the normal chrome.
   document.addEventListener("astro:before-swap", (e) => {
     const doc = (e as unknown as { newDocument: Document }).newDocument;
-    doc.documentElement.classList.toggle("cards-custom", isCustomBorder());
+    const custom = isCustomBorder();
+    doc.documentElement.classList.toggle("cards-custom", custom);
+
+    doc.body.classList.remove(...ALL_STYLES);
+    if (!custom) {
+      const saved = localStorage.getItem("portfolioStyle");
+      if (saved && saved !== "default") doc.body.classList.add(saved);
+    }
+    const theme = localStorage.getItem("theme");
+    if (theme && theme !== "default") doc.body.classList.add(theme);
+
     document.body.classList.remove("ns-js-shape");
   });
 

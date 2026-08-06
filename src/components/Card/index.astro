@@ -15,6 +15,7 @@ interface Props {
   padding?: string;
   bgColor?: string;
   arrowCorner?: boolean;
+  centerY?: boolean;
   prefetch?: "hover" | "viewport" | "load" | "tap";
   nsPadY?: string;
   nsPadX?: string;
@@ -32,6 +33,7 @@ const {
   padding,
   bgColor,
   arrowCorner,
+  centerY,
   prefetch,
   nsPadY,
   nsPadX,
@@ -51,7 +53,9 @@ const nsVars = cssVars({
 <div
   class={`card group overflow-hidden min-w-0 transfor-y-[-40%] ${chrome} align-start flex-none ${
     height || "h-full"
-  } justify-start relative transform perspective-1200 w-full transition-all duration-150 ease-out col-span-1 ${
+  } ${
+    href || centerY ? "flex flex-col justify-center" : "justify-start"
+  } relative transform perspective-1200 w-full transition-[border-color,box-shadow,background-color,transform] duration-150 ease-out col-span-1 ${
     colSpan || "md:col-span-2"
   } ${rowSpan || ""} ${padding || "p-6"} ${className || ""}`}
   style={nsVars}
@@ -60,7 +64,7 @@ const nsVars = cssVars({
   {
     href ? (
       <a
-        class={`h-full w-full flex flex-col justify-start relative ${colorText || ""}`}
+        class={`h-auto w-full flex flex-col relative ${colorText || ""}`}
         href={href}
         data-astro-prefetch={prefetch}
       >

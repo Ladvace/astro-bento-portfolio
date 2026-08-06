@@ -466,6 +466,7 @@
 
 html {
   overscroll-behavior: none;
+  scrollbar-gutter: stable;
 }
 
 body {
