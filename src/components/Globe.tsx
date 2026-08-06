@@ -7,10 +7,11 @@ type Props = {
   isStatic?: boolean;
   class?: string;
   enableHover?: boolean;
+  scale?: number;
 };
 
 // --- Tunables -------------------------------------------------------
-const PROJECTION_SCALE = 320;
+const DEFAULT_PROJECTION_SCALE = 320;
 const FALLBACK_HEIGHT = 500;
 const DRAG_SENSITIVITY = 75;
 const TICK_MS = 200;
@@ -93,10 +94,12 @@ const forEachCoord = (
   }
 };
 
-const GlobeComponent = ({ isStatic, enableHover }: Props) => {
+const GlobeComponent = ({ isStatic, enableHover, scale }: Props) => {
   let mapContainer: HTMLDivElement | undefined;
   const visitedCountries = SITE.visitedCountries;
   const features = worldData.features as any[];
+
+  const projectionScale = scale ?? DEFAULT_PROJECTION_SCALE;
 
   onMount(() => {
     if (!mapContainer) return;
@@ -104,7 +107,7 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
     // --- sizing & projection -----------------------------------------
     // The interactive globe gets an ornamental ring → enforce minimum
     // canvas size so the rings + ticks aren't clipped.
-    const ringOuter = PROJECTION_SCALE + RING_OFFSET;
+    const ringOuter = projectionScale + RING_OFFSET;
     const ringOutermost = ringOuter + RING_TICK_LENGTH;
     const numeralRadius = ringOutermost + NUMERAL_OFFSET;
     const cardinalRadius = numeralRadius + CARDINAL_OFFSET;
@@ -119,7 +122,7 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
 
     const projection = d3
       .geoOrthographic()
-      .scale(PROJECTION_SCALE)
+      .scale(projectionScale)
       .center([0, 0])
       .rotate([0, -30])
       .translate([cx, cy]);
@@ -267,7 +270,7 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
       .attr("stroke-width", 0.3)
       .attr("cx", cx)
       .attr("cy", cy)
-      .attr("r", PROJECTION_SCALE);
+      .attr("r", projectionScale);
 
     const map = svg.append("g");
 
@@ -522,7 +525,7 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
       const isOverSphere = (x: number, y: number) => {
         const dx = x - cx;
         const dy = y - cy;
-        return dx * dx + dy * dy <= PROJECTION_SCALE * PROJECTION_SCALE;
+        return dx * dx + dy * dy <= projectionScale * projectionScale;
       };
 
       svg
@@ -565,7 +568,7 @@ const GlobeComponent = ({ isStatic, enableHover }: Props) => {
     d3.timer(() => {
       if (isPaused || isStatic) return;
       const rot = projection.rotate();
-      const k = DRAG_SENSITIVITY / projection.scale();
+      const k = DRAG_SENSITIVITY / DEFAULT_PROJECTION_SCALE;
       projection.rotate([rot[0] - k, rot[1]]);
       updatePaths();
     }, TICK_MS);

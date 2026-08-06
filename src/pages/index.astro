@@ -413,23 +413,15 @@ export const prerender = true;
         <h2 class="text-xl md:text-2xl xl:text-xl font-bold m-0">Blog</h2>
       </div>
     </Card>
-    <Card
-      colSpan="md:col-span-1"
-      href="travel"
-      rowSpan="md:row-span-1"
-      title="Countries I visited"
-    >
-      <div slot="background" class="absolute inset-0 -z-10">
-        <div class="hidden md:block h-full w-full">
-          <Globe client:visible />
+    <Card colSpan="md:col-span-1" href="travel" rowSpan="md:row-span-1">
+      <div class="flex items-center">
+        <div class="w-13 h-13 flex-shrink-0 relative z-0">
+          <Globe client:visible scale={24} />
         </div>
-        <div class="block md:hidden h-full w-full">
-          <Globe client:visible isStatic={true} />
-        </div>
+        <h2 class="text-lg font-bold m-0 relative z-20 -ml-5 min-w-0">
+          Countries I visited
+        </h2>
       </div>
-      <span class="text-xs text-white/60"
-        >{SITE.visitedCountries.length} countries</span
-      >
     </Card>
     <ThemeChangeCard />
     <Card colSpan="md:col-span-1" rowSpan="md:row-span-1">
