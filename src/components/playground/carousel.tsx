@@ -148,7 +148,7 @@ const Carousel = () => {
               }}
             >
               <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/50"></div>
-              <div class="title absolute z-10 text-white bottom-5 left-5 text-[clamp(20px,3vw,30px)] transition-opacity duration-800 ease-[cubic-bezier(0,0.02,0,1)] shadow-sm">
+              <div class="title absolute z-10 text-white bottom-5 left-5 text-fluid-lg transition-opacity duration-800 ease-[cubic-bezier(0,0.02,0,1)] shadow-sm">
                 {item.title}
               </div>
               <img

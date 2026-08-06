@@ -113,7 +113,7 @@ export const prerender = true;
             arrowCorner={true}
           >
             <div class="flex flex-col gap-3 h-full">
-              <span class="text-[10px] font-medium tabular-nums text-darkslate-400 tracking-widest">
+              <span class="text-3xs font-medium tabular-nums text-darkslate-400 tracking-widest">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
@@ -126,11 +126,11 @@ export const prerender = true;
               </div>
               <div class="flex flex-wrap items-center gap-1.5 mt-auto pt-1">
                 {project.tags.map((tag) => (
-                  <span class="text-[10px] font-medium px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-300">
+                  <span class="text-3xs font-medium px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-300">
                     {tag}
                   </span>
                 ))}
-                <span class="ml-auto text-[10px] font-medium tabular-nums text-darkslate-400 tracking-widest">
+                <span class="ml-auto text-3xs font-medium tabular-nums text-darkslate-400 tracking-widest">
                   {formatDate(project.date)}
                 </span>
               </div>

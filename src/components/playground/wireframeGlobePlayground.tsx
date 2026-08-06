@@ -19,7 +19,7 @@ const DEFAULTS = {
 
 function sectionTitle(text: string) {
   return (
-    <h3 class="text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-neutral-500 mb-3">
+    <h3 class="text-2xs font-semibold uppercase tracking-[0.12em] text-neutral-500 mb-3">
       {text}
     </h3>
   );

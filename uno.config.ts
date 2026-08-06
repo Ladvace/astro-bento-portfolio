@@ -29,6 +29,16 @@ export default defineConfig({
     fontFamily: {
       sans: "var(--font-satoshi)",
     },
+    fontSize: {
+      // Steps below presetWind3's text-xs (0.75rem), for micro labels/badges.
+      "2xs": ["0.6875rem", "1rem"],
+      "3xs": ["0.625rem", "0.875rem"],
+      "4xs": ["0.5rem", "0.75rem"],
+      // Viewport-fluid display sizes.
+      "fluid-2xl": ["clamp(2.375rem, 4.75vw, 3.8rem)", "1.1"],
+      "fluid-xl": ["clamp(1.4rem, 1.9vw, 2.375rem)", "1.1"],
+      "fluid-lg": ["clamp(1.25rem, 3vw, 1.875rem)", "1.2"],
+    },
     colors: {
       darkslate: {
         50: "var(--darkslate-50)",
