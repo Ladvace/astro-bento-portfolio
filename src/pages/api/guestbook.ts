@@ -1,4 +1,4 @@
-import { db, Guestbook as GuestbookTable, desc, count } from "astro:db";
+import { db, Guestbook as GuestbookTable, desc, count } from "../../lib/db";
 import type { APIRoute } from "astro";
 
 const ITEMS_PER_PAGE = 10;

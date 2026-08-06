@@ -10,7 +10,6 @@ import { remarkReadingTime } from "./src/lib/remark-reading-time.mjs";
 
 import svelte from "@astrojs/svelte";
 
-import db from "@astrojs/db";
 import { unified } from "@astrojs/markdown-remark";
 
 const envSiteUrl = process.env.SITE_URL ?? "https://gianmarcocavallo.com/";
@@ -73,7 +72,6 @@ export default defineConfig({
     UnoCSS({ injectReset: true }),
     icon(),
     svelte(),
-    db(),
   ],
   markdown: unified({
     remarkPlugins: [remarkReadingTime],

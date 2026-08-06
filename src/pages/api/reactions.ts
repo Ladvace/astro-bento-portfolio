@@ -1,4 +1,4 @@
-import { db, Guestbook as GuestbookTable, eq, sql } from "astro:db";
+import { db, Guestbook as GuestbookTable, eq, sql } from "../../lib/db";
 import type { APIRoute } from "astro";
 
 export const POST: APIRoute = async ({ request }) => {

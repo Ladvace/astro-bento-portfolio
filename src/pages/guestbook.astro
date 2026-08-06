@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import BackLink from "../components/BackLink.astro";
 import { SITE } from "../site-config";
-import { db, Guestbook as GuestbookTable, desc, count } from "astro:db";
+import { db, Guestbook as GuestbookTable, desc, count } from "../lib/db";
 import GuestbookCard from "../components/guestbook/GuestbookCard.astro";
 import GuestbookForm from "../components/guestbook/GuestbookForm.astro";
 import GuestbookPagination from "../components/guestbook/GuestbookPagination.astro";
