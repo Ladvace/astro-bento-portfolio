@@ -103,7 +103,7 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
       id="memoji-avatar"
       height="270px"
       label={`memoji of ${SITE.author.firstName}, slowly rotating`}
-      class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
+      class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none md:pointer-events-auto md:cursor-ew-resize"
       {...Object.fromEntries(
         AVATAR_THEMES.map((t) => [`data-theme-${t.theme}`, t.sheet]),
       )}
@@ -113,6 +113,9 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
 
 <script>
   import { animate } from "motion";
+  import { cellPosition, SPRITE } from "../lib/avatar-sprite.mjs";
+
+  const PX_PER_FRAME = 14;
 
   function updateMemojiImage() {
     const avatar = document.getElementById("memoji-avatar");
@@ -125,6 +128,56 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
     if (!sheet) return;
 
     avatar.style.backgroundImage = `url("${sheet}")`;
+  }
+
+  function initPointerSpin() {
+    const avatar = document.getElementById("memoji-avatar");
+    if (!avatar) return;
+
+    const duration =
+      parseFloat(
+        getComputedStyle(avatar).getPropertyValue("--sprite-duration"),
+      ) * 1000;
+    let frame = 0;
+    let lastX = 0;
+    let travel = 0;
+
+    const liveFrame = () => {
+      const spin = avatar
+        .getAnimations()
+        .find((a) => (a as CSSAnimation).animationName === "avatar-sprite-row");
+      const progress = spin?.effect?.getComputedTiming().progress;
+      return progress == null
+        ? frame
+        : Math.floor(progress * SPRITE.FRAMES) % SPRITE.FRAMES;
+    };
+
+    avatar.addEventListener("pointerenter", (event) => {
+      lastX = event.clientX;
+      travel = 0;
+      frame = liveFrame();
+      avatar.classList.add("is-manual");
+      avatar.style.backgroundPosition = cellPosition(frame);
+    });
+
+    avatar.addEventListener("pointermove", (event) => {
+      if (!avatar.classList.contains("is-manual")) return;
+      travel += event.clientX - lastX;
+      lastX = event.clientX;
+
+      const steps = Math.trunc(travel / PX_PER_FRAME);
+      if (!steps) return;
+      travel -= steps * PX_PER_FRAME;
+      frame =
+        (((frame + steps) % SPRITE.FRAMES) + SPRITE.FRAMES) % SPRITE.FRAMES;
+      avatar.style.backgroundPosition = cellPosition(frame);
+    });
+
+    avatar.addEventListener("pointerleave", () => {
+      avatar.classList.remove("is-manual");
+      avatar.style.backgroundPosition = "";
+      avatar.style.animationDelay = `-${(frame / SPRITE.FRAMES) * duration}ms`;
+    });
   }
 
   function initLevitatingAnimation() {
@@ -156,6 +209,7 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
   document.addEventListener("astro:page-load", () => {
     updateMemojiImage();
     initLevitatingAnimation();
+    initPointerSpin();
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ["class"],

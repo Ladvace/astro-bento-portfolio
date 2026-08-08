@@ -93,11 +93,6 @@ export const prerender = true;
     animation-direction: reverse;
   }
 
-  /* Scrubbing takes over background-position entirely. */
-  .tt-stage :global(.tt-spin.is-scrubbing) {
-    animation: none;
-  }
-
   .tt-readout {
     margin: 0;
     font-size: 0.625rem;
@@ -142,9 +137,10 @@ export const prerender = true;
     SHEET_BY_NAME,
     SPRITE,
     UNDITHERED_SHEET,
+    cellPosition,
   } from "../../lib/avatar-sprite.mjs";
 
-  const { COLS, ROWS, FRAMES } = SPRITE;
+  const { FRAMES } = SPRITE;
 
   /** The undithered render plus the per-theme dithered bakes. */
   const SHEETS: Record<string, string> = {
@@ -185,7 +181,7 @@ export const prerender = true;
 
     // Paused holds one frame, so drop the animation and place the cell by hand.
     const applyPlayback = () => {
-      spin.classList.toggle("is-scrubbing", !PARAMS.playing);
+      spin.classList.toggle("is-manual", !PARAMS.playing);
       spin.classList.toggle("is-paused", !PARAMS.playing);
       if (PARAMS.playing) {
         spin.style.backgroundPosition = "";
@@ -197,11 +193,7 @@ export const prerender = true;
 
     const applyFrame = () => {
       if (PARAMS.playing) return;
-      const col = PARAMS.frame % COLS;
-      const row = Math.floor(PARAMS.frame / COLS);
-      spin.style.backgroundPosition = `${(col * 100) / (COLS - 1)}% ${
-        (row * 100) / (ROWS - 1)
-      }%`;
+      spin.style.backgroundPosition = cellPosition(PARAMS.frame);
       const deg = Math.round((PARAMS.frame * 360) / FRAMES);
       readout.textContent = `frame ${String(PARAMS.frame).padStart(2, "0")} · ${deg}°`;
     };

@@ -31,3 +31,9 @@ export const SHEET_BY_NAME = Object.fromEntries(
 );
 
 export const DEFAULT_SHEET = SHEET_BY_THEME.default;
+
+export function cellPosition(index) {
+  const col = index % SPRITE.COLS;
+  const row = Math.floor(index / SPRITE.COLS);
+  return `${(col * 100) / (SPRITE.COLS - 1)}% ${(row * 100) / (SPRITE.ROWS - 1)}%`;
+}
