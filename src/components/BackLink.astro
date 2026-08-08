@@ -12,13 +12,11 @@ const {
 } = Astro.props;
 ---
 
-<a
-  href={href}
-  class:list={[
-    // inline-block so vertical margins apply outside a flex parent too.
-    "inline-block text-white bg-neutral-900 hover:bg-neutral-800 w-fit px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg transition-colors",
-    extraClass,
-  ]}
->
-  {label}
-</a>
+<span class:list={["btn-shell inline-flex w-fit", extraClass]}>
+  <a
+    href={href}
+    class="btn--ns inline-flex items-center w-fit px-4 py-2 rounded-lg border border-primary-500 bg-darkslate-900 text-darkslate-50 shadow-custom shadow-primary-500 hover:text-primary-500 active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-colors duration-100 ease-in-out"
+  >
+    {label}
+  </a>
+</span>
