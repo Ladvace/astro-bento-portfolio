@@ -1,0 +1,701 @@
+---
+import PlaygroundShell from "../../components/PlaygroundShell.astro";
+import { readPalettes } from "../../lib/avatar-palettes.mjs";
+import { SPRITE, UNDITHERED_SHEET } from "../../lib/avatar-sprite.mjs";
+import { SITE } from "../../site-config";
+
+/**
+ * Interactive tuning for the avatar dither. Shares src/lib/dither.mjs with
+ * scripts/dither-avatar.mjs and prints the command to bake settings in. The
+ * preview source is the lossy sheet, so a few pixels quantise differently.
+ */
+const palettes = readPalettes("src/style.css");
+
+export const prerender = true;
+---
+
+<PlaygroundShell
+  title={`${SITE.author.fullName} - Playground - Dither lab`}
+  description="Interactive tuning for the dithered avatar turntable spritesheet"
+  scrollable={true}
+>
+  <div class="dl">
+    <div class="dl-stage" id="dl-stage">
+      <canvas id="dl-canvas" width={SPRITE.CELL_W} height={SPRITE.CELL_H}
+      ></canvas>
+      <p class="dl-status" id="dl-status">loading {UNDITHERED_SHEET}&hellip;</p>
+    </div>
+
+    <aside class="dl-side">
+      <div id="dl-pane"></div>
+
+      <section class="dl-block">
+        <div class="dl-block-head">
+          <span class="dl-label">Palette</span>
+          <span class="dl-actions">
+            <button id="dl-add" type="button">+ colour</button>
+            <button id="dl-reset" type="button">reset</button>
+          </span>
+        </div>
+        <ul class="dl-palette" id="dl-palette"></ul>
+        <p class="dl-hint" id="dl-hint"></p>
+      </section>
+
+      <section class="dl-block">
+        <div class="dl-block-head">
+          <span class="dl-label">Command</span>
+          <button id="dl-copy" type="button">copy</button>
+        </div>
+        <pre id="dl-command"></pre>
+      </section>
+    </aside>
+  </div>
+
+  <script
+    is:inline
+    type="application/json"
+    id="dl-palettes"
+    set:html={JSON.stringify(palettes)}
+  />
+</PlaygroundShell>
+
+<style>
+  .dl {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 310px;
+    gap: 1.5rem;
+    align-items: start;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0.5rem 0 2rem;
+    color: var(--darkslate-100);
+  }
+
+  @media (max-width: 900px) {
+    .dl {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .dl-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 470px;
+    padding: 1.5rem;
+    border: 1px solid var(--darkslate-700);
+    border-radius: 14px;
+  }
+
+  .dl-stage.bg-dark {
+    background: #22252c;
+  }
+
+  .dl-stage.bg-light {
+    background: var(--darkslate-50);
+  }
+
+  .dl-stage.bg-checker {
+    background-image:
+      linear-gradient(
+        45deg,
+        var(--darkslate-800) 25%,
+        transparent 25%,
+        transparent 75%,
+        var(--darkslate-800) 75%
+      ),
+      linear-gradient(
+        45deg,
+        var(--darkslate-800) 25%,
+        var(--darkslate-900) 25%,
+        var(--darkslate-900) 75%,
+        var(--darkslate-800) 75%
+      );
+    background-size: 24px 24px;
+    background-position:
+      0 0,
+      12px 12px;
+  }
+
+  #dl-canvas {
+    image-rendering: pixelated;
+    max-width: 100%;
+  }
+
+  .dl-status {
+    margin: 0;
+    font-size: 0.625rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: var(--darkslate-300);
+  }
+
+  .dl-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+  }
+
+  .dl-block {
+    border: 1px solid var(--darkslate-700);
+    border-radius: 10px;
+    padding: 0.75rem;
+    background: var(--darkslate-900);
+  }
+
+  .dl-block-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .dl-label {
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--darkslate-300);
+  }
+
+  .dl-actions {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  button {
+    background: var(--darkslate-800);
+    color: var(--darkslate-100);
+    border: 1px solid var(--darkslate-600);
+    border-radius: 6px;
+    padding: 0.2rem 0.55rem;
+    font: inherit;
+    font-size: 0.6875rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+
+  button:hover:not(:disabled) {
+    border-color: var(--primary-500);
+  }
+
+  button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .dl-palette {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .dl-palette li {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) 2.5rem 22px;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .dl-palette input[type="color"] {
+    width: 28px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--darkslate-600);
+    border-radius: 5px;
+    background: none;
+    cursor: pointer;
+  }
+
+  .dl-palette input[type="text"] {
+    width: 100%;
+    min-width: 0;
+    background: var(--darkslate-800);
+    color: var(--darkslate-100);
+    border: 1px solid var(--darkslate-600);
+    border-radius: 5px;
+    padding: 0.2rem 0.4rem;
+    font: inherit;
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .dl-palette input[type="text"]:focus-visible {
+    outline: none;
+    border-color: var(--primary-500);
+  }
+
+  .dl-palette input[type="text"][aria-invalid="true"] {
+    border-color: var(--primary-500);
+  }
+
+  .dl-lum {
+    font-size: 0.625rem;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--darkslate-300);
+  }
+
+  .dl-palette button {
+    padding: 0.1rem 0;
+    width: 22px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .dl-hint {
+    margin: 0.6rem 0 0;
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    color: var(--darkslate-300);
+  }
+
+  .dl-hint:empty {
+    display: none;
+  }
+
+  .dl-hint b {
+    color: var(--primary-500);
+    font-weight: 600;
+  }
+
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 0.6875rem;
+    line-height: 1.6;
+    color: var(--darkslate-200);
+  }
+</style>
+
+<script>
+  import { Pane } from "tweakpane";
+  import { bleedEdges, ditherImage, luminance } from "../../lib/dither.mjs";
+  import {
+    SPRITE,
+    UNDITHERED_SHEET as SHEET,
+  } from "../../lib/avatar-sprite.mjs";
+
+  const { COLS, ROWS, FRAMES } = SPRITE;
+  const MIN_COLORS = 2;
+  const WIDE_GAP = 60;
+  const HEX = /^#?[0-9a-f]{6}$/i;
+
+  let pane: Pane | null = null;
+  let raf = 0;
+  let timer = 0;
+
+  function initLab() {
+    const stage = document.getElementById("dl-stage")!;
+    const canvas = document.getElementById("dl-canvas") as HTMLCanvasElement;
+    const status = document.getElementById("dl-status")!;
+    const list = document.getElementById("dl-palette")!;
+    const hint = document.getElementById("dl-hint")!;
+    const command = document.getElementById("dl-command")!;
+    const addButton = document.getElementById("dl-add")!;
+    const resetButton = document.getElementById("dl-reset")!;
+    const copyButton = document.getElementById("dl-copy")!;
+    const data = document.getElementById("dl-palettes")!;
+    if (!stage || !canvas || !status || !list || !command || !data) return;
+
+    const PALETTES: Record<string, string[]> = JSON.parse(
+      data.textContent || "{}",
+    );
+
+    const PARAMS = {
+      theme: "red",
+      brightness: 0,
+      contrast: 1,
+      matrix: 2,
+      block: 1,
+      ordered: true,
+      animate: true,
+      duration: 2400,
+      frame: 0,
+      zoom: 1.25,
+      background: "dark",
+    };
+
+    let palette = [...PALETTES[PARAMS.theme]];
+
+    const ctx = canvas.getContext("2d")!;
+
+    let sourceCells: ImageData[] = [];
+
+    let cache: (ImageData | null)[] = [];
+    let cellW = SPRITE.CELL_W;
+    let cellH = SPRITE.CELL_H;
+
+    const scratch = document.createElement("canvas");
+    const sctx = scratch.getContext("2d")!;
+
+    function toScratch(image: ImageData) {
+      scratch.width = image.width;
+      scratch.height = image.height;
+      sctx.putImageData(image, 0, 0);
+      return scratch;
+    }
+
+    function resize(image: ImageData, w: number, h: number, smooth: boolean) {
+      const src = toScratch(image);
+      const out = document.createElement("canvas");
+      out.width = w;
+      out.height = h;
+      const octx = out.getContext("2d")!;
+      octx.imageSmoothingEnabled = smooth;
+      octx.drawImage(src, 0, 0, w, h);
+      return octx.getImageData(0, 0, w, h);
+    }
+
+    function ditherCell(index: number) {
+      const source = sourceCells[index];
+      const working = new ImageData(
+        new Uint8ClampedArray(source.data),
+        source.width,
+        source.height,
+      );
+
+      const alpha = new Uint8ClampedArray(source.width * source.height);
+      for (let p = 0; p < alpha.length; p++) alpha[p] = working.data[p * 4 + 3];
+
+      bleedEdges(working);
+
+      let out =
+        PARAMS.block > 1
+          ? resize(
+              working,
+              Math.round(source.width / PARAMS.block),
+              Math.round(source.height / PARAMS.block),
+              true,
+            )
+          : working;
+
+      ditherImage(out, {
+        palette,
+        matrix: [PARAMS.matrix, PARAMS.matrix],
+        brightness: PARAMS.brightness,
+        contrast: PARAMS.contrast,
+        ordered: PARAMS.ordered,
+      });
+
+      if (out.width !== source.width) {
+        out = resize(out, source.width, source.height, false);
+      }
+      for (let p = 0; p < alpha.length; p++) out.data[p * 4 + 3] = alpha[p];
+      return out;
+    }
+
+    function draw(index: number) {
+      if (!sourceCells.length) return;
+      if (!cache[index]) cache[index] = ditherCell(index);
+
+      const w = Math.round(cellW * PARAMS.zoom);
+      const h = Math.round(cellH * PARAMS.zoom);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(toScratch(cache[index]!), 0, 0, w, h);
+
+      const deg = Math.round((index * 360) / FRAMES);
+      status.textContent =
+        `frame ${String(index).padStart(2, "0")} · ${deg}° · ` +
+        `${palette.length} colours · bayer ${PARAMS.matrix}×${PARAMS.matrix}`;
+    }
+
+    function invalidate() {
+      cache = new Array(FRAMES).fill(null);
+      renderCommand();
+      if (!PARAMS.animate) draw(PARAMS.frame);
+    }
+
+    function setPalette(next: string[]) {
+      palette = next;
+      renderPalette();
+      invalidate();
+    }
+
+    /** Fill the widest luminance gap -- what flattens the face to a white mask. */
+    function addColour() {
+      const sorted = [...palette].sort((a, b) => luminance(a) - luminance(b));
+      let bestAt = 0;
+      let bestGap = -1;
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const gap = luminance(sorted[i + 1]) - luminance(sorted[i]);
+        if (gap > bestGap) {
+          bestGap = gap;
+          bestAt = i;
+        }
+      }
+      setPalette([...palette, mix(sorted[bestAt], sorted[bestAt + 1])]);
+    }
+
+    function mix(a: string, b: string) {
+      const pair = [a, b].map((hex) =>
+        [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)),
+      );
+      const hex = pair[0]
+        .map((v, i) =>
+          Math.round((v + pair[1][i]) / 2)
+            .toString(16)
+            .padStart(2, "0"),
+        )
+        .join("");
+      return `#${hex}`;
+    }
+
+    function renderPalette() {
+      list.innerHTML = "";
+
+      palette.forEach((hex, index) => {
+        const row = document.createElement("li");
+
+        const swatch = document.createElement("input");
+        swatch.type = "color";
+        swatch.value = hex;
+        swatch.setAttribute("aria-label", `Colour ${index + 1}`);
+        swatch.addEventListener("input", () => {
+          const next = [...palette];
+          next[index] = swatch.value;
+          text.value = swatch.value;
+          text.removeAttribute("aria-invalid");
+          palette = next;
+          renderLuminance();
+          invalidate();
+        });
+
+        const text = document.createElement("input");
+        text.type = "text";
+        text.value = hex;
+        text.spellcheck = false;
+        text.setAttribute("aria-label", `Colour ${index + 1} hex`);
+        text.addEventListener("input", () => {
+          if (!HEX.test(text.value.trim())) {
+            text.setAttribute("aria-invalid", "true");
+            return;
+          }
+          text.removeAttribute("aria-invalid");
+          const value = text.value.trim().replace(/^#?/, "#");
+          const next = [...palette];
+          next[index] = value;
+          swatch.value = value;
+          palette = next;
+          renderLuminance();
+          invalidate();
+        });
+
+        const lum = document.createElement("span");
+        lum.className = "dl-lum";
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "×";
+        remove.disabled = palette.length <= MIN_COLORS;
+        remove.setAttribute("aria-label", `Remove colour ${index + 1}`);
+        remove.addEventListener("click", () =>
+          setPalette(palette.filter((_, i) => i !== index)),
+        );
+
+        row.append(swatch, text, lum, remove);
+        list.appendChild(row);
+      });
+
+      renderLuminance();
+    }
+
+    function renderLuminance() {
+      list.querySelectorAll<HTMLElement>(".dl-lum").forEach((el, i) => {
+        el.textContent = String(Math.round(luminance(palette[i])));
+      });
+
+      const sorted = [...palette].sort((a, b) => luminance(a) - luminance(b));
+      let widest = 0;
+      let pair: [string, string] = [sorted[0], sorted[0]];
+      for (let i = 0; i < sorted.length - 1; i++) {
+        const gap = luminance(sorted[i + 1]) - luminance(sorted[i]);
+        if (gap > widest) {
+          widest = gap;
+          pair = [sorted[i], sorted[i + 1]];
+        }
+      }
+      hint.innerHTML =
+        widest > WIDE_GAP
+          ? `Widest luminance gap is <b>${Math.round(widest)}</b>, between ` +
+            `${pair[0]} and ${pair[1]}. Tones in between snap to one end — ` +
+            `“+ colour” fills it.`
+          : "";
+    }
+
+    function renderCommand() {
+      const parts = [
+        "node scripts/dither-avatar.mjs",
+        "--in <frames-dir>",
+        `--themes ${PARAMS.theme}`,
+      ];
+      if (PARAMS.matrix !== 2) parts.push(`--matrix ${PARAMS.matrix}`);
+      if (PARAMS.block !== 1) parts.push(`--block ${PARAMS.block}`);
+      if (PARAMS.brightness !== 0) parts.push(`--bright ${PARAMS.brightness}`);
+      if (PARAMS.contrast !== 1) parts.push(`--contrast ${PARAMS.contrast}`);
+      if (palette.join(" ") !== PALETTES[PARAMS.theme].join(" ")) {
+        parts.push(`--palette "${palette.join(",")}"`);
+      }
+
+      command.textContent = parts.join(" \\\n  ");
+    }
+
+    function stopAnimation() {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+      raf = 0;
+      timer = 0;
+    }
+
+    function animate() {
+      stopAnimation();
+      if (!PARAMS.animate) {
+        draw(PARAMS.frame);
+        return;
+      }
+      const step = () => {
+        draw(PARAMS.frame);
+        PARAMS.frame = (PARAMS.frame + 1) % FRAMES;
+        timer = window.setTimeout(
+          () => (raf = requestAnimationFrame(step)),
+          PARAMS.duration / FRAMES,
+        );
+      };
+      step();
+    }
+
+    function applyBackground() {
+      stage.classList.remove("bg-dark", "bg-light", "bg-checker");
+      stage.classList.add(`bg-${PARAMS.background}`);
+    }
+
+    pane = new Pane({
+      title: "Dither",
+      container: document.getElementById("dl-pane")!,
+    });
+
+    pane
+      .addBinding(PARAMS, "theme", {
+        options: Object.fromEntries(Object.keys(PALETTES).map((k) => [k, k])),
+      })
+      .on("change", () => setPalette([...PALETTES[PARAMS.theme]]));
+
+    const tone = pane.addFolder({ title: "tone" });
+    tone
+      .addBinding(PARAMS, "brightness", { min: -128, max: 128, step: 1 })
+      .on("change", invalidate);
+    tone
+      .addBinding(PARAMS, "contrast", { min: 0.4, max: 2.5, step: 0.05 })
+      .on("change", invalidate);
+
+    const grain = pane.addFolder({ title: "grain" });
+    grain
+      .addBinding(PARAMS, "matrix", {
+        options: { "2×2": 2, "4×4": 4, "8×8": 8 },
+      })
+      .on("change", invalidate);
+    grain
+      .addBinding(PARAMS, "block", {
+        label: "dot size",
+        min: 1,
+        max: 4,
+        step: 1,
+      })
+      .on("change", invalidate);
+    grain
+      .addBinding(PARAMS, "ordered", { label: "dither" })
+      .on("change", invalidate);
+
+    const view = pane.addFolder({ title: "view" });
+    view.addBinding(PARAMS, "animate").on("change", animate);
+    view.addBinding(PARAMS, "duration", { min: 400, max: 6000, step: 100 });
+    view
+      .addBinding(PARAMS, "frame", { min: 0, max: FRAMES - 1, step: 1 })
+      .on("change", () => {
+        if (PARAMS.animate) {
+          PARAMS.animate = false;
+          pane?.refresh();
+          stopAnimation();
+        }
+        draw(PARAMS.frame);
+      });
+    view
+      .addBinding(PARAMS, "zoom", { min: 0.4, max: 2.5, step: 0.05 })
+      .on("change", () => draw(PARAMS.frame));
+    view
+      .addBinding(PARAMS, "background", {
+        options: { dark: "dark", light: "light", checker: "checker" },
+      })
+      .on("change", applyBackground);
+
+    addButton.addEventListener("click", addColour);
+    resetButton.addEventListener("click", () =>
+      setPalette([...PALETTES[PARAMS.theme]]),
+    );
+    copyButton.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(command.textContent || "");
+      copyButton.textContent = "copied";
+      window.setTimeout(() => (copyButton.textContent = "copy"), 1200);
+    });
+
+    applyBackground();
+    renderPalette();
+    renderCommand();
+
+    const img = new Image();
+    img.onload = () => {
+      cellW = img.width / COLS;
+      cellH = img.height / ROWS;
+
+      const sheet = document.createElement("canvas");
+      sheet.width = img.width;
+      sheet.height = img.height;
+      const shctx = sheet.getContext("2d")!;
+      shctx.drawImage(img, 0, 0);
+
+      sourceCells = [];
+      for (let i = 0; i < FRAMES; i++) {
+        sourceCells.push(
+          shctx.getImageData(
+            (i % COLS) * cellW,
+            Math.floor(i / COLS) * cellH,
+            cellW,
+            cellH,
+          ),
+        );
+      }
+      cache = new Array(FRAMES).fill(null);
+      animate();
+    };
+    img.onerror = () => {
+      status.textContent = `could not load ${SHEET}`;
+    };
+    img.src = SHEET;
+  }
+
+  function disposeLab() {
+    cancelAnimationFrame(raf);
+    window.clearTimeout(timer);
+    pane?.dispose();
+    pane = null;
+  }
+
+  document.addEventListener("astro:page-load", initLab);
+  document.addEventListener("astro:before-swap", disposeLab);
+</script>

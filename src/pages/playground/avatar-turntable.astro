@@ -1,12 +1,10 @@
 ---
+import AvatarSprite from "../../components/AvatarSprite.astro";
 import PlaygroundShell from "../../components/PlaygroundShell.astro";
 import { SITE } from "../../site-config";
+import { SPRITE, UNDITHERED_SHEET } from "../../lib/avatar-sprite.mjs";
 
-// 24 frames rendered in Blender (Cycles, orthographic camera, transparent film),
-// spun about the model's own vertical axis so the sprite never drifts off centre.
-const COLS = 6;
-const ROWS = 4;
-const FRAMES = COLS * ROWS;
+const { COLS, ROWS, FRAMES, CELL_W, CELL_H } = SPRITE;
 
 export const prerender = true;
 ---
@@ -17,7 +15,13 @@ export const prerender = true;
 >
   <div class="tt-stage" id="tt-stage">
     <div class="tt-viewport">
-      <div class="tt-spin" id="tt-spin"></div>
+      <AvatarSprite
+        id="tt-spin"
+        class="tt-spin"
+        sheet={UNDITHERED_SHEET}
+        height="var(--tt-height)"
+        label="Avatar rotating 360 degrees"
+      />
     </div>
 
     <p class="tt-readout">
@@ -25,12 +29,14 @@ export const prerender = true;
     </p>
 
     <figure class="tt-sheet" id="tt-sheet" hidden>
-      <figcaption class="tt-label">Spritesheet &mdash; {COLS} &times; {ROWS}</figcaption>
+      <figcaption class="tt-label">
+        Spritesheet &mdash; {COLS} &times; {ROWS}
+      </figcaption>
       <img
-        src="/avatar-spin.webp"
+        src={UNDITHERED_SHEET}
         alt={`Spritesheet of the avatar rotating 360 degrees across ${FRAMES} frames`}
-        width="2484"
-        height="1560"
+        width={CELL_W * COLS}
+        height={CELL_H * ROWS}
         loading="lazy"
         decoding="async"
       />
@@ -46,7 +52,7 @@ export const prerender = true;
     gap: 1.25rem;
 
     /* Driven by Tweakpane. */
-    --size: 320px;
+    --tt-height: 300px;
     --duration: 2.4s;
   }
 
@@ -78,63 +84,18 @@ export const prerender = true;
       12px 12px;
   }
 
-  /*
-   * A 6x4 grid stepped by two synced animations: the column animation runs one
-   * full cycle per row, the row animation advances one row per cycle. Positions
-   * are percentages, so the sprite scales without touching the keyframes.
-   *
-   * Column c sits at c / (6 - 1) * 100% = c * 20%   -> 6 stops over 0..120%
-   * Row    r sits at r / (4 - 1) * 100% = r * 33.3% -> 4 stops over 0..133.3%
-   */
-  .tt-spin {
-    width: var(--size);
-    /* Cell aspect ratio, so the avatar is never stretched. */
-    aspect-ratio: 414 / 390;
-    background-image: url("/avatar-spin.webp");
-    background-size: 600% 400%;
-    background-repeat: no-repeat;
-    background-position: 0% 0%;
-    animation:
-      tt-col calc(var(--duration) / 4) steps(6) infinite,
-      tt-row var(--duration) steps(4) infinite;
-  }
-
-  @keyframes tt-col {
-    from {
-      background-position-x: 0%;
-    }
-    to {
-      background-position-x: 120%;
-    }
-  }
-
-  @keyframes tt-row {
-    from {
-      background-position-y: 0%;
-    }
-    to {
-      background-position-y: 133.3333%;
-    }
-  }
-
-  .tt-spin.is-paused {
+  /* :global(): AvatarSprite owns the element, so this scope hash misses it. */
+  .tt-stage :global(.tt-spin.is-paused) {
     animation-play-state: paused;
   }
 
-  .tt-spin.is-reversed {
+  .tt-stage :global(.tt-spin.is-reversed) {
     animation-direction: reverse;
   }
 
   /* Scrubbing takes over background-position entirely. */
-  .tt-spin.is-scrubbing {
+  .tt-stage :global(.tt-spin.is-scrubbing) {
     animation: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .tt-spin {
-      animation: none;
-      background-position: 0% 0%;
-    }
   }
 
   .tt-readout {
@@ -177,12 +138,22 @@ export const prerender = true;
 
 <script>
   import { Pane } from "tweakpane";
+  import {
+    SHEET_BY_NAME,
+    SPRITE,
+    UNDITHERED_SHEET,
+  } from "../../lib/avatar-sprite.mjs";
 
-  const COLS = 6;
-  const ROWS = 4;
-  const FRAMES = COLS * ROWS;
+  const { COLS, ROWS, FRAMES } = SPRITE;
+
+  /** The undithered render plus the per-theme dithered bakes. */
+  const SHEETS: Record<string, string> = {
+    undithered: UNDITHERED_SHEET,
+    ...SHEET_BY_NAME,
+  };
 
   const PARAMS = {
+    sheet: "undithered",
     size: 320,
     duration: 2400,
     playing: true,
@@ -201,21 +172,24 @@ export const prerender = true;
     if (!stage || !spin || !readout || !sheet) return;
 
     const applySize = () => {
-      stage.style.setProperty("--size", `${PARAMS.size}px`);
+      stage.style.setProperty("--tt-height", `${PARAMS.size}px`);
+    };
+
+    const applySheet = () => {
+      spin.style.backgroundImage = `url("${SHEETS[PARAMS.sheet]}")`;
     };
 
     const applyDuration = () => {
       stage.style.setProperty("--duration", `${PARAMS.duration}ms`);
     };
 
-    // Paused means "hold a chosen frame", so we drop the animation and place
-    // the cell by hand; playing hands background-position back to the keyframes.
+    // Paused holds one frame, so drop the animation and place the cell by hand.
     const applyPlayback = () => {
       spin.classList.toggle("is-scrubbing", !PARAMS.playing);
       spin.classList.toggle("is-paused", !PARAMS.playing);
       if (PARAMS.playing) {
         spin.style.backgroundPosition = "";
-        readout.textContent = `${FRAMES} frames · ${(360 / FRAMES).toFixed(0)}° per step`;
+        readout.textContent = `${PARAMS.sheet} · ${FRAMES} frames · ${(360 / FRAMES).toFixed(0)}° per step`;
       } else {
         applyFrame();
       }
@@ -232,12 +206,18 @@ export const prerender = true;
       readout.textContent = `frame ${String(PARAMS.frame).padStart(2, "0")} · ${deg}°`;
     };
 
+    applySheet();
     applySize();
     applyDuration();
     applyPlayback();
 
     pane = new Pane({ title: "Turntable" });
 
+    pane
+      .addBinding(PARAMS, "sheet", {
+        options: Object.fromEntries(Object.keys(SHEETS).map((k) => [k, k])),
+      })
+      .on("change", applySheet);
     pane
       .addBinding(PARAMS, "size", { min: 96, max: 520, step: 4 })
       .on("change", applySize);
@@ -259,7 +239,6 @@ export const prerender = true;
     pane
       .addBinding(PARAMS, "frame", { min: 0, max: FRAMES - 1, step: 1 })
       .on("change", () => {
-        // Scrubbing implies you want to inspect a still.
         if (PARAMS.playing) {
           PARAMS.playing = false;
           applyPlayback();

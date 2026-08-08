@@ -88,7 +88,11 @@ async function updateDotEnv(envPath, updates) {
     if (!seen.has(key)) updatedLines.push(`${key}=${value}`);
   }
 
-  await writeFile(envPath, updatedLines.filter((l) => l !== undefined).join("\n") + "\n", "utf8");
+  await writeFile(
+    envPath,
+    updatedLines.filter((l) => l !== undefined).join("\n") + "\n",
+    "utf8",
+  );
 }
 
 async function main() {
@@ -99,15 +103,33 @@ async function main() {
     return answer.length ? answer : defaultValue;
   };
 
-  const siteUrl = await askOnce("Site URL (used for sitemap/robots)", defaults.site.url);
+  const siteUrl = await askOnce(
+    "Site URL (used for sitemap/robots)",
+    defaults.site.url,
+  );
   const fullName = await askOnce("Author full name", defaults.author.fullName);
-  const firstName = await askOnce("Author first name", defaults.author.firstName);
+  const firstName = await askOnce(
+    "Author first name",
+    defaults.author.firstName,
+  );
   const lastName = await askOnce("Author last name", defaults.author.lastName);
-  const jobTitle = await askOnce("Job title (schema + card title)", defaults.author.jobTitle);
-  const countryName = await askOnce("Country name", defaults.location.countryName);
-  const countryCode = await askOnce("Country code (2 letters)", defaults.location.countryCode);
+  const jobTitle = await askOnce(
+    "Job title (schema + card title)",
+    defaults.author.jobTitle,
+  );
+  const countryName = await askOnce(
+    "Country name",
+    defaults.location.countryName,
+  );
+  const countryCode = await askOnce(
+    "Country code (2 letters)",
+    defaults.location.countryCode,
+  );
   const timezone = await askOnce("Timezone (IANA)", defaults.location.timezone);
-  const twitterHandle = await askOnce("Twitter handle (without @)", defaults.author.twitterHandle);
+  const twitterHandle = await askOnce(
+    "Twitter handle (without @)",
+    defaults.author.twitterHandle,
+  );
   const email = await askOnce("Contact email", defaults.links.email);
 
   const github = await askOnce("GitHub URL", defaults.links.github);
@@ -116,15 +138,18 @@ async function main() {
   const discord = await askOnce("Discord URL", defaults.links.discord);
   const dribble = await askOnce("Dribbble URL", defaults.links.dribble);
 
-  const calUsername = await askOnce("Cal.com username (data-cal-link)", defaults.cal.username);
+  const calUsername = await askOnce(
+    "Cal.com username (data-cal-link)",
+    defaults.cal.username,
+  );
   const calNamespace = await askOnce(
     "Cal.com duration namespace (Cal.ns[...])",
-    defaults.cal.durationNamespace
+    defaults.cal.durationNamespace,
   );
 
   const visitedCountriesCsv = await askOnce(
     "Visited countries (comma-separated)",
-    defaults.visitedCountries.join(", ")
+    defaults.visitedCountries.join(", "),
   );
 
   const siteConfig = {
@@ -177,4 +202,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

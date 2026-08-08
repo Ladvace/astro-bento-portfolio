@@ -12,9 +12,9 @@ import StockMarketDownIllustration from "../assets/illustrations/stock_market_do
 import StockMarketUpIllustration from "../assets/illustrations/stock_market_up.webp";
 import HouseIllustration from "../assets/illustrations/house.webp";
 import BoneLogoExplorationIllustration from "../assets/illustrations/bone_logo_exploration.webp";
-import HexElementIllustration from "../assets/illustrations/hex_element.png";
-import HexElementIllustration1 from "../assets/illustrations/hex_element_1.png";
-import HexElementIllustration2 from "../assets/illustrations/hex_element_2.png";
+import HexElementIllustration from "../assets/illustrations/hex_element.webp";
+import HexElementIllustration1 from "../assets/illustrations/hex_element_1.webp";
+import HexElementIllustration2 from "../assets/illustrations/hex_element_2.webp";
 
 export interface Illustration {
   src: ImageMetadata;

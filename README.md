@@ -2,7 +2,7 @@
 
 A modern, bento-style personal portfolio built with **[Astro](https://astro.build)**.
 
-![astro-bento-portfolio — a bento-like personal portfolio template](public/preview.png)
+![astro-bento-portfolio — a bento-like personal portfolio template](public/preview.webp)
 
 **Live:** [gianmarcocavallo.com](https://gianmarcocavallo.com/)
 

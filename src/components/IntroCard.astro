@@ -5,15 +5,12 @@ import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
 import { SITE } from "../site-config";
-import MemojiAvatarDefault from "../assets/me-dither.webp";
-import MemojiAvatarBlue from "../assets/me-dither-blue.webp";
-import MemojiAvatarGreen from "../assets/me-dither-green.webp";
-import MemojiAvatarPurple from "../assets/me-dither-purple.webp";
-import MemojiAvatarYellow from "../assets/me-dither-yellow.webp";
+import AvatarSprite from "./AvatarSprite.astro";
+import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4" class="pad-lg">
-  <div class="flex w-full h-full">
+  <div class="flex w-full h-full items-center">
     <div class="flex flex-col justify-between gap-4">
       <div class="flex flex-col h-full">
         <h6 class="text-sm font-light m-0 text-darkslate-300">welcome</h6>
@@ -102,21 +99,14 @@ import MemojiAvatarYellow from "../assets/me-dither-yellow.webp";
         </Button>
       </div>
     </div>
-    <img
+    <AvatarSprite
       id="memoji-avatar"
-      src={MemojiAvatarDefault.src}
-      width={MemojiAvatarDefault.width}
-      height={MemojiAvatarDefault.height}
-      data-theme-default={MemojiAvatarDefault.src}
-      data-theme-yellow-theme={MemojiAvatarYellow.src}
-      data-theme-blue-theme={MemojiAvatarBlue.src}
-      data-theme-green-theme={MemojiAvatarGreen.src}
-      data-theme-purple-theme={MemojiAvatarPurple.src}
-      class="w-auto max-h-[300px] select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
-      alt={`memoji of ${SITE.author.firstName}`}
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
+      height="270px"
+      label={`memoji of ${SITE.author.firstName}, slowly rotating`}
+      class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none"
+      {...Object.fromEntries(
+        AVATAR_THEMES.map((t) => [`data-theme-${t.theme}`, t.sheet]),
+      )}
     />
   </div>
 </Card>
@@ -125,30 +115,24 @@ import MemojiAvatarYellow from "../assets/me-dither-yellow.webp";
   import { animate } from "motion";
 
   function updateMemojiImage() {
-    const avatarImg = document.getElementById(
-      "memoji-avatar",
-    ) as HTMLImageElement;
-    if (!avatarImg) return;
+    const avatar = document.getElementById("memoji-avatar");
+    if (!avatar) return;
 
     const theme = localStorage.getItem("theme") || "default";
-    const imageSrc =
-      avatarImg.getAttribute(`data-theme-${theme}`) ??
-      avatarImg.getAttribute("data-theme-default");
-    if (!imageSrc) return;
+    const sheet =
+      avatar.getAttribute(`data-theme-${theme}`) ??
+      avatar.getAttribute("data-theme-default");
+    if (!sheet) return;
 
-    const next = new URL(imageSrc, location.href).href;
-    if (avatarImg.src === next) return;
-
-    if (avatarImg.srcset) avatarImg.srcset = "";
-    avatarImg.src = next;
+    avatar.style.backgroundImage = `url("${sheet}")`;
   }
 
   function initLevitatingAnimation() {
-    const avatarImg = document.getElementById("memoji-avatar") as HTMLElement;
-    if (!avatarImg) return;
+    const avatar = document.getElementById("memoji-avatar");
+    if (!avatar) return;
 
     animate(
-      avatarImg,
+      avatar,
       { y: [-10, 10, -10] },
       {
         duration: 3,
