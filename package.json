@@ -41,6 +41,7 @@
     "reading-time": "^1.5.0",
     "solid-js": "^1.9.14",
     "svelte": "^5.56.8",
+    "three": "^0.185.1",
     "tweakpane": "^4.0.5"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "@types/d3-drag": "^3.0.7",
     "@types/d3-geo": "^3.1.1",
     "@types/d3-selection": "^3.0.11",
+    "@types/three": "^0.185.4",
     "@typescript-eslint/parser": "^8.66.0",
     "@unocss/astro": "^66.7.5",
     "@unocss/postcss": "^66.7.5",

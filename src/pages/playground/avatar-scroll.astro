@@ -1,0 +1,381 @@
+---
+import PlaygroundShell from "../../components/PlaygroundShell.astro";
+import { SITE } from "../../site-config";
+
+export const prerender = true;
+---
+
+<PlaygroundShell
+  title={`${SITE.author.fullName} - Playground - Avatar scroll`}
+  description="The Blender avatar as a glass shader, walked from the right edge to centre by wheel"
+  floatingBack
+>
+  <div class="scroll-stage" id="scroll-stage">
+    <div class="scroll-canvas" id="scroll-canvas"></div>
+    <p class="scroll-status" id="scroll-status">Loading model…</p>
+    <p class="scroll-readout">
+      <span id="scroll-readout">scroll to rotate</span>
+    </p>
+    <div class="scroll-progress" aria-hidden="true">
+      <span id="scroll-bar"></span>
+    </div>
+  </div>
+</PlaygroundShell>
+
+<style>
+  /* Full-bleed out of the shell's padding so the model runs off the edge, and
+     absolute so the page itself never gains scrollable height. */
+  .scroll-stage {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    /* Stays under the shell's floating back link, which sits at z-20. */
+    z-index: 0;
+  }
+
+  .scroll-canvas {
+    position: absolute;
+    inset: 0;
+    touch-action: none;
+    cursor: ns-resize;
+  }
+
+  .scroll-canvas :global(canvas) {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .scroll-status,
+  .scroll-readout {
+    position: absolute;
+    left: 1.5rem;
+    margin: 0;
+    color: var(--darkslate-300);
+    pointer-events: none;
+  }
+
+  .scroll-status {
+    top: 50%;
+    font-size: 0.75rem;
+  }
+
+  .scroll-readout {
+    bottom: 1.5rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-size: 0.625rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scroll-progress {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    translate: 0 -50%;
+    width: 2px;
+    height: min(38svh, 220px);
+    background: var(--darkslate-400);
+    border-radius: 2px;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .scroll-progress span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-500);
+    transform-origin: top;
+    scale: 1 0;
+  }
+</style>
+
+<script>
+  import {
+    ACESFilmicToneMapping,
+    AmbientLight,
+    Box3,
+    Color,
+    DirectionalLight,
+    Group,
+    MeshPhysicalMaterial,
+    PerspectiveCamera,
+    PMREMGenerator,
+    Scene,
+    SRGBColorSpace,
+    Vector3,
+    WebGLRenderer,
+  } from "three";
+  import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+  import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
+  import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
+
+  const FOV = 35;
+  /** 1 = model centre sits on a viewport edge, so half of it is visible. */
+  const EDGE_BIAS = 0.92;
+  /** Fraction of viewport height the model spans. */
+  const FILL = 1.42;
+  const TURNS = 2;
+  const DAMPING = 0.1;
+  /** Progress gained per wheel pixel / per dragged pixel. */
+  const WHEEL_SENSITIVITY = 0.0009;
+  const DRAG_SENSITIVITY = 0.0016;
+
+  /**
+   * Where the model sits across the journey, in units of half the viewport
+   * width: +1 hangs off the right edge, -1 off the left, 0 is centre. It holds
+   * on the right for the first stretch so the rotation reads before it travels.
+   */
+  const STOPS = [
+    { at: 0.0, x: 1 },
+    { at: 0.3, x: 1 },
+    { at: 0.65, x: -1 },
+    { at: 1.0, x: 0 },
+  ];
+
+  const smoothstep = (t: number) => t * t * (3 - 2 * t);
+  const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+
+  function offsetAt(p: number) {
+    if (p <= STOPS[0].at) return STOPS[0].x;
+    for (let i = 1; i < STOPS.length; i++) {
+      const a = STOPS[i - 1];
+      const b = STOPS[i];
+      if (p > b.at) continue;
+      const span = b.at - a.at;
+      const t = span <= 0 ? 1 : smoothstep((p - a.at) / span);
+      return a.x + (b.x - a.x) * t;
+    }
+    return STOPS[STOPS.length - 1].x;
+  }
+
+  let dispose: (() => void) | null = null;
+
+  async function init() {
+    const host = document.getElementById("scroll-canvas");
+    const status = document.getElementById("scroll-status");
+    const readout = document.getElementById("scroll-readout");
+    const bar = document.getElementById("scroll-bar");
+    if (!host) return;
+
+    const renderer = new WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+    renderer.outputColorSpace = SRGBColorSpace;
+    renderer.toneMapping = ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    // Transmission re-renders the scene into a buffer; at full-bleed size that
+    // is the dominant cost and half resolution is indistinguishable here.
+    if ("transmissionResolutionScale" in renderer) {
+      (renderer as any).transmissionResolutionScale = 0.5;
+    }
+    host.appendChild(renderer.domElement);
+
+    const scene = new Scene();
+    const camera = new PerspectiveCamera(FOV, 1, 0.1, 100);
+
+    // Transmission samples the environment, so glass without one renders flat.
+    const pmrem = new PMREMGenerator(renderer);
+    const room = new RoomEnvironment();
+    const envRT = pmrem.fromScene(room, 0.04);
+    scene.environment = envRT.texture;
+    // PMREM has baked it into a texture; the source meshes are dead weight.
+    room.traverse((node: any) => {
+      node.geometry?.dispose?.();
+      node.material?.dispose?.();
+    });
+
+    scene.add(new AmbientLight(0xffffff, 0.5));
+    const key = new DirectionalLight(0xffffff, 2.4);
+    key.position.set(2.5, 3, 4);
+    scene.add(key);
+    const rim = new DirectionalLight(new Color("#ff3b3b"), 3.2);
+    rim.position.set(-3.5, 1.2, -2.5);
+    scene.add(rim);
+
+    const pivot = new Group();
+    scene.add(pivot);
+
+    // Meshopt's decoder inlines its wasm, so it bundles with the page instead
+    // of needing a decoder served from public/.
+    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+
+    let model: Group | null = null;
+    try {
+      const gltf = await loader.loadAsync("/avatar-lotus.glb");
+      model = gltf.scene;
+    } catch (error) {
+      if (status) status.textContent = "Could not load the model.";
+      console.error("[avatar-scroll]", error);
+      renderer.dispose();
+      return;
+    }
+    status?.remove();
+
+    const glass = new MeshPhysicalMaterial({
+      color: new Color("#ffffff"),
+      transmission: 1,
+      thickness: 0.55,
+      ior: 1.45,
+      roughness: 0.08,
+      metalness: 0,
+      clearcoat: 1,
+      clearcoatRoughness: 0.06,
+      envMapIntensity: 1.6,
+      attenuationColor: new Color("#ff5a5a"),
+      attenuationDistance: 1.6,
+      specularIntensity: 1,
+    });
+
+    const originals: any[] = [];
+    model.traverse((node: any) => {
+      if (!node.isMesh) return;
+      originals.push(node.material);
+      node.material = glass;
+    });
+
+    const box = new Box3().setFromObject(model);
+    const size = box.getSize(new Vector3());
+    model.position.sub(box.getCenter(new Vector3()));
+    pivot.add(model);
+
+    const halfFov = (FOV * Math.PI) / 360;
+    const distance = size.y / FILL / (2 * Math.tan(halfFov));
+    camera.position.set(0, 0, distance);
+    camera.lookAt(0, 0, 0);
+
+    let halfWidth = 0;
+    let targetP = 0;
+    let currentP = 0;
+    let needsRender = true;
+
+    const resize = () => {
+      const { clientWidth: w, clientHeight: h } = host;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      halfWidth = Math.tan(halfFov) * distance * camera.aspect;
+      needsRender = true;
+    };
+    resize();
+
+    let engaged = false;
+
+    const applyProgress = (p: number) => {
+      pivot.rotation.y = p * Math.PI * 2 * TURNS;
+      pivot.position.x = offsetAt(p) * halfWidth * EDGE_BIAS;
+      if (readout && engaged) {
+        const deg =
+          ((Math.round((pivot.rotation.y * 180) / Math.PI) % 360) + 360) % 360;
+        readout.textContent = `${String(deg).padStart(3, "0")}°`;
+      }
+      if (bar) bar.style.scale = `1 ${p}`;
+      needsRender = true;
+    };
+    applyProgress(0);
+
+    // The page has no scrollable height, so wheel is integrated by hand and
+    // its default is swallowed to stop overscroll bounce.
+    const advance = (delta: number) => {
+      engaged = true;
+      targetP = clamp01(targetP + delta);
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault();
+      advance(event.deltaY * WHEEL_SENSITIVITY);
+    };
+
+    let dragging = false;
+    let lastY = 0;
+    const onDown = (event: PointerEvent) => {
+      dragging = true;
+      lastY = event.clientY;
+      host.setPointerCapture(event.pointerId);
+    };
+    const onMove = (event: PointerEvent) => {
+      if (!dragging) return;
+      advance((lastY - event.clientY) * DRAG_SENSITIVITY);
+      lastY = event.clientY;
+    };
+    const onUp = (event: PointerEvent) => {
+      dragging = false;
+      if (host.hasPointerCapture(event.pointerId))
+        host.releasePointerCapture(event.pointerId);
+    };
+
+    const onKey = (event: KeyboardEvent) => {
+      const step =
+        event.key === "ArrowDown" || event.key === "PageDown"
+          ? 0.08
+          : event.key === "ArrowUp" || event.key === "PageUp"
+            ? -0.08
+            : event.key === "Home"
+              ? -1
+              : event.key === "End"
+                ? 1
+                : 0;
+      if (!step) return;
+      event.preventDefault();
+      advance(step);
+    };
+
+    host.addEventListener("wheel", onWheel, { passive: false });
+    host.addEventListener("pointerdown", onDown);
+    host.addEventListener("pointermove", onMove);
+    host.addEventListener("pointerup", onUp);
+    host.addEventListener("pointercancel", onUp);
+    addEventListener("keydown", onKey);
+
+    let raf = 0;
+    const tick = () => {
+      raf = requestAnimationFrame(tick);
+      const delta = targetP - currentP;
+      if (Math.abs(delta) > 0.00005) {
+        currentP += delta * DAMPING;
+        applyProgress(currentP);
+      }
+      if (!needsRender) return;
+      needsRender = false;
+      renderer.render(scene, camera);
+    };
+    raf = requestAnimationFrame(tick);
+
+    const observer = new ResizeObserver(resize);
+    observer.observe(host);
+
+    dispose = () => {
+      cancelAnimationFrame(raf);
+      observer.disconnect();
+      host.removeEventListener("wheel", onWheel);
+      host.removeEventListener("pointerdown", onDown);
+      host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerup", onUp);
+      host.removeEventListener("pointercancel", onUp);
+      removeEventListener("keydown", onKey);
+      model?.traverse((node: any) => node.geometry?.dispose?.());
+      originals.forEach((m) =>
+        Array.isArray(m) ? m.forEach((x) => x.dispose?.()) : m?.dispose?.(),
+      );
+      glass.dispose();
+      envRT.texture.dispose();
+      pmrem.dispose();
+      renderer.dispose();
+      renderer.domElement.remove();
+    };
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    dispose?.();
+    dispose = null;
+    void init();
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    dispose?.();
+    dispose = null;
+  });
+</script>
