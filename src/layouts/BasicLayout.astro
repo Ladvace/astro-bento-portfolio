@@ -327,8 +327,10 @@ const schema =
 </html>
 
 <script>
+  import { initNineSliceFallback } from "../lib/nine-slice-fallback";
   import { SITE } from "../site-config";
 
+  let disposeNineSlice: (() => void) | null = null;
   let audioCtx: AudioContext | null = null;
   let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 
@@ -380,6 +382,13 @@ const schema =
     soundEnabled = localStorage.getItem("soundEnabled") !== "false";
     updateToggleIcon();
     attachCardSounds();
+    disposeNineSlice?.();
+    disposeNineSlice = initNineSliceFallback();
+  });
+
+  document.addEventListener("astro:before-swap", () => {
+    disposeNineSlice?.();
+    disposeNineSlice = null;
   });
 
   console.log(

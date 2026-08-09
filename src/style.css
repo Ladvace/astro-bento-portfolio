@@ -617,6 +617,19 @@ body.ns-js-shape .card--ns::before {
   transition: stroke 150ms ease-out;
 }
 
+/* Firefox fallback. The stroke straddles the clip edge and loses its outer
+   half, so it is doubled to land on the rail's real 1px. */
+.card--ns.ns-clip-fallback::before {
+  opacity: 0;
+}
+
+.ns-clip-outline {
+  fill: none;
+  stroke: var(--ns-rail, var(--darkslate-400));
+  stroke-width: 2;
+  transition: stroke 150ms ease-out;
+}
+
 .cards-custom #formatToggle {
   top: var(--ns-pad-y, var(--ns-pad));
   right: var(--ns-pad-x, var(--ns-pad));
@@ -709,6 +722,15 @@ body.ns-js-shape .card--ns::before {
 
   .cards-custom .btn-shell:has(.btn--ns:active) {
     filter: none;
+  }
+
+  /* Back link keeps the frame shape without the extruded lift or its press. */
+  .cards-custom .btn-shell--flat {
+    filter: none;
+  }
+
+  .cards-custom .btn-shell--flat .btn--ns:active {
+    transform: none !important;
   }
 
   .cards-custom .tt-shell {
