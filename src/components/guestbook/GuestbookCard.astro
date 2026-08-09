@@ -126,9 +126,7 @@ const heartCount = entry.heartCount ?? 0;
   const writeHearted = (ids: string[]): void => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
-    } catch {
-      /* ignore */
-    }
+    } catch {}
   };
 
   const playHeartbeat = (): void => {
@@ -149,9 +147,7 @@ const heartCount = entry.heartCount ?? 0;
       };
       pulse(0);
       pulse(0.18);
-    } catch {
-      /* ignore audio errors */
-    }
+    } catch {}
   };
 
   const fireAnimation = (button: HTMLButtonElement): void => {

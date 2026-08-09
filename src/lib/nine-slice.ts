@@ -1,12 +1,9 @@
-/* Theme tokens, mirrored from :root in style.css. The SVGs below are separate
-   documents, so var() cannot resolve inside them. */
 const DARKSLATE_400 = "#383838";
 const DARKSLATE_500 = "#171717";
 const DARKSLATE_800 = "#0e0e0e";
 
 export const NINE_SLICE_BORDER = 7;
 export const NINE_SLICE_FILL = DARKSLATE_800;
-/** The artwork's red; not a theme token. */
 export const NINE_SLICE_STROKE = "#A11C2E";
 
 const RAIL_X0 = 89.153;
@@ -64,8 +61,6 @@ export type NineSliceOptions = {
   cornerSize?: number;
 };
 
-/** viewBox matches width/height so one unit is one px; otherwise
- *  border-image-slice is ambiguous and cuts through the corner. */
 const dataUri = (g: NineSliceGeometry, body: string) =>
   `url("data:image/svg+xml,${encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${g.width}" height="${g.height}" ` +
@@ -88,14 +83,11 @@ export function nineSliceDataUri({
   return dataUri(g, frameGroup(g, stroke, fill));
 }
 
-/** The rail band alone, so CSS can tint it. */
 export function nineSliceRailMaskDataUri({
   borderWidth = NINE_SLICE_BORDER,
   cornerSize,
 }: Omit<NineSliceOptions, "fill" | "stroke"> = {}) {
   const g = nineSliceGeometry(borderWidth, cornerSize);
-  // Alpha mask, so the interior must be transparent, not black — hence the
-  // inner <mask>. `#r` stays unescaped; pre-escaping double-encodes it.
   return dataUri(
     g,
     `<defs><mask id="r" maskUnits="userSpaceOnUse" x="0" y="0" ` +
@@ -105,10 +97,6 @@ export function nineSliceRailMaskDataUri({
       `<rect width="${g.width}" height="${g.height}" fill="#fff" mask="url(#r)"/>`,
   );
 }
-
-/* Morphing needs a real path, since border-image and mask-box-image aren't
-   animatable. Splitting the source at its four rail (`L`) commands gives
-   fixed-size corner chunks to translate apart and reconnect. */
 
 type PathCmd = { type: string; pts: number[] };
 type Corner = { start: [number, number]; cmds: PathCmd[] };
@@ -134,7 +122,6 @@ const FRAME_CORNERS = (() => {
     tr: { start: at(rails[2]), cmds: between(rails[2], rails[3]) },
     br: {
       start: at(rails[3]),
-      // Wraps: the source path starts mid-corner.
       cmds: [
         ...cmds.slice(rails[3] + 1).filter((c) => c.type !== "Z"),
         ...cmds.slice(1, rails[0]),
@@ -143,14 +130,12 @@ const FRAME_CORNERS = (() => {
   } satisfies Record<string, Corner>;
 })();
 
-/** Corners stay fixed; only the rails between them stretch. */
 export function nineSliceOutlinePath(
   width: number,
   height: number,
   cornerSize: number = CARD_FRAME.cornerSize,
 ): string {
   const s = cornerSize / BASE_SLICE;
-  // Clamped where the rails vanish; past that the corners would overlap.
   const dx = Math.max(width / s - (ART_X1 - ART_X0), -(RAIL_X1 - RAIL_X0));
   const dy = Math.max(height / s - (ART_Y1 - ART_Y0), -(RAIL_Y1 - RAIL_Y0));
 
@@ -179,7 +164,6 @@ export function nineSliceOutlinePath(
   );
 }
 
-/** Cubic-only: no arcs for the morph to reinterpret. */
 export function roundedRectPath(width: number, height: number, radius = 8) {
   const r = Math.min(radius, width / 2, height / 2);
   const k = r * 0.5523; // circle-to-cubic constant
@@ -231,9 +215,7 @@ export const BUTTON_FRAME = (() => {
 
 export const CARD_FRAME = (() => {
   const cornerSize = 40;
-  // Art units render at borderWidth * scale; solve for a 1px rail.
   const borderWidth = 1 / nineSliceGeometry(0, cornerSize).scale;
-  // Only the no-mask fallback; the live render reads --ns-fill / --ns-rail.
   const fill = DARKSLATE_500;
   const stroke = DARKSLATE_400;
   const opts = { fill, stroke, borderWidth, cornerSize };

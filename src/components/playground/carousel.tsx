@@ -97,9 +97,6 @@ const Carousel = () => {
   });
 
   onCleanup(() => {
-    // onCleanup also runs on the server during SSR teardown, where `document`
-    // is undefined. Listeners are only ever added client-side (onMount), so
-    // guard the removal to the browser.
     if (typeof document === "undefined") return;
     document.removeEventListener("wheel", handleWheel);
     document.removeEventListener("mousedown", handleMouseDown as EventListener);

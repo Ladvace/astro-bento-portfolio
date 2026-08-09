@@ -4,7 +4,6 @@ import NineSliceFrame from "../../components/NineSliceFrame.astro";
 import { nineSliceDataUri } from "../../lib/nine-slice";
 import { SITE } from "../../site-config";
 
-// Same image as the frame; the comparison box only scales it differently.
 const naiveImage = nineSliceDataUri();
 
 export const prerender = true;
@@ -53,7 +52,6 @@ export const prerender = true;
     gap: 2.5rem;
     flex-wrap: wrap;
 
-    /* Driven by Tweakpane. */
     --w: 420px;
     --h: 320px;
   }
@@ -123,7 +121,6 @@ export const prerender = true;
     letter-spacing: 0.08em;
   }
 
-  /* A border of exactly --ns-pad paints the padding band and nothing else. */
   .ns-stage.show-pad :global(.nine-slice__content)::after,
   .ns-stage.show-pad .ns-naive::after {
     content: "";
@@ -167,7 +164,6 @@ export const prerender = true;
     if (!stage || !compare || !readout || !frame || !naive) return;
 
     const applySize = () => {
-      // A thicker rail needs a bigger slice, which raises the minimum box.
       const { min } = nineSliceGeometry(PARAMS.borderWidth);
       const clamped = PARAMS.width < min || PARAMS.height < min;
       PARAMS.width = Math.max(PARAMS.width, min);
@@ -175,7 +171,6 @@ export const prerender = true;
       stage.style.setProperty("--w", `${PARAMS.width}px`);
       stage.style.setProperty("--h", `${PARAMS.height}px`);
       readout.textContent = `${PARAMS.width} × ${PARAMS.height}  ·  min ${min}`;
-      // Pull the sliders back in line when a thicker rail raised the floor.
       if (clamped) pane?.refresh();
     };
 

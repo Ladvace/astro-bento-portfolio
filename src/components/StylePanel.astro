@@ -187,7 +187,6 @@ const styles = [
     });
   }
 
-  /** Variants switch off while the custom border is on; see style.css. */
   function applyBorderMode() {
     const custom = isCustomBorder();
     document.documentElement.classList.toggle("cards-custom", custom);
@@ -198,8 +197,6 @@ const styles = [
       if (saved && saved !== "default") document.body.classList.add(saved);
     }
 
-    // Dimmed but still clickable: picking a variant switches the custom border
-    // off rather than doing nothing (and keeps their click sound reachable).
     document.querySelectorAll<HTMLElement>(".style-btn").forEach((btn) => {
       if (!btn.dataset.style) return;
       btn.classList.toggle("opacity-40", custom);
@@ -251,8 +248,6 @@ const styles = [
     localStorage.setItem("stylePanelOpen", String(open));
   }
 
-  // page-load runs after first paint, so the incoming document needs the class
-  // already or the cards flick through the normal chrome.
   document.addEventListener("astro:before-swap", (e) => {
     const doc = (e as unknown as { newDocument: Document }).newDocument;
     const custom = isCustomBorder();
@@ -284,8 +279,6 @@ const styles = [
         if (btn.id === "style-panel-toggle") return;
         localStorage.setItem("portfolioStyle", btn.dataset.style as string);
         playStyleSound();
-        // switchBorderMode settles into applyBorderMode, which applies the
-        // saved variant once the custom border is off.
         if (isCustomBorder()) return switchBorderMode();
         applyBorderMode();
         updateStyleBtns();

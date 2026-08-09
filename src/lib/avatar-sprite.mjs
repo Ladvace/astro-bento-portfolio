@@ -1,5 +1,3 @@
-/** Geometry and paths for the spritesheets built by scripts/dither-avatar.mjs. */
-
 const COLS = 6;
 const ROWS = 4;
 
@@ -11,7 +9,6 @@ export const SPRITE = {
   CELL_H: 390,
 };
 
-/** `theme` is the localStorage class, `name` is dither-avatar.mjs's --themes. */
 export const AVATAR_THEMES = [
   { theme: "default", name: "red" },
   { theme: "yellow-theme", name: "yellow" },

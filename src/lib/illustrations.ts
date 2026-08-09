@@ -21,7 +21,6 @@ export interface Illustration {
   alt: string;
 }
 
-// Full gallery used on the design-works page
 export const illustrationsAll: Illustration[] = [
   { src: MustangIllustration, alt: "Mustangs illustration" },
   { src: HexElementIllustration1, alt: "Hex element 1" },
@@ -40,7 +39,6 @@ export const illustrationsAll: Illustration[] = [
   { src: BoneLogoExplorationIllustration, alt: "Bone logo exploration" },
 ];
 
-// Marquee rows used in the DesignWorksCard home widget
 export const illustrationsRow1: Illustration[] = [
   { src: MustangIllustration, alt: "mustangs" },
   { src: HexElementIllustration, alt: "hex element" },

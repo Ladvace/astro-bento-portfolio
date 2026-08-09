@@ -1,8 +1,3 @@
-/**
- * Avatar dither palettes, read from the theme tokens in src/style.css so they
- * cannot drift. Shape is [highlight, primary-500, shadow, primary-700,
- * primary-900]. Node-only.
- */
 import fs from "node:fs";
 
 export const HIGHLIGHT = "#f7fafc";

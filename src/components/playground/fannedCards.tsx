@@ -108,9 +108,6 @@ const Card = (props: {
   </div>
 );
 
-// A wide-gamut display (or >=30-bit color) is treated as HDR-capable. When
-// false, the multiply glow can't exceed SDR white, so we fall back to a mild
-// brightness bump instead.
 const detectHDRSupport = () =>
   window.matchMedia("(color-gamut: rec2020)").matches ||
   window.screen.colorDepth >= 30;
@@ -200,8 +197,7 @@ const FannedCards = () => {
       ref={stage}
       class="relative grid aspect-square w-[min(88vw,560px)] place-items-center overflow-hidden rounded-2xl bg-[#0E0E0E]"
     >
-      {/* Rendering a real HDR image element nudges the browser to composite the
-          page in HDR, so the multiplied glow layers can exceed SDR white. */}
+      {/* A real HDR <img> nudges the browser to composite the page in HDR. */}
       {hdrReal() && (
         <img
           src="/hdr-glow.avif"

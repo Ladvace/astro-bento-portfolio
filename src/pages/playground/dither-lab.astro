@@ -4,11 +4,6 @@ import { readPalettes } from "../../lib/avatar-palettes.mjs";
 import { SPRITE, UNDITHERED_SHEET } from "../../lib/avatar-sprite.mjs";
 import { SITE } from "../../site-config";
 
-/**
- * Interactive tuning for the avatar dither. Shares src/lib/dither.mjs with
- * scripts/dither-avatar.mjs and prints the command to bake settings in. The
- * preview source is the lossy sheet, so a few pixels quantise differently.
- */
 const palettes = readPalettes("src/style.css");
 
 export const prerender = true;
@@ -428,7 +423,6 @@ export const prerender = true;
       invalidate();
     }
 
-    /** Fill the widest luminance gap -- what flattens the face to a white mask. */
     function addColour() {
       const sorted = [...palette].sort((a, b) => luminance(a) - luminance(b));
       let bestAt = 0;

@@ -51,7 +51,6 @@ export const prerender = true;
     align-items: center;
     gap: 1.25rem;
 
-    /* Driven by Tweakpane. */
     --tt-height: 300px;
     --duration: 2.4s;
   }
@@ -62,7 +61,6 @@ export const prerender = true;
     padding: 1.5rem;
     border: 1px solid var(--darkslate-700);
     border-radius: 14px;
-    /* Checkerboard reads through the sprite's alpha. */
     background-image:
       linear-gradient(
         45deg,
@@ -84,7 +82,6 @@ export const prerender = true;
       12px 12px;
   }
 
-  /* :global(): AvatarSprite owns the element, so this scope hash misses it. */
   .tt-stage :global(.tt-spin.is-paused) {
     animation-play-state: paused;
   }
@@ -142,7 +139,6 @@ export const prerender = true;
 
   const { FRAMES } = SPRITE;
 
-  /** The undithered render plus the per-theme dithered bakes. */
   const SHEETS: Record<string, string> = {
     undithered: UNDITHERED_SHEET,
     ...SHEET_BY_NAME,
@@ -179,7 +175,6 @@ export const prerender = true;
       stage.style.setProperty("--duration", `${PARAMS.duration}ms`);
     };
 
-    // Paused holds one frame, so drop the animation and place the cell by hand.
     const applyPlayback = () => {
       spin.classList.toggle("is-manual", !PARAMS.playing);
       spin.classList.toggle("is-paused", !PARAMS.playing);

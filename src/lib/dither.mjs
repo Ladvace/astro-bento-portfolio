@@ -1,8 +1,5 @@
-/**
- * Ordered Bayer dithering, ported from `dither-me-this` so it can run in the
- * browser too. The oddities below are faithful to upstream on purpose;
- * scripts/verify-dither-port.mjs asserts they still match.
- */
+/** Bayer dither ported from `dither-me-this`. Upstream's quirks are kept on
+ *  purpose; scripts/verify-dither-port.mjs asserts they still match. */
 
 /** Upstream's matrix, duplicated 32 and missing 23 included. */
 const BIG_MATRIX = [
@@ -16,7 +13,6 @@ const BIG_MATRIX = [
   [42, 26, 38, 22, 41, 25, 37, 21],
 ];
 
-/** Upstream hardcodes this, ignoring its own `threshold` option. */
 const THRESHOLD_STEP = 256 / 4;
 const OPAQUE = 250;
 
@@ -73,10 +69,6 @@ function closest(r, g, b, palette) {
   return best;
 }
 
-/**
- * Replace the RGB under a soft alpha edge with neighbouring opaque colour, or it
- * quantises to the darkest palette entry and outlines the sprite.
- */
 export function bleedEdges(image, passes = 3) {
   const { width: w, height: h, data } = image;
   let solid = new Uint8Array(w * h);
@@ -119,17 +111,6 @@ export function bleedEdges(image, passes = 3) {
   return image;
 }
 
-/**
- * Quantise `image` to `palette` in place. Alpha untouched.
- *
- * `mask`/`maskTone` give the head its own curve: the face wants its darks
- * crushed to black while the body wants the same luminances lifted. It is the
- * tone *parameters* that get interpolated, not the pixels -- blending two
- * dithered images would average palette entries into colours off the palette.
- *
- * Gamma runs before contrast and brightness because those are linear, so an
- * offset big enough to separate highlights drives shadows below zero to clip.
- */
 export function ditherImage(image, options) {
   const {
     palette,

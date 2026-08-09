@@ -1,9 +1,5 @@
 import { nineSliceOutlinePath, roundedRectPath } from "./nine-slice";
 
-/* JS keeps the clip-path instead of handing back to the CSS mask, which
-   flashed: mask-box-image decodes an image and builds a layer, clip-path
-   references a live node. The mask stays the first-paint/no-JS renderer. */
-
 const SVG_NS = "http://www.w3.org/2000/svg";
 const DURATION = 0.5;
 
@@ -70,7 +66,6 @@ function buildOverlay(card: HTMLElement, from: string): Overlay | null {
   defs.appendChild(clip);
   svg.appendChild(defs);
 
-  // Styled from CSS: var() is unreliable in a presentation attribute.
   const outline = path(svg, "ns-morph-outline");
 
   card.appendChild(svg);
@@ -116,7 +111,6 @@ export async function morphCards(toCustom: boolean): Promise<void> {
       return;
     }
 
-    // Every card is already clipped, so nothing goes unshaped.
     document.body.classList.add("ns-js-shape");
     setMode(toCustom);
 
