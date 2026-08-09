@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import BackLink from "../../components/BackLink.astro";
 import WireframeGlobePlayground from "../../components/playground/wireframeGlobePlayground";
 import { SITE } from "../../site-config";
@@ -8,12 +7,9 @@ import { SITE } from "../../site-config";
 export const prerender = true;
 ---
 
-<LoaderAnimation />
-
 <Layout
   title={`${SITE.author.fullName} - Playground - Wireframe globe`}
   description="Canvas wireframe globe with latitude and longitude lines."
-  fullScreen="h-auto"
 >
   <div class="flex flex-col px-4 pb-8 w-full min-h-screen">
     <header class="sticky top-0 inset-x-0 z-60 p-4">

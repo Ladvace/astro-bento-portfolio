@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import BackLink from "../../components/BackLink.astro";
 import Card from "../../components/Card/index.astro";
 import { SITE } from "../../site-config";
@@ -107,8 +106,6 @@ const formatDate = (iso: string) =>
 
 export const prerender = true;
 ---
-
-<LoaderAnimation />
 
 <Layout
   title={`${SITE.author.fullName} - Playground`}

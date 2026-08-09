@@ -8,13 +8,12 @@ type Props = {
   description: string;
   pubDate: Date;
   minutesRead: string;
-  url: string;
 };
 
-const { title, description, pubDate, minutesRead, url } = Astro.props;
+const { title, description, pubDate, minutesRead } = Astro.props;
 ---
 
-<BasicLayout description={description} page="blog" slug={url} title={title}>
+<BasicLayout description={description} page="blog" title={title}>
   <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
     <BackLink href="/blog" class="mb-8" />
     <div class="my-10">

@@ -1,6 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import LoaderAnimation from "../../components/LoaderAnimation.astro";
 import BackLink from "../../components/BackLink.astro";
 import { WIPE_VARIANT_LIST } from "../../lib/constants-wipe";
 import { SITE } from "../../site-config";
@@ -10,12 +9,9 @@ const defaultVariant = WIPE_VARIANT_LIST[0];
 export const prerender = true;
 ---
 
-<LoaderAnimation />
-
 <Layout
   title={`${SITE.author.fullName} - Playground - MorphSVG wipe`}
   description="Full-screen SVG path morph wipe with GSAP MorphSVGPlugin."
-  fullScreen="h-auto"
 >
   <div class="morph-wipe-page w-full self-stretch">
     <header class="morph-wipe-header">

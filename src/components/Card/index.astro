@@ -11,7 +11,6 @@ interface Props {
   href?: string;
   colorText?: string;
   height?: string;
-  width?: string;
   padding?: string;
   bgColor?: string;
   arrowCorner?: boolean;
@@ -42,7 +41,6 @@ const {
 
 const chrome = `${bgColor || "bg-darkslate-500"} shadow-lg rounded-lg border border-darkslate-400 hover:border-primary-500 card--ns`;
 
-// --ns-fill / --ns-rail live on :root: inline would beat the themes.
 const nsVars = cssVars({
   ...CARD_FRAME.vars,
   "--ns-pad-y": nsPadY,

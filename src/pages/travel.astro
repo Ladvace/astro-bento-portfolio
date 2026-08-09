@@ -7,20 +7,6 @@ import { SITE } from "../site-config";
 export const prerender = true;
 ---
 
-<script>
-  import { animate, type AnimationSequence } from "motion";
-
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { type: "spring", ease: "easeOut" },
-    ],
-  ];
-
-  animate(sequence as AnimationSequence);
-</script>
-
 <BasicLayout
   description="A 3d globe showing countries that you have visited so far"
   page="travel"

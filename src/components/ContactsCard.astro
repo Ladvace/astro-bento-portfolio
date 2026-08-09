@@ -1,6 +1,5 @@
 ---
 import Card from "./Card/index.astro";
-import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
 
 const socialLinkClass =
@@ -23,27 +22,27 @@ const socialLinkClass =
       <h2 class="text-darkslate-300">Socials</h2>
       <ul>
         <li>
-          <a href={LINKS.linkedin} target="_blank" class={socialLinkClass}
+          <a href={SITE.links.linkedin} target="_blank" class={socialLinkClass}
             >Linkedin</a
           >
         </li>
         <li>
-          <a href={LINKS.github} target="_blank" class={socialLinkClass}
+          <a href={SITE.links.github} target="_blank" class={socialLinkClass}
             >Github</a
           >
         </li>
         <li>
-          <a href={LINKS.medium} target="_blank" class={socialLinkClass}
+          <a href={SITE.links.medium} target="_blank" class={socialLinkClass}
             >Medium</a
           >
         </li>
         <li>
-          <a href={LINKS.dribbble} target="_blank" class={socialLinkClass}
+          <a href={SITE.links.dribbble} target="_blank" class={socialLinkClass}
             >Dribbble</a
           >
         </li>
         <li>
-          <a href={LINKS.behance} target="_blank" class={socialLinkClass}
+          <a href={SITE.links.behance} target="_blank" class={socialLinkClass}
             >Behance</a
           >
         </li>
