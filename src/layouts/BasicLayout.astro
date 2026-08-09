@@ -2,19 +2,45 @@
 import "../style.css";
 import { ClientRouter } from "astro:transitions";
 import { Font } from "astro:assets";
-import { LINKS } from "../lib/constants";
 import { SITE } from "../site-config";
 import GridTransition from "../components/GridTransition.astro";
 import StylePanel from "../components/StylePanel.astro";
 import { BUTTON_FRAME, cssVars } from "../lib/nine-slice";
+import { SHEET_BY_THEME } from "../lib/avatar-sprite.mjs";
 
 const buttonFrameVars = `:root{${cssVars(BUTTON_FRAME.vars)}}`;
+
+const showsAvatar = Astro.url.pathname.replace(/\/+$/, "") === "";
+
+const headBootstrap = `
+  try {
+    if ((localStorage.getItem("cardBorder") ?? "custom") === "custom")
+      document.documentElement.classList.add("cards-custom");
+    ${
+      showsAvatar
+        ? `
+    var sheetsByTheme = ${JSON.stringify(SHEET_BY_THEME)};
+    var sheetUrl =
+      sheetsByTheme[localStorage.getItem("theme")] || sheetsByTheme.default;
+    document.documentElement.style.setProperty(
+      "--memoji-sheet",
+      'url("' + sheetUrl + '")',
+    );
+    var preloadLink = document.createElement("link");
+    preloadLink.rel = "preload";
+    preloadLink.as = "image";
+    preloadLink.href = sheetUrl;
+    preloadLink.fetchPriority = "high";
+    document.head.appendChild(preloadLink);`
+        : ""
+    }
+  } catch {}
+`;
 
 interface Props {
   title: string;
   description: string;
   page?: "travel" | "blog";
-  slug?: string | undefined;
   pubDate?: string;
   hideSoundToggle?: boolean;
   hideCal?: boolean;
@@ -24,8 +50,6 @@ const { title, description, page, pubDate, hideSoundToggle, hideCal } =
   Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
 
-// Cal.com element-click embed. Kept as a string + set:html so Prettier's Astro
-// parser doesn't try to parse the raw IIFE as JSX (which breaks formatting).
 const calEmbedScript = `
   function initCal() {
   (function (C, A, L) {
@@ -95,7 +119,12 @@ const schema =
         "@type": "Person",
         name: SITE.author.fullName,
         url: Astro.url.origin,
-        sameAs: [LINKS.linkedin, LINKS.github, LINKS.dribbble, LINKS.behance],
+        sameAs: [
+          SITE.links.linkedin,
+          SITE.links.github,
+          SITE.links.dribbble,
+          SITE.links.behance,
+        ],
         image: `${Astro.url.origin}/og-image.png`,
         jobTitle: SITE.author.jobTitle,
         knowsAbout: [
@@ -136,7 +165,7 @@ const schema =
           "@type": "Person",
           name: SITE.author.shortName,
           url: Astro.url.origin,
-          sameAs: [LINKS.linkedin, LINKS.github],
+          sameAs: [SITE.links.linkedin, SITE.links.github],
         },
         publisher: {
           "@type": "Organization",
@@ -161,14 +190,8 @@ const schema =
     <meta charset="UTF-8" />
     <Font cssVariable="--font-cabinet-grotesk" preload />
     <Font cssVariable="--font-satoshi" preload />
+    <script is:inline set:html={headBootstrap} />
     <ClientRouter />
-    {/* Render-blocking: the cards must not paint with the wrong chrome. */}
-    <script is:inline>
-      try {
-        if ((localStorage.getItem("cardBorder") ?? "custom") === "custom")
-          document.documentElement.classList.add("cards-custom");
-      } catch {}
-    </script>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -252,7 +275,6 @@ const schema =
       } catch {}
     </script>
     <GridTransition />
-    <slot name="loader" />
     <slot />
     {
       !hideSoundToggle && (
@@ -395,12 +417,6 @@ const schema =
 
   if (typeof document !== "undefined") {
     document.addEventListener("astro:page-load", () => {
-      const loader = document.querySelector(".loader");
-      if (loader instanceof HTMLElement) {
-        loader.style.opacity = "0";
-        loader.style.pointerEvents = "none";
-      }
-
       const path = normalizePathname(window.location.pathname);
       if (path !== "/") {
         sessionStorage.setItem(PORTFOLIO_HAS_VISITED_NON_HOME_KEY, "1");

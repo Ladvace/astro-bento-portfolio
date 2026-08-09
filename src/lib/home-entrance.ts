@@ -1,23 +1,24 @@
-import { stagger, animate, type AnimationSequence } from "motion";
+import { prefersReducedMotion } from "./motion-gate";
 import { normalizePathname } from "./nav-path";
+
+const DURATION_MS = 400;
+const STAGGER_MS = 35;
 
 export function initHomeEntrance(): void {
   const run = () => {
     if (normalizePathname(window.location.pathname) !== "/") return;
+    if (prefersReducedMotion()) return;
 
-    const cards = document.querySelectorAll<HTMLElement>(".card");
-
-    animate([
-      [
-        cards,
-        { y: ["8px", "0px"], opacity: [0, 1] },
+    document.querySelectorAll<HTMLElement>(".card").forEach((card, index) => {
+      card.animate(
+        { opacity: [0, 1], translate: ["0 8px", "0 0"] },
         {
-          duration: 0.4,
-          delay: stagger(0.06),
-          ease: "easeOut",
+          duration: DURATION_MS,
+          delay: index * STAGGER_MS,
+          easing: "ease-out",
         },
-      ],
-    ] as AnimationSequence);
+      );
+    });
   };
 
   document.addEventListener("grid:reveal-start", run);

@@ -17,19 +17,31 @@
 </style>
 
 <script>
-  import gsap from "gsap";
+  const THEME_CLASSES = [
+    "yellow-theme",
+    "blue-theme",
+    "purple-theme",
+    "green-theme",
+  ];
+  const STYLE_CLASSES = [
+    "style-glass",
+    "style-sharp",
+    "style-neon",
+    "style-paper",
+  ];
 
   const TARGET_CELL_SIZE = 40;
   const COVER_DURATION = 0.2;
   const COVER_SPREAD = 0.35;
   const REVEAL_DURATION = 0.25;
   const REVEAL_SPREAD = 0.35;
-  const FIRST_LOAD_SPREAD = 0.9;
+  const FIRST_LOAD_SPREAD = 0.55;
   const overlay = document.getElementById("grid-transition") as HTMLElement;
   let cells: HTMLElement[] = [];
   let gridCols = 0;
   let gridRows = 0;
   let phase = Math.random() * Math.PI * 2;
+  let running: Animation[] = [];
 
   function buildGrid() {
     gridCols = Math.max(1, Math.round(window.innerWidth / TARGET_CELL_SIZE));
@@ -37,30 +49,22 @@
     gridRows = Math.ceil(window.innerHeight / cellSize) + 1;
     overlay.style.gridTemplateColumns = `repeat(${gridCols}, ${cellSize}px)`;
     overlay.style.gridTemplateRows = `repeat(${gridRows}, ${cellSize}px)`;
-    overlay.innerHTML = "";
+    cancelRunning();
+    const fragment = document.createDocumentFragment();
     cells = Array.from({ length: gridCols * gridRows }, () => {
       const cell = document.createElement("div");
-      overlay.appendChild(cell);
+      fragment.appendChild(cell);
       return cell;
     });
+    overlay.replaceChildren(fragment);
   }
 
   function applyTheme() {
     const theme = localStorage.getItem("theme");
-    document.body.classList.remove(
-      "yellow-theme",
-      "blue-theme",
-      "purple-theme",
-      "green-theme",
-    );
+    document.body.classList.remove(...THEME_CLASSES);
     if (theme && theme !== "default") document.body.classList.add(theme);
     const portfolioStyle = localStorage.getItem("portfolioStyle");
-    document.body.classList.remove(
-      "style-glass",
-      "style-sharp",
-      "style-neon",
-      "style-paper",
-    );
+    document.body.classList.remove(...STYLE_CLASSES);
     const customBorder =
       (localStorage.getItem("cardBorder") ?? "custom") === "custom";
     if (!customBorder && portfolioStyle && portfolioStyle !== "default")
@@ -96,47 +100,80 @@
     };
   }
 
-  function cover(): Promise<void> {
+  function setCellOpacity(value: number) {
+    for (const cell of cells) cell.style.opacity = String(value);
+  }
+
+  function cancelRunning() {
+    for (const animation of running) animation.cancel();
+    running = [];
+  }
+
+  /** Resolves false when a newer transition cancelled this one. */
+  function animateCells(
+    to: number,
+    duration: number,
+    spread: number,
+  ): Promise<boolean> {
+    cancelRunning();
+
+    const delayFor = cellDelay(spread);
+    const durationMs = duration * 1000;
+    const batch: Animation[] = [];
+    let lastDelay = -1;
+    let last: Animation | undefined;
+
+    for (let i = 0; i < cells.length; i++) {
+      const delay = delayFor(i) * 1000 + durationMs;
+      const animation = cells[i].animate(
+        { opacity: to },
+        { duration: 0, delay, fill: "forwards" },
+      );
+      batch.push(animation);
+      if (delay > lastDelay) {
+        lastDelay = delay;
+        last = animation;
+      }
+    }
+    running = batch;
+
+    return Promise.resolve(last?.finished)
+      .catch(() => {})
+      .then(() => {
+        if (running !== batch) return false;
+        cancelRunning();
+        setCellOpacity(to);
+        return true;
+      });
+  }
+
+  function startTransition() {
     phase = Math.random() * Math.PI * 2;
     applyTheme();
-    return new Promise((resolve) => {
-      overlay.style.pointerEvents = "all";
-      gsap.killTweensOf(cells);
-      gsap.to(cells, {
-        opacity: 1,
-        duration: COVER_DURATION,
-        stagger: cellDelay(COVER_SPREAD),
-        ease: "steps(1)",
-        onComplete: resolve,
-      });
-    });
+  }
+
+  function cover(): Promise<boolean> {
+    startTransition();
+    document.documentElement.classList.remove("grid-revealed");
+    overlay.style.pointerEvents = "all";
+    return animateCells(1, COVER_DURATION, COVER_SPREAD);
   }
 
   function reveal(spread = FIRST_LOAD_SPREAD): Promise<void> {
-    phase = Math.random() * Math.PI * 2;
-    applyTheme();
+    startTransition();
     document.dispatchEvent(new CustomEvent("grid:reveal-start"));
-    return new Promise((resolve) => {
-      gsap.killTweensOf(cells);
-      gsap.to(cells, {
-        opacity: 0,
-        duration: REVEAL_DURATION,
-        stagger: cellDelay(spread),
-        ease: "steps(1)",
-        onComplete: () => {
-          overlay.style.pointerEvents = "none";
-          document.dispatchEvent(new CustomEvent("grid:revealed"));
-          resolve();
-        },
-      });
+    return animateCells(0, REVEAL_DURATION, spread).then((completed) => {
+      if (!completed) return;
+      overlay.style.pointerEvents = "none";
+      document.documentElement.classList.add("grid-revealed");
+      document.dispatchEvent(new CustomEvent("grid:revealed"));
     });
   }
 
-  // Initial page load
   buildGrid();
   applyTheme();
-  gsap.set(cells, { opacity: 1 });
-  reveal();
+  setCellOpacity(1);
+  requestAnimationFrame(() => reveal());
 
   let resizeTimer: ReturnType<typeof setTimeout> | null = null;
   window.addEventListener("resize", () => {
@@ -144,7 +181,7 @@
     resizeTimer = setTimeout(() => {
       buildGrid();
       applyTheme();
-      gsap.set(cells, { opacity: 0 });
+      setCellOpacity(0);
     }, 150);
   });
 
@@ -172,6 +209,8 @@
     if (skipNextTransition) {
       skipNextTransition = false;
       applyTheme();
+      document.documentElement.classList.add("grid-revealed");
+      document.dispatchEvent(new CustomEvent("grid:revealed"));
       return;
     }
     reveal(REVEAL_SPREAD);

@@ -1,12 +1,10 @@
 ---
 import Card from "./Card/index.astro";
 import Button from "./Button.astro";
-import { LINKS } from "../lib/constants";
 import { Icon } from "astro-icon/components";
 import Tooltip from "./Tooltip/index";
 import { SITE } from "../site-config";
 import AvatarSprite from "./AvatarSprite.astro";
-import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
 ---
 
 <Card colSpan="md:col-span-3" rowSpan="md:row-span-4" class="pad-lg">
@@ -49,7 +47,11 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
       </div>
       <div class="flex flex-col lg:flex-row gap-2 lg:gap-4">
         <div class="flex gap-2 lg:gap-4">
-          <a href={LINKS.github} aria-label="github profile" target="_blank">
+          <a
+            href={SITE.links.github}
+            aria-label="github profile"
+            target="_blank"
+          >
             <Button aria-label="github profile">
               <Icon name="ri:github-fill" />
               <span class="sr-only" data-umami-event="github button"
@@ -58,7 +60,7 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
             </Button>
           </a>
           <a
-            href={LINKS.linkedin}
+            href={SITE.links.linkedin}
             aria-label="linkedin profile"
             target="_blank"
           >
@@ -70,7 +72,7 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
             </Button>
           </a>
           <a
-            href={LINKS.dribbble}
+            href={SITE.links.dribbble}
             aria-label="dribbble profile"
             target="_blank"
           >
@@ -101,33 +103,34 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
     </div>
     <AvatarSprite
       id="memoji-avatar"
+      themed
+      levitate
+      spinOnReveal
       height="270px"
       label={`memoji of ${SITE.author.firstName}, slowly rotating`}
       class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none md:pointer-events-auto md:cursor-ew-resize"
-      {...Object.fromEntries(
-        AVATAR_THEMES.map((t) => [`data-theme-${t.theme}`, t.sheet]),
-      )}
     />
   </div>
 </Card>
 
 <script>
-  import { animate } from "motion";
-  import { cellPosition, SPRITE } from "../lib/avatar-sprite.mjs";
+  import {
+    cellPosition,
+    DEFAULT_SHEET,
+    SHEET_BY_THEME,
+    SPRITE,
+  } from "../lib/avatar-sprite.mjs";
 
   const PX_PER_FRAME = 14;
 
   function updateMemojiImage() {
-    const avatar = document.getElementById("memoji-avatar");
-    if (!avatar) return;
-
-    const theme = localStorage.getItem("theme") || "default";
     const sheet =
-      avatar.getAttribute(`data-theme-${theme}`) ??
-      avatar.getAttribute("data-theme-default");
-    if (!sheet) return;
-
-    avatar.style.backgroundImage = `url("${sheet}")`;
+      SHEET_BY_THEME[localStorage.getItem("theme") ?? "default"] ??
+      DEFAULT_SHEET;
+    document.documentElement.style.setProperty(
+      "--memoji-sheet",
+      `url("${sheet}")`,
+    );
   }
 
   function initPointerSpin() {
@@ -180,35 +183,14 @@ import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
     });
   }
 
-  function initLevitatingAnimation() {
-    const avatar = document.getElementById("memoji-avatar");
-    if (!avatar) return;
-
-    animate(
-      avatar,
-      { y: [-10, 10, -10] },
-      {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut",
-      },
-    );
-  }
-
   const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (
-        mutation.type === "attributes" &&
-        mutation.attributeName === "class"
-      ) {
-        updateMemojiImage();
-      }
-    });
+    if (mutations.some((mutation) => mutation.attributeName === "class")) {
+      updateMemojiImage();
+    }
   });
 
   document.addEventListener("astro:page-load", () => {
     updateMemojiImage();
-    initLevitatingAnimation();
     initPointerSpin();
     observer.observe(document.body, {
       attributes: true,

@@ -1,15 +1,14 @@
 ---
 import { DEFAULT_SHEET, SPRITE } from "../lib/avatar-sprite.mjs";
 
-/**
- * One animated cell of a turntable spritesheet. The stepping CSS lives here
- * only; consumers drive playback with `:global(.avatar-sprite…)` rules.
- */
 interface Props {
   id?: string;
   class?: string;
   sheet?: string;
-  /** Width follows from the cell aspect ratio. */
+  themed?: boolean;
+  levitate?: boolean;
+  /** Hold on frame 0 (front) until the grid overlay finishes revealing. */
+  spinOnReveal?: boolean;
   height: string;
   duration?: string;
   label: string;
@@ -19,11 +18,18 @@ const {
   id,
   class: className,
   sheet = DEFAULT_SHEET,
+  themed = false,
+  levitate = false,
+  spinOnReveal = false,
   height,
   duration = "2.4s",
   label,
   ...rest
 } = Astro.props;
+
+const backgroundImage = themed
+  ? `var(--memoji-sheet, url("${sheet}"))`
+  : `url("${sheet}")`;
 
 if (SPRITE.COLS !== 6 || SPRITE.ROWS !== 4) {
   throw new Error(
@@ -36,29 +42,57 @@ if (SPRITE.COLS !== 6 || SPRITE.ROWS !== 4) {
   id={id}
   role="img"
   aria-label={label}
-  class:list={["avatar-sprite", className]}
-  style={`--sprite-height:${height};--sprite-duration:${duration};background-image:url("${sheet}")`}
+  class:list={[
+    "avatar-sprite",
+    levitate && "avatar-levitating",
+    spinOnReveal && "spin-paused",
+    className,
+  ]}
+  style={`--sprite-height:${height};--sprite-duration:${duration};background-image:${backgroundImage}`}
   {...rest}
 >
 </div>
 
 <style>
-  /*
-   * Two stepped animations on two separate longhands: one animation cannot hold
-   * two stepped axes, and the shorthand would have one overwrite the other.
-   * 600% 400% overflows the box by 5x width and 3x height, and percentage
-   * positions measure against that overflow -- hence 0..120% and 0..133.3%.
-   */
   .avatar-sprite {
     height: var(--sprite-height);
-    /* Pins the width, so no layout shift without an <img>'s intrinsic size. */
     aspect-ratio: 414 / 390; /* SPRITE.CELL_W / CELL_H */
     background-size: 600% 400%;
     background-repeat: no-repeat;
     background-position: 0% 0%;
-    animation:
+    --sprite-frames:
       avatar-sprite-col calc(var(--sprite-duration) / 4) steps(6) infinite,
       avatar-sprite-row var(--sprite-duration) steps(4) infinite;
+    --sprite-levitate: none;
+    animation: var(--sprite-frames), var(--sprite-levitate);
+  }
+
+  .avatar-sprite.avatar-levitating {
+    --sprite-levitate: avatar-levitate 3s ease-in-out infinite;
+  }
+
+  .avatar-sprite.is-manual {
+    --sprite-frames: none, none;
+  }
+
+  /* Frame 0 is 0 deg, so holding here keeps the face front. Levitation is the
+     third slot and keeps running. */
+  .avatar-sprite.spin-paused {
+    animation-play-state: paused, paused, running;
+  }
+
+  :global(html.grid-revealed) .avatar-sprite.spin-paused {
+    animation-play-state: running;
+  }
+
+  @keyframes avatar-levitate {
+    0%,
+    100% {
+      translate: 0 -10px;
+    }
+    50% {
+      translate: 0 10px;
+    }
   }
 
   @keyframes avatar-sprite-col {
@@ -79,13 +113,10 @@ if (SPRITE.COLS !== 6 || SPRITE.ROWS !== 4) {
     }
   }
 
-  .avatar-sprite.is-manual {
-    animation: none;
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .avatar-sprite {
-      animation: none;
+      --sprite-frames: none, none;
+      --sprite-levitate: none;
       background-position: 0% 0%;
     }
   }
