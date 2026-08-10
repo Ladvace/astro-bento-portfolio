@@ -1,0 +1,41 @@
+---
+interface Props {
+  index: number;
+}
+
+const { index } = Astro.props;
+
+const X = true;
+const o = false;
+
+const GLYPHS: boolean[][][] = [
+  [[X]],
+  [[X, X]],
+  [[X], [X, X]],
+  [
+    [X, X],
+    [X, X],
+  ],
+  [
+    [X, o, X],
+    [o, X, o],
+    [X, o, X],
+  ],
+];
+
+const rows = GLYPHS[index] ?? GLYPHS[0];
+const gap = rows.length > 2 ? "gap-0.5" : "gap-1";
+const CELL = "w-1 h-1 rounded-full";
+---
+
+<span class:list={["flex flex-col items-center", gap]}>
+  {
+    rows.map((row) => (
+      <span class:list={["flex", gap]}>
+        {row.map((filled) => (
+          <span class:list={[CELL, filled && "bg-current"]} />
+        ))}
+      </span>
+    ))
+  }
+</span>
