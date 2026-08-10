@@ -593,7 +593,7 @@ body::before {
 }
 
 body.ns-js-shape .card--ns {
-  -webkit-mask-box-image: none !important;
+  -webkit-mask-box-image-source: none !important;
   border-color: transparent !important;
   box-shadow: none !important;
 }
