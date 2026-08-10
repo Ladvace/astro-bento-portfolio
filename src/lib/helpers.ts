@@ -6,7 +6,7 @@ export function formatTimeTo12H(date: Date): string {
   const options: Intl.DateTimeFormatOptions = {
     hour: "numeric",
     minute: "2-digit",
-    hour12: true, // Use 12-hour format with AM/PM
+    hour12: true,
     timeZone: "Europe/Rome",
   };
 

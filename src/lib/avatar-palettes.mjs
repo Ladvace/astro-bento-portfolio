@@ -1,14 +1,14 @@
 import fs from "node:fs";
+import { AVATAR_THEMES } from "./avatar-sprite.mjs";
 
-export const HIGHLIGHT = "#f7fafc";
+const HIGHLIGHT = "#f7fafc";
 
-export const THEME_SELECTORS = {
-  red: ":root",
-  yellow: ".yellow-theme",
-  green: ".green-theme",
-  blue: ".blue-theme",
-  purple: ".purple-theme",
-};
+const THEME_SELECTORS = Object.fromEntries(
+  AVATAR_THEMES.map(({ theme, name }) => [
+    name,
+    theme === "default" ? ":root" : `.${theme}`,
+  ]),
+);
 
 export function readPalettes(cssPath = "src/style.css") {
   const css = fs.readFileSync(cssPath, "utf8");

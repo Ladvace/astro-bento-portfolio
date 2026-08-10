@@ -617,8 +617,7 @@ body.ns-js-shape .card--ns::before {
   transition: stroke 150ms ease-out;
 }
 
-/* Firefox fallback. The stroke straddles the clip edge and loses its outer
-   half, so it is doubled to land on the rail's real 1px. */
+/* Firefox: the stroke loses its outer half to the clip, so it is doubled. */
 .card--ns.ns-clip-fallback::before {
   opacity: 0;
 }
@@ -724,7 +723,6 @@ body.ns-js-shape .card--ns::before {
     filter: none;
   }
 
-  /* Back link keeps the frame shape without the extruded lift or its press. */
   .cards-custom .btn-shell--flat {
     filter: none;
   }
@@ -760,4 +758,47 @@ body.ns-js-shape .card--ns::before {
     bottom: -26px;
     transform: translateX(-140%);
   }
+}
+
+@keyframes heart-pulse {
+  0%,
+  40%,
+  80%,
+  100% {
+    transform: scale(1);
+  }
+  20% {
+    transform: scale(1.6);
+  }
+  60% {
+    transform: scale(1.35);
+  }
+}
+
+.pixel-heart.beating,
+.heart-btn.is-firing .heart-svg {
+  animation: heart-pulse 0.6s ease-in-out;
+}
+
+.checkerboard,
+.dl-stage.bg-checker {
+  background-image:
+    linear-gradient(
+      45deg,
+      var(--darkslate-800) 25%,
+      transparent 25%,
+      transparent 75%,
+      var(--darkslate-800) 75%
+    ),
+    linear-gradient(
+      45deg,
+      var(--darkslate-800) 25%,
+      var(--darkslate-900) 25%,
+      var(--darkslate-900) 75%,
+      var(--darkslate-800) 75%
+    );
+  background-size: 24px 24px;
+  background-position:
+    0 0,
+    12px 12px;
 }

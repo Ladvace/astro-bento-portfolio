@@ -1,10 +1,7 @@
 import { nineSliceOutlinePath } from "./nine-slice";
 
-/**
- * Firefox has no mask-border, so style.css never clips cards to the frame.
- * The border-image frame is hidden and the same path is used to clip and to
- * stroke, because the two constructions anchor differently and would drift.
- */
+/* Firefox has no mask-border, so cards are clipped here instead. One path
+   both clips and strokes: the two constructions anchor differently. */
 
 const SVG_NS = "http://www.w3.org/2000/svg";
 const MASK_BORDER = "linear-gradient(#000, #000) 10 fill / 10px stretch";

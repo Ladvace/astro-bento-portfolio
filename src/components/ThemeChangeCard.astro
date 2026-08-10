@@ -1,47 +1,32 @@
 ---
 import Card from "./Card/index.astro";
-import {
-  cssVars,
-  nineSliceDataUri,
-  nineSliceGeometry,
-  nineSliceRailMaskDataUri,
-} from "../lib/nine-slice";
+import { cssVars, frameVars } from "../lib/nine-slice";
+import { AVATAR_THEMES } from "../lib/avatar-sprite.mjs";
 
-const CORNER = 12;
-const BORDER = 1 / nineSliceGeometry(0, CORNER).scale;
-const shared = { borderWidth: BORDER, cornerSize: CORNER };
+const swatchVars = cssVars(frameVars("sw", { cornerSize: 12 }));
 
-const swatchVars = cssVars({
-  "--sw-mask": nineSliceDataUri({ ...shared, fill: "#fff", stroke: "#fff" }),
-  "--sw-rail-mask": nineSliceRailMaskDataUri(shared),
-  "--sw-slice": `${CORNER}`,
-  "--sw-border": `${CORNER}px`,
-});
+/* Kept here, not in the theme table: UnoCSS only scans files it compiles. */
+const SWATCH: Record<string, string> = {
+  red: "bg-[#e63946]",
+  yellow: "bg-yellow-500",
+  blue: "bg-blue-500",
+  purple: "bg-purple-500",
+  green: "bg-green-500",
+};
 ---
 
 <Card colSpan="md:col-span-1" rowSpan="md:row-span-1" padding="p-4">
   <div class="flex flex-col items-center justify-center h-full gap-2">
     <div class="theme-colors flex items-center gap-3" style={swatchVars}>
-      <button
-        class="theme-btn w-6 h-6 rounded-full bg-[#e63946] transition-all duration-200"
-        data-theme="default"
-        aria-label="Default theme"></button>
-      <button
-        class="theme-btn w-6 h-6 rounded-full bg-yellow-500 transition-all duration-200"
-        data-theme="yellow-theme"
-        aria-label="Yellow theme"></button>
-      <button
-        class="theme-btn w-6 h-6 rounded-full bg-blue-500 transition-all duration-200"
-        data-theme="blue-theme"
-        aria-label="Blue theme"></button>
-      <button
-        class="theme-btn w-6 h-6 rounded-full bg-purple-500 transition-all duration-200"
-        data-theme="purple-theme"
-        aria-label="Purple theme"></button>
-      <button
-        class="theme-btn w-6 h-6 rounded-full bg-green-500 transition-all duration-200"
-        data-theme="green-theme"
-        aria-label="Green theme"></button>
+      {
+        AVATAR_THEMES.map(({ theme, name }) => (
+          <button
+            class={`theme-btn w-6 h-6 rounded-full transition-all duration-200 ${SWATCH[name]}`}
+            data-theme={theme}
+            aria-label={`${name} theme`}
+          />
+        ))
+      }
     </div>
   </div>
 </Card>
@@ -64,56 +49,30 @@ const swatchVars = cssVars({
 </style>
 
 <script>
-  function playThemeSound() {
-    if (localStorage.getItem("soundEnabled") === "false") return;
-    const ctx = new AudioContext();
-    [440, 554, 659].forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = "triangle";
-      osc.frequency.value = freq;
-      const t = ctx.currentTime + i * 0.055;
-      gain.gain.setValueAtTime(0.0, t);
-      gain.gain.linearRampToValueAtTime(0.09, t + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
-      osc.start(t);
-      osc.stop(t + 0.18);
-    });
-  }
+  import { CHIME, play } from "../lib/sound";
+  import { applyAppearance } from "../lib/appearance";
 
   document.addEventListener("astro:page-load", () => {
-    const themeButtons = document.querySelectorAll(".theme-btn");
+    const themeButtons = document.querySelectorAll<HTMLElement>(".theme-btn");
 
     const updateSelectedTheme = () => {
-      const currentTheme = localStorage.getItem("theme") || "default";
-      themeButtons.forEach((btn) => {
-        btn.classList.toggle(
-          "active",
-          btn.getAttribute("data-theme") === currentTheme,
-        );
-      });
+      const current = localStorage.getItem("theme") || "default";
+      themeButtons.forEach((btn) =>
+        btn.classList.toggle("active", btn.dataset.theme === current),
+      );
     };
 
     updateSelectedTheme();
 
     themeButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
-        const themeName = btn.getAttribute("data-theme");
-        document.body.classList.remove(
-          "yellow-theme",
-          "blue-theme",
-          "purple-theme",
-          "green-theme",
-        );
-        localStorage.setItem("theme", themeName as string);
-        if (themeName && themeName !== "default")
-          document.body.classList.add(themeName);
+        const theme = btn.dataset.theme as string;
+        localStorage.setItem("theme", theme);
+        applyAppearance();
         updateSelectedTheme();
-        playThemeSound();
+        play(CHIME);
         document.dispatchEvent(
-          new CustomEvent("themechange", { detail: { theme: themeName } }),
+          new CustomEvent("themechange", { detail: { theme } }),
         );
       });
     });

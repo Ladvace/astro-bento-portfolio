@@ -1,4 +1,3 @@
-/** One morph sequence: bottom → cover, then top → reveal. */
 export type WipeVariantPaths = {
   id: string;
   label: string;
@@ -9,7 +8,6 @@ export type WipeVariantPaths = {
   unfilledTop: string;
 };
 
-/** Reference geometry: symmetric quadratic. */
 const classic: WipeVariantPaths = {
   id: "classic",
   label: "Classic",
@@ -20,7 +18,6 @@ const classic: WipeVariantPaths = {
   unfilledTop: "M 0 0 V 0 Q 50 0 100 0 V 0 z",
 };
 
-/** Control point shifted — wipe reads biased left/right. */
 const asymmetric: WipeVariantPaths = {
   id: "asymmetric",
   label: "Asymmetric",
@@ -31,7 +28,6 @@ const asymmetric: WipeVariantPaths = {
   unfilledTop: "M 0 0 V 0 Q 50 0 100 0 V 0 z",
 };
 
-/** Morph-based presets (SVG path + MorphSVGPlugin). */
 export const WIPE_VARIANT_LIST: readonly WipeVariantPaths[] = [
   classic,
   asymmetric,

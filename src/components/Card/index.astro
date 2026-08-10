@@ -5,46 +5,37 @@ import { CARD_FRAME, cssVars } from "../../lib/nine-slice";
 
 interface Props {
   title?: string;
-  body?: string;
   colSpan?: string;
   rowSpan?: string;
   href?: string;
-  colorText?: string;
   height?: string;
   padding?: string;
-  bgColor?: string;
   arrowCorner?: boolean;
   centerY?: boolean;
   prefetch?: "hover" | "viewport" | "load" | "tap";
   nsPadY?: string;
-  nsPadX?: string;
   class?: string;
 }
 
 const {
   title,
-  body,
   colSpan,
   rowSpan,
   href,
-  colorText,
   height,
   padding,
-  bgColor,
   arrowCorner,
   centerY,
   prefetch,
   nsPadY,
-  nsPadX,
   class: className,
 } = Astro.props;
 
-const chrome = `${bgColor || "bg-darkslate-500"} shadow-lg rounded-lg border border-darkslate-400 hover:border-primary-500 card--ns`;
+const chrome = `bg-darkslate-500 shadow-lg rounded-lg border border-darkslate-400 hover:border-primary-500 card--ns`;
 
 const nsVars = cssVars({
-  ...CARD_FRAME.vars,
+  ...CARD_FRAME,
   "--ns-pad-y": nsPadY,
-  "--ns-pad-x": nsPadX,
 });
 ---
 
@@ -62,7 +53,7 @@ const nsVars = cssVars({
   {
     href ? (
       <a
-        class={`h-auto w-full flex flex-col relative ${colorText || ""}`}
+        class="h-auto w-full flex flex-col relative"
         href={href}
         data-astro-prefetch={prefetch}
       >
@@ -70,12 +61,12 @@ const nsVars = cssVars({
           class={`h-5 w-5 absolute right-0 group-hover:text-primary-500 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform ease-in-out duration-100 z-20 flex-shrink-0 ${arrowCorner ? "top-0" : "inset-y-0 my-auto"}`}
           name="ri:arrow-right-up-line"
         />
-        <Content body={body} title={title}>
+        <Content title={title}>
           <slot />
         </Content>
       </a>
     ) : (
-      <Content body={body} title={title}>
+      <Content title={title}>
         <slot />
       </Content>
     )

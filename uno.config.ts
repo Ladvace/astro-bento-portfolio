@@ -4,12 +4,13 @@ import { defineConfig, presetWind3 } from "unocss";
 export default defineConfig({
   content: {
     filesystem: [
-      // Narrow scope to specific directories
       "src/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
-      "src/components/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
-      "src/pages/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
-      "src/layouts/**/*.{html,js,ts,jsx,tsx,vue,svelte,astro}",
     ],
+  },
+  shortcuts: {
+    /* Shared chrome for Button and BackLink: outline, lift and press. */
+    "btn-chrome":
+      "border border-primary-500 bg-darkslate-900 text-darkslate-50 shadow-custom shadow-primary-500 hover:text-primary-500 active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-colors duration-100 ease-in-out",
   },
   safelist: [
     "bg-violet-500",

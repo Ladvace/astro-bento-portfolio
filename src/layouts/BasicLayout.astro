@@ -8,7 +8,7 @@ import StylePanel from "../components/StylePanel.astro";
 import { BUTTON_FRAME, cssVars } from "../lib/nine-slice";
 import { SHEET_BY_THEME } from "../lib/avatar-sprite.mjs";
 
-const buttonFrameVars = `:root{${cssVars(BUTTON_FRAME.vars)}}`;
+const buttonFrameVars = `:root{${cssVars(BUTTON_FRAME)}}`;
 
 const showsAvatar = Astro.url.pathname.replace(/\/+$/, "") === "";
 
@@ -160,7 +160,7 @@ const schema =
         },
         headline: title || title,
         description: description || title,
-        image: `${Astro.url.origin}/og-image.png`, //TODO: dynamic
+        image: `${Astro.url.origin}/og-image.png`,
         author: {
           "@type": "Person",
           name: SITE.author.shortName,
@@ -328,33 +328,13 @@ const schema =
 
 <script>
   import { initNineSliceFallback } from "../lib/nine-slice-fallback";
+  import { CARD_HOVER, play } from "../lib/sound";
   import { SITE } from "../site-config";
 
   let disposeNineSlice: (() => void) | null = null;
-  let audioCtx: AudioContext | null = null;
   let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 
-  function getAudioCtx(): AudioContext {
-    if (!audioCtx) audioCtx = new AudioContext();
-    if (audioCtx.state === "suspended") audioCtx.resume();
-    return audioCtx;
-  }
-
-  function playCardHover() {
-    if (!soundEnabled) return;
-    const ctx = getAudioCtx();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(1100, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(500, ctx.currentTime + 0.018);
-    gain.gain.setValueAtTime(0.12, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.018);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.018);
-  }
+  const playCardHover = () => play(CARD_HOVER);
 
   function updateToggleIcon() {
     document

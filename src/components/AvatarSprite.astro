@@ -7,7 +7,6 @@ interface Props {
   sheet?: string;
   themed?: boolean;
   levitate?: boolean;
-  /** Hold on frame 0 (front) until the grid overlay finishes revealing. */
   spinOnReveal?: boolean;
   height: string;
   duration?: string;
@@ -75,8 +74,7 @@ if (SPRITE.COLS !== 6 || SPRITE.ROWS !== 4) {
     --sprite-frames: none, none;
   }
 
-  /* Frame 0 is 0 deg, so holding here keeps the face front. Levitation is the
-     third slot and keeps running. */
+  /* Levitation is the third slot and keeps running. */
   .avatar-sprite.spin-paused {
     animation-play-state: paused, paused, running;
   }

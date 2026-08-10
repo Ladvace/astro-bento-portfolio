@@ -23,14 +23,12 @@ export const prerender = true;
 </PlaygroundShell>
 
 <style>
-  /* Full-bleed out of the shell's padding so the model runs off the edge, and
-     absolute so the page itself never gains scrollable height. */
+  /* Full-bleed and absolute: the page must never gain scrollable height. */
   .scroll-stage {
     position: absolute;
     inset: 0;
     width: 100vw;
     margin-left: calc(50% - 50vw);
-    /* Stays under the shell's floating back link, which sits at z-20. */
     z-index: 0;
   }
 
@@ -116,19 +114,13 @@ export const prerender = true;
   const FOV = 35;
   /** 1 = model centre sits on a viewport edge, so half of it is visible. */
   const EDGE_BIAS = 0.92;
-  /** Fraction of viewport height the model spans. */
   const FILL = 1.42;
   const TURNS = 2;
   const DAMPING = 0.1;
-  /** Progress gained per wheel pixel / per dragged pixel. */
   const WHEEL_SENSITIVITY = 0.0009;
   const DRAG_SENSITIVITY = 0.0016;
 
-  /**
-   * Where the model sits across the journey, in units of half the viewport
-   * width: +1 hangs off the right edge, -1 off the left, 0 is centre. It holds
-   * on the right for the first stretch so the rotation reads before it travels.
-   */
+  /** x is in half-viewport-widths: +1 off the right edge, 0 centre. */
   const STOPS = [
     { at: 0.0, x: 1 },
     { at: 0.3, x: 1 },
@@ -166,8 +158,7 @@ export const prerender = true;
     renderer.outputColorSpace = SRGBColorSpace;
     renderer.toneMapping = ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
-    // Transmission re-renders the scene into a buffer; at full-bleed size that
-    // is the dominant cost and half resolution is indistinguishable here.
+    // Transmission re-renders into a buffer; half res is the dominant saving.
     if ("transmissionResolutionScale" in renderer) {
       (renderer as any).transmissionResolutionScale = 0.5;
     }
@@ -198,8 +189,7 @@ export const prerender = true;
     const pivot = new Group();
     scene.add(pivot);
 
-    // Meshopt's decoder inlines its wasm, so it bundles with the page instead
-    // of needing a decoder served from public/.
+    // Meshopt inlines its wasm, so no decoder has to be served from public/.
     const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
 
     let model: Group | null = null;
@@ -277,8 +267,7 @@ export const prerender = true;
     };
     applyProgress(0);
 
-    // The page has no scrollable height, so wheel is integrated by hand and
-    // its default is swallowed to stop overscroll bounce.
+    // No scrollable height, so wheel is integrated by hand.
     const advance = (delta: number) => {
       engaged = true;
       targetP = clamp01(targetP + delta);

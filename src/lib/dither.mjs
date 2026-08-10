@@ -36,7 +36,7 @@ export function bayerMatrix([sizeX, sizeY]) {
   return matrix.map((row) => row.map((cell) => rank.get(cell)));
 }
 
-export function hexToRgb(hex) {
+function hexToRgb(hex) {
   let value = hex.replace(/^#/, "");
   if (value.length === 3) {
     value = value

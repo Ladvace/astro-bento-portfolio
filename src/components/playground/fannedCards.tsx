@@ -75,18 +75,9 @@ const Card = (props: {
         fill="#0E0E0E"
       />
     </svg>
-    {/* Real HDR glow. A tiny solid-white AVIF is multiplied over the emblem
-        through a luminance mask of the red shapes; on an HDR display the
-        multiply pushes the emblem's own red past SDR white, so it emits real
-        light. Painted above the SVG (so the emblem is its backdrop) and masked
-        so only the red circle/border glow, not the dark sword.
-
-        The glow only exists because the AVIF is tagged with the PQ transfer
-        function (SMPTE ST 2084, CICP 9/16/9 — BT.2020 primaries + PQ). PQ is
-        absolute: code values map to fixed nits up to 10,000, so our white pixel
-        means a literal ~1,000 nits regardless of the display — far above SDR
-        white (~100-300 nits). A normal sRGB AVIF has no such scale — its white
-        is just "display max," so it can never exceed it. */}
+    {/* Solid-white AVIF multiplied over the emblem through a luminance mask.
+        The glow only works because the AVIF is PQ-tagged (CICP 9/16/9): PQ is
+        absolute, so its white means ~1,000 nits rather than "display max". */}
     {props.hdrReal && (
       <div
         aria-hidden="true"

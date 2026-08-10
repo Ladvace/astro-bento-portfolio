@@ -84,32 +84,11 @@ const heartCount = entry.heartCount ?? 0;
   .heart-btn.is-active {
     color: #ef4444;
   }
-  .heart-btn.is-firing .heart-svg {
-    animation: heart-pulse 0.6s ease-in-out;
-  }
-  @keyframes heart-pulse {
-    0% {
-      transform: scale(1);
-    }
-    20% {
-      transform: scale(1.6);
-    }
-    40% {
-      transform: scale(1);
-    }
-    60% {
-      transform: scale(1.35);
-    }
-    80% {
-      transform: scale(1);
-    }
-    100% {
-      transform: scale(1);
-    }
-  }
 </style>
 
 <script>
+  import { HEARTBEAT, play } from "../../lib/sound";
+
   const STORAGE_KEY = "guestbookHearts";
 
   const readHearted = (): string[] => {
@@ -129,26 +108,7 @@ const heartCount = entry.heartCount ?? 0;
     } catch {}
   };
 
-  const playHeartbeat = (): void => {
-    if (localStorage.getItem("soundEnabled") === "false") return;
-    try {
-      const ctx = new AudioContext();
-      const pulse = (delay: number): void => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = 80;
-        const t = ctx.currentTime + delay;
-        gain.gain.setValueAtTime(0.18, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
-        osc.start(t);
-        osc.stop(t + 0.12);
-      };
-      pulse(0);
-      pulse(0.18);
-    } catch {}
-  };
+  const playHeartbeat = () => play(HEARTBEAT);
 
   const fireAnimation = (button: HTMLButtonElement): void => {
     button.classList.remove("is-firing");

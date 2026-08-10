@@ -9,7 +9,7 @@ export type GuestbookEntry = {
 
 export const ENTRIES_PER_PAGE = 10;
 
-export const AVATAR_COLORS = [
+const AVATAR_COLORS = [
   "bg-violet-500",
   "bg-sky-500",
   "bg-emerald-500",

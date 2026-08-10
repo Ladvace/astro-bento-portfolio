@@ -12,9 +12,9 @@ export const SPRITE = {
 export const AVATAR_THEMES = [
   { theme: "default", name: "red" },
   { theme: "yellow-theme", name: "yellow" },
-  { theme: "green-theme", name: "green" },
   { theme: "blue-theme", name: "blue" },
   { theme: "purple-theme", name: "purple" },
+  { theme: "green-theme", name: "green" },
 ].map((t) => ({ ...t, sheet: `/avatar-spin-${t.name}.webp` }));
 
 export const UNDITHERED_SHEET = "/avatar-spin.webp";
