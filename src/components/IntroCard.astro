@@ -111,14 +111,40 @@ import AvatarSprite from "./AvatarSprite.astro";
 
   const PX_PER_FRAME = 14;
 
-  function updateMemojiImage() {
-    const sheet =
-      SHEET_BY_THEME[localStorage.getItem("theme") ?? "default"] ??
-      DEFAULT_SHEET;
-    document.documentElement.style.setProperty(
-      "--memoji-sheet",
-      `url("${sheet}")`,
-    );
+  const sheetFor = (theme: string | null): string =>
+    SHEET_BY_THEME[theme ?? "default"] ?? DEFAULT_SHEET;
+
+  /* Swap only once decoded: an unfetched sheet paints the sprite blank. */
+  const decoding = new Map<string, Promise<unknown>>();
+
+  function warmSheet(url: string) {
+    let pending = decoding.get(url);
+    if (!pending) {
+      const img = new Image();
+      img.src = url;
+      pending = img.decode().catch(() => {});
+      decoding.set(url, pending);
+    }
+    return pending;
+  }
+
+  async function updateMemojiImage() {
+    const next = `url("${sheetFor(localStorage.getItem("theme"))}")`;
+    const root = document.documentElement;
+    if (root.style.getPropertyValue("--memoji-sheet") === next) return;
+
+    await warmSheet(sheetFor(localStorage.getItem("theme")));
+    root.style.setProperty("--memoji-sheet", next);
+  }
+
+  function prewarmOnThemeHover() {
+    document.querySelectorAll<HTMLElement>(".theme-btn").forEach((btn) => {
+      btn.addEventListener(
+        "pointerenter",
+        () => warmSheet(sheetFor(btn.dataset.theme ?? null)),
+        { once: true },
+      );
+    });
   }
 
   function initPointerSpin() {
@@ -180,6 +206,7 @@ import AvatarSprite from "./AvatarSprite.astro";
   document.addEventListener("astro:page-load", () => {
     updateMemojiImage();
     initPointerSpin();
+    prewarmOnThemeHover();
     observer.observe(document.body, {
       attributes: true,
       attributeFilter: ["class"],
