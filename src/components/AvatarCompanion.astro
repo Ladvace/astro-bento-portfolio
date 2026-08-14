@@ -1,0 +1,282 @@
+---
+import { CLIP_CELL } from "../lib/avatar-clips.mjs";
+
+interface Props {
+  height?: number;
+}
+
+const { height = 112 } = Astro.props;
+---
+
+<div
+  id="avatar-companion"
+  class="avatar-companion"
+  aria-hidden="true"
+  transition:persist="avatar-companion"
+  style={`--companion-height:${height}px;--companion-aspect:${CLIP_CELL.W} / ${CLIP_CELL.H}`}
+>
+</div>
+
+<button
+  id="companion-toggle"
+  type="button"
+  aria-pressed="true"
+  aria-label="Toggle the walking avatar"
+  title="Toggle the walking avatar"
+  class="chrome--ns w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <circle cx="13" cy="4" r="2"></circle>
+    <path d="M14 21v-5l-3-3 1-5 3 3 3 1"></path>
+    <path d="M8 21l3-6"></path>
+    <line class="companion-strike" x1="3" y1="3" x2="21" y2="21"></line>
+  </svg>
+</button>
+
+<style>
+  .avatar-companion {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    height: var(--companion-height);
+    aspect-ratio: var(--companion-aspect);
+    background-repeat: no-repeat;
+    background-position: 0% 0%;
+    pointer-events: none;
+    will-change: transform;
+    transform-origin: 50% 100%;
+  }
+
+  .companion-strike {
+    display: none;
+  }
+
+  #companion-toggle[aria-pressed="false"] .companion-strike {
+    display: inline;
+  }
+
+  :global(html.companion-off) .avatar-companion {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .avatar-companion,
+    #companion-toggle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import {
+    CLIPS,
+    ONE_SHOT,
+    WALK_SETTLE,
+    WALK_SPEED,
+    clipBackgroundSize,
+    clipCellPosition,
+  } from "../lib/avatar-clips.mjs";
+
+  type ClipName = keyof typeof CLIPS;
+  type Step = { clip: ClipName; reverse?: boolean };
+
+  const STORAGE_KEY = "companionEnabled";
+  const EDGE_MARGIN = 12;
+  const HOLD_SECONDS: Partial<Record<ClipName, [number, number]>> = {
+    walk: [2.5, 7],
+    idle: [1.4, 4.2],
+    sit: [5, 12],
+  };
+  const MAX_STEP = 0.05;
+  const WALK_LOOP_SECONDS = CLIPS.walk.frames / CLIPS.walk.fps;
+
+  let companion = document.getElementById("avatar-companion");
+  let clip: ClipName = "idle";
+  let reversed = false;
+  let queue: Step[] = [];
+  let direction = 1;
+  let x = 0;
+  let clipTime = 0;
+  let remaining = 0;
+  let last = 0;
+  let frame = 0;
+  let enabled = localStorage.getItem(STORAGE_KEY) !== "false";
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+  const random = (min: number, max: number) =>
+    min + Math.random() * (max - min);
+  const isLoop = (name: ClipName) => !ONE_SHOT.includes(name);
+  const settleOf = (name: ClipName) => (name === "walk" ? WALK_SETTLE : null);
+
+  function holdFor(name: ClipName) {
+    const { frames, fps } = CLIPS[name];
+    if (!isLoop(name)) return frames / fps;
+    return random(...(HOLD_SECONDS[name] ?? HOLD_SECONDS.idle!));
+  }
+
+  function cellOf(name: ClipName, time: number, backwards: boolean) {
+    const { frames, fps } = CLIPS[name];
+    const raw = Math.floor(time * fps);
+    const index = isLoop(name)
+      ? ((raw % frames) + frames) % frames
+      : Math.min(frames - 1, Math.max(0, raw));
+    return backwards ? frames - 1 - index : index;
+  }
+
+  function setStep(step: Step) {
+    if (!companion) return;
+    clip = step.clip;
+    reversed = step.reverse === true;
+    const settle = settleOf(clip);
+    clipTime = settle ? settle[0] / CLIPS[clip].fps : 0;
+    remaining = holdFor(clip);
+    companion.style.backgroundImage = `url("${CLIPS[clip].sheet}")`;
+    companion.style.backgroundSize = clipBackgroundSize(clip);
+  }
+
+  function planNext(): Step[] {
+    const roll = Math.random();
+    if (clip === "sit") return [{ clip: "sit-down", reverse: true }];
+    if (clip === "sit-down")
+      return reversed ? [{ clip: "idle" }] : [{ clip: "sit" }];
+    if (clip === "wave") return [{ clip: "idle" }];
+    if (clip === "walk")
+      return roll < 0.75 ? [{ clip: "idle" }] : [{ clip: "walk" }];
+    if (roll < 0.5) return [{ clip: "walk" }];
+    if (roll < 0.7) return [{ clip: "wave" }];
+    return roll < 0.88 ? [{ clip: "sit-down" }] : [{ clip: "idle" }];
+  }
+
+  function advance() {
+    if (!queue.length) queue = planNext();
+    const step = queue.shift();
+    if (step) setStep(step);
+  }
+
+  function tick(now: number) {
+    frame = requestAnimationFrame(tick);
+    if (!companion) return;
+
+    const step = Math.min(MAX_STEP, (now - last) / 1000);
+    last = now;
+    clipTime += step;
+    remaining -= step;
+
+    const cell = cellOf(clip, clipTime, reversed);
+    companion.style.backgroundPosition = clipCellPosition(clip, cell);
+
+    if (clip === "walk") {
+      const speed = (WALK_SPEED * companion.offsetHeight) / WALK_LOOP_SECONDS;
+      const limit = window.innerWidth - companion.offsetWidth - EDGE_MARGIN;
+      x += direction * speed * step;
+      if (x >= limit) {
+        x = limit;
+        direction = -1;
+      } else if (x <= EDGE_MARGIN) {
+        x = EDGE_MARGIN;
+        direction = 1;
+      }
+    }
+
+    companion.style.transform = `translate3d(${Math.round(x)}px,0,0) scaleX(${direction})`;
+
+    if (remaining > 0) return;
+    const settle = settleOf(clip);
+    if (settle && !settle.includes(cell)) return;
+    advance();
+  }
+
+  function stop() {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+  }
+
+  function start() {
+    stop();
+    if (
+      !companion ||
+      !enabled ||
+      reduced.matches ||
+      companion.offsetWidth === 0
+    )
+      return;
+    last = performance.now();
+    frame = requestAnimationFrame(tick);
+  }
+
+  function place() {
+    if (!companion) return;
+    const span = Math.max(
+      EDGE_MARGIN,
+      window.innerWidth - companion.offsetWidth - EDGE_MARGIN,
+    );
+    x = random(EDGE_MARGIN, span);
+    direction = Math.random() < 0.5 ? -1 : 1;
+    queue = [];
+    setStep({ clip: "walk" });
+  }
+
+  function paint() {
+    document.documentElement.classList.toggle("companion-off", !enabled);
+    document
+      .getElementById("companion-toggle")
+      ?.setAttribute("aria-pressed", String(enabled));
+  }
+
+  function setEnabled(next: boolean) {
+    enabled = next;
+    localStorage.setItem(STORAGE_KEY, String(enabled));
+    paint();
+    if (!enabled) {
+      stop();
+      return;
+    }
+    place();
+    start();
+  }
+
+  if (!reduced.matches) {
+    for (const { sheet } of Object.values(CLIPS)) {
+      const warm = new Image();
+      warm.src = sheet;
+    }
+
+    paint();
+    place();
+    start();
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as HTMLElement | null;
+      if (target?.closest("#companion-toggle")) setEnabled(!enabled);
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stop();
+      else start();
+    });
+
+    window.addEventListener("resize", () => {
+      if (!companion) return;
+      const limit = window.innerWidth - companion.offsetWidth - EDGE_MARGIN;
+      x = Math.min(Math.max(x, EDGE_MARGIN), Math.max(EDGE_MARGIN, limit));
+    });
+
+    document.addEventListener("astro:after-swap", () => {
+      companion = document.getElementById("avatar-companion");
+      paint();
+      if (companion) start();
+      else stop();
+    });
+  }
+</script>
