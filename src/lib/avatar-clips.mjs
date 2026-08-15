@@ -1,17 +1,15 @@
 export const CLIP_CELL = { W: 207, H: 336 };
 
+export const ATLAS = { sheet: "/avatar-atlas.webp", cols: 13, rows: 4 };
+
+export const ATLAS_BACKGROUND_SIZE = `${ATLAS.cols * 100}% ${ATLAS.rows * 100}%`;
+
 export const CLIPS = {
-  walk: { sheet: "/avatar-walk.webp", cols: 6, rows: 2, frames: 12, fps: 14 },
-  idle: { sheet: "/avatar-idle.webp", cols: 4, rows: 2, frames: 8, fps: 8 },
-  sit: { sheet: "/avatar-sit.webp", cols: 4, rows: 2, frames: 8, fps: 6 },
-  wave: { sheet: "/avatar-wave.webp", cols: 8, rows: 2, frames: 16, fps: 13 },
-  "sit-down": {
-    sheet: "/avatar-sit-down.webp",
-    cols: 4,
-    rows: 2,
-    frames: 8,
-    fps: 11,
-  },
+  walk: { offset: 0, frames: 12, fps: 14 },
+  idle: { offset: 12, frames: 8, fps: 8 },
+  sit: { offset: 20, frames: 8, fps: 6 },
+  wave: { offset: 28, frames: 16, fps: 13 },
+  "sit-down": { offset: 44, frames: 8, fps: 11 },
 };
 
 export const ONE_SHOT = ["wave", "sit-down"];
@@ -23,14 +21,9 @@ export const CHARACTER_HEIGHT_M = 1.978;
 export const WALK_SPEED = WALK_LOOP_M / CHARACTER_HEIGHT_M;
 
 export function clipCellPosition(clip, index) {
-  const { cols, rows, frames } = CLIPS[clip];
-  const i = ((index % frames) + frames) % frames;
-  const col = i % cols;
-  const row = Math.floor(i / cols);
-  return `${(col * 100) / (cols - 1)}% ${(row * 100) / (rows - 1)}%`;
-}
-
-export function clipBackgroundSize(clip) {
-  const { cols, rows } = CLIPS[clip];
-  return `${cols * 100}% ${rows * 100}%`;
+  const { offset, frames } = CLIPS[clip];
+  const cell = offset + (((index % frames) + frames) % frames);
+  const col = cell % ATLAS.cols;
+  const row = Math.floor(cell / ATLAS.cols);
+  return `${(col * 100) / (ATLAS.cols - 1)}% ${(row * 100) / (ATLAS.rows - 1)}%`;
 }

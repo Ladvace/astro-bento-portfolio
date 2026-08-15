@@ -1,11 +1,22 @@
 ---
-import { CLIP_CELL } from "../lib/avatar-clips.mjs";
+import {
+  ATLAS,
+  ATLAS_BACKGROUND_SIZE,
+  CLIP_CELL,
+} from "../lib/avatar-clips.mjs";
 
 interface Props {
   height?: number;
 }
 
 const { height = 112 } = Astro.props;
+
+const style = [
+  `--companion-height:${height}px`,
+  `--companion-aspect:${CLIP_CELL.W} / ${CLIP_CELL.H}`,
+  `background-image:url("${ATLAS.sheet}")`,
+  `background-size:${ATLAS_BACKGROUND_SIZE}`,
+].join(";");
 ---
 
 <div
@@ -13,7 +24,7 @@ const { height = 112 } = Astro.props;
   class="avatar-companion"
   aria-hidden="true"
   transition:persist="avatar-companion"
-  style={`--companion-height:${height}px;--companion-aspect:${CLIP_CELL.W} / ${CLIP_CELL.H}`}
+  style={style}
 >
 </div>
 
@@ -84,7 +95,6 @@ const { height = 112 } = Astro.props;
     ONE_SHOT,
     WALK_SETTLE,
     WALK_SPEED,
-    clipBackgroundSize,
     clipCellPosition,
   } from "../lib/avatar-clips.mjs";
 
@@ -118,6 +128,11 @@ const { height = 112 } = Astro.props;
     min + Math.random() * (max - min);
   const isLoop = (name: ClipName) => !ONE_SHOT.includes(name);
   const settleOf = (name: ClipName) => (name === "walk" ? WALK_SETTLE : null);
+  const maxX = () =>
+    Math.max(
+      EDGE_MARGIN,
+      window.innerWidth - (companion?.offsetWidth ?? 0) - EDGE_MARGIN,
+    );
 
   function holdFor(name: ClipName) {
     const { frames, fps } = CLIPS[name];
@@ -134,15 +149,20 @@ const { height = 112 } = Astro.props;
     return backwards ? frames - 1 - index : index;
   }
 
+  function showCell() {
+    const cell = cellOf(clip, clipTime, reversed);
+    if (companion)
+      companion.style.backgroundPosition = clipCellPosition(clip, cell);
+    return cell;
+  }
+
   function setStep(step: Step) {
-    if (!companion) return;
     clip = step.clip;
     reversed = step.reverse === true;
     const settle = settleOf(clip);
     clipTime = settle ? settle[0] / CLIPS[clip].fps : 0;
     remaining = holdFor(clip);
-    companion.style.backgroundImage = `url("${CLIPS[clip].sheet}")`;
-    companion.style.backgroundSize = clipBackgroundSize(clip);
+    showCell();
   }
 
   function planNext(): Step[] {
@@ -173,12 +193,11 @@ const { height = 112 } = Astro.props;
     clipTime += step;
     remaining -= step;
 
-    const cell = cellOf(clip, clipTime, reversed);
-    companion.style.backgroundPosition = clipCellPosition(clip, cell);
+    const cell = showCell();
 
     if (clip === "walk") {
       const speed = (WALK_SPEED * companion.offsetHeight) / WALK_LOOP_SECONDS;
-      const limit = window.innerWidth - companion.offsetWidth - EDGE_MARGIN;
+      const limit = maxX();
       x += direction * speed * step;
       if (x >= limit) {
         x = limit;
@@ -217,11 +236,7 @@ const { height = 112 } = Astro.props;
 
   function place() {
     if (!companion) return;
-    const span = Math.max(
-      EDGE_MARGIN,
-      window.innerWidth - companion.offsetWidth - EDGE_MARGIN,
-    );
-    x = random(EDGE_MARGIN, span);
+    x = random(EDGE_MARGIN, maxX());
     direction = Math.random() < 0.5 ? -1 : 1;
     queue = [];
     setStep({ clip: "walk" });
@@ -247,11 +262,6 @@ const { height = 112 } = Astro.props;
   }
 
   if (!reduced.matches) {
-    for (const { sheet } of Object.values(CLIPS)) {
-      const warm = new Image();
-      warm.src = sheet;
-    }
-
     paint();
     place();
     start();
@@ -267,9 +277,7 @@ const { height = 112 } = Astro.props;
     });
 
     window.addEventListener("resize", () => {
-      if (!companion) return;
-      const limit = window.innerWidth - companion.offsetWidth - EDGE_MARGIN;
-      x = Math.min(Math.max(x, EDGE_MARGIN), Math.max(EDGE_MARGIN, limit));
+      x = Math.min(Math.max(x, EDGE_MARGIN), maxX());
     });
 
     document.addEventListener("astro:after-swap", () => {
