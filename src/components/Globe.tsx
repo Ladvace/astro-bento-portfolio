@@ -1,5 +1,6 @@
 import { onCleanup, onMount } from "solid-js";
 import {
+  geoBounds,
   geoCentroid,
   geoContains,
   geoDistance,
@@ -75,6 +76,8 @@ const toCart = (lon: number, lat: number): [number, number, number] => {
   const cl = Math.cos(latR);
   return [Math.cos(lonR) * cl, Math.sin(lonR) * cl, Math.sin(latR)];
 };
+
+const BOUNDS_SLACK = 1e-6;
 
 const seededRng = (seed: number) => () => {
   let t = (seed += 0x6d2b79f5);
@@ -321,49 +324,58 @@ function renderGlobe(
   });
 
   const waveCount = enableHover ? 80 : 20;
-  const minWaveDist = (enableHover ? 9 : 18) * DEG;
+  const minWaveSeparation = (enableHover ? 9 : 18) * DEG;
   const coastlineBuffer = 2;
 
   const waves = (() => {
-    const rng = seededRng(42);
-    const oceanOffsets: [number, number][] = [
+    const random = seededRng(42);
+    const clearanceSamples: [number, number][] = [
       [0, 0],
       [coastlineBuffer, 0],
       [-coastlineBuffer, 0],
       [0, coastlineBuffer],
       [0, -coastlineBuffer],
     ];
+    const landBounds = features.map((feature) => geoBounds(feature));
     const isOcean = (lon: number, lat: number): boolean => {
-      for (const [dlon, dlat] of oceanOffsets) {
-        const tLat = Math.max(-89, Math.min(89, lat + dlat));
-        for (const f of features) {
-          if (geoContains(f, [lon + dlon, tLat])) return false;
+      for (const [lonOffset, latOffset] of clearanceSamples) {
+        const sampleLat = Math.max(-89, Math.min(89, lat + latOffset));
+        const sampleLon = lon + lonOffset;
+        for (let i = 0; i < features.length; i++) {
+          const [[west, south], [east, north]] = landBounds[i];
+          if (sampleLat < south - BOUNDS_SLACK) continue;
+          if (sampleLat > north + BOUNDS_SLACK) continue;
+          const crossesAntimeridian = west > east;
+          const withinLon = crossesAntimeridian
+            ? sampleLon >= west - BOUNDS_SLACK ||
+              sampleLon <= east + BOUNDS_SLACK
+            : sampleLon >= west - BOUNDS_SLACK &&
+              sampleLon <= east + BOUNDS_SLACK;
+          if (!withinLon) continue;
+          if (geoContains(features[i], [sampleLon, sampleLat])) return false;
         }
       }
       return true;
     };
-    const out: { lon: number; lat: number; variant: number }[] = [];
+    const placed: { lon: number; lat: number; variant: number }[] = [];
     let attempts = 0;
-    while (out.length < waveCount && attempts < waveCount * 100) {
+    while (placed.length < waveCount && attempts < waveCount * 100) {
       attempts++;
-      const lon = rng() * 360 - 180;
-      const lat = (Math.asin(rng() * 2 - 1) * 180) / Math.PI;
+      const lon = random() * 360 - 180;
+      const lat = (Math.asin(random() * 2 - 1) * 180) / Math.PI;
       if (!isOcean(lon, lat)) continue;
-      let tooClose = false;
-      for (const w of out) {
-        if (geoDistance([lon, lat], [w.lon, w.lat]) < minWaveDist) {
-          tooClose = true;
-          break;
-        }
-      }
-      if (tooClose) continue;
-      out.push({
+      const crowded = placed.some(
+        (other) =>
+          geoDistance([lon, lat], [other.lon, other.lat]) < minWaveSeparation,
+      );
+      if (crowded) continue;
+      placed.push({
         lon,
         lat,
-        variant: Math.floor(rng() * waveVariants.length),
+        variant: Math.floor(random() * waveVariants.length),
       });
     }
-    return out;
+    return placed;
   })();
 
   const waveElements = map
