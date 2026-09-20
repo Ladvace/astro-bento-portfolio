@@ -8,18 +8,24 @@ import {
   geoOrthographic,
   geoPath,
 } from "d3-geo";
+import type { ExtendedFeature } from "d3-geo";
 import { drag } from "d3-drag";
 import { pointer, select } from "d3-selection";
 import { runWhileVisible } from "../lib/motion-gate";
 import worldUrl from "../lib/world.json?url";
 import { SITE } from "../site-config";
 
-let worldPromise: Promise<any[]> | null = null;
+type CountryFeature = ExtendedFeature<
+  GeoJSON.Polygon | GeoJSON.MultiPolygon,
+  { name: string }
+>;
 
-function loadFeatures(): Promise<any[]> {
+let worldPromise: Promise<CountryFeature[]> | null = null;
+
+function loadFeatures(): Promise<CountryFeature[]> {
   worldPromise ??= fetch(worldUrl)
     .then((res) => res.json())
-    .then((world) => world.features as any[]);
+    .then((world) => world.features as CountryFeature[]);
   return worldPromise;
 }
 
@@ -102,14 +108,16 @@ const TROPICS_GEOMETRY = {
   ],
 };
 
+type CoordNode = GeoJSON.Position | CoordNode[];
+
 const forEachCoord = (
-  coords: any,
+  coords: CoordNode,
   fn: (point: [number, number]) => void,
 ): void => {
   if (typeof coords[0] === "number") {
     fn(coords as [number, number]);
   } else {
-    for (const sub of coords) forEachCoord(sub, fn);
+    for (const sub of coords as CoordNode[]) forEachCoord(sub, fn);
   }
 };
 
@@ -122,7 +130,7 @@ type RenderOptions = {
 
 function renderGlobe(
   container: HTMLDivElement,
-  features: any[],
+  features: CountryFeature[],
   { isStatic, enableHover, projectionScale, visitedCountries }: RenderOptions,
 ): () => void {
   const ringOuter = projectionScale + RING_OFFSET;
@@ -450,7 +458,7 @@ function renderGlobe(
     .enter()
     .append("path")
     .attr("d", pathGenerator as any)
-    .style("fill", (d: any) => fillForCountry(d.properties.name))
+    .style("fill", (d) => fillForCountry(d.properties.name))
     .style("stroke", COUNTRY_STROKE)
     .style("stroke-width", 0.3)
     .style("opacity", 0.8);
@@ -483,7 +491,7 @@ function renderGlobe(
 
     paths
       .style("cursor", "pointer")
-      .on("mouseover", function (event, d: any) {
+      .on("mouseover", function (event, d) {
         const name = d.properties.name;
         const isVisited = visitedCountries.includes(name);
         const el = select(this);
@@ -497,7 +505,7 @@ function renderGlobe(
       .on("mousemove", function (event) {
         moveTooltip(event);
       })
-      .on("mouseout", function (_event, d: any) {
+      .on("mouseout", function (_event, d) {
         const name = d.properties.name;
         select(this)
           .style("fill", fillForCountry(name))
@@ -510,7 +518,7 @@ function renderGlobe(
   const updatePaths = () => {
     const rot = projection.rotate();
     const [vx, vy, vz] = toCart(-rot[0], -rot[1]);
-    paths.attr("d", function (d: any, i: number) {
+    paths.attr("d", function (d, i) {
       const fc = featureCull[i];
       if (fc.cart[0] * vx + fc.cart[1] * vy + fc.cart[2] * vz < fc.cullDot) {
         return "";
