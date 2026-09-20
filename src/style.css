@@ -636,8 +636,8 @@ body.ns-js-shape .card--ns::before {
 
 @media (min-width: 1024px) {
   .card.pad-lg {
-    padding: 1.875rem;
-    --ns-pad: 1.875rem;
+    padding: clamp(1.125rem, 2.6vw, 1.875rem);
+    --ns-pad: clamp(1.125rem, 2.6vw, 1.875rem);
   }
 }
 

@@ -34,9 +34,9 @@ export default defineConfig({
       "2xs": ["0.6875rem", "1rem"],
       "3xs": ["0.625rem", "0.875rem"],
       "4xs": ["0.5rem", "0.75rem"],
-      "fluid-2xl": ["clamp(2.375rem, 4.75vw, 3.8rem)", "1.1"],
-      "fluid-xl": ["clamp(1.4rem, 1.9vw, 2.375rem)", "1.1"],
       "fluid-lg": ["clamp(1.25rem, 3vw, 1.875rem)", "1.2"],
+      "fluid-clock-md": ["clamp(1.5rem, 2.9vw, 1.875rem)", "1.1"],
+      "fluid-clock": ["clamp(1.375rem, 2.2vw, 1.65rem)", "1.1"],
     },
     colors: {
       darkslate: {

@@ -157,7 +157,7 @@ const homeTzAbbr =
 </script>
 
 <Card
-  colSpan="xl:col-span-1"
+  colSpan="lg:col-span-1"
   rowSpan="md:row-span-2"
   padding="p-4"
   nsPadY="1rem"
@@ -165,7 +165,7 @@ const homeTzAbbr =
   <div class="flex flex-col h-full justify-center gap-0">
     <!-- My time -->
     <div
-      class="flex flex-col gap-0 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
+      class="flex flex-col gap-0 md:flex-1 md:items-center md:justify-center lg:flex-none lg:items-start lg:justify-start"
     >
       <div class="flex items-center gap-1.5">
         <span
@@ -185,7 +185,7 @@ const homeTzAbbr =
       <time
         datetime=""
         id="italyTimeDisplay"
-        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-fluid-2xl xl:text-fluid-xl"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-fluid-clock-md lg:text-fluid-clock"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
@@ -211,7 +211,7 @@ const homeTzAbbr =
 
     <!-- Your time -->
     <div
-      class="flex flex-col gap-0 md:flex-1 md:items-center md:justify-center xl:flex-none xl:items-start xl:justify-start"
+      class="flex flex-col gap-0 md:flex-1 md:items-center md:justify-center lg:flex-none lg:items-start lg:justify-start"
     >
       <span
         class="text-3xs font-medium uppercase tracking-widest text-darkslate-300"
@@ -220,7 +220,7 @@ const homeTzAbbr =
       <time
         datetime=""
         id="visitorTimeDisplay"
-        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-fluid-2xl xl:text-fluid-xl"
+        class="whitespace-nowrap text-2xl font-bold tabular-nums leading-tight md:text-fluid-clock-md lg:text-fluid-clock"
       >
         {formatTimeTo12H(getCurrentTimeInTimezone(SITE.location.timezone))}
       </time>
