@@ -1,5 +1,6 @@
 import { db, Guestbook as GuestbookTable, desc, count } from "../../lib/db";
 import type { APIRoute } from "astro";
+import { invalidateGuestbook } from "../../lib/guestbook-cache";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -7,15 +8,15 @@ export const GET: APIRoute = async ({ url }) => {
   try {
     const page = Math.max(1, parseInt(url.searchParams.get("page") ?? "1", 10));
 
-    const [{ total }] = await db
-      .select({ total: count() })
-      .from(GuestbookTable);
-    const entries = await db
-      .select()
-      .from(GuestbookTable)
-      .orderBy(desc(GuestbookTable.createdAt))
-      .limit(ITEMS_PER_PAGE)
-      .offset((page - 1) * ITEMS_PER_PAGE);
+    const [[{ total }], entries] = await Promise.all([
+      db.select({ total: count() }).from(GuestbookTable),
+      db
+        .select()
+        .from(GuestbookTable)
+        .orderBy(desc(GuestbookTable.createdAt))
+        .limit(ITEMS_PER_PAGE)
+        .offset((page - 1) * ITEMS_PER_PAGE),
+    ]);
 
     return new Response(
       JSON.stringify({
@@ -44,7 +45,7 @@ export const GET: APIRoute = async ({ url }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cache }) => {
   try {
     const data = await request.json();
     const { name, message, website } = data;
@@ -68,6 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
         createdAt: new Date(),
       })
       .returning();
+    await invalidateGuestbook(cache);
 
     return new Response(JSON.stringify(result[0]), {
       status: 201,

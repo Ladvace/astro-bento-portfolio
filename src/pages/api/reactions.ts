@@ -1,7 +1,8 @@
 import { db, Guestbook as GuestbookTable, eq, sql } from "../../lib/db";
 import type { APIRoute } from "astro";
+import { invalidateGuestbook } from "../../lib/guestbook-cache";
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cache }) => {
   try {
     const data = await request.json();
     const rawId = Number(data?.id);
@@ -30,6 +31,7 @@ export const POST: APIRoute = async ({ request }) => {
         headers: { "Content-Type": "application/json" },
       });
     }
+    await invalidateGuestbook(cache);
 
     return new Response(JSON.stringify(updated[0]), {
       status: 200,

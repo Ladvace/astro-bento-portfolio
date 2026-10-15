@@ -6,7 +6,8 @@ import { db, Guestbook as GuestbookTable, desc, count } from "../lib/db";
 import GuestbookCard from "../components/guestbook/GuestbookCard.astro";
 import GuestbookForm from "../components/guestbook/GuestbookForm.astro";
 import GuestbookPagination from "../components/guestbook/GuestbookPagination.astro";
-import { ENTRIES_PER_PAGE, type GuestbookEntry } from "../lib/guestbook";
+import { ENTRIES_PER_PAGE } from "../lib/guestbook";
+import { cacheGuestbook } from "../lib/guestbook-cache";
 
 const requestedPage = Math.max(
   1,
@@ -15,19 +16,19 @@ const requestedPage = Math.max(
 
 Astro.response.headers.set(
   "Cache-Control",
-  "private, max-age=0, must-revalidate",
+  "public, max-age=0, must-revalidate",
 );
+cacheGuestbook(Astro.cache);
 
-const [{ total: totalEntries }] = await db
-  .select({ total: count() })
-  .from(GuestbookTable);
-
-const entries: GuestbookEntry[] = await db
-  .select()
-  .from(GuestbookTable)
-  .orderBy(desc(GuestbookTable.createdAt))
-  .limit(ENTRIES_PER_PAGE)
-  .offset((requestedPage - 1) * ENTRIES_PER_PAGE);
+const [[{ total: totalEntries }], entries] = await Promise.all([
+  db.select({ total: count() }).from(GuestbookTable),
+  db
+    .select()
+    .from(GuestbookTable)
+    .orderBy(desc(GuestbookTable.createdAt))
+    .limit(ENTRIES_PER_PAGE)
+    .offset((requestedPage - 1) * ENTRIES_PER_PAGE),
+]);
 
 const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
 ---
@@ -35,7 +36,6 @@ const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
 <Layout
   title={`${SITE.author.fullName} - Guestbook`}
   description="Leave a message in my guestbook"
-  hideCal={true}
 >
   <div class="flex flex-col items-center px-4 pt-8 pb-24">
     <div class="w-full max-w-3xl mb-16">
