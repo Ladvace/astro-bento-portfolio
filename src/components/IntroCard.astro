@@ -53,7 +53,7 @@ import AvatarSprite from "./AvatarSprite.astro";
             target="_blank"
           >
             <Button aria-label="github profile">
-              <Icon name="ri:github-fill" />
+              <Icon name="pixel-github" />
               <span class="sr-only" data-umami-event="github button"
                 >GitHub Profile</span
               >
@@ -65,7 +65,7 @@ import AvatarSprite from "./AvatarSprite.astro";
             target="_blank"
           >
             <Button aria-label="linkedin profile">
-              <Icon name="ri:linkedin-box-fill" />
+              <Icon name="pixel-linkedin" />
               <span class="sr-only" data-umami-event="linkedin button"
                 >Linkedin Profile</span
               >
@@ -73,31 +73,34 @@ import AvatarSprite from "./AvatarSprite.astro";
           </a>
           <Tooltip client:visible>
             <Button aria-label="easter egg btn">
-              <Icon name="ri:emotion-laugh-line" />
+              <Icon name="pixel-laugh" />
               <span class="sr-only" data-umami-event="Easter egg button"
                 >Easter egg button</span
               >
             </Button>
           </Tooltip>
         </div>
-        <Button aria-label="book a call" data-cal-link={SITE.cal.username}>
-          <span
-            data-umami-event="Book a call"
-            data-cal-link={SITE.cal.username}
-            class="font-bold whitespace-nowrap">Book a call</span
-          >
-        </Button>
       </div>
     </div>
-    <AvatarSprite
-      id="memoji-avatar"
-      themed
-      levitate
-      spinOnReveal
-      height="270px"
-      label={`memoji of ${SITE.author.firstName}, slowly rotating`}
-      class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none md:pointer-events-auto md:cursor-ew-resize"
-    />
+    <div
+      id="memoji-spin-area"
+      class="contents md:flex md:flex-col md:items-center md:pb-3 md:select-none md:touch-pan-y md:cursor-[var(--cursor-rotate)]"
+    >
+      <AvatarSprite
+        id="memoji-avatar"
+        themed
+        levitate
+        spinOnReveal
+        height="270px"
+        label={`memoji of ${SITE.author.firstName}, slowly rotating`}
+        class="select-none absolute right-[-110px] bottom-[-20px] z-[-1] opacity-50 md:opacity-100 md:relative md:right-auto md:bottom-auto md:z-auto pointer-events-none md:pointer-events-auto"
+      />
+      <Icon
+        name="pixel-rotate"
+        aria-hidden="true"
+        class="hidden md:block w-[26px] h-auto mt-4 text-darkslate-300 opacity-40"
+      />
+    </div>
   </div>
 </Card>
 
@@ -149,7 +152,9 @@ import AvatarSprite from "./AvatarSprite.astro";
 
   function initPointerSpin() {
     const avatar = document.getElementById("memoji-avatar");
-    if (!avatar) return;
+    // The area spans the avatar, the rotate hint and the gap between them.
+    const area = document.getElementById("memoji-spin-area");
+    if (!avatar || !area) return;
 
     const duration =
       parseFloat(
@@ -169,7 +174,7 @@ import AvatarSprite from "./AvatarSprite.astro";
         : Math.floor(progress * SPRITE.FRAMES) % SPRITE.FRAMES;
     };
 
-    avatar.addEventListener("pointerenter", (event) => {
+    area.addEventListener("pointerenter", (event) => {
       lastX = event.clientX;
       travel = 0;
       frame = liveFrame();
@@ -177,7 +182,7 @@ import AvatarSprite from "./AvatarSprite.astro";
       avatar.style.backgroundPosition = cellPosition(frame);
     });
 
-    avatar.addEventListener("pointermove", (event) => {
+    area.addEventListener("pointermove", (event) => {
       if (!avatar.classList.contains("is-manual")) return;
       travel += event.clientX - lastX;
       lastX = event.clientX;
@@ -190,7 +195,12 @@ import AvatarSprite from "./AvatarSprite.astro";
       avatar.style.backgroundPosition = cellPosition(frame);
     });
 
-    avatar.addEventListener("pointerleave", () => {
+    // Holding the button keeps the drag alive outside the area until release.
+    area.addEventListener("pointerdown", (event) => {
+      area.setPointerCapture(event.pointerId);
+    });
+
+    area.addEventListener("pointerleave", () => {
       avatar.classList.remove("is-manual");
       avatar.style.backgroundPosition = "";
       avatar.style.animationDelay = `-${(frame / SPRITE.FRAMES) * duration}ms`;

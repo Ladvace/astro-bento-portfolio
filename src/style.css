@@ -296,86 +296,6 @@
     0 0 32px color-mix(in srgb, var(--primary-500) 15%, transparent) !important;
 }
 
-.style-paper {
-  background: #f0ebe0 !important;
-}
-
-.style-paper::before {
-  --line-color: rgba(0, 0, 0, 0.06) !important;
-  --line-size: 32px !important;
-  background:
-    linear-gradient(90deg, var(--line-color) 1px, transparent 1px) center / 32px
-      32px,
-    linear-gradient(var(--line-color) 1px, transparent 1px) center / 32px 32px !important;
-  -webkit-mask: none !important;
-  mask: none !important;
-}
-
-.style-paper .card {
-  background: #faf7f2 !important;
-  border: 1px solid rgba(0, 0, 0, 0.12) !important;
-  border-radius: 6px !important;
-  box-shadow:
-    2px 2px 0 rgba(0, 0, 0, 0.06),
-    0 1px 3px rgba(0, 0, 0, 0.08) !important;
-  transition: box-shadow 150ms ease !important;
-}
-
-.style-paper .card:hover {
-  box-shadow:
-    3px 3px 0 rgba(0, 0, 0, 0.12),
-    0 2px 8px rgba(0, 0, 0, 0.1) !important;
-  border-color: rgba(0, 0, 0, 0.2) !important;
-}
-
-.style-paper .card * {
-  font-family: Georgia, "Times New Roman", Times, serif !important;
-}
-
-.style-paper h1,
-.style-paper h2,
-.style-paper h3,
-.style-paper h4,
-.style-paper h5,
-.style-paper h6,
-.style-paper p,
-.style-paper span,
-.style-paper time,
-.style-paper a {
-  color: #1a1208 !important;
-}
-
-.style-paper #sound-toggle,
-.style-paper .style-btn-panel {
-  background: #faf7f2 !important;
-  border-color: rgba(0, 0, 0, 0.15) !important;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.06) !important;
-}
-
-.style-paper #sound-toggle {
-  color: #1a1208 !important;
-}
-.style-paper .style-btn {
-  color: rgba(26, 18, 8, 0.4) !important;
-}
-.style-paper .style-btn:hover {
-  color: rgba(26, 18, 8, 0.9) !important;
-}
-
-.style-paper .card button:not(.theme-btn) {
-  background: #faf7f2 !important;
-  border-color: rgba(26, 18, 8, 0.2) !important;
-  border-radius: 6px !important;
-  color: #1a1208 !important;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08) !important;
-  font-family: var(--font-satoshi) !important;
-}
-.style-paper .card button:not(.theme-btn):hover {
-  background: #f0ebe0 !important;
-  border-color: rgba(26, 18, 8, 0.35) !important;
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12) !important;
-}
-
 .style-glass .card svg {
   filter: brightness(1.05) saturate(1.2);
 }
@@ -384,9 +304,6 @@
 }
 .style-neon .card svg {
   filter: brightness(0.95) saturate(1.3) hue-rotate(-5deg);
-}
-.style-paper .card svg {
-  filter: sepia(1) brightness(1.8) contrast(0.75) saturate(0.35);
 }
 
 .style-glass .theme-btn.active {
@@ -404,11 +321,6 @@
     0 0 0 2px rgba(230, 57, 70, 0.2),
     0 0 0 3.5px var(--primary-500),
     0 0 8px rgba(230, 57, 70, 0.4) !important;
-}
-.style-paper .theme-btn.active {
-  box-shadow:
-    0 0 0 2px rgba(26, 18, 8, 0.1),
-    0 0 0 3.5px rgba(26, 18, 8, 0.5) !important;
 }
 
 .style-glass .bg-neutral-900 {
@@ -448,20 +360,6 @@
 }
 .style-neon .bg-neutral-900:hover {
   box-shadow: 0 0 16px rgba(230, 57, 70, 0.5) !important;
-}
-
-.style-paper .bg-neutral-900 {
-  background: #faf7f2 !important;
-  color: #1a1208 !important;
-  border-color: rgba(26, 18, 8, 0.2) !important;
-  border-radius: 6px !important;
-  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.08) !important;
-  font-family: var(--font-satoshi) !important;
-}
-.style-paper .bg-neutral-900:hover {
-  background: #f0ebe0 !important;
-  border-color: rgba(26, 18, 8, 0.35) !important;
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.12) !important;
 }
 
 html {
@@ -572,6 +470,16 @@ body::before {
 
 .cards-custom .card--ns:hover {
   --ns-rail: var(--primary-500);
+}
+
+/* Card borders ease in on hover and snap back as soon as the pointer leaves. */
+.card:not(:hover) {
+  transition-property: background-color, transform !important;
+}
+
+.card:not(:hover)::before,
+.card:not(:hover) :is(.ns-morph-outline, .ns-clip-outline) {
+  transition: none !important;
 }
 
 @supports (
@@ -801,4 +709,54 @@ body.ns-js-shape .card--ns::before {
   background-position:
     0 0,
     12px 12px;
+}
+
+/* Hand-drawn pixel cursors; hotspots are in the SVGs' rendered pixels. */
+:root {
+  --cursor-default: url("/cursor-default.svg") 1 1, default;
+  --cursor-text: url("/cursor-text.svg") 9 10, text;
+  --cursor-pointer: url("/cursor-pointer.svg") 2 1, pointer;
+  --cursor-not-allowed: url("/cursor-not-allowed.svg") 9 9, not-allowed;
+  --cursor-rotate: url("/cursor-rotate.svg") 13 5, ew-resize;
+}
+
+html {
+  cursor: var(--cursor-default);
+}
+
+input:not(
+  [type="checkbox"],
+  [type="radio"],
+  [type="range"],
+  [type="color"],
+  [type="button"],
+  [type="submit"]
+),
+textarea,
+[contenteditable="true"] {
+  cursor: var(--cursor-text);
+}
+
+/* Readable copy hints it can be selected; text inside links and buttons keeps
+   the pointer, and decorative text stays on the arrow. */
+:where(p, li, blockquote, pre, code):not(
+  a *,
+  button *,
+  [aria-hidden="true"] *
+) {
+  cursor: var(--cursor-text);
+}
+
+a[href],
+button:not(:disabled),
+[role="button"],
+summary,
+label[for],
+select,
+html .cursor-pointer {
+  cursor: var(--cursor-pointer);
+}
+
+:disabled {
+  cursor: var(--cursor-not-allowed);
 }

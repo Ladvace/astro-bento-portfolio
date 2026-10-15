@@ -1,4 +1,6 @@
 ---
+import { Icon } from "astro-icon/components";
+
 const inputClasses =
   "w-full px-3 py-2 bg-darkslate-700 border border-darkslate-500 rounded-lg text-white text-sm placeholder:text-darkslate-400 focus:outline-none focus:border-primary-500/60 transition-colors";
 
@@ -19,18 +21,10 @@ const { class: className } = Astro.props;
     class="flex items-center justify-between px-5 py-4 text-white hover:bg-darkslate-500/30 transition-colors cursor-pointer list-none"
   >
     <span class="text-sm font-medium">Leave a message</span>
-    <svg
+    <Icon
+      name="pixel-plus"
       class="w-4 h-4 text-darkslate-300 transition-transform duration-200 group-open:rotate-45"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
-      <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M12 5v14M5 12h14"></path>
-    </svg>
+    />
   </summary>
 
   <form
@@ -76,7 +70,7 @@ const { class: className } = Astro.props;
 
     <button
       type="submit"
-      class="self-end px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      class="self-end px-5 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50"
     >
       Send
     </button>
@@ -89,6 +83,9 @@ const { class: className } = Astro.props;
     getInitials,
     rotationFromSeed,
     PIXEL_HEART_SVG,
+    PIXEL_EXTERNAL_LINK_SVG,
+    GUESTBOOK_NAME_CLASS,
+    GUESTBOOK_NAME_LINK_CLASS,
   } from "../../lib/guestbook";
 
   type CreatedGuestbookEntry = {
@@ -125,8 +122,8 @@ const { class: className } = Astro.props;
     const avatarInitials = getInitials(entry.name);
     const escapedName = escapeHtml(entry.name);
     const nameMarkup = entry.website
-      ? `<a href="${escapeHtml(entry.website)}" target="_blank" rel="noopener noreferrer" class="font-semibold text-white hover:text-primary-400 transition-colors text-sm">${escapedName}</a>`
-      : `<span class="font-semibold text-white text-sm">${escapedName}</span>`;
+      ? `<a href="${escapeHtml(entry.website)}" target="_blank" rel="noopener noreferrer" class="${GUESTBOOK_NAME_LINK_CLASS}">${escapedName}${PIXEL_EXTERNAL_LINK_SVG}</a>`
+      : `<span class="${GUESTBOOK_NAME_CLASS}">${escapedName}</span>`;
 
     return `
       <article data-entry-id="${entry.id}" class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3" style="transform: rotate(${rotationDegrees}deg);">

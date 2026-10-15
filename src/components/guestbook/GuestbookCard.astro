@@ -5,6 +5,9 @@ import {
   getInitials,
   rotationFromSeed,
   PIXEL_HEART_SVG,
+  PIXEL_EXTERNAL_LINK_SVG,
+  GUESTBOOK_NAME_CLASS,
+  GUESTBOOK_NAME_LINK_CLASS,
   type GuestbookEntry,
 } from "../../lib/guestbook";
 
@@ -48,12 +51,13 @@ const heartCount = entry.heartCount ?? 0;
             href={entry.website}
             target="_blank"
             rel="noopener noreferrer"
-            class="font-semibold text-white hover:text-primary-400 transition-colors text-sm"
+            class={GUESTBOOK_NAME_LINK_CLASS}
           >
             {entry.name}
+            <Fragment set:html={PIXEL_EXTERNAL_LINK_SVG} />
           </a>
         ) : (
-          <span class="font-semibold text-white text-sm">{entry.name}</span>
+          <span class={GUESTBOOK_NAME_CLASS}>{entry.name}</span>
         )
       }
       <span class="text-darkslate-300 text-xs">{postedAgo}</span>

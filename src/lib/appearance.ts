@@ -5,7 +5,6 @@ export const STYLES = [
   { id: "style-glass", label: "Glass" },
   { id: "style-sharp", label: "Sharp" },
   { id: "style-neon", label: "Neon" },
-  { id: "style-paper", label: "Paper" },
 ];
 
 const named = (ids: string[]) => ids.filter((id) => id !== "default");

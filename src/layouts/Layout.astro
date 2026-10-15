@@ -5,17 +5,15 @@ interface Props {
   title: string;
   description: string;
   hideSoundToggle?: boolean;
-  hideCal?: boolean;
 }
 
-const { title, description, hideSoundToggle, hideCal } = Astro.props;
+const { title, description, hideSoundToggle } = Astro.props;
 ---
 
 <BasicLayout
   description={description}
   title={title}
   hideSoundToggle={hideSoundToggle}
-  hideCal={hideCal}
 >
   <slot />
 </BasicLayout>

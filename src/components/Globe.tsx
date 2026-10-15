@@ -490,7 +490,7 @@ function renderGlobe(
         .style("top", `${event.pageY - 12}px`);
 
     paths
-      .style("cursor", "pointer")
+      .style("cursor", "var(--cursor-pointer)")
       .on("mouseover", function (event, d) {
         const name = d.properties.name;
         const isVisited = visitedCountries.includes(name);

@@ -1,3 +1,6 @@
+// @unocss-include
+import externalLinkSvg from "../icons/pixel-external-link.svg?raw";
+
 export type GuestbookEntry = {
   id: number;
   name: string;
@@ -48,4 +51,14 @@ export const avatarColorForSeed = (seed: number): string =>
       AVATAR_COLORS.length
   ];
 
+export const GUESTBOOK_NAME_CLASS = "font-semibold text-white text-sm";
+export const GUESTBOOK_NAME_LINK_CLASS = `group ${GUESTBOOK_NAME_CLASS} hover:text-primary-400 transition-colors`;
+
 export const PIXEL_HEART_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 7 6" class="heart-svg block" shape-rendering="crispEdges" style="image-rendering:pixelated" fill="currentColor"><rect x="1" y="0" width="2" height="1"/><rect x="4" y="0" width="2" height="1"/><rect x="0" y="1" width="7" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="1" y="3" width="5" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="3" y="5" width="1" height="1"/></svg>`;
+
+export const PIXEL_EXTERNAL_LINK_SVG = externalLinkSvg
+  .trim()
+  .replace(
+    "<svg ",
+    '<svg width="11" height="11" aria-hidden="true" class="inline-block ml-1.5 opacity-60 group-hover:opacity-100 transition-opacity" ',
+  );

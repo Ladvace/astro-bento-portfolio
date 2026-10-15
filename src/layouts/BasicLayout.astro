@@ -1,6 +1,7 @@
 ---
 import "../style.css";
 import { ClientRouter } from "astro:transitions";
+import { Icon } from "astro-icon/components";
 import { Font } from "astro:assets";
 import { SITE } from "../site-config";
 import AvatarCompanion from "../components/AvatarCompanion.astro";
@@ -46,82 +47,12 @@ interface Props {
   page?: "travel" | "blog";
   pubDate?: string;
   hideSoundToggle?: boolean;
-  hideCal?: boolean;
   hideCompanion?: boolean;
 }
 
-const {
-  title,
-  description,
-  page,
-  pubDate,
-  hideSoundToggle,
-  hideCal,
-  hideCompanion,
-} = Astro.props;
+const { title, description, page, pubDate, hideSoundToggle, hideCompanion } =
+  Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
-
-const calEmbedScript = `
-  function initCal() {
-  (function (C, A, L) {
-    let p = function (a, ar) {
-      a.q.push(ar);
-    };
-    let d = C.document;
-    C.Cal =
-      C.Cal ||
-      function () {
-        let cal = C.Cal;
-        let ar = arguments;
-        if (!cal.loaded) {
-          cal.ns = {};
-          cal.q = cal.q || [];
-          d.head.appendChild(d.createElement("script")).src = A;
-          cal.loaded = true;
-        }
-        if (ar[0] === L) {
-          const api = function () {
-            p(api, arguments);
-          };
-          const namespace = ar[1];
-          api.q = api.q || [];
-          if (typeof namespace === "string") {
-            cal.ns[namespace] = cal.ns[namespace] || api;
-            p(cal.ns[namespace], ar);
-            p(cal, ["initNamespace", namespace]);
-          } else p(cal, ar);
-          return;
-        }
-        p(cal, ar);
-      };
-  })(window, "https://app.cal.com/embed/embed.js", "init");
-  const calNamespace =
-    document.documentElement.dataset.calNamespace || "15min";
-  const calOrigin =
-    document.documentElement.dataset.calOrigin || "https://cal.com";
-
-  Cal("init", calNamespace, { origin: calOrigin });
-
-  Cal.ns[calNamespace]("ui", {
-    styles: { branding: { brandColor: "#000000" } },
-    hideEventTypeDetails: false,
-    layout: "month_view",
-  });
-  }
-
-  var calStarted = false;
-  function startCal(event) {
-    if (calStarted) return;
-    var target = event.target;
-    if (!target || !target.closest || !target.closest("[data-cal-link]")) return;
-    calStarted = true;
-    initCal();
-  }
-
-  ["pointerover", "touchstart", "focusin", "click"].forEach(function (type) {
-    document.addEventListener(type, startCal, { passive: true });
-  });
-`;
 
 const schema =
   page !== "blog"
@@ -192,11 +123,7 @@ const schema =
 ---
 
 <!doctype html>
-<html
-  lang="en"
-  data-cal-namespace={SITE.cal.durationNamespace}
-  data-cal-origin={SITE.cal.origin}
->
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <Font cssVariable="--font-cabinet-grotesk" preload />
@@ -263,14 +190,6 @@ const schema =
       data-key={import.meta.env.AHREFS_ANALYTICS_KEY}
       async></script>
 
-    <!-- Cal element-click embed code begins -->
-    {
-      !hideCal && (
-        <script is:inline type="text/javascript" set:html={calEmbedScript} />
-      )
-    }
-    <!-- Cal element-click embed code ends -->
-
     <style is:inline set:html={buttonFrameVars}></style>
   </head>
   <body class="bg-darkslate-700 flex flex-col justify-center items-center">
@@ -299,39 +218,12 @@ const schema =
               title="Toggle sound"
               class="chrome--ns w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
             >
-              <svg
-                id="sound-icon-on"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-              </svg>
-              <svg
+              <Icon id="sound-icon-on" name="pixel-sound-on" class="w-4 h-4" />
+              <Icon
                 id="sound-icon-off"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="hidden"
-              >
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                <line x1="23" y1="9" x2="17" y2="15" />
-                <line x1="17" y1="9" x2="23" y2="15" />
-              </svg>
+                name="pixel-sound-off"
+                class="w-4 h-4 hidden"
+              />
             </button>
           )}
         </div>

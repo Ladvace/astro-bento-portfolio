@@ -26,11 +26,6 @@ export const SITE = {
     behance: "https://www.behance.net/Ladvace",
     email: `contact@${DOMAIN}`,
   },
-  cal: {
-    username: "ladvace",
-    durationNamespace: "15min",
-    origin: "https://cal.com",
-  },
   visitedCountries: [
     "France",
     "China",
