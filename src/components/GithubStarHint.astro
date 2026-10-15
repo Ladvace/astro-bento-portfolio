@@ -1,0 +1,224 @@
+---
+import { Icon } from "astro-icon/components";
+import { SITE } from "../site-config";
+
+const SHAFT =
+  "M61.5 33L60.5 29L59.5 25.5L57 22L55 19L52 16L47 13L40 12.5L34 13.5L30 16L27 20L25.5 25L26 29L29 32L35 33.5L41 32L44.5 29L46.5 24L46.5 18L45 13L43 10.5L40.5 8L37 5L33 2.5L29 1.5L24 2.5L20 5L16.5 7.5L13.5 10.5L11 13.5L8.5 16.5L6 20L4 23.5L3 26";
+---
+
+<a
+  id="github-star-hint"
+  href={SITE.links.repo}
+  target="_blank"
+  rel="noopener"
+  data-umami-event="github star hint"
+  class="github-star-hint hidden gap-1 text-darkslate-100 hover:text-white"
+>
+  <span class="github-star-hint-arrow">
+    <svg viewBox="0 0 64 36" width="60" height="34" aria-hidden="true">
+      <defs>
+        <mask id="github-star-hint-mask" maskUnits="userSpaceOnUse">
+          <g
+            fill="none"
+            stroke="#fff"
+            stroke-width="9"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path class="github-star-hint-shaft" d={SHAFT} pathLength="1"
+            ></path>
+            <path class="github-star-hint-barb" d="M3 26L3 11.5" pathLength="1"
+            ></path>
+            <path class="github-star-hint-barb" d="M3 26L15 20" pathLength="1"
+            ></path>
+          </g>
+        </mask>
+      </defs>
+      <g mask="url(#github-star-hint-mask)">
+        <Icon name="pixel-arrow-loop" width="64" height="36" />
+      </g>
+    </svg>
+  </span>
+  <Icon
+    name="pixel-github-star-label"
+    class="github-star-hint-label"
+    aria-hidden="true"
+  />
+  <span class="sr-only">Leave a GitHub star</span>
+</a>
+
+<style>
+  .github-star-hint {
+    position: absolute;
+    z-index: 40;
+    opacity: 0;
+    transition: opacity 400ms ease;
+  }
+
+  .github-star-hint.is-shown {
+    opacity: 1;
+  }
+
+  .github-star-hint-arrow {
+    display: block;
+    animation: github-star-hint-sway 3.2s ease-in-out infinite;
+  }
+
+  .github-star-hint-arrow > svg {
+    display: block;
+    height: auto;
+  }
+
+  /* Side: in the page margin, the arrow tip just above-left of the button. */
+  [data-placement="side"] {
+    flex-direction: row-reverse;
+    align-items: flex-end;
+  }
+
+  [data-placement="side"] .github-star-hint-arrow {
+    transform-origin: 100% 70%;
+  }
+
+  [data-placement="side"] .github-star-hint-arrow > svg {
+    width: 60px;
+    transform: scaleX(-1);
+  }
+
+  [data-placement="side"] .github-star-hint-label {
+    width: 88px;
+    height: auto;
+  }
+
+  /* Below: tucked under the button, the arrow pointing up at it. */
+  [data-placement="below"] {
+    align-items: flex-start;
+  }
+
+  [data-placement="below"] .github-star-hint-arrow {
+    transform-origin: 0% 25%;
+  }
+
+  [data-placement="below"] .github-star-hint-arrow > svg {
+    width: 48px;
+    transform: scaleY(-1);
+  }
+
+  [data-placement="below"] .github-star-hint-label {
+    width: 56px;
+    height: auto;
+  }
+
+  @media (max-width: 767px) {
+    [data-placement="below"] .github-star-hint-arrow > svg {
+      width: 72px;
+    }
+
+    [data-placement="below"] .github-star-hint-label {
+      width: 72px;
+      margin-top: 6px;
+    }
+  }
+
+  .github-star-hint path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  .is-shown .github-star-hint-shaft {
+    animation: github-star-hint-draw 1100ms ease-in-out forwards;
+  }
+
+  .is-shown .github-star-hint-barb {
+    animation: github-star-hint-draw 250ms ease-out 1050ms forwards;
+  }
+
+  @keyframes github-star-hint-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes github-star-hint-sway {
+    0%,
+    100% {
+      transform: translateY(0) rotate(-3deg);
+    }
+    50% {
+      transform: translateY(-4px) rotate(4deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .github-star-hint-arrow {
+      animation: none;
+    }
+
+    .github-star-hint path {
+      stroke-dashoffset: 0;
+      animation: none !important;
+    }
+  }
+</style>
+
+<script>
+  const GAP = 6;
+  const mobile = window.matchMedia("(max-width: 767px)");
+
+  function initGithubStarHint() {
+    const hint = document.getElementById("github-star-hint");
+    const target = document.querySelector<HTMLElement>(
+      'a[aria-label="github profile"]',
+    );
+    const card = target?.closest<HTMLElement>(".card");
+    const root = document.documentElement;
+    if (!hint || !target || !card) return;
+
+    const place = () => {
+      hint.style.display = "flex";
+      card.style.paddingBottom = "";
+      const button = target.getBoundingClientRect();
+      const { scrollX, scrollY } = window;
+
+      hint.dataset.placement = "side";
+      const left = button.left - hint.offsetWidth - GAP;
+      if (left >= GAP) {
+        hint.style.left = `${left + scrollX}px`;
+        hint.style.top = `${button.bottom - hint.offsetHeight - 26 + scrollY}px`;
+        return;
+      }
+
+      hint.dataset.placement = "below";
+      hint.style.left = `${button.right - 10 + scrollX}px`;
+      hint.style.top = `${button.bottom - 4 + scrollY}px`;
+
+      // Phone cards grow with their content, so make room for the bigger hint.
+      if (!mobile.matches) return;
+      const overflow =
+        hint.getBoundingClientRect().bottom -
+        card.getBoundingClientRect().bottom +
+        GAP;
+      if (overflow > 0)
+        card.style.paddingBottom = `${parseFloat(getComputedStyle(card).paddingBottom) + overflow}px`;
+    };
+
+    const dismiss = () => {
+      hint.classList.remove("is-shown");
+      window.removeEventListener("resize", place);
+    };
+
+    const show = () => {
+      place();
+      hint.classList.add("is-shown");
+      window.addEventListener("resize", place);
+      target.addEventListener("click", dismiss, { once: true });
+      hint.addEventListener("click", dismiss, { once: true });
+      document.addEventListener("astro:before-swap", dismiss, { once: true });
+    };
+
+    place();
+    if (root.classList.contains("grid-revealed")) show();
+    else document.addEventListener("grid:revealed", show, { once: true });
+  }
+
+  document.addEventListener("astro:page-load", initGithubStarHint);
+</script>

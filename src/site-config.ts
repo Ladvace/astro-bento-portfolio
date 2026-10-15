@@ -20,6 +20,7 @@ export const SITE = {
   },
   links: {
     github: "https://github.com/Ladvace",
+    repo: "https://github.com/Ladvace/astro-bento-portfolio",
     linkedin: "https://www.linkedin.com/in/gianmarco-cavallo/",
     medium: "https://ladvace.medium.com/",
     dribbble: "https://dribbble.com/Ladvace_Jace",
