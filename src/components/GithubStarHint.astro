@@ -52,11 +52,13 @@ const SHAFT =
     position: absolute;
     z-index: 40;
     opacity: 0;
+    pointer-events: none;
     transition: opacity 400ms ease;
   }
 
   .github-star-hint.is-shown {
     opacity: 1;
+    pointer-events: auto;
   }
 
   .github-star-hint-arrow {
@@ -162,6 +164,7 @@ const SHAFT =
 
 <script>
   const GAP = 6;
+  const VISIBLE_MS = 5000;
   const mobile = window.matchMedia("(max-width: 767px)");
 
   function initGithubStarHint() {
@@ -201,7 +204,10 @@ const SHAFT =
         card.style.paddingBottom = `${parseFloat(getComputedStyle(card).paddingBottom) + overflow}px`;
     };
 
+    let timer: ReturnType<typeof setTimeout>;
+
     const dismiss = () => {
+      clearTimeout(timer);
       hint.classList.remove("is-shown");
       window.removeEventListener("resize", place);
     };
@@ -209,6 +215,7 @@ const SHAFT =
     const show = () => {
       place();
       hint.classList.add("is-shown");
+      timer = setTimeout(dismiss, VISIBLE_MS);
       window.addEventListener("resize", place);
       target.addEventListener("click", dismiss, { once: true });
       hint.addEventListener("click", dismiss, { once: true });
