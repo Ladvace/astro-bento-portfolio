@@ -683,6 +683,20 @@ body.ns-js-shape .card--ns::before {
   }
 }
 
+.heart-svg {
+  display: inline-block;
+  transform-origin: 50% 60%;
+}
+
+.heart-svg rect {
+  fill: currentColor;
+  transition: fill 200ms ease;
+}
+
+.heart-btn.is-active {
+  color: #ef4444;
+}
+
 .pixel-heart.beating,
 .heart-btn.is-firing .heart-svg {
   animation: heart-pulse 0.6s ease-in-out;

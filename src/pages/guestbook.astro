@@ -16,7 +16,7 @@ const requestedPage = Math.max(
 
 Astro.response.headers.set(
   "Cache-Control",
-  "public, max-age=0, must-revalidate",
+  "public, max-age=0, stale-while-revalidate=60",
 );
 cacheGuestbook(Astro.cache);
 

@@ -76,20 +76,6 @@ const heartCount = entry.heartCount ?? 0;
   </footer>
 </article>
 
-<style is:global>
-  .heart-svg {
-    display: inline-block;
-    transform-origin: 50% 60%;
-  }
-  .heart-svg rect {
-    fill: currentColor;
-    transition: fill 200ms ease;
-  }
-  .heart-btn.is-active {
-    color: #ef4444;
-  }
-</style>
-
 <script>
   import { HEARTBEAT, play } from "../../lib/sound";
 
