@@ -1,4 +1,4 @@
-# ⚡️ astro-bento-portfolio
+# <img src=".github/readme/icons/bolt.svg" width="28" height="28" alt="" /> astro-bento-portfolio
 
 A modern, bento-style personal portfolio built with **[Astro](https://astro.build)**.
 
@@ -10,16 +10,16 @@ A modern, bento-style personal portfolio built with **[Astro](https://astro.buil
 
 ## Features
 
-- 🧩 **Bento-grid layout** — sleek, minimal, single-page-first design
-- 🎨 **Switchable UI themes** — glass, sharp, neon and paper styles, with color variants
-- 📱 **Fully responsive**
-- ✍️ **Blog** with Markdown content, reading-time estimates and **RSS** (`/rss.xml`)
-- 💬 **Guestbook** — visitors can leave messages and reactions (backed by libSQL)
-- 🌍 **Interactive 3D globe** and a **travel map** of visited countries
-- 🧪 **Playground** — a collection of animation/interaction experiments (GSAP morphs, Rive, WebGL-ish effects, scroll animations, and more)
-- 🔊 Subtle **UI sound effects** (toggleable)
-- 🚀 **Performance & SEO optimized** — sitemap, robots.txt, Open Graph tags
-- ☁️ Ready to deploy on **[Netlify](https://www.netlify.com/)** (SSR)
+- <img src=".github/readme/icons/puzzle.svg" width="16" height="16" alt="" /> **Bento-grid layout** — sleek, minimal, single-page-first design
+- <img src=".github/readme/icons/palette.svg" width="16" height="16" alt="" /> **Switchable UI themes** — glass, sharp, neon and paper styles, with color variants
+- <img src=".github/readme/icons/phone.svg" width="16" height="16" alt="" /> **Fully responsive**
+- <img src=".github/readme/icons/pencil.svg" width="16" height="16" alt="" /> **Blog** with Markdown content, reading-time estimates and **RSS** (`/rss.xml`)
+- <img src=".github/readme/icons/speech.svg" width="16" height="16" alt="" /> **Guestbook** — visitors can leave messages and reactions (backed by libSQL)
+- <img src=".github/readme/icons/globe.svg" width="16" height="16" alt="" /> **Interactive 3D globe** and a **travel map** of visited countries
+- <img src=".github/readme/icons/flask.svg" width="16" height="16" alt="" /> **Playground** — a collection of animation/interaction experiments (GSAP morphs, Rive, WebGL-ish effects, scroll animations, and more)
+- <img src=".github/readme/icons/speaker.svg" width="16" height="16" alt="" /> Subtle **UI sound effects** (toggleable)
+- <img src=".github/readme/icons/rocket.svg" width="16" height="16" alt="" /> **Performance & SEO optimized** — sitemap, robots.txt, Open Graph tags
+- <img src=".github/readme/icons/cloud.svg" width="16" height="16" alt="" /> Ready to deploy on **[Netlify](https://www.netlify.com/)** (SSR)
 
 ## Tech Stack
 
@@ -106,7 +106,7 @@ The client and schema live in `src/lib/db.ts`. `createdAt` is stored as an ISO 8
 
 > These variables must be set in your deploy environment. If you don't need the guestbook, delete `src/lib/db.ts`, `src/pages/guestbook.astro` and the `src/pages/api/guestbook.ts` / `reactions.ts` routes.
 
-## Deploy on Netlify 🚀
+## Deploy on Netlify <img src=".github/readme/icons/rocket.svg" width="24" height="24" alt="" />
 
 Deploying on Netlify is optional but recommended for the quickest setup. Fork this repo and link it to your Netlify account — or use the one-click button below. Remember to set the database environment variables (above) in your Netlify site settings.
 
