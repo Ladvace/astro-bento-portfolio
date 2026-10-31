@@ -702,6 +702,105 @@ body.ns-js-shape .card--ns::before {
   animation: heart-pulse 0.6s ease-in-out;
 }
 
+#entries,
+.guestbook-disclosure {
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --disclosure-duration: 250ms;
+}
+
+/* Neighbours stay at their own height until a closing thread has finished. */
+#entries > article {
+  transform: rotate(var(--tilt, 0deg));
+  transition:
+    transform 300ms var(--ease-out-strong),
+    align-self 0s linear var(--disclosure-duration) allow-discrete;
+}
+
+#entries > article:has(details[open]) {
+  transform: none;
+}
+
+#entries:has(details[open]) > article {
+  align-self: start;
+  transition-delay: 0s;
+}
+
+.guestbook-disclosure {
+  interpolate-size: allow-keywords;
+}
+
+/* Clipped only while animating, so button shadows show once it has opened. */
+.guestbook-disclosure::details-content {
+  height: 0;
+  overflow: clip;
+  opacity: 0;
+  transition:
+    height var(--disclosure-duration) var(--ease-out-strong),
+    opacity 200ms var(--ease-out-strong),
+    content-visibility var(--disclosure-duration) allow-discrete,
+    overflow 0s allow-discrete;
+}
+
+.guestbook-disclosure[open]::details-content {
+  height: auto;
+  overflow: visible;
+  opacity: 1;
+  transition-delay: 0s, 0s, 0s, var(--disclosure-duration);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #entries > article {
+    transition: none;
+  }
+
+  .guestbook-disclosure::details-content {
+    transition:
+      opacity 200ms ease,
+      content-visibility 200ms allow-discrete,
+      overflow 0s allow-discrete;
+  }
+}
+
+/* The rail sits under the parent's avatar; each reply curves off it. */
+[data-reply-list] {
+  --thread-indent: 18px;
+  margin-left: 13px;
+  padding-left: calc(var(--thread-indent) - 2px);
+  border-left: 2px solid var(--darkslate-400);
+}
+
+[data-reply-list]:has(article) + [data-reply-form] {
+  margin-top: 1rem;
+}
+
+[data-reply-list] > article > footer {
+  position: relative;
+}
+
+[data-reply-list] > article > footer::before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  left: calc(-1 * var(--thread-indent));
+  bottom: calc(50% - 1px);
+  width: 14px;
+  height: 14px;
+  border-left: 2px solid var(--darkslate-400);
+  border-bottom: 2px solid var(--darkslate-400);
+  border-bottom-left-radius: 10px;
+}
+
+/* The last reply ends the thread, so the straight rail stops at its curve. */
+[data-reply-list] > article:last-child > footer::after {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--thread-indent));
+  top: calc(50% - 12px);
+  bottom: 0;
+  width: 2px;
+  background: var(--ns-fill);
+}
+
 .checkerboard,
 .dl-stage.bg-checker {
   background-image:

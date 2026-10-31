@@ -1,4 +1,4 @@
-import { defineConfig, fontProviders } from "astro/config";
+import { defineConfig, envField, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import netlify from "@astrojs/netlify";
 import { cacheNetlify } from "@astrojs/netlify/cache";
@@ -62,7 +62,9 @@ export default defineConfig({
   ],
   site,
   integrations: [
-    sitemap(),
+    sitemap({
+      filter: (page) => !page.includes("/guestbook/login"),
+    }),
     robotsTxt({
       sitemap: [
         `${siteNoTrailingSlash}/sitemap-index.xml`,
@@ -80,6 +82,15 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",
+  },
+  env: {
+    schema: {
+      GUESTBOOK_ADMIN_SECRET: envField.string({
+        context: "server",
+        access: "secret",
+        optional: true,
+      }),
+    },
   },
   output: "server",
   adapter: netlify({ middlewareMode: "edge" }),

@@ -1,0 +1,37 @@
+---
+import { Icon } from "astro-icon/components";
+import GuestbookReply from "./GuestbookReply.astro";
+import { replyLabel, type GuestbookEntry } from "../../lib/guestbook";
+
+interface Props {
+  parentId: number;
+  replies: GuestbookEntry[];
+}
+
+const { parentId, replies } = Astro.props;
+---
+
+<details
+  data-reply-thread
+  data-parent-id={parentId}
+  hidden={replies.length === 0}
+  class="group guestbook-disclosure"
+>
+  <summary
+    class="flex items-center justify-between text-darkslate-300 hover:text-white transition-colors cursor-pointer list-none text-xs"
+  >
+    <span data-reply-label>
+      {replyLabel(replies.length)}
+    </span>
+    <Icon
+      name="pixel-plus"
+      class="w-3 h-3 transition-transform duration-200 group-open:rotate-45"
+    />
+  </summary>
+
+  <div data-reply-body class="pt-3">
+    <div data-reply-list class="flex flex-col gap-4">
+      {replies.map((reply) => <GuestbookReply entry={reply} />)}
+    </div>
+  </div>
+</details>

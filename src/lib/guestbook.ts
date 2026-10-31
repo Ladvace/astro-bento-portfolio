@@ -6,11 +6,21 @@ export type GuestbookEntry = {
   name: string;
   message: string;
   website: string | null;
+  parentId: number | null;
   heartCount: number | null;
   createdAt: Date | string;
 };
 
 export const ENTRIES_PER_PAGE = 10;
+
+// Readable by page scripts to skip the session check for visitors. It grants
+// nothing: the HttpOnly session cookie is what the server checks.
+export const OWNER_HINT_COOKIE = "guestbook-owner";
+
+export const replyLabel = (replyCount: number): string => {
+  if (replyCount === 0) return "Reply";
+  return replyCount === 1 ? "1 reply" : `${replyCount} replies`;
+};
 
 const AVATAR_COLORS = [
   "bg-violet-500",
@@ -53,6 +63,9 @@ export const avatarColorForSeed = (seed: number): string =>
 
 export const GUESTBOOK_NAME_CLASS = "font-semibold text-white text-sm";
 export const GUESTBOOK_NAME_LINK_CLASS = `group ${GUESTBOOK_NAME_CLASS} hover:text-primary-400 transition-colors`;
+
+export const GUESTBOOK_INPUT_CLASS =
+  "w-full px-3 py-2 bg-darkslate-700 border border-darkslate-500 rounded-lg text-white text-sm placeholder:text-darkslate-400 focus:outline-none focus:border-primary-500/60 transition-colors";
 
 export const PIXEL_HEART_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="12" viewBox="0 0 7 6" class="heart-svg block" shape-rendering="crispEdges" style="image-rendering:pixelated" fill="currentColor"><rect x="1" y="0" width="2" height="1"/><rect x="4" y="0" width="2" height="1"/><rect x="0" y="1" width="7" height="1"/><rect x="0" y="2" width="7" height="1"/><rect x="1" y="3" width="5" height="1"/><rect x="2" y="4" width="3" height="1"/><rect x="3" y="5" width="1" height="1"/></svg>`;
 

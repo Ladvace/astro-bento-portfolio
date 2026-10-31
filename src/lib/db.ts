@@ -7,7 +7,7 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 
-export { count, desc, eq, sql } from "drizzle-orm";
+export { count, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 
 const readEnv = (...keys: string[]): string | undefined => {
   for (const key of keys) {

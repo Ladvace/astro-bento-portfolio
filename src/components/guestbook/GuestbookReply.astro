@@ -1,0 +1,22 @@
+---
+import GuestbookEntryMeta from "./GuestbookEntryMeta.astro";
+import type { GuestbookEntry } from "../../lib/guestbook";
+
+interface Props {
+  entry: GuestbookEntry;
+}
+
+const { entry } = Astro.props;
+---
+
+<article data-entry-id={entry.id} class="flex flex-col gap-2">
+  <p
+    data-entry-message
+    class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap"
+  >
+    {entry.message}
+  </p>
+  <footer class="flex items-center gap-2.5">
+    <GuestbookEntryMeta entry={entry} />
+  </footer>
+</article>

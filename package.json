@@ -17,16 +17,16 @@
     "preview:netlify": "netlify dev"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@astrojs/markdown-remark": "^7.3.2",
-    "@astrojs/netlify": "^8.2.9",
+    "@astrojs/check": "0.9.12",
+    "@astrojs/markdown-remark": "7.3.5",
+    "@astrojs/netlify": "8.2.10",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
-    "@astrojs/solid-js": "^7.0.2",
-    "@astrojs/svelte": "^9.0.1",
+    "@astrojs/solid-js": "7.1.2",
+    "@astrojs/svelte": "9.1.2",
     "@libsql/client": "^0.17.4",
     "@rive-app/canvas": "2.37.1",
-    "astro": "^7.3.8",
+    "astro": "7.4.4",
     "astro-icon": "^1.1.5",
     "astro-robots-txt": "^1.0.0",
     "d3-drag": "^3.0.0",
@@ -72,10 +72,5 @@
       "eslint --fix"
     ]
   },
-  "packageManager": "pnpm@10.33.0",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "canvas"
-    ]
-  }
+  "packageManager": "pnpm@12.16.1+sha512.091d1dee7927575661b25dab3c2ae31cafc1c54d6b71ed6a6600cf0c1cb10434a447eae14015f1b23e2e6bedeed79df94a932e2164d2832280dce3fb32f656d1"
 }

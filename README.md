@@ -86,7 +86,10 @@ The guestbook uses [Drizzle ORM](https://orm.drizzle.team/) over a remote **libS
 ```bash
 TURSO_DATABASE_URL=libsql://<your-database>.turso.io
 TURSO_AUTH_TOKEN=<your-auth-token>
+GUESTBOOK_ADMIN_SECRET=<output of: openssl rand -hex 32>
 ```
+
+Only you can reply to guestbook messages. Log in at `/guestbook/login` with `GUESTBOOK_ADMIN_SECRET` and the reply forms appear on the guestbook. Without a secret of at least 32 characters, replying stays disabled.
 
 Then create the table:
 
@@ -104,7 +107,7 @@ CREATE TABLE "Guestbook" (
 
 The client and schema live in `src/lib/db.ts`. `createdAt` is stored as an ISO 8601 string.
 
-> These variables must be set in your deploy environment. If you don't need the guestbook, delete `src/lib/db.ts`, `src/pages/guestbook.astro` and the `src/pages/api/guestbook.ts` / `reactions.ts` routes.
+> These variables must be set in your deploy environment. If you don't need the guestbook, delete `src/lib/db.ts`, `src/pages/guestbook.astro`, `src/pages/guestbook/login.astro`, `src/lib/guestbook-auth.ts` and the `src/pages/api/guestbook.ts` / `api/guestbook/session.ts` / `reactions.ts` routes.
 
 ## Deploy on Netlify <img src=".github/readme/icons/rocket.svg" width="24" height="24" alt="" />
 
