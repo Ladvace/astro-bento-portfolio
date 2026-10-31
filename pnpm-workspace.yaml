@@ -1,5 +1,5 @@
 allowBuilds:
   '@parcel/watcher': false
-  canvas: true
+  canvas: false
   esbuild: false
   sharp: false
