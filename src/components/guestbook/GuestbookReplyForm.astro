@@ -1,0 +1,23 @@
+---
+import Button from "../Button.astro";
+import { GUESTBOOK_INPUT_CLASS as inputClasses } from "../../lib/guestbook";
+---
+
+<form data-reply-form data-astro-reload class="flex flex-col gap-3">
+  <label>
+    <span class="block text-xs text-darkslate-300 mb-1.5">Reply *</span>
+    <textarea
+      name="message"
+      required
+      maxlength="1000"
+      rows="2"
+      class:list={[inputClasses, "resize-none"]}
+      placeholder="Write a reply..."></textarea>
+  </label>
+
+  <p data-form-error class="text-red-400 text-xs hidden"></p>
+
+  <div class="self-end">
+    <Button type="submit" size="sm">Reply</Button>
+  </div>
+</form>

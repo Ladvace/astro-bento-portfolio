@@ -237,6 +237,7 @@ function initGuestbookGrid() {
   const SETTLE_DELAY_MS = 900;
   const TURN_STAGGER_MS = 140;
   const SETTLE_STAGGER_MS = 450;
+  const WAVE_FRAME_MS = 33;
   let cols = 1;
   let rows = 1;
   let side = 0;
@@ -255,7 +256,9 @@ function initGuestbookGrid() {
     const h = container.clientHeight;
     if (!w || !h) return;
     // The rotated floor must cover the card's diagonal to leave no corners bare.
-    side = Math.ceil(Math.hypot(w, h) / TILE_SIZE) * TILE_SIZE;
+    const nextSide = Math.ceil(Math.hypot(w, h) / TILE_SIZE) * TILE_SIZE;
+    if (nextSide === side) return;
+    side = nextSide;
     floor.style.width = `${side}px`;
     floor.style.height = `${side}px`;
     cols = rows = side / TILE_SIZE;
@@ -349,7 +352,7 @@ function initGuestbookGrid() {
     }
   };
 
-  disposers.push(runWhileVisible(container, animate));
+  disposers.push(runWhileVisible(container, animate, WAVE_FRAME_MS));
 }
 
 function initBlogGrid() {
@@ -393,7 +396,12 @@ function teardown() {
   disposers = [];
 }
 
+let gridsInitialized = false;
+
 export function initCardGrids(): void {
+  if (gridsInitialized) return;
+  gridsInitialized = true;
+
   document.addEventListener("astro:page-load", () => {
     teardown();
     if (prefersReducedMotion()) return;

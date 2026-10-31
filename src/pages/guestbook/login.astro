@@ -1,0 +1,109 @@
+---
+import { Icon } from "astro-icon/components";
+import Layout from "../../layouts/Layout.astro";
+import BackLink from "../../components/BackLink.astro";
+import Button from "../../components/Button.astro";
+import Card from "../../components/Card/index.astro";
+import {
+  isGuestbookAdmin,
+  logInAdmin,
+  logOutAdmin,
+} from "../../lib/guestbook-auth";
+import { GUESTBOOK_INPUT_CLASS } from "../../lib/guestbook";
+
+Astro.response.headers.set("Cache-Control", "no-store");
+
+let hasError = false;
+
+if (Astro.request.method === "POST") {
+  const formData = await Astro.request.formData();
+
+  if (formData.get("intent") === "logout") {
+    logOutAdmin(Astro.cookies);
+    return Astro.redirect("/guestbook", 303);
+  }
+
+  if (logInAdmin(Astro.cookies, (formData.get("secret") ?? "").toString())) {
+    return Astro.redirect("/guestbook", 303);
+  }
+
+  hasError = true;
+  Astro.response.status = 401;
+}
+
+const isAdmin = isGuestbookAdmin(Astro.cookies);
+---
+
+<Layout title="Guestbook login" description="Guestbook login" noindex>
+  <div class="flex flex-col items-center px-4 pt-8 pb-24">
+    <div class="w-full max-w-3xl mb-16">
+      <BackLink href="/guestbook" />
+    </div>
+
+    <header class="w-full max-w-xl mb-8 text-center">
+      <Icon
+        name="pixel-lock"
+        class="w-6 h-[26px] mx-auto mb-4 text-primary-400"
+        aria-hidden="true"
+      />
+      <h1 class="text-white text-3xl font-bold tracking-tight mb-3">
+        {isAdmin ? "You're logged in" : "Owner login"}
+      </h1>
+      <p class="text-darkslate-300 text-sm leading-relaxed">
+        {
+          isAdmin
+            ? "Reply forms are showing on the guestbook in this browser."
+            : "Log in to reply to guestbook messages."
+        }
+      </p>
+    </header>
+
+    <Card height="h-auto" class="max-w-sm">
+      {
+        isAdmin ? (
+          <form
+            method="post"
+            data-astro-reload
+            class="flex flex-col items-center gap-3"
+          >
+            <input type="hidden" name="intent" value="logout" />
+            <button
+              type="submit"
+              class="px-3 py-1.5 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
+            >
+              Log out
+            </button>
+          </form>
+        ) : (
+          <form method="post" data-astro-reload class="flex flex-col gap-3">
+            <label>
+              <span class="block text-xs text-darkslate-300 mb-1.5">
+                Secret
+              </span>
+              <input
+                type="password"
+                name="secret"
+                required
+                autofocus
+                autocomplete="current-password"
+                aria-invalid={hasError ? "true" : undefined}
+                aria-describedby={hasError ? "login-error" : undefined}
+                class={GUESTBOOK_INPUT_CLASS}
+              />
+            </label>
+            {hasError && (
+              <p id="login-error" role="alert" class="text-red-400 text-xs">
+                That secret didn't match. Check it and try again.
+              </p>
+            )}
+            <div class="self-end">
+              <Button type="submit" size="sm">
+                Log in
+              </Button>
+            </div>
+          </form>
+        )
+      }
+    </Card>
+  </div>
+</Layout>

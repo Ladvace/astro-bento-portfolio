@@ -48,10 +48,18 @@ interface Props {
   pubDate?: string;
   hideSoundToggle?: boolean;
   hideCompanion?: boolean;
+  noindex?: boolean;
 }
 
-const { title, description, page, pubDate, hideSoundToggle, hideCompanion } =
-  Astro.props;
+const {
+  title,
+  description,
+  page,
+  pubDate,
+  hideSoundToggle,
+  hideCompanion,
+  noindex,
+} = Astro.props;
 const image = `${Astro.url.origin}/og-image.png`;
 
 const schema =
@@ -140,7 +148,10 @@ const schema =
     <meta content={Astro.generator} name="generator" />
     <title>{title}</title>
     <meta content={description} name="description" />
-    <meta content="index, follow" name="robots" />
+    <meta
+      content={noindex ? "noindex, nofollow" : "index, follow"}
+      name="robots"
+    />
     <meta name="theme-color" content="#171717" />
     <meta name="author" content={SITE.author.fullName} />
     <meta

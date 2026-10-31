@@ -1,12 +1,22 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import BackLink from "../components/BackLink.astro";
+import Card from "../components/Card/index.astro";
 import { SITE } from "../site-config";
-import { db, Guestbook as GuestbookTable, desc, count } from "../lib/db";
+import {
+  db,
+  Guestbook as GuestbookTable,
+  desc,
+  count,
+  inArray,
+  isNull,
+} from "../lib/db";
 import GuestbookCard from "../components/guestbook/GuestbookCard.astro";
 import GuestbookForm from "../components/guestbook/GuestbookForm.astro";
 import GuestbookPagination from "../components/guestbook/GuestbookPagination.astro";
-import { ENTRIES_PER_PAGE } from "../lib/guestbook";
+import GuestbookReply from "../components/guestbook/GuestbookReply.astro";
+import GuestbookReplyForm from "../components/guestbook/GuestbookReplyForm.astro";
+import { ENTRIES_PER_PAGE, type GuestbookEntry } from "../lib/guestbook";
 import { cacheGuestbook } from "../lib/guestbook-cache";
 
 const requestedPage = Math.max(
@@ -21,16 +31,52 @@ Astro.response.headers.set(
 cacheGuestbook(Astro.cache);
 
 const [[{ total: totalEntries }], entries] = await Promise.all([
-  db.select({ total: count() }).from(GuestbookTable),
+  db
+    .select({ total: count() })
+    .from(GuestbookTable)
+    .where(isNull(GuestbookTable.parentId)),
   db
     .select()
     .from(GuestbookTable)
+    .where(isNull(GuestbookTable.parentId))
     .orderBy(desc(GuestbookTable.createdAt))
     .limit(ENTRIES_PER_PAGE)
     .offset((requestedPage - 1) * ENTRIES_PER_PAGE),
 ]);
 
 const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
+
+const replies =
+  entries.length === 0
+    ? []
+    : await db
+        .select()
+        .from(GuestbookTable)
+        .where(
+          inArray(
+            GuestbookTable.parentId,
+            entries.map((entry) => entry.id),
+          ),
+        )
+        .orderBy(GuestbookTable.createdAt);
+
+const repliesByParent = new Map<number, GuestbookEntry[]>();
+for (const reply of replies) {
+  if (reply.parentId === null) continue;
+  const siblings = repliesByParent.get(reply.parentId) ?? [];
+  siblings.push(reply);
+  repliesByParent.set(reply.parentId, siblings);
+}
+
+const newEntryPlaceholder: GuestbookEntry = {
+  id: 0,
+  name: "",
+  message: "",
+  website: "https://",
+  parentId: null,
+  heartCount: 0,
+  createdAt: new Date(),
+};
 ---
 
 <Layout
@@ -42,16 +88,25 @@ const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
       <BackLink href="/" />
     </div>
 
-    <header class="w-full max-w-xl mb-12 text-center">
-      <h1 class="text-white text-3xl font-bold tracking-tight mb-3">
-        Guestbook
-      </h1>
-      <p class="text-darkslate-300 text-sm leading-relaxed">
-        Drop a note, say hi, or share your thoughts. I read every message.
-      </p>
-    </header>
+    <Card height="h-auto" centerY class="max-w-3xl mb-4 min-h-44 text-center">
+      <div
+        slot="background"
+        id="guestbook-grid"
+        class="absolute inset-0 overflow-hidden pointer-events-none"
+        aria-hidden="true"
+      >
+      </div>
+      <div class="relative z-10">
+        <h1 class="text-white text-3xl font-bold tracking-tight mb-2">
+          Guestbook
+        </h1>
+        <p class="text-white text-sm leading-relaxed">
+          Drop a note, say hi, or share your thoughts. I read every message.
+        </p>
+      </div>
+    </Card>
 
-    <GuestbookForm class="w-full max-w-xl mb-12" />
+    <GuestbookForm class="max-w-3xl mb-12" />
 
     <section class="w-full max-w-3xl">
       <h2 id="entries-count" class="text-white text-sm font-semibold mb-4">
@@ -68,7 +123,12 @@ const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
               No messages yet — be the first to leave one.
             </p>
           ) : (
-            entries.map((entry) => <GuestbookCard entry={entry} />)
+            entries.map((entry) => (
+              <GuestbookCard
+                entry={entry}
+                replies={repliesByParent.get(entry.id)}
+              />
+            ))
           )
         }
       </div>
@@ -78,5 +138,100 @@ const totalPages = Math.max(1, Math.ceil(totalEntries / ENTRIES_PER_PAGE));
         totalPages={totalPages}
       />
     </section>
+
+    <template id="reply-form-template">
+      <GuestbookReplyForm />
+    </template>
+    <template id="entry-card-template">
+      <GuestbookCard entry={newEntryPlaceholder} />
+    </template>
+    <template id="reply-template">
+      <GuestbookReply entry={{ ...newEntryPlaceholder, parentId: 0 }} />
+    </template>
   </div>
 </Layout>
+
+<script>
+  import { initCardGrids } from "../lib/card-grids";
+  import { OWNER_HINT_COOKIE, replyLabel } from "../lib/guestbook";
+  import {
+    createEntryElement,
+    createFormStatus,
+    postGuestbookEntry,
+  } from "../lib/guestbook-client";
+
+  // The page is CDN-cached for everyone, so the reply forms are added in the
+  // browser once the session endpoint confirms the owner is logged in.
+  const revealReplyForms = async (): Promise<void> => {
+    if (!document.cookie.includes(`${OWNER_HINT_COOKIE}=`)) return;
+
+    const threads = document.querySelectorAll<HTMLElement>(
+      "#entries [data-reply-thread]",
+    );
+    const formTemplate = document.getElementById(
+      "reply-form-template",
+    ) as HTMLTemplateElement | null;
+    if (threads.length === 0 || !formTemplate) return;
+
+    try {
+      const response = await fetch("/api/guestbook/session");
+      const session = (await response.json()) as { admin?: boolean };
+      if (session.admin !== true) return;
+    } catch {
+      return;
+    }
+
+    threads.forEach((thread) => {
+      if (thread.querySelector("[data-reply-form]")) return;
+      thread.hidden = false;
+      thread
+        .querySelector("[data-reply-body]")
+        ?.append(formTemplate.content.cloneNode(true));
+    });
+  };
+
+  const handleReplySubmit = async (submitEvent: SubmitEvent): Promise<void> => {
+    const form = submitEvent.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if (!form.matches("[data-reply-form]")) return;
+    submitEvent.preventDefault();
+
+    const thread = form.closest<HTMLElement>("[data-reply-thread]");
+    if (!thread) return;
+
+    const { showError, setSubmitting } = createFormStatus(form);
+    showError(null);
+
+    const message = (new FormData(form).get("message") ?? "").toString().trim();
+    if (!message) {
+      showError("Message is required");
+      return;
+    }
+
+    setSubmitting(true);
+    const result = await postGuestbookEntry({
+      message,
+      parentId: parseInt(thread.dataset.parentId ?? "", 10),
+    });
+    setSubmitting(false);
+
+    if ("error" in result) {
+      showError(result.error);
+      return;
+    }
+
+    const list = thread.querySelector("[data-reply-list]");
+    const reply = createEntryElement("reply-template", result.entry);
+    if (list && reply) list.append(reply);
+
+    const label = thread.querySelector("[data-reply-label]");
+    if (list && label) label.textContent = replyLabel(list.children.length);
+
+    form.reset();
+  };
+
+  document.addEventListener("submit", handleReplySubmit);
+  document.addEventListener("astro:page-load", revealReplyForms);
+  document.addEventListener("guestbook:entry-added", revealReplyForms);
+  initCardGrids();
+</script>

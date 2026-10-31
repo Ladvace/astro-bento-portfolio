@@ -1,0 +1,69 @@
+---
+import {
+  avatarColorForSeed,
+  formatTimeAgo,
+  getInitials,
+  PIXEL_HEART_SVG,
+  PIXEL_EXTERNAL_LINK_SVG,
+  GUESTBOOK_NAME_CLASS,
+  GUESTBOOK_NAME_LINK_CLASS,
+  type GuestbookEntry,
+} from "../../lib/guestbook";
+
+interface Props {
+  entry: GuestbookEntry;
+}
+
+const { entry } = Astro.props;
+const avatarColor = avatarColorForSeed(entry.id);
+const avatarInitials = getInitials(entry.name);
+const postedAgo = formatTimeAgo(entry.createdAt);
+const heartCount = entry.heartCount ?? 0;
+---
+
+<div
+  data-entry-avatar
+  class:list={[
+    "flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold select-none",
+    avatarColor,
+  ]}
+>
+  {avatarInitials}
+</div>
+<div class="min-w-0 flex-1 flex items-baseline gap-1.5 flex-wrap">
+  {
+    entry.website ? (
+      <a
+        data-entry-link
+        href={entry.website}
+        target="_blank"
+        rel="noopener noreferrer"
+        class={GUESTBOOK_NAME_LINK_CLASS}
+      >
+        <span data-entry-name>{entry.name}</span>
+        <Fragment set:html={PIXEL_EXTERNAL_LINK_SVG} />
+      </a>
+    ) : (
+      <span data-entry-name class={GUESTBOOK_NAME_CLASS}>
+        {entry.name}
+      </span>
+    )
+  }
+  {
+    entry.parentId !== null && (
+      <span class="text-primary-400 text-xs font-semibold">Author</span>
+    )
+  }
+  <span class="text-darkslate-300 text-xs">{postedAgo}</span>
+</div>
+<button
+  type="button"
+  data-heart-button
+  data-heart-count={heartCount}
+  aria-label="Send love"
+  title="Send love"
+  class="heart-btn flex items-center gap-1 px-2 py-1 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-xs"
+>
+  <Fragment set:html={PIXEL_HEART_SVG} />
+  <span class="heart-count tabular-nums">{heartCount}</span>
+</button>

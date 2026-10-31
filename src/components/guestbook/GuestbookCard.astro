@@ -1,79 +1,38 @@
 ---
-import {
-  avatarColorForSeed,
-  formatTimeAgo,
-  getInitials,
-  rotationFromSeed,
-  PIXEL_HEART_SVG,
-  PIXEL_EXTERNAL_LINK_SVG,
-  GUESTBOOK_NAME_CLASS,
-  GUESTBOOK_NAME_LINK_CLASS,
-  type GuestbookEntry,
-} from "../../lib/guestbook";
+import Card from "../Card/index.astro";
+import GuestbookEntryMeta from "./GuestbookEntryMeta.astro";
+import GuestbookThread from "./GuestbookThread.astro";
+import { rotationFromSeed, type GuestbookEntry } from "../../lib/guestbook";
 
 interface Props {
   entry: GuestbookEntry;
+  replies?: GuestbookEntry[];
 }
 
-const { entry } = Astro.props;
-const rotationDegrees = rotationFromSeed(entry.id);
-const avatarColor = avatarColorForSeed(entry.id);
-const avatarInitials = getInitials(entry.name);
-const postedAgo = formatTimeAgo(entry.createdAt);
-const heartCount = entry.heartCount ?? 0;
+const { entry, replies = [] } = Astro.props;
 ---
 
 <article
   data-entry-id={entry.id}
-  class="bg-darkslate-500 p-5 rounded-xl border border-darkslate-400 hover:border-primary-500/50 transition-[border-color,transform] duration-300 hover:rotate-0 flex flex-col gap-3"
-  style={`transform: rotate(${rotationDegrees}deg);`}
+  class="min-w-0"
+  style={`--tilt: ${rotationFromSeed(entry.id)}deg;`}
 >
-  <p
-    class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap flex-1"
-  >
-    {entry.message}
-  </p>
-  <footer
-    class="flex items-center gap-2.5 pt-2 border-t border-darkslate-400/50"
-  >
-    <div
-      class:list={[
-        "flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold select-none",
-        avatarColor,
-      ]}
-    >
-      {avatarInitials}
+  <Card>
+    <div class="flex flex-col gap-3 h-full">
+      <p
+        data-entry-message
+        class="text-darkslate-100 text-sm leading-relaxed whitespace-pre-wrap flex-1"
+      >
+        {entry.message}
+      </p>
+      <footer
+        class="flex items-center gap-2.5 pt-2 border-t border-darkslate-400/50"
+      >
+        <GuestbookEntryMeta entry={entry} />
+      </footer>
+      <GuestbookThread parentId={entry.id} replies={replies} />
     </div>
-    <div class="min-w-0 flex-1 flex items-baseline gap-1.5 flex-wrap">
-      {
-        entry.website ? (
-          <a
-            href={entry.website}
-            target="_blank"
-            rel="noopener noreferrer"
-            class={GUESTBOOK_NAME_LINK_CLASS}
-          >
-            {entry.name}
-            <Fragment set:html={PIXEL_EXTERNAL_LINK_SVG} />
-          </a>
-        ) : (
-          <span class={GUESTBOOK_NAME_CLASS}>{entry.name}</span>
-        )
-      }
-      <span class="text-darkslate-300 text-xs">{postedAgo}</span>
-    </div>
-    <button
-      type="button"
-      data-heart-button
-      data-heart-count={heartCount}
-      aria-label="Send love"
-      title="Send love"
-      class="heart-btn flex items-center gap-1 px-2 py-1 rounded-md text-darkslate-300 hover:text-white hover:bg-darkslate-400/30 transition-colors text-xs"
-    >
-      <Fragment set:html={PIXEL_HEART_SVG} />
-      <span class="heart-count tabular-nums">{heartCount}</span>
-    </button>
-  </footer>
+  </Card>
 </article>
 
 <script>
