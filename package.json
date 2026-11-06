@@ -11,7 +11,7 @@
     "astro": "astro",
     "eslint": "eslint 'src/**/*.{js,astro}'",
     "check": "astro check",
-    "test:dist": "node --test tests/dist/*.test.mjs",
+    "test:dist": "node --test tests/build-output/*.test.mjs",
     "verify": "npm run build && npm test && npm run test:dist"
   },
   "dependencies": {
