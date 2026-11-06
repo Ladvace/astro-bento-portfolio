@@ -19,7 +19,7 @@ export function legacyRedirect(pathname) {
   return slug ? `/${locale}/blog/${slug}/` : `/${locale}/blog/`;
 }
 
-const EXCLUDED_PREFIXES = ['/gracias', '/api', '/ingest'];
+const EXCLUDED_PREFIXES = ['/gracias', '/api'];
 /** Sitemap filter: only canonical indexable pages (no legacy duplicates, no utility routes). */
 export function sitemapFilter(page) {
   let path;
@@ -34,7 +34,7 @@ export function sitemapFilter(page) {
 export function robotsTxt({ origin, noindex = false }) {
   const lines = noindex
     ? ['User-agent: *', 'Disallow: /']
-    : ['User-agent: *', 'Allow: /', 'Disallow: /api/', 'Disallow: /ingest/'];
+    : ['User-agent: *', 'Allow: /', 'Disallow: /api/'];
   lines.push('', `Sitemap: ${new URL('/sitemap-index.xml', origin).href}`, '');
   return lines.join('\n');
 }

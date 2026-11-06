@@ -18,9 +18,7 @@
     "@astrojs/rss": "^4.0.14",
     "@astrojs/sitemap": "^3.6.0",
     "@directus/sdk": "^18.0.3",
-    "astro": "^5.16.4",
-    "posthog-js": "^1.447.3",
-    "posthog-node": "^5.63.1"
+    "astro": "^5.16.4"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^8.48.1",

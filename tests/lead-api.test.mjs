@@ -4,8 +4,6 @@ import { readFile } from 'node:fs/promises';
 import {
   createLeadHandler, createRateLimiter, validateLead, clientIp, safePagePath, formErrorPath, MAX_BODY_BYTES,
 } from '../src/lib/lead.mjs';
-import { createLeadTracker } from '../src/lib/posthog-server.mjs';
-import { proxyTarget, assetsHostFor, forwardRequestHeaders, forwardResponseHeaders, createPosthogProxy } from '../src/lib/posthog-proxy.mjs';
 
 const SITE = 'https://portfolio.romahomestore.com';
 const NOW = 1_800_000_000_000;
@@ -13,22 +11,20 @@ const valid = () => ({
   name: 'Ana Pérez', area: 'legal', message: 'Necesito asesoría sobre un contrato laboral.',
   contact_whatsapp: '+57 300 123 4567', contact_email: '', consent: 'on', website: '',
   locale: 'es', page: '/es/servicios/legal/?utm_source=x', started_at: String(NOW - 60_000),
-  utm_source: 'google', utm_medium: 'cpc', utm_campaign: 'otono', posthog_distinct_id: '0192f-abc',
+  utm_source: 'google', utm_medium: 'cpc', utm_campaign: 'otono', ga_client_id: '1234567890.1700000000',
 });
 
-function setup({ env = { DIRECTUS_LEADS_TOKEN: 'tok', DIRECTUS_URL: 'https://cms.test' }, directus = () => new Response(null, { status: 204 }), track, limiter } = {}) {
+function setup({ env = { DIRECTUS_LEADS_TOKEN: 'tok', DIRECTUS_URL: 'https://cms.test' }, directus = () => new Response(null, { status: 204 }), limiter } = {}) {
   const calls = [];
-  const tracked = [];
   const errors = [];
   const fetcher = async (url, init) => { calls.push({ url, init }); return directus(url, init); };
   const handler = createLeadHandler({
     env, fetcher, now: () => NOW, siteOrigin: SITE,
     consentText: locale => `consent-${locale}`,
-    track: track ?? (async event => { tracked.push(event); }),
     rateLimiter: limiter ?? createRateLimiter(),
     logger: { error: (...args) => errors.push(args.join(' ')) },
   });
-  return { handler, calls, tracked, errors };
+  return { handler, calls, errors };
 }
 
 function post(body, { json = false, accept = json ? 'application/json' : 'text/html', origin = SITE, headers = {} } = {}) {
@@ -40,7 +36,7 @@ function post(body, { json = false, accept = json ? 'application/json' : 'text/h
 }
 
 test('valid form lead is stored in Directus and redirects 303 to the thank-you page', async () => {
-  const { handler, calls, tracked } = setup();
+  const { handler, calls } = setup();
   const response = await handler(post(valid()), { clientAddress: '1.1.1.1' });
   assert.equal(response.status, 303);
   assert.equal(response.headers.get('location'), '/es/gracias/?area=legal');
@@ -48,13 +44,12 @@ test('valid form lead is stored in Directus and redirects 303 to the thank-you p
   assert.equal(calls[0].url, 'https://cms.test/items/leads');
   assert.equal(calls[0].init.headers.Authorization, 'Bearer tok');
   const lead = JSON.parse(calls[0].init.body);
-  assert.deepEqual(Object.keys(lead).sort(), ['area', 'consent', 'consent_text', 'contact_email', 'contact_whatsapp', 'locale', 'message', 'name', 'page', 'posthog_distinct_id', 'utm_campaign', 'utm_medium', 'utm_source'].sort());
+  assert.deepEqual(Object.keys(lead).sort(), ['area', 'consent', 'consent_text', 'contact_email', 'contact_whatsapp', 'locale', 'message', 'name', 'page', 'ga_client_id', 'utm_campaign', 'utm_medium', 'utm_source'].sort());
   assert.equal(lead.contact_whatsapp, '+573001234567');
   assert.equal(lead.page, '/es/servicios/legal/');
   assert.equal(lead.consent, true);
   assert.equal(lead.consent_text, 'consent-es');
-  // Analytics gets no personal data.
-  assert.deepEqual(tracked, [{ distinctId: '0192f-abc', area: 'legal', locale: 'es', utm_source: 'google', utm_medium: 'cpc', utm_campaign: 'otono' }]);
+  assert.equal(lead.ga_client_id, '1234567890.1700000000');
 });
 
 test('JSON request gets JSON response; Directus 200 is also success', async () => {
@@ -66,11 +61,10 @@ test('JSON request gets JSON response; Directus 200 is also success', async () =
 
 test('honeypot and too-fast submissions get a fake success and are not stored', async () => {
   for (const payload of [{ ...valid(), website: 'http://spam' }, { ...valid(), started_at: String(NOW - 1000) }]) {
-    const { handler, calls, tracked } = setup();
+    const { handler, calls } = setup();
     const response = await handler(post(payload, { json: true }));
     assert.deepEqual(await response.json(), { ok: true, redirect: '/es/gracias/?area=legal' });
     assert.equal(calls.length, 0);
-    assert.equal(tracked.length, 0);
   }
   {
     const { handler, calls } = setup();
@@ -131,11 +125,10 @@ test('unsupported content type and malformed JSON', async () => {
 
 test('Directus 500 or network failure returns generic server error without logging PII', async () => {
   for (const directus of [() => Response.json({ errors: [{ message: 'Ana Pérez', extensions: { code: 'INTERNAL' } }] }, { status: 500 }), () => { throw new TypeError('fetch failed'); }]) {
-    const { handler, errors, tracked } = setup({ directus });
+    const { handler, errors } = setup({ directus });
     const response = await handler(post(valid(), { json: true }));
     assert.equal(response.status, 502);
     assert.deepEqual(await response.json(), { ok: false, error: 'server' });
-    assert.equal(tracked.length, 0);
     assert.equal(errors.length, 1);
     assert.doesNotMatch(errors[0], /Ana|300|asesor/);
   }
@@ -150,14 +143,6 @@ test('missing DIRECTUS_LEADS_TOKEN returns unavailable and calls nothing', async
   assert.equal(response.status, 503);
   assert.deepEqual(await response.json(), { ok: false, error: 'unavailable' });
   assert.equal(calls.length, 0);
-});
-
-test('PostHog failure never breaks a stored lead', async () => {
-  const { handler, calls, errors } = setup({ track: async () => { throw new Error('down'); } });
-  const response = await handler(post(valid(), { json: true }));
-  assert.deepEqual(await response.json(), { ok: true, redirect: '/es/gracias/?area=legal' });
-  assert.equal(calls.length, 1);
-  assert.equal(errors.length, 1);
 });
 
 test('rate limit: 5 attempts per IP per 10 minutes, keyed on the proxy-appended XFF value', async () => {
@@ -207,76 +192,36 @@ test('pure helpers: page path, error path and normalization', () => {
   assert.equal(safePagePath('javascript:alert(1)'), '');
   assert.equal(safePagePath('/en/servicios/data/?a=1#b'), '/en/servicios/data/');
   assert.equal(formErrorPath('en', '/es/', 'invalid'), '/en/?error=invalid#contacto');
-  const result = validateLead({ ...valid(), posthog_distinct_id: '<script>', utm_source: 'a\u0000b' }, { now: NOW, consentText: () => 'c' });
+  const result = validateLead({ ...valid(), ga_client_id: '<script>', utm_source: 'a\u0000b' }, { now: NOW, consentText: () => 'c' });
   assert.equal(result.ok, true);
-  assert.equal(result.lead.posthog_distinct_id, null);
+  assert.equal(result.lead.ga_client_id, null);
   assert.equal(result.lead.utm_source, 'ab');
-});
-
-test('lead_created tracker sends only non-personal properties and bounds the flush', async () => {
-  const captured = [];
-  const fake = { capture: event => captured.push(event), flush: () => new Promise(() => {}) };
-  const track = createLeadTracker({ apiKey: 'phc_test', timeoutMs: 20, createClient: () => fake });
-  await assert.rejects(track({ area: 'data', locale: 'en', utm_source: null, utm_medium: null, utm_campaign: 'x' }), /timeout/);
-  assert.equal(captured[0].event, 'lead_created');
-  assert.match(captured[0].distinctId, /^[0-9a-f-]{36}$/);
-  assert.deepEqual(captured[0].properties, { area: 'data', locale: 'en', utm_campaign: 'x', source: 'api_lead', $process_person_profile: false });
-  assert.equal(await createLeadTracker({})({ area: 'legal', locale: 'es' }), undefined);
-});
-
-// ------------------------------------------------------------------------------------------------ proxy
-test('proxy maps /ingest/static to the assets host and the rest to the API host, keeping the query', () => {
-  assert.equal(assetsHostFor('https://eu.i.posthog.com'), 'https://eu-assets.i.posthog.com');
-  assert.equal(proxyTarget(`${SITE}/ingest/static/array.js?v=1`).href, 'https://eu-assets.i.posthog.com/static/array.js?v=1');
-  assert.equal(proxyTarget(`${SITE}/ingest/e/?ip=0&_=1&ver=1.2`).href, 'https://eu.i.posthog.com/e/?ip=0&_=1&ver=1.2');
-  assert.equal(proxyTarget(`${SITE}/ingest/decide?v=3`).href, 'https://eu.i.posthog.com/decide?v=3');
-  assert.equal(proxyTarget(`${SITE}/ingest/staticx`).href, 'https://eu.i.posthog.com/staticx');
-  assert.equal(proxyTarget(`${SITE}/other`), null);
-});
-
-test('proxy strips cookies, auth and forwarding headers and sets X-Forwarded-For', () => {
-  const out = forwardRequestHeaders(new Headers({
-    cookie: 'session=1', authorization: 'Bearer x', host: 'portfolio', 'x-forwarded-for': 'forged', 'content-type': 'text/plain', 'user-agent': 'UA', 'cf-connecting-ip': '1.1.1.1',
-  }), '203.0.113.9');
-  assert.equal(out.get('cookie'), null);
-  assert.equal(out.get('authorization'), null);
-  assert.equal(out.get('host'), null);
-  assert.equal(out.get('cf-connecting-ip'), null);
-  assert.equal(out.get('x-forwarded-for'), '203.0.113.9');
-  assert.equal(out.get('content-type'), 'text/plain');
-  assert.equal(out.get('user-agent'), 'UA');
-  const back = forwardResponseHeaders(new Headers({ 'set-cookie': 'a=1', 'content-encoding': 'gzip', 'content-type': 'application/json' }));
-  assert.equal(back.get('set-cookie'), null);
-  assert.equal(back.get('content-encoding'), null);
-  assert.equal(back.get('content-type'), 'application/json');
-});
-
-test('proxy: 404 without key, method filter, body forwarding and 1 MB limit', async () => {
-  const calls = [];
-  const fetcher = async (url, init) => { calls.push({ url, init }); return new Response('{"ok":1}', { status: 200, headers: { 'content-type': 'application/json' } }); };
-  assert.equal((await createPosthogProxy({ fetcher })(new Request(`${SITE}/ingest/decide`))).status, 404);
-  const proxy = createPosthogProxy({ apiKey: 'phc_x', fetcher, logger: { error() {} } });
-  assert.equal((await proxy(new Request(`${SITE}/ingest/e/`, { method: 'PUT', body: 'x' }))).status, 405);
-  const ok = await proxy(new Request(`${SITE}/ingest/e/?compression=gzip-js`, { method: 'POST', body: 'payload', headers: { cookie: 'a=1', 'x-forwarded-for': '198.51.100.7' } }), { clientAddress: '10.0.0.2' });
-  assert.equal(ok.status, 200);
-  assert.equal(calls[0].url, 'https://eu.i.posthog.com/e/?compression=gzip-js');
-  assert.equal(new TextDecoder().decode(calls[0].init.body), 'payload');
-  assert.equal(calls[0].init.headers.get('cookie'), null);
-  assert.equal(calls[0].init.headers.get('x-forwarded-for'), '198.51.100.7');
-  const big = await proxy(new Request(`${SITE}/ingest/e/`, { method: 'POST', body: new Uint8Array(1024 * 1024 + 1) }));
-  assert.equal(big.status, 413);
-  assert.equal(calls.length, 1);
 });
 
 test('endpoints are on-demand and the layout delegates analytics to Analytics.astro', async () => {
   const read = path => readFile(new URL(path, import.meta.url), 'utf8');
   assert.match(await read('../src/pages/api/lead.ts'), /export const prerender = false/);
-  assert.match(await read('../src/pages/ingest/[...path].ts'), /export const prerender = false/);
   const layout = await read('../src/layouts/RomaLayout.astro');
   assert.match(layout, /<Analytics ga4Id=\{globals\.ga4_id\} \/>/);
   assert.doesNotMatch(layout, /googletagmanager/);
   const analytics = await read('../src/components/roma/Analytics.astro');
-  assert.match(analytics, /api_host: '\/ingest'/);
-  assert.match(analytics, /maskAllInputs: true/);
-  assert.doesNotMatch(analytics, /capture_value_css_selector_allowlist:/);
+});
+
+test('ga_client_id accepts only GA client ids', () => {
+  for (const [value, expected] of [['123.456', '123.456'], ['a b', null], ['x'.repeat(65), null], ['', null]]) {
+    const result = validateLead({ ...valid(), ga_client_id: value }, { now: NOW, consentText: () => 'c' });
+    assert.equal(result.lead.ga_client_id, expected);
+  }
+});
+
+test('Analytics.astro: consent default before config, ads denied, no PII', async () => {
+  const src = await readFile(new URL('../src/components/roma/Analytics.astro', import.meta.url), 'utf8');
+  const iDefault = src.indexOf("gtag('consent','default'");
+  assert.ok(iDefault > 0 && iDefault < src.indexOf("gtag('config'"), 'consent default must precede config');
+  assert.match(src, /ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500/);
+  assert.match(src, /\^G-\[A-Z0-9\]\+\$/);
+  assert.match(src, /analytics_storage: state/);
+  assert.doesNotMatch(src, /ad_storage: 'granted'|ad_user_data: 'granted'/);
+  for (const name of ['cta_click', "'contact'", 'lang_switch', 'form_start', 'form_submit_attempt', 'generate_lead']) assert.ok(src.includes(name), name);
+  assert.doesNotMatch(src, /\.get\('(name|message|contact_email|contact_whatsapp)'\)/);
 });

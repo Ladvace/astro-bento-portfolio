@@ -1,7 +1,7 @@
 /**
  * Lead capture: pure request handling for POST /api/lead (no Astro, no globals).
  *
- * Everything with side effects (Directus fetch, PostHog, clock, logger, consent text) is injected,
+ * Everything with side effects (Directus fetch, clock, logger, consent text) is injected,
  * so the whole flow is testable with web-standard Request/Response objects.
  *
  * Client IP (rate limit): Astro's `clientAddress` is the FIRST X-Forwarded-For value, which any client
@@ -66,7 +66,7 @@ export function clientIp(headers, fallback = '', trustedProxyHops = 1) {
 const CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g;
 const EMAIL = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}@(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/;
 const PHONE = /^\+?\d{7,20}$/;
-const DISTINCT_ID = /^[A-Za-z0-9._:@$-]{1,200}$/;
+const GA_CLIENT_ID = /^[A-Za-z0-9.]{1,64}$/;
 const TRUE_VALUES = new Set(['true', 'on', '1', 'yes', 'si', 'sí']);
 
 const text = (value, max) => (typeof value === 'string' || typeof value === 'number' ? String(value) : '')
@@ -125,7 +125,7 @@ export function validateLead(input, { now = Date.now(), consentText = () => '' }
   const consent = consentValue === true || TRUE_VALUES.has(text(consentValue, 8).toLowerCase());
   if (!consent) return fail('consent');
 
-  const distinct = text(field('posthog_distinct_id'), 200);
+  const gaClientId = text(field('ga_client_id'), 65);
   const lead = {
     name, area, message,
     contact_whatsapp: phoneRaw || null,
@@ -136,7 +136,7 @@ export function validateLead(input, { now = Date.now(), consentText = () => '' }
     utm_source: singleLine(field('utm_source'), 255) || null,
     utm_medium: singleLine(field('utm_medium'), 255) || null,
     utm_campaign: singleLine(field('utm_campaign'), 255) || null,
-    posthog_distinct_id: DISTINCT_ID.test(distinct) ? distinct : null,
+    ga_client_id: GA_CLIENT_ID.test(gaClientId) ? gaClientId : null,
   };
   return { ok: true, bot: false, lead };
 }
@@ -250,14 +250,13 @@ export async function saveLead(lead, { directusUrl, token, fetcher, timeoutMs = 
  * @param {Record<string,string|undefined>} [deps.env] DIRECTUS_URL, DIRECTUS_LEADS_TOKEN, LEAD_ALLOWED_ORIGINS, LEAD_TRUSTED_PROXY_HOPS
  * @param {typeof fetch} [deps.fetcher]
  * @param {(locale: 'es'|'en') => string | Promise<string>} [deps.consentText]
- * @param {(event: {distinctId?: string, area: string, locale: string, utm_source: string|null, utm_medium: string|null, utm_campaign: string|null}) => Promise<void>} [deps.track]
  * @param {ReturnType<typeof createRateLimiter>} [deps.rateLimiter]
  * @param {() => number} [deps.now]
  * @param {{ error: (...args: unknown[]) => void }} [deps.logger]
  * @param {string} [deps.siteOrigin]
  */
 export function createLeadHandler({
-  env = {}, fetcher = globalThis.fetch, consentText = () => '', track = async () => {},
+  env = {}, fetcher = globalThis.fetch, consentText = () => '',
   rateLimiter = createRateLimiter(), now = Date.now, logger = console, siteOrigin = DEFAULT_SITE_ORIGIN,
 } = {}) {
   const extraOrigins = String(env.LEAD_ALLOWED_ORIGINS ?? '').split(',').map(value => value.trim()).filter(Boolean);
@@ -303,14 +302,6 @@ export function createLeadHandler({
       return respond(request, { ok: false, error: 'server', locale: lead.locale, page: lead.page ?? '' });
     }
 
-    try {
-      await track({
-        distinctId: lead.posthog_distinct_id ?? undefined, area: lead.area, locale: lead.locale,
-        utm_source: lead.utm_source, utm_medium: lead.utm_medium, utm_campaign: lead.utm_campaign,
-      });
-    } catch (error) {
-      logger.error(`[lead] PostHog lead_created falló: ${error?.name ?? 'Error'}`);
-    }
     return respond(request, { ok: true, locale: lead.locale, area: lead.area });
   };
 }

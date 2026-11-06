@@ -99,7 +99,7 @@ Guardar en Directus no cambia al instante la web pública. Mientras esta rama no
 
 Estas pruebas no equivalen a un despliegue de producción: la activación y el flujo de publicación siguen siendo un paso separado.
 
-PostHog, SEO/Meta y OpenCode quedan como integraciones futuras: **no se han instalado** en este trabajo. Esto no elimina ni modifica las etiquetas o textos SEO ya existentes.
+SEO/Meta y OpenCode quedan como integraciones futuras: **no se han instalado** en este trabajo. Esto no elimina ni modifica las etiquetas o textos SEO ya existentes.
 
 ## Panel de la landing y bandeja de leads
 
@@ -111,7 +111,7 @@ Esta sección describe el esquema que añade `scripts/directus-schema.mjs` (rama
 | --- | --- | --- |
 | Henry | Administrator (sin cambios) | Todo: textos compartidos, área de datos, pasos, GA4, permisos y Flows. |
 | Tatiana | `editor-legal` (app access, sin admin) | Leer todas las colecciones `website_*`; editar `website_practices` con `key = legal`, su perfil `website_people` con `key = tatiana` (foto, credencial, LinkedIn), `legal_whatsapp` en `website_globals`, `hero_legal_cta` y `form_area_legal_option` en `website_home`; crear/editar/borrar FAQ y testimonios **solo con `area = legal`**; ver leads con `area = legal` y cambiar únicamente su `status`. Puede subir archivos (Files) y editar solo los suyos. |
-| Endpoint web `/api/lead` | `website-lead-writer` (sin app access) | Solo `create` en `leads`, con los campos `name, area, message, contact_whatsapp, contact_email, locale, consent, consent_text, page, utm_source, utm_medium, utm_campaign, posthog_distinct_id`. Validación: `consent = true` y `area ∈ {legal, data}`. Sin lectura: Directus responde `204` al crear. |
+| Endpoint web `/api/lead` | `website-lead-writer` (sin app access) | Solo `create` en `leads`, con los campos `name, area, message, contact_whatsapp, contact_email, locale, consent, consent_text, page, utm_source, utm_medium, utm_campaign, ga_client_id`. Validación: `consent = true` y `area ∈ {legal, data}`. Sin lectura: Directus responde `204` al crear. |
 | Público | Política pública existente | Solo lectura de `website_*` con `status = published` y la lista explícita de campos que lee la compilación. **Nunca `leads`.** |
 
 El usuario de Tatiana se asigna al rol `editor-legal` a mano. El token estático de `website-lead-writer` lo crea el orquestador y se guarda como `DIRECTUS_LEADS_TOKEN` en Coolify (variable de servidor, nunca `PUBLIC_*`).
@@ -124,7 +124,7 @@ El usuario de Tatiana se asigna al rol `editor-legal` a mano. El token estático
 - `website_practices`: `problems` (lista), `audience`, `whatsapp_message` (texto prellenado de WhatsApp).
 - `website_people`: `photo` (archivo de Files), `credential`. `linkedin_url` ya existía.
 - `website_faq` (`area`: legal|data|general, `question`, `answer`), `website_steps` (`title`, `description`), `website_testimonials` (`area`: legal|data, `quote`, `author`, `role`). Todas con `id` UUID automático, `locale`, `status` y `sort` (arrastrar para ordenar). Los registros publicados de un idioma **sustituyen** a la copia de respaldo de ese idioma; si no hay ninguno publicado se usa la copia del repositorio. Los testimonios no tienen copia de respaldo: la sección se oculta mientras no haya testimonios publicados.
-- `leads` (privada): `name, area, message, contact_whatsapp, contact_email, locale, consent, consent_text, page, utm_*, posthog_distinct_id, status` (nuevo|contactado|descartado, por defecto `nuevo`), `crm_status` (pending|synced|error, por defecto `pending`), `twenty_person_id`, `twenty_opportunity_id`, `crm_error`, `date_created`. Archivar = `status = descartado`.
+- `leads` (privada): `name, area, message, contact_whatsapp, contact_email, locale, consent, consent_text, page, utm_*, ga_client_id, status` (nuevo|contactado|descartado, por defecto `nuevo`), `crm_status` (pending|synced|error, por defecto `pending`), `twenty_person_id`, `twenty_opportunity_id`, `crm_error`, `date_created`. Archivar = `status = descartado`.
 
 Todos los campos nuevos son opcionales: las filas existentes quedan en `NULL` y la web usa la copia de respaldo hasta que se rellenen (o se ejecute `--seed`).
 

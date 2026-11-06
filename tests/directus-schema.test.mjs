@@ -32,7 +32,7 @@ test('repeatable collections get UUID keys, editable locale/status, drag sort an
 
 test('leads schema holds every required field with safe defaults', () => {
   const byKey = Object.fromEntries(leadsSchema.fields.map(field => [field.field, field]));
-  for (const key of ['id', 'name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'locale', 'consent', 'consent_text', 'page', 'utm_source', 'utm_medium', 'utm_campaign', 'posthog_distinct_id', 'status', 'crm_status', 'twenty_person_id', 'twenty_opportunity_id', 'crm_error', 'date_created']) assert.ok(byKey[key], key);
+  for (const key of ['id', 'name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'locale', 'consent', 'consent_text', 'page', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id', 'status', 'crm_status', 'twenty_person_id', 'twenty_opportunity_id', 'crm_error', 'date_created']) assert.ok(byKey[key], key);
   assert.equal(byKey.status.schema.default_value, 'nuevo');
   assert.deepEqual(byKey.status.meta.options.choices.map(c => c.value), ['nuevo', 'contactado', 'descartado']);
   assert.equal(byKey.crm_status.schema.default_value, 'pending');
