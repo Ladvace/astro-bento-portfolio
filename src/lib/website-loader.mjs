@@ -2,7 +2,7 @@ import { resolveWebsiteContent } from './website-model.mjs';
 
 /**
  * One loader instance per build; templates share the resolved editorial source.
- * @param {{source?: string, collections?: {collection: string, singleton?: boolean, records?: {locale?: string}[], fields: {key: string}[]}[], baseUrl?: string, fetcher?: typeof fetch, attempts?: number, retryDelayMs?: number}} [options]
+ * @param {{source?: string, collections?: {collection: string, singleton?: boolean, repeatable?: boolean, records?: {locale?: string}[], fields: {key: string}[]}[], baseUrl?: string, fetcher?: typeof fetch, attempts?: number, retryDelayMs?: number}} [options]
  */
 export function createWebsiteLoader({ source = 'snapshot', collections = [], baseUrl = 'https://cms.romahomestore.com', fetcher = globalThis.fetch, attempts = 3, retryDelayMs = 250 } = {}) {
   async function read(url, collection) {
@@ -25,11 +25,14 @@ export function createWebsiteLoader({ source = 'snapshot', collections = [], bas
     if (source === 'snapshot') return resolveWebsiteContent({}, locale);
     const rows = await (pendingRows ??= Promise.all(collections.map(async (definition) => {
       const url = new URL(`/items/${definition.collection}`, baseUrl);
-      const fields = ['id', 'status', ...(definition.records?.some(row => row.locale) ? ['locale'] : []), ...definition.fields.map(field => field.key)];
+      // Repeatable collections (FAQ, steps, testimonials) are always localized and ordered by `sort`.
+      const fields = ['id', 'status', ...(definition.repeatable || definition.records?.some(row => row.locale) ? ['locale'] : []),
+        ...(definition.repeatable ? ['sort'] : []), ...definition.fields.map(field => field.key)];
       url.searchParams.set('fields', fields.join(','));
       if (!definition.singleton) {
         url.searchParams.set('limit', '-1');
         url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
+        if (definition.repeatable) url.searchParams.set('sort', 'sort,id');
       }
       const data = await read(url, definition.collection);
       const isRecord = value => value !== null && typeof value === 'object' && !Array.isArray(value);
