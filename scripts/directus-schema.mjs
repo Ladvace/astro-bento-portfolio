@@ -18,6 +18,7 @@ import { websiteCollections } from '../src/lib/website-model.mjs';
 import {
   websiteSchemas, websiteRelations, leadsSchema, publicReadPermission, accessModel,
   leadWriterPermissions, editorLegalPermissions, buildFlowName, buildFlowCollections, neverBuildCollections,
+  websiteFolder, publicFilesPermission,
 } from './website-schema.mjs';
 import { cmsBase } from './content.mjs';
 import { createMemoryDirectus } from './directus-memory.mjs';
@@ -59,12 +60,12 @@ export const desiredCollections = [...websiteSchemas, leadsSchema];
 
 export async function readState(client, { seed = false } = {}) {
   const get = path => client.request('GET', path);
-  const [collections, fields, relations, policies, roles, access, permissions, flows] = await Promise.all([
+  const [collections, fields, relations, policies, roles, access, permissions, flows, folders] = await Promise.all([
     get('collections?limit=-1'), get('fields?limit=-1'), get('relations?limit=-1'),
-    get('policies?limit=-1&fields=id,name'), get('roles?limit=-1&fields=id,name'), get('access?limit=-1&fields=id,role,policy,user'),
-    get('permissions?limit=-1'), get('flows?limit=-1&fields=id,name,status,trigger,options'),
+    get('policies?limit=-1&fields=id,name,enforce_tfa'), get('roles?limit=-1&fields=id,name'), get('access?limit=-1&fields=id,role,policy,user'),
+    get('permissions?limit=-1'), get('flows?limit=-1&fields=id,name,status,trigger,options'), get('folders?limit=-1&fields=id,name,parent'),
   ]);
-  const state = { collections, fields, relations, policies, roles, access, permissions, flows, items: {} };
+  const state = { collections, fields, relations, policies, roles, access, permissions, flows, folders, items: {} };
   if (seed) {
     for (const definition of websiteCollections) {
       if (!collections.some(c => c.collection === definition.collection)) continue;
@@ -120,14 +121,23 @@ export function planChanges(current, { seed = false, publicPolicyId } = {}) {
       op('access', `vincular rol ${role.name} ↔ política ${policy.name}`, 'POST', 'access', { role: roleId, policy: policyIds[key] });
     }
   }
+  const editorPolicy = current.policies.find(p => p.name === accessModel.editorLegal.policy.name);
+  if (!editorPolicy?.enforce_tfa) warnings.push(`La política ${accessModel.editorLegal.policy.name} ${editorPolicy ? 'no exige' : 'se crea sin exigir'} 2FA: active "Require 2FA" (enforce_tfa) a mano cuando Tatiana tenga su app de autenticación (docs/cms-editing.md)`);
+  // 3b. Media folder "website" (root). Existing folder with that name wins.
+  const folders = current.folders ?? [];
+  const existingFolders = folders.filter(f => f.name === websiteFolder.name && !f.parent);
+  if (existingFolders.length > 1) warnings.push(`Hay ${existingFolders.length} carpetas "${websiteFolder.name}" en la raíz: se usa la primera; revise duplicados a mano`);
+  const folderId = existingFolders[0]?.id ?? websiteFolder.id;
+  if (!existingFolders.length) op('folder', `crear carpeta de archivos "${websiteFolder.name}" (fotos públicas de la web)`, 'POST', 'folders', { ...websiteFolder });
   // 4. Permissions.
   const publicId = publicPolicyId
     ?? current.policies.find(p => p.name === PUBLIC_POLICY_NAME)?.id
     ?? current.access.find(a => a.role === null && a.user === null)?.policy;
   const desired = [
     ...(publicId ? websiteCollections.map(definition => publicReadPermission(definition, publicId)) : []),
+    ...(publicId ? [publicFilesPermission(publicId, folderId)] : []),
     ...leadWriterPermissions(policyIds.leadWriter),
-    ...editorLegalPermissions(policyIds.editorLegal),
+    ...editorLegalPermissions(policyIds.editorLegal, folderId),
   ];
   if (!publicId) warnings.push('No se encontró la política pública: no se planifican lecturas públicas de website_*');
   for (const permission of desired) {
@@ -139,7 +149,10 @@ export function planChanges(current, { seed = false, publicPolicyId } = {}) {
       const missing = permission.fields.filter(f => !have.includes(f));
       if (missing.length) op('permission-fields', `ampliar campos de ${label}: +${missing.join(', +')}`, 'PATCH', `permissions/${existing.id}`, { fields: [...have, ...missing] });
     }
-    if (!sameFilter(existing.permissions, permission.permissions)) warnings.push(`${label}: el filtro actual difiere del esperado; no se modifica (revisar a mano)`);
+    if (!sameFilter(existing.permissions, permission.permissions)) {
+      warnings.push(`${label}: el filtro actual difiere del esperado; no se modifica (revisar a mano)`);
+      if (emptyFilter(existing.permissions)) warnings.push(`NARROW pendiente (no aplicado): ${label} hoy no tiene filtro (acceso a todas las filas); lo esperado es ${JSON.stringify(permission.permissions)}. Estrecharlo a mano tras revisar`);
+    }
     if (!sameFilter(existing.validation, permission.validation)) warnings.push(`${label}: la validación actual difiere de la esperada; no se modifica (revisar a mano)`);
   }
   if (publicId) {

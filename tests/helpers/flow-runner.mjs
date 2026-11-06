@@ -24,21 +24,32 @@ export function render(value, data) {
   return value;
 }
 
-function matches(row, filter) {
+/** Directus dynamic date variable: $NOW or $NOW(-15 minutes). */
+function dynamic(value, now) {
+  const match = typeof value === 'string' && value.match(/^\$NOW(?:\(([+-]?\d+) (second|minute|hour|day)s?\))?$/);
+  if (!match) return value;
+  const ms = { second: 1e3, minute: 6e4, hour: 36e5, day: 864e5 }[match[2]] ?? 0;
+  return new Date(now().getTime() + Number(match[1] ?? 0) * ms).toISOString();
+}
+
+function matches(row, filter, now = () => new Date()) {
   if (!filter) return true;
-  if (filter._and) return filter._and.every(part => matches(row, part));
+  if (filter._and) return filter._and.every(part => matches(row, part, now));
+  if (filter._or) return filter._or.some(part => matches(row, part, now));
   return Object.entries(filter).every(([field, rule]) => {
     const value = row?.[field];
-    if (rule && typeof rule === 'object' && !Object.keys(rule).some(k => k.startsWith('_'))) return matches(value, rule);
+    if (rule && typeof rule === 'object' && !Object.keys(rule).some(k => k.startsWith('_'))) return matches(value, rule, now);
     if ('_eq' in rule) return value === rule._eq;
     if ('_neq' in rule) return value !== rule._neq;
     if ('_in' in rule) return Array.isArray(rule._in) && rule._in.includes(value);
     if ('_nnull' in rule) return value !== null && value !== undefined;
+    if ('_lt' in rule) return value !== null && value !== undefined && Date.parse(value) < Date.parse(dynamic(rule._lt, now));
     throw new Error(`filtro no soportado: ${JSON.stringify(rule)}`);
   });
 }
 
-export function createFlowRunner({ flows, operations, items, fetcher, env = {} }) {
+export function createFlowRunner({ flows, operations, items, fetcher, env = {}, now = () => new Date() }) {
+  const logs = [];
   const notifications = [];
   const runs = [];
   const handlers = {
@@ -49,16 +60,22 @@ export function createFlowRunner({ flows, operations, items, fetcher, env = {} }
         if (!row) throw Object.assign(new Error('You don\'t have permission to access this.'), { status: 403 });
         return structuredClone(row);
       }
-      return rows.filter(row => matches(row, query?.filter)).slice(0, query?.limit ?? 100).map(row => (query?.fields ? Object.fromEntries(query.fields.map(f => [f, row[f]])) : structuredClone(row)));
+      return rows.filter(row => matches(row, query?.filter, now)).slice(0, query?.limit ?? 100).map(row => (query?.fields ? Object.fromEntries(query.fields.map(f => [f, row[f]])) : structuredClone(row)));
     },
-    'item-update': async ({ collection, key, payload }) => {
+    'item-update': async ({ collection, key, payload, query }) => {
+      if (!key || !key.length) {
+        // Directus updateByQuery: every row matching query.filter.
+        const rows = (items[collection] ?? []).filter(row => matches(row, query?.filter, now));
+        for (const row of rows) Object.assign(row, structuredClone(payload));
+        return rows.map(row => row.id);
+      }
       const row = (items[collection] ?? []).find(r => r.id === key[0]);
       if (!row) throw new Error('item not found');
       Object.assign(row, structuredClone(payload));
       return key[0];
     },
     condition: async ({ filter }, data) => {
-      if (!matches(data, filter)) throw [{ message: 'condition failed' }];
+      if (!matches(data, filter, now)) throw [{ message: 'condition failed' }];
       return null;
     },
     exec: async ({ code }, data) => {
@@ -80,6 +97,7 @@ export function createFlowRunner({ flows, operations, items, fetcher, env = {} }
       return runFlow(flow, payload);
     },
     notification: async options => { notifications.push(options); return null; },
+    log: async ({ message }) => { logs.push(message); return null; },
     mail: async () => { throw new Error('SMTP no configurado'); },
   };
 
@@ -102,11 +120,17 @@ export function createFlowRunner({ flows, operations, items, fetcher, env = {} }
     runs.push({ flow: flow.name, steps });
     return flow.options?.return ? get(data, flow.options.return) : undefined;
   }
-  return { runFlow, notifications, runs };
+  /** Directus action event: every active event Flow for that scope/collection runs independently. */
+  function emitAction(scope, collection, trigger) {
+    return flows
+      .filter(flow => flow.status === 'active' && flow.trigger === 'event' && flow.options?.scope?.includes(scope) && flow.options?.collections?.includes(collection))
+      .map(flow => ({ name: flow.name, done: runFlow(flow.id, trigger) }));
+  }
+  return { runFlow, emitAction, notifications, runs, logs };
 }
 
 /** In-memory Twenty REST API (people, opportunities, notes, noteTargets) with failure injection. */
-export function createMockTwenty({ apiKey = 'test-twenty-key' } = {}) {
+export function createMockTwenty({ apiKey = 'test-twenty-key', now = () => new Date() } = {}) {
   const db = { people: [], opportunities: [], notes: [], noteTargets: [] };
   const singular = { people: 'person', opportunities: 'opportunity', notes: 'note', noteTargets: 'noteTarget' };
   const create = { people: 'createPerson', opportunities: 'createOpportunity', notes: 'createNote', noteTargets: 'createNoteTarget' };
@@ -121,7 +145,9 @@ export function createMockTwenty({ apiKey = 'test-twenty-key' } = {}) {
     const url = new URL(String(input));
     const method = init.method ?? 'GET';
     requests.push({ method, path: url.pathname, search: url.search, body: init.body, auth: init.headers?.Authorization });
-    const failure = failures.find(f => f.method === method && url.pathname.startsWith(f.path) && f.times-- > 0);
+    // `skip` lets the first N matching calls through before the failure applies.
+    const failure = failures.find(f => f.method === method && url.pathname.startsWith(f.path) && (f.skip > 0 ? (f.skip--, false) : f.times-- > 0));
+    if (failure?.hang) return new Promise(() => {});
     if (failure?.network) throw new TypeError('fetch failed');
     if (failure) return reply(failure.status, failure.body ?? { statusCode: failure.status, error: 'Error', messages: ['Internal server error'] });
     if (init.headers?.Authorization !== `Bearer ${apiKey}`) return reply(401, { statusCode: 401, messages: ['Unauthorized'] });
@@ -140,10 +166,11 @@ export function createMockTwenty({ apiKey = 'test-twenty-key' } = {}) {
     if (method === 'POST') {
       const body = JSON.parse(init.body);
       if (object === 'opportunities' && !db.people.some(p => p.id === body.pointOfContactId)) return reply(400, { messages: ['pointOfContactId inválido'] });
-      const record = { id: id(), ...body };
+      const record = { id: id(), createdAt: now().toISOString(), ...body };
       db[object].push(record);
       return reply(201, { data: { [create[object]]: record } });
     }
+    // Any PATCH/PUT would overwrite a record: the integration must never send one.
     return reply(405, { messages: ['Method not allowed'] });
   }
   return { fetcher, db, requests, fail: (method, path, options = {}) => failures.push({ method, path, times: 1, status: 500, ...options }) };

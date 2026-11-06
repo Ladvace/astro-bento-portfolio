@@ -7,16 +7,21 @@
  *   node scripts/directus-flows.mjs --fixture FILE           # dry-run against a local JSON state
  *   node scripts/directus-flows.mjs --fixture FILE --apply   # simulate in memory, then re-plan (must be 0)
  *   node scripts/directus-flows.mjs --apply --backup-done    # REAL write (after `directus schema snapshot`)
- *   add --activate to set the four Flows to active (default: new Flows are created inactive)
+ *   add --activate to set the six Flows to active (default: new Flows are created inactive)
  *   --notify-legal UUID[,UUID] / --notify-data UUID[,UUID]   # Directus users notified per area
  *                                                             # (or DIRECTUS_NOTIFY_LEGAL_USER / _DATA_USER)
  *
  * Design (see docs/crm-integration.md): native operations only, no custom extension.
- *   "Lead → Twenty"            event items.create on leads → trigger core → in-app notification
- *   "Reintentar sync CRM"      manual on leads → read selected rows with crm_status=error → trigger core
+ *   "Lead → Twenty"            event items.create on leads → trigger core
+ *   "Lead · Aviso interno"     event items.create on leads → in-app notification. Its own Flow, so the
+ *                              notice goes out even when the CRM sync fails or hangs.
+ *   "Reintentar sync CRM"      manual on leads → read selected rows with crm_status != synced → trigger core
+ *   "CRM · Pendientes atascados" schedule every 15 min → leads pending > 15 min become error (retryable)
  *   "CRM · Sincronizar lead"   linear chain: item-read, condition, exec (pure mapping), request (Twenty),
  *                              item-update. Every failing step rejects into its own trigger → error flow.
- *   "CRM · Registrar error"    exec (sanitise) → item-update crm_status=error, crm_error
+ *   "CRM · Registrar error"    exec (sanitise) → item-update crm_status=error, crm_error (step+HTTP+code)
+ * During a real --apply, active Flows whose operations change are paused first and re-activated in a
+ * finally block, so a half-rewired chain never runs on live leads.
  * Branching (person exists or not) is resolved inside exec, which returns the HTTP method/path for
  * the next request op (GET existing record vs POST new one), so the chain never needs to merge
  * branches (Directus enforces unique resolve/reject targets per operation).
@@ -34,10 +39,15 @@ const usage = 'Uso: directus-flows.mjs [--fixture FILE] [--json] [--activate] [-
 
 export const flowNames = Object.freeze({
   event: 'Lead → Twenty',
+  notify: 'Lead · Aviso interno',
   retry: 'Reintentar sync CRM',
+  stale: 'CRM · Pendientes atascados',
   core: 'CRM · Sincronizar lead',
   error: 'CRM · Registrar error',
 });
+export const STALE_PENDING_MINUTES = 15;
+export const STALE_CRON = '*/15 * * * *';
+export const STALE_ERROR = 'stale_pending: PENDING_TIMEOUT';
 const MARKER = '[roma-crm]';
 
 /** Deterministic UUID (v5 layout over SHA-1) so a fresh install gets stable, reviewable ids. */
@@ -49,7 +59,7 @@ export function stableId(name) {
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
 
-const LEAD_FIELDS = ['id', 'date_created', 'name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'locale', 'consent', 'page', 'utm_source', 'utm_medium', 'utm_campaign', 'crm_status', 'twenty_person_id', 'twenty_opportunity_id'];
+const LEAD_FIELDS = ['id', 'date_created', 'name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'locale', 'consent', 'page', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id', 'crm_status', 'twenty_person_id', 'twenty_opportunity_id', 'twenty_note_id'];
 const JSON_HEADERS = [
   { header: 'Authorization', value: 'Bearer {{$env.TWENTY_API_KEY}}' },
   { header: 'Content-Type', value: 'application/json' },
@@ -92,17 +102,21 @@ export function desiredFlows(config, flowIds = {}) {
     exec('build', 'Mapear lead → Twenty', 'buildLeadSync(data.read_lead, CONFIG)', 2, 'find_person'),
     request('find_person', 'Buscar persona (email/teléfono)', 'GET', '{{build.person_search_path}}', null, 3, 'person_step'),
     exec('person_step', 'Reusar o crear persona', 'personStep(data.build, data.find_person)', 4, 'ensure_person'),
-    request('ensure_person', 'Persona en Twenty', '{{person_step.method}}', '{{person_step.path}}', '{{person_step.body}}', 5, 'opp_step'),
-    exec('opp_step', 'Preparar oportunidad', 'opportunityStep(data.build, data.ensure_person)', 6, 'save_person'),
+    request('ensure_person', 'Persona en Twenty (nunca se sobrescribe)', '{{person_step.method}}', '{{person_step.path}}', '{{person_step.body}}', 5, 'opp_step'),
+    exec('opp_step', 'Preparar oportunidad ([Verificar] si la persona ya existía)', 'opportunityStep(data.build, data.ensure_person, data.person_step)', 6, 'save_person'),
     update('save_person', 'Guardar id persona', { twenty_person_id: '{{opp_step.person_id}}' }, 7, 'ensure_opp'),
     request('ensure_opp', 'Oportunidad en Twenty', '{{opp_step.method}}', '{{opp_step.path}}', '{{opp_step.body}}', 8, 'opp'),
-    exec('opp', 'Id oportunidad', "recordId(data.ensure_opp, 'la oportunidad')", 9, 'save_opp'),
-    update('save_opp', 'Guardar id oportunidad', { twenty_opportunity_id: '{{opp.id}}' }, 10, 'create_note'),
-    request('create_note', 'Crear nota', 'POST', '/rest/notes', '{{build.note_body}}', 11, 'targets'),
-    exec('targets', 'Preparar vínculos de nota', 'noteTargetsStep(data.create_note, data.opp_step.person_id, data.opp.id)', 12, 'target_opp'),
-    request('target_opp', 'Nota → oportunidad', 'POST', '/rest/noteTargets', '{{targets.opportunity_body}}', 13, 'target_person'),
-    request('target_person', 'Nota → persona', 'POST', '/rest/noteTargets', '{{targets.person_body}}', 14, 'mark_synced'),
-    update('mark_synced', 'Marcar synced', { crm_status: 'synced', crm_error: null, twenty_person_id: '{{opp_step.person_id}}', twenty_opportunity_id: '{{opp.id}}' }, 15, null),
+    exec('opp', 'Id oportunidad', "recordId(data.ensure_opp, 'OPPORTUNITY')", 9, 'save_opp'),
+    update('save_opp', 'Guardar id oportunidad', { twenty_opportunity_id: '{{opp.id}}' }, 10, 'note_step'),
+    exec('note_step', 'Reusar o crear nota', 'noteStep(data.build, data.opp_step)', 11, 'ensure_note'),
+    request('ensure_note', 'Nota en Twenty', '{{note_step.method}}', '{{note_step.path}}', '{{note_step.body}}', 12, 'note'),
+    exec('note', 'Id nota', 'noteSaved(data.ensure_note)', 13, 'save_note'),
+    update('save_note', 'Guardar id nota', { twenty_note_id: '{{note.id}}' }, 14, 'find_targets'),
+    request('find_targets', 'Buscar vínculos de la nota', 'GET', '{{note.targets_path}}', null, 15, 'targets'),
+    exec('targets', 'Preparar vínculos de nota', 'noteTargetsStep(data.note.id, data.find_targets, data.opp_step.person_id, data.opp.id)', 16, 'target_opp'),
+    request('target_opp', 'Nota → oportunidad', '{{targets.opportunity_method}}', '{{targets.opportunity_path}}', '{{targets.opportunity_body}}', 17, 'target_person'),
+    request('target_person', 'Nota → persona', '{{targets.person_method}}', '{{targets.person_path}}', '{{targets.person_body}}', 18, 'mark_synced'),
+    update('mark_synced', 'Marcar synced', { crm_status: 'synced', crm_error: null, twenty_person_id: '{{opp_step.person_id}}', twenty_opportunity_id: '{{opp.id}}', twenty_note_id: '{{note.id}}' }, 19, null),
   ];
   const coreOps = [...chain, ...chain.filter(op => op.reject).map(op => errorTrigger(op.key, chain.indexOf(op)))];
 
@@ -111,17 +125,25 @@ export function desiredFlows(config, flowIds = {}) {
     { key: 'mark_error', name: 'Marcar error', type: 'item-update', ...at(1, 0), options: { collection: 'leads', key: [leadKey], payload: { crm_status: 'error', crm_error: '{{sanitize.message}}' }, permissions: '$full', emitEvents: false }, resolve: null, reject: null },
   ];
 
-  const notifyConfigured = config.notify.legal.length + config.notify.data.length > 0;
   const eventOps = [
-    { key: 'sync', name: 'Sincronizar con Twenty', type: 'trigger', ...at(0, 0), options: { flow: ids.core, payload: { id: '{{$trigger.key}}' }, iterationMode: 'serial' }, resolve: notifyConfigured ? 'recipients' : null, reject: null },
+    { key: 'sync', name: 'Sincronizar con Twenty', type: 'trigger', ...at(0, 0), options: { flow: ids.core, payload: { id: '{{$trigger.key}}' }, iterationMode: 'serial' }, resolve: null, reject: null },
+  ];
+
+  // Independent of the CRM: its own event Flow, so a failing or hanging Twenty never delays it.
+  const notifyConfigured = config.notify.legal.length + config.notify.data.length > 0;
+  const notifyOps = [
     ...(notifyConfigured ? [
-      { key: 'recipients', name: 'Responsable del área', type: 'exec', ...at(1, 0), options: { code: execCode('pickRecipients(data.$trigger.payload && data.$trigger.payload.area, CONFIG)', config) }, resolve: 'notify', reject: null },
-      { key: 'notify', name: 'Aviso interno', type: 'notification', ...at(2, 0), options: {
+      { key: 'recipients', name: 'Responsable del área', type: 'exec', ...at(0, 0), options: { code: execCode('pickRecipients(data.$trigger.payload && data.$trigger.payload.area, CONFIG)', config) }, resolve: 'notify', reject: null },
+      { key: 'notify', name: 'Aviso interno', type: 'notification', ...at(1, 0), options: {
         recipient: '{{recipients.users}}', permissions: '$full', collection: 'leads', item: '{{$trigger.key}}',
         subject: 'Nuevo lead web · {{recipients.area_label}}',
-        message: 'Llegó un lead nuevo del formulario web (área {{recipients.area_label}}). Ábralo en **Leads** para contactarlo; el campo «Estado en Twenty CRM» indica si ya está en el CRM.',
+        message: 'Llegó un lead nuevo del formulario web (área {{recipients.area_label}}). Ábralo en **Leads** para contactarlo; el campo «Estado en Twenty CRM» indica si ya está en el CRM (si dice Error, use «Reintentar sync CRM»).',
       }, resolve: null, reject: null },
-    ] : []),
+    ] : [
+      { key: 'no_recipients', name: 'SIN destinatarios de aviso', type: 'log', ...at(0, 0), options: {
+        message: 'Lead nuevo {{$trigger.key}} SIN aviso interno: no hay usuarios configurados (DIRECTUS_NOTIFY_LEGAL_USER / DIRECTUS_NOTIFY_DATA_USER). Ejecute scripts/directus-flows.mjs con --notify-legal/--notify-data.',
+      }, resolve: null, reject: null },
+    ]),
     // Present but deliberately unconnected (no SMTP today). Connect it from `notify` when SMTP exists.
     { key: 'mail_disabled', name: 'Correo (desconectado: sin SMTP)', type: 'mail', ...at(1, 1), options: {
       to: ['{{$env.LEADS_NOTIFY_EMAIL}}'], type: 'markdown',
@@ -131,24 +153,43 @@ export function desiredFlows(config, flowIds = {}) {
   ];
 
   const retryOps = [
-    { key: 'pick', name: 'Leads seleccionados con error', type: 'item-read', ...at(0, 0), options: {
+    { key: 'pick', name: 'Leads seleccionados no sincronizados', type: 'item-read', ...at(0, 0), options: {
       collection: 'leads', permissions: '$trigger', emitEvents: false,
-      query: { fields: ['id'], limit: 100, filter: { _and: [{ id: { _in: '{{$trigger.body.keys}}' } }, { crm_status: { _eq: 'error' } }] } },
+      query: { fields: ['id'], limit: 100, filter: { _and: [{ id: { _in: '{{$trigger.body.keys}}' } }, { crm_status: { _neq: 'synced' } }] } },
     }, resolve: 'run', reject: null },
     { key: 'run', name: 'Reintentar uno a uno', type: 'trigger', ...at(1, 0), options: { flow: ids.core, payload: '{{pick}}', iterationMode: 'serial' }, resolve: null, reject: null },
+  ];
+
+  // A hung request leaves the lead in `pending` forever: after 15 min it becomes a retryable error.
+  const staleOps = [
+    { key: 'mark_stale', name: `Pendientes > ${STALE_PENDING_MINUTES} min → error`, type: 'item-update', ...at(0, 0), options: {
+      collection: 'leads', permissions: '$full', emitEvents: false,
+      query: { filter: { _and: [{ crm_status: { _eq: 'pending' } }, { date_created: { _lt: `$NOW(-${STALE_PENDING_MINUTES} minutes)` } }] }, limit: -1 },
+      payload: { crm_status: 'error', crm_error: STALE_ERROR },
+    }, resolve: null, reject: null },
   ];
 
   const description = text => `${MARKER} ${text} Gestionado por scripts/directus-flows.mjs: los cambios manuales se sobrescriben.`;
   return [
     { key: 'event', start: 'sync', operations: eventOps, flow: {
       id: ids.event, name: flowNames.event, icon: 'hub', color: '#2F6F5E', accountability: '$activity', trigger: 'event',
-      description: description('Cada lead nuevo crea Persona + Oportunidad + Nota en Twenty y avisa al área.'),
+      description: description('Cada lead nuevo crea Persona + Oportunidad + Nota en Twenty. El aviso interno va en su propio Flow.'),
+      options: { type: 'action', scope: ['items.create'], collections: ['leads'] },
+    } },
+    { key: 'notify', start: notifyConfigured ? 'recipients' : 'no_recipients', operations: notifyOps, flow: {
+      id: ids.notify, name: flowNames.notify, icon: 'notifications_active', color: '#2F6F5E', accountability: '$activity', trigger: 'event',
+      description: description('Aviso interno al responsable del área por cada lead nuevo, independiente de Twenty.'),
       options: { type: 'action', scope: ['items.create'], collections: ['leads'] },
     } },
     { key: 'retry', start: 'pick', operations: retryOps, flow: {
       id: ids.retry, name: flowNames.retry, icon: 'sync_problem', color: '#B7791F', accountability: '$activity', trigger: 'manual',
-      description: description('Reintenta la sincronización de los leads seleccionados con estado CRM = error.'),
-      options: { collections: ['leads'], location: 'both', requireConfirmation: true, confirmationDescription: 'Reintentar la sincronización con Twenty (solo leads con estado CRM = error)', async: false },
+      description: description('Reintenta la sincronización de los leads seleccionados que no estén sincronizados (error o pendiente).'),
+      options: { collections: ['leads'], location: 'both', requireConfirmation: true, confirmationDescription: 'Reintentar la sincronización con Twenty (leads con estado CRM distinto de Sincronizado; espere 15 min tras recibir un lead pendiente)', async: false },
+    } },
+    { key: 'stale', start: 'mark_stale', operations: staleOps, flow: {
+      id: ids.stale, name: flowNames.stale, icon: 'schedule', color: '#B7791F', accountability: '$activity', trigger: 'schedule',
+      description: description(`Cada 15 min marca como error los leads en pending con más de ${STALE_PENDING_MINUTES} min, para poder reintentarlos.`),
+      options: { cron: STALE_CRON },
     } },
     { key: 'core', start: 'read_lead', operations: coreOps, flow: {
       id: ids.core, name: flowNames.core, icon: 'account_tree', color: '#2F6F5E', accountability: '$activity', trigger: 'operation',
@@ -157,7 +198,7 @@ export function desiredFlows(config, flowIds = {}) {
     } },
     { key: 'error', start: 'sanitize', operations: errorOps, flow: {
       id: ids.error, name: flowNames.error, icon: 'error', color: '#C53030', accountability: '$activity', trigger: 'operation',
-      description: description('Guarda crm_status=error y un crm_error corto sin datos personales.'),
+      description: description('Guarda crm_status=error y un crm_error con paso + HTTP + código (sin texto libre).'),
       options: { return: '$last' },
     } },
   ];
@@ -174,6 +215,22 @@ const canonical = value => {
 const same = (a, b) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
 const FLOW_FIELDS = ['icon', 'color', 'description', 'accountability', 'trigger', 'options'];
 const OP_FIELDS = ['name', 'type', 'options'];
+
+/**
+ * Applies a plan; Flows paused by the plan are re-activated in `finally`, even when a step fails
+ * midway (only those that were active before: the plan only pauses active Flows).
+ */
+export async function applyFlowPlan(client, ops, log = () => {}) {
+  const resume = ops.filter(item => item.kind === 'flow-resume');
+  try {
+    await applyPlan(client, ops.filter(item => item.kind !== 'flow-resume'), log);
+  } finally {
+    for (const item of resume) {
+      await client.request(item.method, item.path, item.body);
+      log(`  ✓ ${item.summary}`);
+    }
+  }
+}
 
 /** Children first, so every resolve/reject target exists before the operation pointing at it. */
 function leavesFirst(operations, start) {
@@ -202,7 +259,7 @@ export function planFlows(current, config, { activate = false } = {}) {
   const operations = current.operations ?? [];
 
   if (!(current.collections ?? []).some(c => c.collection === 'leads')) warnings.push('No existe la colección leads: ejecute primero scripts/directus-schema.mjs --apply');
-  if (!config.notify.legal.length && !config.notify.data.length) warnings.push('Sin usuarios a notificar (DIRECTUS_NOTIFY_LEGAL_USER / DIRECTUS_NOTIFY_DATA_USER): el Flow no incluirá el aviso interno');
+  if (!config.notify.legal.length && !config.notify.data.length) warnings.push(`CRÍTICO ‼ SIN AVISO INTERNO: no hay usuarios a notificar (DIRECTUS_NOTIFY_LEGAL_USER / DIRECTUS_NOTIFY_DATA_USER o --notify-legal / --notify-data). El Flow "${flowNames.notify}" solo dejará un log y NADIE se enterará de los leads nuevos. Configúrelos antes de --activate`);
   else for (const area of ['legal', 'data']) if (!config.notify[area].length) warnings.push(`Sin usuario a notificar para ${area}: se avisará al otro área`);
 
   const existingByKey = {};
@@ -217,8 +274,11 @@ export function planFlows(current, config, { activate = false } = {}) {
   const creates = [];
   const updates = [];
   const flowPatches = [];
+  const pauses = [];
+  const resumes = [];
   for (const { key, flow, start, operations: wanted } of desired) {
     const existing = existingByKey[key];
+    const pending = unlink.length + creates.length + updates.length + flowPatches.length;
     const status = activate ? 'active' : existing?.status ?? 'inactive';
     if (!existing) op('flow', `crear Flow "${flow.name}" (${flow.trigger}, ${status})`, 'POST', 'flows', { ...flow, status });
     else {
@@ -246,12 +306,21 @@ export function planFlows(current, config, { activate = false } = {}) {
       if (Object.keys(patch).length) updates.push([`actualizar ${flow.name} › ${want.key}: ${Object.keys(patch).join(', ')}`, `operations/${have.id}`, patch]);
     }
     if ((existing?.operation ?? null) !== idOf[start]) flowPatches.push([`enlazar inicio de "${flow.name}" → ${start}`, `flows/${flow.id}`, { operation: idOf[start] }]);
+    // An active Flow being rewired is paused first and re-activated last (runFlowsCli: try/finally).
+    const touched = unlink.length + creates.length + updates.length + flowPatches.length > pending;
+    if (existing?.status === 'active' && touched) {
+      pauses.push([`pausar Flow activo "${flow.name}" mientras se modifica`, `flows/${existing.id}`, { status: 'inactive' }]);
+      resumes.push([`reactivar Flow "${flow.name}"`, `flows/${existing.id}`, { status: 'active' }]);
+    }
   }
+  for (const [summary, path, body] of pauses) op('flow-pause', summary, 'PATCH', path, body);
   // Order keeps Directus' unique resolve/reject constraint satisfied at every step.
   for (const [summary, path, body] of unlink) op('operation-unlink', summary, 'PATCH', path, body);
   for (const [summary, path, body] of creates) op('operation', summary, 'POST', path, body);
   for (const [summary, path, body] of updates) op('operation-update', summary, 'PATCH', path, body);
   for (const [summary, path, body] of flowPatches) op('flow-update', summary, 'PATCH', path, body);
+  for (const [summary, path, body] of resumes) op('flow-resume', summary, 'PATCH', path, body);
+  if (pauses.length) warnings.push(`Durante --apply se pausan ${pauses.length} Flow(s) activos: los leads que lleguen en esa ventana quedan en pending y el Flow "${flowNames.stale}" los pasará a error para reintentar`);
   return { ops, warnings };
 }
 
@@ -306,7 +375,7 @@ export async function runFlowsCli(args, { env = process.env, fetcher = globalThi
   const report = { mode: apply ? (fixture ? 'simulate' : 'apply') : 'dry-run', ops: before.ops.map(({ kind, summary, method, path }) => ({ kind, summary, method, path })), warnings: before.warnings };
   if (!json) stdout(formatPlan(before, `Plan Flows CRM (${report.mode}${fixture ? `, fixture ${fixture}` : ''})`));
   if (apply) {
-    await applyPlan(client, before.ops, json ? () => {} : stdout);
+    await applyFlowPlan(client, before.ops, json ? () => {} : stdout);
     const after = planFlows(await readFlowState(client), config, options);
     report.secondRun = after.ops.length;
     if (!json) stdout(formatPlan(after, 'Segunda corrida'));

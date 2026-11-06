@@ -95,14 +95,15 @@ export function twentyQuote(value) {
 
 /**
  * Builds everything the Flow needs from a lead row (read with item-read). Throws on leads that
- * cannot be mapped; the Flow turns that into crm_status=error.
+ * cannot be mapped; the Flow turns that into crm_status=error. Thrown messages are CODES (never
+ * free text) because crm_error only keeps step + HTTP status + code.
  */
 export function buildLeadSync(lead, config) {
-  if (!lead || typeof lead !== 'object') throw new Error('lead no encontrado');
+  if (!lead || typeof lead !== 'object') throw new Error('LEAD_NOT_FOUND');
   const area = lead.area === 'legal' || lead.area === 'data' ? lead.area : '';
-  if (!area) throw new Error('área del lead inválida');
+  if (!area) throw new Error('LEAD_INVALID_AREA');
   const fullName = cleanText(lead.name, 120).replace(/\s+/g, ' ');
-  if (!fullName) throw new Error('lead sin nombre');
+  if (!fullName) throw new Error('LEAD_NO_NAME');
   const areaLabel = config.areaLabels[area];
   const locale = lead.locale === 'en' ? 'en' : 'es';
   const email = normalizeEmail(lead.contact_email);
@@ -151,8 +152,6 @@ export function buildLeadSync(lead, config) {
       id && config.directusAdminUrl ? '- **Directus:** ' + config.directusAdminUrl + '/admin/content/leads/' + id : '',
     ].filter(Boolean).join('\n'),
   ].join('\n');
-  const note = { title: ('Lead web · ' + areaLabel + ' · ' + fullName).slice(0, 200), bodyV2: { markdown } };
-
   return {
     area,
     area_label: areaLabel,
@@ -160,10 +159,27 @@ export function buildLeadSync(lead, config) {
     person_search_path: '/rest/people?limit=1&filter=' + encodeURIComponent(filter),
     person_body: JSON.stringify(person),
     opportunity: opportunity,
-    note_body: JSON.stringify(note),
+    note_title: ('Lead web · ' + areaLabel + ' · ' + fullName).slice(0, 200),
+    note_markdown: markdown,
+    received_at: cleanText(lead.date_created, 40),
     existing_person_id: isRecordId(lead.twenty_person_id) ? lead.twenty_person_id : '',
     existing_opportunity_id: isRecordId(lead.twenty_opportunity_id) ? lead.twenty_opportunity_id : '',
+    existing_note_id: isRecordId(lead.twenty_note_id) ? lead.twenty_note_id : '',
   };
+}
+
+export const VERIFY_PREFIX = '[Verificar] ';
+export const VERIFY_NOTE_LINE = 'Contacto coincidió con persona existente: verificar identidad antes de compartir información';
+
+/**
+ * True when the Twenty person already existed before this lead arrived (anyone can type someone
+ * else's email/phone in a public form). Unknown dates are treated as pre-existing (conservative).
+ */
+export function personPreexisting(person, receivedAt) {
+  const created = Date.parse(person && person.createdAt);
+  const received = Date.parse(receivedAt);
+  if (isNaN(created) || isNaN(received)) return true;
+  return created < received;
 }
 
 /** Request-operation result ({status, data}) or raw Twenty body → first record with an id. */
@@ -187,72 +203,105 @@ function requestFor(objectPath, existingId, body) {
     : { method: 'POST', path: '/rest/' + objectPath, body: body, reused: false };
 }
 
-/** Reuse the person found by email/phone (or already linked to the lead); otherwise create it. */
+/**
+ * Reuse the person found by email/phone (or already linked to the lead); otherwise create it.
+ * A reused person is only READ (GET): its name, email and phone in Twenty are never overwritten.
+ */
 export function personStep(sync, searchResult) {
   const found = recordFromResponse(searchResult);
   const id = found && isRecordId(found.id) ? found.id : sync.existing_person_id;
   return requestFor('people', id, sync.person_body);
 }
 
-/** Needs the person id; reuses an opportunity already linked to the lead (retries), else creates one. */
-export function opportunityStep(sync, personResult) {
+/**
+ * Needs the person id; reuses an opportunity already linked to the lead (retries), else creates one.
+ * When the person pre-existed (matched by email/phone, not created for this lead) the opportunity is
+ * flagged "[Verificar] " so nobody shares case information before confirming identity.
+ */
+export function opportunityStep(sync, personResult, personStepResult) {
   const person = recordFromResponse(personResult);
-  if (!person || !isRecordId(person.id)) throw new Error('Twenty no devolvió el id de la persona');
-  const body = Object.assign({}, sync.opportunity, { pointOfContactId: person.id });
-  return Object.assign({ person_id: person.id }, requestFor('opportunities', sync.existing_opportunity_id, JSON.stringify(body)));
+  if (!person || !isRecordId(person.id)) throw new Error('TWENTY_NO_PERSON_ID');
+  // Reused AND (matched someone this lead did not create OR the person predates the lead).
+  const verify = Boolean(personStepResult && personStepResult.reused) && (person.id !== sync.existing_person_id || personPreexisting(person, sync.received_at));
+  const opportunity = Object.assign({}, sync.opportunity, { pointOfContactId: person.id });
+  if (verify) opportunity.name = (VERIFY_PREFIX + opportunity.name).slice(0, 200);
+  return Object.assign({ person_id: person.id, verify: verify }, requestFor('opportunities', sync.existing_opportunity_id, JSON.stringify(opportunity)));
 }
 
-export function recordId(result, label) {
+/** Reuses the note already linked to the lead (twenty_note_id) on retries; otherwise creates it. */
+export function noteStep(sync, oppStep) {
+  const markdown = oppStep && oppStep.verify ? '**' + VERIFY_NOTE_LINE + '.**\n\n' + sync.note_markdown : sync.note_markdown;
+  return requestFor('notes', sync.existing_note_id, JSON.stringify({ title: sync.note_title, bodyV2: { markdown: markdown } }));
+}
+
+export function recordId(result, code) {
   const record = recordFromResponse(result);
-  if (!record || !isRecordId(record.id)) throw new Error('Twenty no devolvió el id de ' + label);
+  if (!record || !isRecordId(record.id)) throw new Error('TWENTY_NO_' + String(code || 'RECORD').toUpperCase().replace(/[^A-Z]/g, '') + '_ID');
   return { id: record.id };
 }
 
-export function noteTargetsStep(noteResult, personId, opportunityId) {
-  const note = recordId(noteResult, 'la nota');
+/** Note id + the search path for its existing links (so retries never duplicate noteTargets). */
+export function noteSaved(noteResult) {
+  const note = recordId(noteResult, 'NOTE');
+  return { id: note.id, targets_path: '/rest/noteTargets?limit=20&filter=' + encodeURIComponent('noteId[eq]:' + twentyQuote(note.id)) };
+}
+
+function recordsFromResponse(result) {
+  let body = result;
+  if (body && typeof body === 'object' && 'status' in body && 'data' in body) body = body.data;
+  if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { return []; } }
+  const inner = body && typeof body === 'object' && body.data !== undefined ? body.data : body;
+  if (!inner || typeof inner !== 'object') return [];
+  for (const value of Object.values(inner)) if (Array.isArray(value)) return value.filter(item => item && typeof item === 'object');
+  return [];
+}
+
+/** For each link (note → opportunity, note → person): GET the existing one, else POST a new one. */
+export function noteTargetsStep(noteId, existingTargets, personId, opportunityId) {
+  if (!isRecordId(noteId)) throw new Error('TWENTY_NO_NOTE_ID');
+  const existing = recordsFromResponse(existingTargets);
+  const link = (field, value) => {
+    const found = existing.find(target => target[field] === value && isRecordId(target.id));
+    return requestFor('noteTargets', found ? found.id : '', JSON.stringify({ noteId: noteId, [field]: value }));
+  };
+  const opp = link('opportunityId', opportunityId);
+  const person = link('personId', personId);
   return {
-    note_id: note.id,
-    opportunity_body: JSON.stringify({ noteId: note.id, opportunityId: opportunityId }),
-    person_body: JSON.stringify({ noteId: note.id, personId: personId }),
+    note_id: noteId,
+    opportunity_method: opp.method, opportunity_path: opp.path, opportunity_body: opp.body,
+    person_method: person.method, person_path: person.path, person_body: person.body,
   };
 }
 
 /**
  * Turns whatever a failed operation left in $last (request error object, JSON string, Error-like
- * {message}, plain string) into a short, PII-free message: step + HTTP status + redacted detail.
+ * {name, message, code}, plain string) into "step: HTTP <status> <CODE>". Only identifier-shaped
+ * error codes/types are kept (e.g. BadRequestException, ECONNREFUSED, FORBIDDEN, TWENTY_NO_NOTE_ID);
+ * free-text messages from Twenty or Directus are NEVER stored (they may echo personal data).
  */
 export function sanitizeCrmError(error, step) {
   let value = error;
-  let status = null;
-  let detail = '';
   if (typeof value === 'string') {
-    try { value = JSON.parse(value); } catch (e) { detail = value; value = null; }
+    try { value = JSON.parse(value); } catch (e) { value = { message: value }; }
   }
+  let status = null;
+  const codes = [];
   if (value && typeof value === 'object') {
     const response = value.response && typeof value.response === 'object' ? value.response : value;
-    if (typeof response.status === 'number') status = response.status;
-    else if (typeof response.statusCode === 'number') status = response.statusCode;
+    const rawStatus = typeof response.status === 'number' ? response.status : response.statusCode;
+    if (typeof rawStatus === 'number' && rawStatus >= 100 && rawStatus <= 599) status = Math.floor(rawStatus);
     let data = response.data;
-    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { /* keep text */ } }
-    let message = '';
+    if (typeof data === 'string') { try { data = JSON.parse(data); } catch (e) { data = null; } }
     if (data && typeof data === 'object') {
-      if (Array.isArray(data.messages) && data.messages.length) message = data.messages[0];
-      else if (Array.isArray(data.errors) && data.errors.length) message = data.errors[0] && data.errors[0].message;
-      else message = data.message || data.error || '';
-    } else if (typeof data === 'string') message = data;
-    detail = String(message || value.message || value.code || response.statusText || '');
+      const first = Array.isArray(data.errors) && data.errors[0] && typeof data.errors[0] === 'object' ? data.errors[0] : {};
+      codes.push(data.code, first.extensions && first.extensions.code, first.code, data.error);
+    }
+    codes.push(value.code, value.cause && value.cause.code, value.message, value.name);
   }
-  detail = detail
-    .replace(/Bearer\s+[^\s"']+/gi, 'Bearer [oculto]')
-    .replace(/eyJ[\w-]+\.[\w-]+\.[\w-]+/g, '[token]')
-    .replace(/[^\s@"'<>]+@[^\s@"'<>]+/g, '[correo]')
-    .replace(/"[^"]{1,300}"|'[^']{1,300}'/g, '"…"')
-    .replace(/\+?\d[\d\s().-]{5,}\d/g, '[número]')
-    .replace(/\s+/g, ' ')
-    .trim();
+  const isCode = text => typeof text === 'string' && /^(?:[A-Z][A-Z0-9_]{1,59}|[A-Z][A-Za-z0-9]{1,50}(?:Exception|Error))$/.test(text);
+  const code = codes.find(isCode) || '';
   const safeStep = String(step || 'crm').replace(/[^a-z_]/g, '').slice(0, 40) || 'crm';
-  const text = safeStep + ': ' + (status ? 'HTTP ' + status : 'error') + (detail ? ' — ' + detail : '');
-  return { message: text.length > 500 ? text.slice(0, 499) + '…' : text };
+  return { message: safeStep + ': ' + (status ? 'HTTP ' + status : 'error') + (code ? ' ' + code : '') };
 }
 
 /** Directus users to notify for a lead area. Falls back to the other area's users if one is empty. */
@@ -265,7 +314,8 @@ export function pickRecipients(area, config) {
 
 export const TOOLKIT = [
   cleanText, mdEscape, normalizeEmail, parsePhone, splitName, isRecordId, twentyQuote, buildLeadSync,
-  recordFromResponse, requestFor, personStep, opportunityStep, recordId, noteTargetsStep, sanitizeCrmError, pickRecipients,
+  recordFromResponse, recordsFromResponse, requestFor, personPreexisting, personStep, opportunityStep, noteStep, recordId, noteSaved,
+  noteTargetsStep, sanitizeCrmError, pickRecipients,
 ];
 
 /** Source of a Directus "Run Script" operation that evaluates `expression` with the toolkit and CONFIG in scope. */
@@ -273,6 +323,8 @@ export function execCode(expression, config) {
   return [
     '// Generado por scripts/directus-flows.mjs (scripts/crm-mapping.mjs). No editar aquí: se sobrescribe.',
     `const CONFIG = ${JSON.stringify(config)};`,
+    `const VERIFY_PREFIX = ${JSON.stringify(VERIFY_PREFIX)};`,
+    `const VERIFY_NOTE_LINE = ${JSON.stringify(VERIFY_NOTE_LINE)};`,
     ...TOOLKIT.map(fn => fn.toString()),
     'module.exports = async function (data) {',
     `  return ${expression};`,

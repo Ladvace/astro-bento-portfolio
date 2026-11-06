@@ -5,7 +5,7 @@
  */
 export function createMemoryDirectus(initialState) {
   const state = structuredClone(initialState);
-  for (const key of ['collections', 'fields', 'relations', 'policies', 'roles', 'access', 'permissions', 'flows', 'operations']) state[key] ??= [];
+  for (const key of ['collections', 'fields', 'relations', 'policies', 'roles', 'access', 'permissions', 'flows', 'operations', 'folders']) state[key] ??= [];
   state.items ??= {};
   const requests = [];
   let nextPermission = Math.max(0, ...state.permissions.map(p => Number(p.id) || 0)) + 1;
@@ -37,7 +37,7 @@ export function createMemoryDirectus(initialState) {
     const [root, a, b] = parts;
     if (method === 'DELETE') return error(405, 'DELETE no permitido en la simulación');
     if (method === 'GET') {
-      if (['collections', 'fields', 'relations', 'policies', 'roles', 'access', 'permissions', 'flows', 'operations'].includes(root) && !a) return json(structuredClone(state[root]));
+      if (['collections', 'fields', 'relations', 'policies', 'roles', 'access', 'permissions', 'flows', 'operations', 'folders'].includes(root) && !a) return json(structuredClone(state[root]));
       if (root === 'items' && a) {
         if (!state.collections.some(c => c.collection === a)) return error(403, 'Forbidden');
         const rows = state.items[a] ?? [];
@@ -60,7 +60,7 @@ export function createMemoryDirectus(initialState) {
         return json({ collection: a, ...body });
       }
       if (root === 'relations') { state.relations.push(structuredClone(body)); return json(body); }
-      if (['policies', 'roles', 'access'].includes(root)) {
+      if (['policies', 'roles', 'access', 'folders'].includes(root)) {
         const row = { id: body.id ?? uuid(), ...body };
         if (state[root].some(r => r.id === row.id)) return error(400, 'Duplicate id');
         state[root].push(row);

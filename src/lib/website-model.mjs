@@ -66,11 +66,14 @@ const editorialGroups = {
       form_area_legal_option: 'Opción de área jurídica', form_area_data_option: 'Opción de área de datos e IA', form_message_label: 'Etiqueta: mensaje',
       form_whatsapp_label: 'Etiqueta: WhatsApp', form_email_label: 'Etiqueta: correo', form_contact_hint: 'Ayuda: WhatsApp o correo',
       form_submit_label: 'Botón de envío', form_error_message: 'Mensaje de error del formulario',
+      form_message_hint: 'Ayuda del mensaje: no incluir datos sensibles', form_error_name: 'Error: nombre ausente o inválido',
+      form_error_message_length: 'Error: longitud del mensaje', form_error_contact: 'Error: falta WhatsApp o correo válido',
     },
     'Página de gracias': { thanks_title: 'Título de gracias', thanks_description: 'Descripción de gracias', thanks_back_label: 'Enlace de regreso desde gracias' },
     'Consentimiento': {
       consent_label: 'Texto del consentimiento del formulario (Ley 1581/2012)', consent_privacy_link_label: 'Enlace a la política de privacidad',
       consent_banner_text: 'Texto del aviso de cookies', consent_banner_accept_label: 'Botón aceptar del aviso', consent_banner_reject_label: 'Botón rechazar del aviso',
+      consent_preferences_label: 'Enlace para reabrir las preferencias de cookies',
     },
   },
   practices: {
@@ -102,6 +105,7 @@ export const landingFieldKeys = new Set([
   'hero_legal_cta', 'hero_data_cta', 'steps_title', 'faq_title', 'testimonials_title',
   'form_title', 'form_name_label', 'form_area_label', 'form_area_legal_option', 'form_area_data_option', 'form_message_label',
   'form_whatsapp_label', 'form_email_label', 'form_contact_hint', 'form_submit_label', 'form_error_message',
+  'form_message_hint', 'form_error_name', 'form_error_message_length', 'form_error_contact', 'consent_preferences_label',
   'thanks_title', 'thanks_description', 'thanks_back_label',
   'consent_label', 'consent_privacy_link_label', 'consent_banner_text', 'consent_banner_accept_label', 'consent_banner_reject_label',
   'problems', 'audience', 'whatsapp_message', 'photo', 'credential',
