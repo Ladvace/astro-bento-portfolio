@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { createLeadHandler } from '../../lib/lead.mjs';
-import { getWebsiteContent } from '../../lib/website-content';
+import { readConsentTexts } from '../../lib/consent-texts.mjs';
 import { resolveWebsiteContent } from '../../lib/website-model.mjs';
 
 export const prerender = false;
@@ -8,18 +8,15 @@ export const prerender = false;
 // Server secrets are read at runtime from the container environment (Coolify), never PUBLIC_*.
 const env = process.env;
 
-/** Consent text currently shown by the form for that locale (same source as the built pages). */
-async function consentText(locale: 'es' | 'en'): Promise<string> {
-  try {
-    return (await getWebsiteContent(locale)).home.consent_label;
-  } catch {
-    return resolveWebsiteContent({}, locale).home.consent_label;
-  }
-}
+// Consent texts shown by the prerendered forms, written at build time next to the server bundle
+// (src/lib/consent-texts.mjs). Read once at startup: the request path never queries the CMS.
+const consentTexts = readConsentTexts({ explicitPath: env.LEAD_CONSENT_TEXTS_PATH, fromUrl: import.meta.url });
+if (!consentTexts) console.error('[lead] consent-texts.json no encontrado: consent_text se guardará con el texto por defecto marcado [version desconocida]');
 
 const handleLead = createLeadHandler({
   env,
-  consentText,
+  consentTexts,
+  consentFallback: (locale: 'es' | 'en') => resolveWebsiteContent({}, locale).home.consent_label,
   siteOrigin: (import.meta.env.SITE ? new URL(import.meta.env.SITE).origin : undefined),
 });
 

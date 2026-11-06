@@ -72,6 +72,13 @@
 .lead-form button[type=submit]:hover{background:var(--roma-pompeya-hondo)}
 .lead-form button[disabled]{opacity:.6;cursor:progress}
 .hp-field{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+/* No-JS errors: /api/lead redirects to #lead-error-<field|code>; only the targeted block shows. With JS (.js) the script reports errors instead. */
+.nojs-error{display:none;margin:0;font-size:14px;color:var(--roma-error)}
+.nojs-error:target{display:block;scroll-margin-top:96px}
+.nojs-error::before{content:"\26A0\00a0"}
+.lead-form.js .nojs-error{display:none}
+.form-fallback{margin:0}
+.form-fallback[hidden]{display:none}
 .service-problems{list-style:disc}
 .service-audience{color:var(--roma-pizarra)}
 .thanks .contact-actions{max-width:420px;margin:32px 0}

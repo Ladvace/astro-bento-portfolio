@@ -37,9 +37,12 @@ test('every CTA carries tracking attributes and the lead form posts to /api/lead
  const form = read('src/components/roma/ContactForm.astro');
  assert.match(form, /method="post" action="\/api\/lead"/);
  assert.match(form, /data-track-form/);
- for (const name of ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'consent', 'website', 'locale', 'page', 'started_at', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id']) assert.match(form, new RegExp(`name="${name}"`), name);
- assert.match(form, /maxlength="1500"/);
- assert.match(form, /name="website" tabindex="-1" autocomplete="off"/);
+ for (const name of ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'consent', 'hp_field', 'locale', 'page', 'consent_version', 'elapsed_ms', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id']) assert.match(form, new RegExp(`name="${name}"`), name);
+ assert.match(form, /name="message"[^>]*required minlength="10" maxlength="1500"/);
+ assert.match(form, /name="name"[^>]*required minlength="2" maxlength="120"/);
+ assert.match(form, /name="hp_field" tabindex="-1" autocomplete="off"/);
+ assert.doesNotMatch(form, /name="(website|started_at)"/);
+ assert.doesNotMatch(form, /<form[^>]*novalidate/, 'native validation must work without JS');
  assert.match(read('src/components/roma/ConsentBanner.astro'), /roma_consent[\s\S]*roma:consent/);
 });
 test('shared shell exposes language alternatives, canonical, skip link and noindex preview switch', () => {

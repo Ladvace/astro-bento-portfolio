@@ -3,6 +3,7 @@ import node from '@astrojs/node';
 import Unocss from '@unocss/astro';
 import sitemap from '@astrojs/sitemap';
 import { sitemapFilter } from './src/lib/seo.mjs';
+import { consentTextsIntegration } from './src/lib/consent-texts.mjs';
 
 export default defineConfig({
   // 👇 ESTA LÍNEA ES LA LLAVE. SIN ELLA, NO HAY WEB.
@@ -19,5 +20,7 @@ export default defineConfig({
       filter: sitemapFilter,
       i18n: { defaultLocale: 'es', locales: { es: 'es-CO', en: 'en' } },
     }),
+    // Writes dist/server/consent-texts.json (consent_version -> text) for /api/lead.
+    consentTextsIntegration(),
   ],
 });
