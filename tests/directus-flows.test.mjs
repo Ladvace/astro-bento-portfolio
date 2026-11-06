@@ -143,7 +143,7 @@ test('new lead: Person + Opportunity + Note + 2 targets, lead synced with ids, a
   assert.equal(twenty.db.notes.length, 1);
   assert.equal(lead.twenty_note_id, twenty.db.notes[0].id);
   assert.ok(!twenty.db.notes[0].bodyV2.markdown.includes(VERIFY_NOTE_LINE));
-  assert.deepEqual(twenty.db.noteTargets.map(t => Object.keys(t).filter(k => k !== 'createdAt').sort()), [['id', 'noteId', 'opportunityId'], ['id', 'noteId', 'personId']]);
+  assert.deepEqual(twenty.db.noteTargets.map(t => Object.keys(t).filter(k => k !== 'createdAt').sort()), [['id', 'noteId', 'targetOpportunityId'], ['id', 'noteId', 'targetPersonId']]);
   assert.ok(twenty.requests.every(r => r.auth === 'Bearer test-twenty-key'));
   assert.deepEqual(runner.notifications.map(n => n.recipient), [[LEGAL_USER]]);
   assert.equal(runner.notifications[0].subject, 'Nuevo lead web · Legal');
@@ -246,7 +246,7 @@ test('B2: a retry after only the person link failed reuses the note and its oppo
   assert.equal(items.leads[0].crm_status, 'synced');
   assert.equal(twenty.db.notes.length, 1, 'no duplicate note');
   assert.equal(twenty.db.opportunities.length, 1);
-  assert.deepEqual(twenty.db.noteTargets.map(t => (t.opportunityId ? 'opportunity' : 'person')).sort(), ['opportunity', 'person'], 'no duplicate link');
+  assert.deepEqual(twenty.db.noteTargets.map(t => (t.targetOpportunityId ? 'opportunity' : 'person')).sort(), ['opportunity', 'person'], 'no duplicate link');
   assert.equal(twenty.requests.filter(r => r.method === 'POST' && r.path === '/rest/notes').length, 1);
 });
 

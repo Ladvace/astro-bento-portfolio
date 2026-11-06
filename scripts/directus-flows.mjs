@@ -65,6 +65,8 @@ const JSON_HEADERS = [
   { header: 'Content-Type', value: 'application/json' },
   { header: 'Accept', value: 'application/json' },
 ];
+// Directus serialises a null body as the string "null"; with Content-Type JSON Twenty answers 400. GETs send '{}'.
+const EMPTY_JSON_BODY = '{}';
 
 // ---------------------------------------------------------------------------------------------
 // Desired state (pure)
@@ -100,7 +102,7 @@ export function desiredFlows(config, flowIds = {}) {
     { key: 'read_lead', name: 'Leer lead', type: 'item-read', ...at(0, 0), options: { collection: 'leads', key: [leadKey], query: { fields: LEAD_FIELDS }, permissions: '$full', emitEvents: false }, resolve: 'guard', reject: null },
     { key: 'guard', name: '¿Pendiente de sync?', type: 'condition', ...at(1, 0), options: { filter: { read_lead: { crm_status: { _neq: 'synced' } } } }, resolve: 'build', reject: null },
     exec('build', 'Mapear lead → Twenty', 'buildLeadSync(data.read_lead, CONFIG)', 2, 'find_person'),
-    request('find_person', 'Buscar persona (email/teléfono)', 'GET', '{{build.person_search_path}}', null, 3, 'person_step'),
+    request('find_person', 'Buscar persona (email/teléfono)', 'GET', '{{build.person_search_path}}', EMPTY_JSON_BODY, 3, 'person_step'),
     exec('person_step', 'Reusar o crear persona', 'personStep(data.build, data.find_person)', 4, 'ensure_person'),
     request('ensure_person', 'Persona en Twenty (nunca se sobrescribe)', '{{person_step.method}}', '{{person_step.path}}', '{{person_step.body}}', 5, 'opp_step'),
     exec('opp_step', 'Preparar oportunidad ([Verificar] si la persona ya existía)', 'opportunityStep(data.build, data.ensure_person, data.person_step)', 6, 'save_person'),
@@ -112,7 +114,7 @@ export function desiredFlows(config, flowIds = {}) {
     request('ensure_note', 'Nota en Twenty', '{{note_step.method}}', '{{note_step.path}}', '{{note_step.body}}', 12, 'note'),
     exec('note', 'Id nota', 'noteSaved(data.ensure_note)', 13, 'save_note'),
     update('save_note', 'Guardar id nota', { twenty_note_id: '{{note.id}}' }, 14, 'find_targets'),
-    request('find_targets', 'Buscar vínculos de la nota', 'GET', '{{note.targets_path}}', null, 15, 'targets'),
+    request('find_targets', 'Buscar vínculos de la nota', 'GET', '{{note.targets_path}}', EMPTY_JSON_BODY, 15, 'targets'),
     exec('targets', 'Preparar vínculos de nota', 'noteTargetsStep(data.note.id, data.find_targets, data.opp_step.person_id, data.opp.id)', 16, 'target_opp'),
     request('target_opp', 'Nota → oportunidad', '{{targets.opportunity_method}}', '{{targets.opportunity_path}}', '{{targets.opportunity_body}}', 17, 'target_person'),
     request('target_person', 'Nota → persona', '{{targets.person_method}}', '{{targets.person_path}}', '{{targets.person_body}}', 18, 'mark_synced'),

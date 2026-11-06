@@ -76,7 +76,7 @@ Los seis se crean **inactivos** salvo que se pase `--activate`. Se identifican p
 
 ## Twenty: preparación (en la UI de Twenty, por el túnel privado)
 
-1. **Verificar el esquema real** antes de activar: `GET http://twenty-server:3000/rest/open-api/core` (o Settings → APIs → documentación). Comprobar nombres de `name.firstName/lastName`, `emails.primaryEmail`, `phones.primaryPhoneNumber/primaryPhoneCountryCode/primaryPhoneCallingCode`, `stage`, `pointOfContactId`, `bodyV2.markdown`, `noteTargets.noteId/personId/opportunityId`.
+1. **Verificar el esquema real** antes de activar: `GET http://twenty-server:3000/rest/open-api/core` (o Settings → APIs → documentación). Comprobar nombres de `name.firstName/lastName`, `emails.primaryEmail`, `phones.primaryPhoneNumber/primaryPhoneCountryCode/primaryPhoneCallingCode`, `stage`, `pointOfContactId`, `bodyV2.markdown`, `noteTargets.noteId/targetPersonId/targetOpportunityId` (verificado en v2.52.0).
 2. **Campos personalizados en Opportunity** (Settings → Data model → Opportunities):
 
    | Etiqueta | Nombre API | Tipo | Valores (API value) |

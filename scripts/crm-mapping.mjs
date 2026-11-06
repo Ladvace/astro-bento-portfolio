@@ -199,7 +199,7 @@ export function recordFromResponse(result) {
 
 function requestFor(objectPath, existingId, body) {
   return existingId
-    ? { method: 'GET', path: '/rest/' + objectPath + '/' + existingId, body: null, reused: true }
+    ? { method: 'GET', path: '/rest/' + objectPath + '/' + existingId, body: '{}', reused: true } // '{}' not null: see EMPTY_JSON_BODY in directus-flows.mjs
     : { method: 'POST', path: '/rest/' + objectPath, body: body, reused: false };
 }
 
@@ -264,8 +264,8 @@ export function noteTargetsStep(noteId, existingTargets, personId, opportunityId
     const found = existing.find(target => target[field] === value && isRecordId(target.id));
     return requestFor('noteTargets', found ? found.id : '', JSON.stringify({ noteId: noteId, [field]: value }));
   };
-  const opp = link('opportunityId', opportunityId);
-  const person = link('personId', personId);
+  const opp = link('targetOpportunityId', opportunityId);
+  const person = link('targetPersonId', personId);
   return {
     note_id: noteId,
     opportunity_method: opp.method, opportunity_path: opp.path, opportunity_body: opp.body,

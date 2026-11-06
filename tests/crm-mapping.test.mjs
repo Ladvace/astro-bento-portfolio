@@ -78,7 +78,7 @@ test('person/opportunity steps reuse existing records (idempotent retries) and v
   const sync = buildLeadSync(lead(), config);
   const empty = { status: 200, data: { data: { people: [] }, totalCount: 0 } };
   assert.deepEqual(personStep(sync, empty), { method: 'POST', path: '/rest/people', body: sync.person_body, reused: false });
-  assert.deepEqual(personStep(sync, { status: 200, data: { data: { people: [{ id: personId }] } } }), { method: 'GET', path: `/rest/people/${personId}`, body: null, reused: true });
+  assert.deepEqual(personStep(sync, { status: 200, data: { data: { people: [{ id: personId }] } } }), { method: 'GET', path: `/rest/people/${personId}`, body: '{}', reused: true });
   const linked = buildLeadSync(lead({ twenty_person_id: personId, twenty_opportunity_id: '44444444-4444-4444-8444-444444444444' }), config);
   assert.equal(personStep(linked, empty).path, `/rest/people/${personId}`);
   assert.equal(personStep(buildLeadSync(lead({ twenty_person_id: '../../workspaces' }), config), empty).method, 'POST');
@@ -119,7 +119,7 @@ test('M5: a pre-existing person flags the opportunity and the note; our own pers
 test('B2: note and its links are reused on retries (twenty_note_id + existing noteTargets)', () => {
   const noteId = '55555555-5555-4555-8555-555555555555';
   const withNote = buildLeadSync(lead({ twenty_note_id: noteId }), config);
-  assert.deepEqual(noteStep(withNote, { verify: false }), { method: 'GET', path: `/rest/notes/${noteId}`, body: null, reused: true });
+  assert.deepEqual(noteStep(withNote, { verify: false }), { method: 'GET', path: `/rest/notes/${noteId}`, body: '{}', reused: true });
   assert.equal(buildLeadSync(lead({ twenty_note_id: 'x/../../y' }), config).existing_note_id, '');
   const saved = noteSaved({ status: 201, data: { data: { createNote: { id: noteId } } } });
   assert.equal(saved.id, noteId);
@@ -129,10 +129,10 @@ test('B2: note and its links are reused on retries (twenty_note_id + existing no
   const o = '44444444-4444-4444-8444-444444444444';
   const fresh = noteTargetsStep(noteId, { status: 200, data: { data: { noteTargets: [] } } }, p, o);
   assert.equal(fresh.opportunity_method, 'POST');
-  assert.deepEqual(JSON.parse(fresh.opportunity_body), { noteId, opportunityId: o });
-  assert.deepEqual(JSON.parse(fresh.person_body), { noteId, personId: p });
+  assert.deepEqual(JSON.parse(fresh.opportunity_body), { noteId, targetOpportunityId: o });
+  assert.deepEqual(JSON.parse(fresh.person_body), { noteId, targetPersonId: p });
   const linkId = '66666666-6666-4666-8666-666666666666';
-  const half = noteTargetsStep(noteId, { status: 200, data: { data: { noteTargets: [{ id: linkId, noteId, opportunityId: o, personId: null }] } } }, p, o);
+  const half = noteTargetsStep(noteId, { status: 200, data: { data: { noteTargets: [{ id: linkId, noteId, targetOpportunityId: o, targetPersonId: null }] } } }, p, o);
   assert.equal(half.opportunity_method, 'GET');
   assert.equal(half.opportunity_path, `/rest/noteTargets/${linkId}`);
   assert.equal(half.person_method, 'POST');
@@ -170,4 +170,9 @@ test('exec code is self-contained: runs in a bare V8 context (no fetch/URL/requi
   const result = await context.module.exports({ read_lead: lead() });
   assert.deepEqual(JSON.parse(JSON.stringify(result)), buildLeadSync(lead(), config));
   assert.ok(!code.includes("TWENTY_API_KEY") && !code.includes("$env"));
+});
+
+test('GET requests never carry a null body (Directus would send "null" and Twenty answers 400)', async () => {
+  const src = await (await import('node:fs/promises')).readFile(new URL('../scripts/directus-flows.mjs', import.meta.url), 'utf8');
+  assert.doesNotMatch(src, /'GET', '[^']*', null,/);
 });
