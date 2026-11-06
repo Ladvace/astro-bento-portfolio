@@ -1,0 +1,43 @@
+---
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent; locale: 'es' | 'en' }
+const { site, locale } = Astro.props;
+const { home } = site;
+---
+<div class="consent-banner" role="region" aria-labelledby="consent-banner-text" data-consent-banner hidden>
+ <p id="consent-banner-text">{home.consent_banner_text} <a href={`/${locale}/privacidad/`}>{home.consent_privacy_link_label}</a></p>
+ <div class="consent-banner__actions">
+  <button type="button" class="roma-btn roma-btn--secundario" data-consent="denied">{home.consent_banner_reject_label}</button>
+  <button type="button" class="roma-btn roma-btn--primario" data-consent="granted">{home.consent_banner_accept_label}</button>
+ </div>
+</div>
+<script>
+ // Contract for analytics: window event 'roma:consent-open' reopens the banner (footer link).
+ //  localStorage 'roma_consent' = 'granted' | 'denied'; window event 'roma:consent' { detail }.
+ const banner = document.querySelector<HTMLElement>('[data-consent-banner]');
+ const KEY = 'roma_consent';
+ const valid = (value: unknown): value is 'granted' | 'denied' => value === 'granted' || value === 'denied';
+ const emit = (detail: 'granted' | 'denied') => window.dispatchEvent(new CustomEvent('roma:consent', { detail }));
+ let stored: string | null = null;
+ try { stored = localStorage.getItem(KEY); } catch { /* storage blocked: ask on every visit */ }
+ const setOffset = (open: boolean) => {
+  document.documentElement.toggleAttribute('data-consent-open', open);
+  document.documentElement.style.setProperty('--consent-height', open && banner ? `${banner.offsetHeight}px` : '0px');
+ };
+ document.addEventListener('click', (event) => {
+  if ((event.target as Element | null)?.closest('[data-consent-open]')) window.dispatchEvent(new CustomEvent('roma:consent-open'));
+ });
+ if (banner) {
+  const show = () => { banner.hidden = false; setOffset(true); };
+  window.addEventListener('resize', () => setOffset(!banner.hidden));
+  window.addEventListener('roma:consent-open', show);
+  if (valid(stored)) emit(stored); else show();
+  banner.querySelectorAll<HTMLButtonElement>('[data-consent]').forEach((button) => button.addEventListener('click', () => {
+   const choice = button.dataset.consent;
+   if (!valid(choice)) return;
+   try { localStorage.setItem(KEY, choice); } catch { /* keep the choice for this page view only */ }
+   banner.hidden = true; setOffset(false);
+   emit(choice);
+  }));
+ }
+</script>

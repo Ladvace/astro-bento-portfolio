@@ -1,0 +1,140 @@
+---
+/**
+ * GA4 only (gtag.js) with Consent Mode v2 in BASIC mode. See docs/analytics.md.
+ * - Nothing Google-related is in the HTML or requested until the visitor grants consent: gtag.js is injected
+ *   dynamically after 'roma:consent' = 'granted'. Denied/undecided = no request, no cookie, no data.
+ * - On grant: consent default (ads denied, analytics granted), gtag.js, config (sends page_view).
+ * - On revoke: consent update analytics_storage denied, ga-disable flag, _ga* cookies deleted.
+ * - No personal data in any event parameter (never name, email, phone or message).
+ */
+interface Props { ga4Id?: string }
+const { ga4Id = '' } = Astro.props;
+const noindex = import.meta.env.PUBLIC_NOINDEX === 'true';
+const ga4 = import.meta.env.PROD && !noindex && /^G-[A-Z0-9]+$/.test(ga4Id) ? ga4Id : '';
+---
+{ga4 && <>
+ <script is:inline type="application/json" id="roma-analytics-config" set:html={JSON.stringify({ ga4 }).replace(/</g, '\\u003c')} />
+ <script>
+  type Gtag = (...args: unknown[]) => void;
+  const gtag = (...args: unknown[]) => { try { (window as unknown as { gtag?: Gtag }).gtag?.(...args); } catch { /* analytics must never break the page */ } };
+  const ga4: string = (() => {
+   try { return JSON.parse(document.getElementById('roma-analytics-config')?.textContent || '{}').ga4 || ''; } catch { return ''; }
+  })();
+  const CLICK_EVENTS: Record<string, (d: DOMStringMap) => [string, Record<string, unknown>]> = {
+   cta_click: d => ['cta_click', { area: d.area || 'none', location: d.location || 'none' }],
+   whatsapp_click: d => ['contact', { method: 'whatsapp', area: d.area || 'none', location: d.location || 'none' }],
+   email_click: d => ['contact', { method: 'email', area: d.area || 'none', location: d.location || 'none' }],
+  };
+  const PENDING_KEY = 'roma_lead_pending';
+  const PENDING_TTL_MS = 10 * 60 * 1000;
+  const cleanArea = (value: unknown) => (value === 'legal' || value === 'data' ? value : 'none');
+
+  // ---------------------------------------------------------------- consent (idempotent)
+  let applied: string | null = null;
+  let loaded = false;
+  let clientId = '';
+  const disableKey = `ga-disable-${ga4}`;
+  const flagDisabled = (off: boolean) => { (window as unknown as Record<string, unknown>)[disableKey] = off; };
+  function fillClientId() {
+   if (applied !== 'granted' || !ga4) return;
+   gtag('get', ga4, 'client_id', (id: unknown) => {
+    if (typeof id !== 'string' || !/^[A-Za-z0-9.]{1,64}$/.test(id)) return;
+    clientId = id;
+    document.querySelectorAll<HTMLInputElement>('input[name="ga_client_id"]').forEach(input => { input.value = id; });
+   });
+  }
+  function loadGtag() {
+   const w = window as unknown as { dataLayer?: unknown[]; gtag?: Gtag };
+   w.dataLayer = w.dataLayer || [];
+   w.gtag = function () { (w.dataLayer as unknown[]).push(arguments); };
+   gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'granted' });
+   gtag('js', new Date());
+   gtag('config', ga4, { allow_google_signals: false, allow_ad_personalization_signals: false });
+   const script = document.createElement('script');
+   script.async = true;
+   script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4)}`;
+   document.head.appendChild(script);
+   loaded = true;
+  }
+  function deleteGaCookies() {
+   const parts = location.hostname.split('.');
+   const domains = ['', location.hostname];
+   for (let i = 1; i < parts.length - 1; i++) domains.push('.' + parts.slice(i).join('.'));
+   const names = document.cookie.split(';').map(c => c.split('=')[0].trim()).filter(n => n === '_ga' || n.startsWith('_ga_') || n === '_gid' || n.startsWith('_gat'));
+   for (const name of names) for (const d of domains) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ''}`;
+   }
+  }
+  function applyConsent(state: 'granted' | 'denied') {
+   if (applied === state) return;
+   applied = state;
+   if (state === 'granted') {
+    flagDisabled(false);
+    if (loaded) gtag('consent', 'update', { analytics_storage: 'granted' });
+    else loadGtag();
+    fillClientId();
+   } else {
+    clientId = '';
+    document.querySelectorAll<HTMLInputElement>('input[name="ga_client_id"]').forEach(input => { input.value = ''; });
+    if (loaded) {
+     gtag('consent', 'update', { analytics_storage: 'denied' });
+     flagDisabled(true);
+     deleteGaCookies();
+    }
+   }
+  }
+  window.addEventListener('roma:consent', event => {
+   const detail = (event as CustomEvent).detail;
+   if (detail === 'granted' || detail === 'denied') applyConsent(detail);
+  });
+
+  // ---------------------------------------------------------------- events (no PII)
+  document.addEventListener('click', event => {
+   const target = event.target as Element | null;
+   const tracked = target?.closest<HTMLElement>('[data-track]');
+   const build = tracked && CLICK_EVENTS[tracked.dataset.track || ''];
+   if (tracked && build) {
+    const [name, params] = build(tracked.dataset);
+    gtag('event', name, { ...params, transport_type: 'beacon' });
+   }
+   const lang = target?.closest<HTMLElement>('[data-locale]');
+   if (lang && (lang.dataset.locale === 'es' || lang.dataset.locale === 'en')) {
+    gtag('event', 'lang_switch', { language_from: document.documentElement.lang === 'en' ? 'en' : 'es', language_to: lang.dataset.locale, transport_type: 'beacon' });
+   }
+  }, { capture: true });
+
+  const startedForms = new WeakSet<HTMLFormElement>();
+  const areaOf = (form: HTMLFormElement) => cleanArea(new FormData(form).get('area') ?? form.dataset.area);
+  document.addEventListener('input', event => {
+   const form = (event.target as Element | null)?.closest<HTMLFormElement>('form[data-track-form]');
+   if (!form || startedForms.has(form)) return;
+   startedForms.add(form);
+   gtag('event', 'lead_form_start', { area: areaOf(form), location: form.dataset.trackForm || 'none' });
+  }, { capture: true });
+
+  document.addEventListener('submit', event => {
+   const form = (event.target as Element | null)?.closest<HTMLFormElement>('form[data-track-form]');
+   if (!form) return;
+   const area = areaOf(form);
+   if (applied === 'granted' && clientId) {
+    const input = form.elements.namedItem('ga_client_id') as HTMLInputElement | null;
+    if (input) input.value = clientId;
+   }
+   gtag('event', 'lead_form_submit', { area, location: form.dataset.trackForm || 'none', transport_type: 'beacon' });
+   try { sessionStorage.setItem(PENDING_KEY, JSON.stringify({ area, at: Date.now() })); } catch { /* storage blocked */ }
+  }, { capture: true });
+
+  // ---------------------------------------------------------------- /gracias/: one generate_lead per submitted form
+  if (/^\/(?:(?:es|en)\/)?gracias\/?$/.test(location.pathname)) {
+   try {
+    const raw = sessionStorage.getItem(PENDING_KEY);
+    sessionStorage.removeItem(PENDING_KEY); // a reload finds nothing and sends nothing
+    const pending = raw ? JSON.parse(raw) : null;
+    if (pending && Date.now() - Number(pending.at) < PENDING_TTL_MS) {
+     const fromUrl = new URLSearchParams(location.search).get('area');
+     gtag('event', 'generate_lead', { area: cleanArea(fromUrl ?? pending.area), method: 'form' });
+    }
+   } catch { /* storage blocked or malformed: no event */ }
+  }
+ </script>
+</>}

@@ -1,0 +1,16 @@
+---
+import RomaLayout from '../../layouts/RomaLayout.astro';
+import { renderMarkdown } from '../../lib/rich-text.mjs';
+import { getWebsiteContent } from '../../lib/website-content';
+export function getStaticPaths(){return ['es','en'].map(locale=>({params:{locale},props:{locale}}));}
+const {locale}=Astro.props as {locale:'es'|'en'};
+const site = await getWebsiteContent(locale);
+const {globals, common}=site;
+const body=renderMarkdown(common.privacy_policy);
+---
+<RomaLayout locale={locale} content={site} title={`${common.privacy_title} — ${globals.seo_suffix}`} description={common.privacy_title}>
+ <article class="roma-section roma-container privacy">
+  <header class="article-head"><h1>{common.privacy_title}</h1></header>
+  <div class="prose-content" set:html={body} />
+ </article>
+</RomaLayout>

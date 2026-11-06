@@ -1,0 +1,19 @@
+---
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent }
+const { site } = Astro.props;
+const { home, testimonials } = site;
+---
+{testimonials.length > 0 && (
+ <section id="testimonios" class="roma-section roma-container" aria-labelledby="testimonials-title">
+  <div class="section-heading"><h2 id="testimonials-title">{home.testimonials_title}</h2></div>
+  <div class="testimonial-grid">
+   {testimonials.map((item) => (
+    <figure class={`testimonial testimonial-${item.area}`}>
+     <blockquote><p>{item.quote}</p></blockquote>
+     <figcaption><strong>{item.author}</strong>{item.role && <span>{item.role}</span>}</figcaption>
+    </figure>
+   ))}
+  </div>
+ </section>
+)}

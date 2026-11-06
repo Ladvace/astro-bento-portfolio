@@ -3,43 +3,47 @@ import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 import { resolveWebsiteContent } from '../src/lib/website-model.mjs';
 const root = new URL('../', import.meta.url);
-test('ROMA home introduces both named professionals without portraits or active LinkedIn embeds', () => {
- const path = new URL('src/components/roma/Home.astro', root);
- assert.equal(existsSync(path), true, 'ROMA home component must exist');
- const source = readFileSync(path, 'utf8');
- assert.match(source, /const site = await getWebsiteContent\(locale\)/);
- assert.match(source, /const \{[^}]*\bpeople\b[^}]*\} = site/);
- for (const [key, name] of [['tatiana', 'Tatiana Rodriguez'], ['henry', 'Henry Mariño']]) {
-  const profile = source.match(new RegExp(`<article[^>]*data-professional="${key}"[^>]*>([\\s\\S]*?)</article>`))?.[1];
-  assert.ok(profile, `${key} professional profile must exist`);
-  assert.match(profile, new RegExp(`<h3>\\{people\\.${key}\\.name\\}</h3>`));
-  assert.match(profile, new RegExp(`<div data-linkedin-slot="${key}" hidden></div>`));
-  for (const locale of ['es', 'en']) {
-   assert.equal(resolveWebsiteContent({}, locale).people[key].name, name, `${locale} approved ${key} identity`);
-  }
+const read = (file) => readFileSync(new URL(file, root), 'utf8');
+test('home composes the conversion sections and drops rail, signature, experience and pending notes', () => {
+ const source = read('src/components/roma/Home.astro');
+ for (const component of ['Hero', 'Services', 'Steps', 'Team', 'Cases', 'Testimonials', 'Faq', 'ContactForm']) {
+  assert.ok(existsSync(new URL(`src/components/roma/${component}.astro`, root)), `${component} exists`);
+  assert.match(source, new RegExp(`<${component} `));
  }
- assert.doesNotMatch(source, /avatarUrl|AVATAR_ID|<iframe|<img[^>]*portrait/);
- assert.match(source, /data-linkedin-slot/);
+ assert.doesNotMatch(source, /section-rail|hero-signature|signature_|experience|original_note|contact_note|rail_/);
 });
-test('home service cards retain their professional ownership and approved territorial scope', () => {
- const source = readFileSync(new URL('src/components/roma/Home.astro', root), 'utf8');
- for (const [practice, person] of [['legal', 'tatiana'], ['data', 'henry']]) {
-  const card = source.match(new RegExp(`<article class="practice practice-${practice}">([\\s\\S]*?)</article>`))?.[1];
-  assert.ok(card, `${practice} service card must exist`);
-  assert.match(card, new RegExp(`class="practice-person">\\{people\\.${person}\\.name\\}`));
-  assert.match(card, new RegExp(`\\{practices\\.${practice}\\.card_items\\.map\\(`));
-  assert.match(card, new RegExp(`/servicios/${practice}/`));
-  assert.match(card, new RegExp(`<small>\\{practices\\.${practice}\\.territory\\}</small>`));
- }
+test('team shows a Directus photo when present, initials otherwise, and both LinkedIn links', () => {
+ const team = read('src/components/roma/Team.astro');
+ assert.match(team, /personPhoto\(person\)/);
+ assert.match(team, /initials\(person\.name\)/);
+ assert.match(team, /person\.linkedin_url/);
+ assert.match(team, /data-professional=\{key\}/);
  for (const locale of ['es', 'en']) {
-  const { practices } = resolveWebsiteContent({}, locale);
-  assert.equal(practices.legal.territory, locale === 'es'
-   ? 'Servicios jurídicos exclusivamente en Colombia.' : 'Legal services exclusively in Colombia.');
-  assert.equal(practices.data.territory, locale === 'es'
-   ? 'Colombia y otros países de Latinoamérica.' : 'Colombia and other Latin American countries.');
-  assert.deepEqual(practices.legal.card_items.map(item => item.label), locale === 'es'
-   ? ['Derecho civil', 'Tierras e inmuebles', 'Derecho de familia'] : ['Civil law', 'Land and property', 'Family law']);
+  const { people } = resolveWebsiteContent({}, locale);
+  assert.equal(people.tatiana.name, 'Tatiana Rodriguez');
+  assert.equal(people.henry.name, 'Henry Mariño');
  }
+});
+test('service cards keep area ownership, scope and a WhatsApp CTA tracked per location', () => {
+ const source = read('src/components/roma/Services.astro');
+ assert.match(source, /area: 'legal', person: people\.tatiana/);
+ assert.match(source, /area: 'data', person: people\.henry/);
+ assert.match(source, /practice\.territory/);
+ assert.match(source, /\/servicios\/\$\{area\}\//);
+ assert.match(source, /data-location="services"/);
+});
+test('every CTA carries tracking attributes and the lead form posts to /api/lead with a honeypot', () => {
+ for (const file of ['Hero', 'Services', 'WhatsAppFab']) assert.match(read(`src/components/roma/${file}.astro`), /data-track=/);
+ const form = read('src/components/roma/ContactForm.astro');
+ assert.match(form, /method="post" action="\/api\/lead"/);
+ assert.match(form, /data-track-form/);
+ for (const name of ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'consent', 'hp_field', 'locale', 'page', 'consent_version', 'elapsed_ms', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id']) assert.match(form, new RegExp(`name="${name}"`), name);
+ assert.match(form, /name="message"[^>]*required minlength="10" maxlength="1500"/);
+ assert.match(form, /name="name"[^>]*required minlength="2" maxlength="120"/);
+ assert.match(form, /name="hp_field" tabindex="-1" autocomplete="off"/);
+ assert.doesNotMatch(form, /name="(website|started_at)"/);
+ assert.doesNotMatch(form, /<form[^>]*novalidate/, 'native validation must work without JS');
+ assert.match(read('src/components/roma/ConsentBanner.astro'), /roma_consent[\s\S]*roma:consent/);
 });
 test('shared shell exposes language alternatives, canonical, skip link and noindex preview switch', () => {
  const path = new URL('src/layouts/RomaLayout.astro', root);

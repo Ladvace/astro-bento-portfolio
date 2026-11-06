@@ -1,7 +1,8 @@
 ---
-import Archive from '../../components/roma/Archive.astro';
-import { getPublishedProjects } from '../../lib/directus';
-export const prerender = true;
-const projects = await getPublishedProjects();
+import { hasArticle } from '../../lib/legacy-slugs.mjs';
+import { legacyRedirect } from '../../lib/seo.mjs';
+export const prerender = false;
+
+const target = legacyRedirect(Astro.url.pathname, { hasArticle });
+return target ? Astro.redirect(target, 301) : new Response(null, { status: 404 });
 ---
-<Archive locale="en" kind="project" projects={projects} canonicalPath="/en/project/" />

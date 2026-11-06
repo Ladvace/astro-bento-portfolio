@@ -1,15 +1,8 @@
 ---
-import Article from '../../../components/roma/Article.astro';
-import { getPublishedProjects } from '../../../lib/directus';
-export const prerender = true;
-export async function getStaticPaths() {
-  const projects = await getPublishedProjects();
-  return ['es', 'en'].flatMap((locale) => projects.map((project) => ({
-    params: { locale, slug: project.slug },
-    props: { project },
-  })));
-}
-const { project } = Astro.props;
-const locale = Astro.params.locale === 'en' ? 'en' : 'es';
+import { hasArticle } from '../../../lib/legacy-slugs.mjs';
+import { legacyRedirect } from '../../../lib/seo.mjs';
+export const prerender = false;
+if (!['es', 'en'].includes(Astro.params.locale ?? '')) return new Response(null, { status: 404 });
+const target = legacyRedirect(Astro.url.pathname, { hasArticle });
+return target ? Astro.redirect(target, 301) : new Response(null, { status: 404 });
 ---
-<Article locale={locale} project={project} />

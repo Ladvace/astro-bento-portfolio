@@ -26,10 +26,10 @@ test('RSS publishes CMS projects with canonical project links and sanitized HTML
   const xml = await (await run(getProjects, rss, sanitizeHtml)).text();
   assert.match(xml, /Henry Marinho/);
   assert.match(xml, /<title>Case Study<\/title>/);
-  assert.match(xml, /https:\/\/portfolio.romahomestore.com\/project\/case-study\//);
+  assert.match(xml, /https:\/\/portfolio.romahomestore.com\/es\/blog\/case-study\//);
   assert.match(xml, /01 Jan 2026/);
   assert.match(xml, /Results/);
-  assert.doesNotMatch(xml, /alert\(1\)|\/blog\/|Gianmarco/);
+  assert.doesNotMatch(xml, /alert\(1\)|\/project\/|Gianmarco/);
   await assert.rejects(run(async () => { throw new Error('CMS unavailable'); }, rss, sanitizeHtml), /CMS unavailable/);
 });
 
@@ -40,26 +40,26 @@ test('homepage propagates CMS errors instead of publishing an empty portfolio', 
 
 test('static paths include every published project beyond the CMS default page', async () => {
   const projects = Array.from({ length: 105 }, (_, id) => ({ slug: `project-${id}`, title: `Project ${id}` }));
-  const paths = await frontmatter('src/pages/project/[slug].astro', 'getStaticPaths()', async (command) => {
+  const paths = await frontmatter('src/pages/[locale]/blog/[slug].astro', 'getStaticPaths()', async (command) => {
     const { params } = command();
     assert.deepEqual(params.filter, { status: { _eq: 'published' } });
     return params.limit === -1 ? projects : projects.slice(0, params.limit ?? 100);
   });
-  assert.equal(paths.length, 105);
-  assert.deepEqual(paths.at(-1), { params: { slug: 'project-104' }, props: { project: projects.at(-1) } });
+  assert.equal(paths.length, 210);
+  assert.deepEqual(paths.at(-1), { params: { locale: 'en', slug: 'project-104' }, props: { project: projects.at(-1) } });
 });
 
 test('static path generation rejects failed and malformed CMS responses', async () => {
   const failure = new Error('CMS unavailable');
-  await assert.rejects(frontmatter('src/pages/project/[slug].astro', 'getStaticPaths()', async () => { throw failure; }), (error) => error === failure);
-  await assert.rejects(frontmatter('src/pages/project/[slug].astro', 'getStaticPaths()', async () => null), /Invalid projects response/);
+  await assert.rejects(frontmatter('src/pages/[locale]/blog/[slug].astro', 'getStaticPaths()', async () => { throw failure; }), (error) => error === failure);
+  await assert.rejects(frontmatter('src/pages/[locale]/blog/[slug].astro', 'getStaticPaths()', async () => null), /Invalid projects response/);
 });
 
 test('project index uses the complete published CMS collection, not template blog posts', async () => {
-  const source = await readFile(new URL('src/pages/project/index.astro', root), 'utf8');
+  const source = await readFile(new URL('src/pages/[locale]/blog/index.astro', root), 'utf8');
   assert.doesNotMatch(source, /getCollection|Gianmarco|PostRow/);
   const projects = [{ slug: 'case-study', title: 'Case Study' }];
-  const result = await frontmatter('src/pages/project/index.astro', 'projects', async (command) => {
+  const result = await frontmatter('src/pages/[locale]/blog/index.astro', 'projects', async (command) => {
     assert.equal(command().params.limit, -1);
     assert.deepEqual(command().params.filter, { status: { _eq: 'published' } });
     return projects;
@@ -82,7 +82,7 @@ async function frontmatter(file, result, request) {
   const getPublishedProjects = (limit) => cms.getPublishedProjects(limit, client);
   const code = ts.transpileModule(script, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
   return new AsyncFunction('directus', 'readItems', 'getPublishedProjects', 'Astro', `${code}\nreturn ${result};`)(
-    client, readItems, getPublishedProjects, { props: { project: {} } },
+    client, readItems, getPublishedProjects, { props: { project: {} }, params: { locale: 'es' } },
   );
 }
 
@@ -98,6 +98,6 @@ test('homepage requests the three newest published projects with deterministic t
   assert.deepEqual(requests[0].params.filter, { status: { _eq: 'published' } });
   assert.equal(requests[0].params.limit, 3);
   assert.deepEqual(requests[0].params.sort, ['-date_created', '-id']);
-  const home = await readFile(new URL('src/components/roma/Home.astro', root), 'utf8');
-  assert.match(home, /archive-grid/);
+  const cases = await readFile(new URL('src/components/roma/Cases.astro', root), 'utf8');
+  assert.match(cases, /archive-grid/);
 });

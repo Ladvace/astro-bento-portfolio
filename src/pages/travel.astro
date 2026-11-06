@@ -1,31 +1,5 @@
 ---
-import Globe from "../components/Globe";
-import BasicLayout from "../layouts/BasicLayout.astro";
+// Legacy template route: permanent redirect straight to the Spanish home (no 301 -> 302 chain).
+export const prerender = false;
+return Astro.redirect('/es/', 301);
 ---
-
-<script>
-  import { animate, type AnimationSequence } from "motion";
-
-  const sequence = [
-    [
-      ".loaderRef",
-      { opacity: [1, 0], pointerEvents: "none" },
-      { type: "spring", easing: "ease-out" },
-    ],
-  ];
-
-  animate(sequence as AnimationSequence);
-</script>
-
-<BasicLayout
-  description="A 3d globe showing countries that I have visited so far"
-  page="travel"
-  title="Gianmarco Cavallo - Visited Countries"
->
-  <a
-    class="text-white absolute bg-neutral-900 hover:bg-neutral-800 top-4 left-4 px-4 py-2 border-1 border-solid border-neutral-600 rounded-lg"
-    href="/">Back</a
-  >
-
-  <Globe client:load />
-</BasicLayout>

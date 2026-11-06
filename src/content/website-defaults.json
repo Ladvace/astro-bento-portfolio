@@ -16,8 +16,12 @@
       "symbol_label": "ROMA",
       "seo_suffix": "Roma Consulting",
       "rss_title": "ROMA — Articles & projects",
-      "data_contact_url": "mailto:henrymarinho90@gmail.com?subject=ROMA%20-%20Datos%20e%20IA",
-      "legal_contact_url": "mailto:henrymarinho90@gmail.com?subject=ROMA%20-%20Coordinacion%20de%20consulta%20juridica"
+      "data_contact_url": "mailto:henryiadatamarino@gmail.com?subject=ROMA%20-%20Datos%20e%20IA",
+      "legal_contact_url": "mailto:tatianaservicioslegales@gmail.com?subject=ROMA%20-%20Consulta%20jur%C3%ADdica",
+      "legal_whatsapp": "+573160845842",
+      "data_whatsapp": "+573138221975",
+      "contact_email": "henryiadatamarino@gmail.com",
+      "ga4_id": "G-BQD50XSC22"
     }
   ],
   "website_common": [
@@ -90,7 +94,9 @@
       "practice_contact_label": "Conversemos",
       "footer_rss_label": "RSS",
       "archive_note": "Los títulos y contenidos originales se conservan en inglés. Este archivo reúne los proyectos y artículos ya publicados, sin traducciones automáticas.",
-      "article_original_note": "Contenido original en inglés. La interfaz está en español; el artículo conserva su idioma y texto originales."
+      "article_original_note": "Contenido original en inglés. La interfaz está en español; el artículo conserva su idioma y texto originales.",
+      "privacy_title": "Política de tratamiento de datos personales",
+      "privacy_policy": "## Responsable\n\nROMA — Rodríguez Mariño Consulting es responsable del tratamiento de los datos que envías mediante este sitio.\n\n## Finalidad\n\nUsamos tu nombre, datos de contacto y mensaje únicamente para responder tu consulta y hacer seguimiento comercial de la misma.\n\n## Tus derechos\n\nConforme a la Ley 1581 de 2012, puedes conocer, actualizar, rectificar y solicitar la supresión de tus datos escribiendo al correo de contacto publicado en este sitio."
     },
     {
       "id": "en",
@@ -161,7 +167,9 @@
       "practice_contact_label": "Let’s talk",
       "footer_rss_label": "RSS",
       "archive_note": "",
-      "article_original_note": ""
+      "article_original_note": "",
+      "privacy_title": "Personal data policy",
+      "privacy_policy": "## Controller\n\nROMA — Rodríguez Mariño Consulting is responsible for the data you send through this site.\n\n## Purpose\n\nWe use your name, contact details and message only to answer your request and follow up on it.\n\n## Your rights\n\nUnder Colombian Law 1581 of 2012 you may access, update, correct or request deletion of your data by writing to the contact email published on this site."
     }
   ],
   "website_home": [
@@ -201,7 +209,36 @@
       "contact_description": "Cuéntanos el área de tu consulta y qué necesitas resolver. No envíes expedientes, documentos de identidad ni información sensible en el primer mensaje.",
       "data_contact_label": "Consultar sobre Datos e IA",
       "legal_contact_label": "Coordinar consulta jurídica",
-      "contact_note": "Coordinación inicial con Henry. El canal directo de Tatiana se añadirá cuando esté confirmado. Asesoría jurídica solo en Colombia."
+      "contact_note": "Coordinación inicial con Henry. El canal directo de Tatiana se añadirá cuando esté confirmado. Asesoría jurídica solo en Colombia.",
+      "hero_legal_cta": "Tengo una consulta legal",
+      "hero_data_cta": "Quiero crecer con datos, marketing e IA",
+      "steps_title": "Cómo trabajamos",
+      "faq_title": "Preguntas frecuentes",
+      "testimonials_title": "Lo que dicen nuestros clientes",
+      "form_title": "Cuéntanos tu caso",
+      "form_name_label": "Nombre",
+      "form_area_label": "¿En qué podemos ayudarte?",
+      "form_area_legal_option": "Consulta jurídica",
+      "form_area_data_option": "Datos, marketing e IA",
+      "form_message_label": "Mensaje",
+      "form_whatsapp_label": "WhatsApp",
+      "form_email_label": "Correo electrónico",
+      "form_contact_hint": "Déjanos tu WhatsApp o tu correo para responderte.",
+      "form_submit_label": "Enviar consulta",
+      "form_error_message": "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.",
+      "form_message_hint": "No incluyas datos sensibles (salud, antecedentes, documentos). Te pediremos lo necesario después.",
+      "form_error_name": "Escribe tu nombre (mínimo 2 caracteres).",
+      "form_error_message_length": "Tu mensaje debe tener entre 10 y 1500 caracteres.",
+      "form_error_contact": "Déjanos un WhatsApp o un correo válido para responderte.",
+      "thanks_title": "Gracias, recibimos tu mensaje",
+      "thanks_description": "Te responderemos pronto por el medio de contacto que indicaste.",
+      "thanks_back_label": "Volver al inicio",
+      "consent_label": "Autorizo el tratamiento de mis datos personales conforme a la Ley 1581 de 2012 y la política de privacidad.",
+      "consent_privacy_link_label": "Política de privacidad",
+      "consent_banner_text": "Usamos analítica para entender cómo se usa el sitio. ¿Aceptas cookies de medición?",
+      "consent_banner_accept_label": "Aceptar",
+      "consent_banner_reject_label": "Rechazar",
+      "consent_preferences_label": "Preferencias de cookies"
     },
     {
       "id": "en",
@@ -239,7 +276,36 @@
       "contact_description": "Tell us which practice you need and what you are trying to resolve. Please do not include case files, identity documents or sensitive information in your first message.",
       "data_contact_label": "Data & AI inquiry",
       "legal_contact_label": "Coordinate a legal inquiry",
-      "contact_note": "Initial coordination with Henry. Tatiana’s direct contact will be added once confirmed. Legal advice is available only in Colombia."
+      "contact_note": "Initial coordination with Henry. Tatiana’s direct contact will be added once confirmed. Legal advice is available only in Colombia.",
+      "hero_legal_cta": "I have a legal question",
+      "hero_data_cta": "I want to grow with data, marketing and AI",
+      "steps_title": "How we work",
+      "faq_title": "Frequently asked questions",
+      "testimonials_title": "What our clients say",
+      "form_title": "Tell us about your case",
+      "form_name_label": "Name",
+      "form_area_label": "How can we help?",
+      "form_area_legal_option": "Legal matter",
+      "form_area_data_option": "Data, marketing and AI",
+      "form_message_label": "Message",
+      "form_whatsapp_label": "WhatsApp",
+      "form_email_label": "Email",
+      "form_contact_hint": "Leave your WhatsApp or email so we can reply.",
+      "form_submit_label": "Send request",
+      "form_error_message": "We could not send your message. Please try again or write to us on WhatsApp.",
+      "form_message_hint": "Do not include sensitive data (health, criminal records, documents). We will ask for what we need later.",
+      "form_error_name": "Please enter your name (at least 2 characters).",
+      "form_error_message_length": "Your message must be between 10 and 1500 characters.",
+      "form_error_contact": "Please leave a valid WhatsApp number or email so we can reply.",
+      "thanks_title": "Thank you, we received your message",
+      "thanks_description": "We will reply soon through the contact method you provided.",
+      "thanks_back_label": "Back to home",
+      "consent_label": "I authorize the processing of my personal data under Colombian Law 1581 of 2012 and the privacy policy.",
+      "consent_privacy_link_label": "Privacy policy",
+      "consent_banner_text": "We use analytics to understand how the site is used. Do you accept measurement cookies?",
+      "consent_banner_accept_label": "Accept",
+      "consent_banner_reject_label": "Decline",
+      "consent_preferences_label": "Cookie preferences"
     }
   ],
   "website_practices": [
@@ -280,7 +346,20 @@
         }
       ],
       "projects_link_label": "",
-      "page_territory": "Colombia"
+      "page_territory": "Colombia",
+      "problems": [
+        {
+          "label": "Conflictos sobre propiedad o linderos de un predio"
+        },
+        {
+          "label": "Procesos de sucesión y familia"
+        },
+        {
+          "label": "Contratos civiles que necesitan revisión"
+        }
+      ],
+      "audience": "Personas y familias con asuntos civiles, de tierras o de familia en Colombia.",
+      "whatsapp_message": "Hola, tengo una consulta jurídica."
     },
     {
       "id": "es-data",
@@ -322,7 +401,20 @@
           "label": "Data science"
         }
       ],
-      "disclaimer": ""
+      "disclaimer": "",
+      "problems": [
+        {
+          "label": "Campañas de marketing digital sin medición clara"
+        },
+        {
+          "label": "Datos dispersos en hojas de cálculo"
+        },
+        {
+          "label": "Procesos manuales que se pueden automatizar con IA"
+        }
+      ],
+      "audience": "Pequeñas y medianas empresas en Latinoamérica que quieren decidir con datos.",
+      "whatsapp_message": "Hola, quiero crecer con datos, marketing e IA."
     },
     {
       "id": "en-legal",
@@ -361,7 +453,20 @@
         }
       ],
       "projects_link_label": "",
-      "page_territory": "Colombia"
+      "page_territory": "Colombia",
+      "problems": [
+        {
+          "label": "Disputes over land ownership or boundaries"
+        },
+        {
+          "label": "Inheritance and family proceedings"
+        },
+        {
+          "label": "Civil contracts that need review"
+        }
+      ],
+      "audience": "Individuals and families with civil, land or family matters in Colombia.",
+      "whatsapp_message": "Hello, I have a legal question."
     },
     {
       "id": "en-data",
@@ -403,7 +508,20 @@
           "label": "Data science"
         }
       ],
-      "disclaimer": ""
+      "disclaimer": "",
+      "problems": [
+        {
+          "label": "Digital marketing campaigns without clear measurement"
+        },
+        {
+          "label": "Data scattered across spreadsheets"
+        },
+        {
+          "label": "Manual processes that AI can automate"
+        }
+      ],
+      "audience": "Small and medium businesses in Latin America that want to decide with data.",
+      "whatsapp_message": "Hello, I want to grow with data, marketing and AI."
     }
   ],
   "website_people": [
@@ -421,7 +539,9 @@
       "linkedin_url": "",
       "experience_label": "",
       "jobs": [],
-      "tools": []
+      "tools": [],
+      "photo": "",
+      "credential": ""
     },
     {
       "id": "es-henry",
@@ -492,7 +612,9 @@
         {
           "name": "Google/Meta Ads"
         }
-      ]
+      ],
+      "photo": "",
+      "credential": ""
     },
     {
       "id": "en-tatiana",
@@ -508,7 +630,9 @@
       "linkedin_url": "",
       "experience_label": "",
       "jobs": [],
-      "tools": []
+      "tools": [],
+      "photo": "",
+      "credential": ""
     },
     {
       "id": "en-henry",
@@ -579,7 +703,134 @@
         {
           "name": "Google/Meta Ads"
         }
-      ]
+      ],
+      "photo": "",
+      "credential": ""
     }
-  ]
+  ],
+  "website_faq": [
+    {
+      "id": "f4a90000-0000-4000-8000-000000000001",
+      "locale": "es",
+      "status": "published",
+      "sort": 1,
+      "area": "legal",
+      "question": "¿Atienden casos fuera de Colombia?",
+      "answer": "No. Los servicios jurídicos se prestan exclusivamente en Colombia."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000002",
+      "locale": "es",
+      "status": "published",
+      "sort": 2,
+      "area": "legal",
+      "question": "¿Cómo es la primera conversación?",
+      "answer": "Revisamos tu situación de forma general para indicarte si podemos ayudarte y cuál sería el siguiente paso."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000003",
+      "locale": "es",
+      "status": "published",
+      "sort": 3,
+      "area": "data",
+      "question": "¿Trabajan con empresas pequeñas?",
+      "answer": "Sí. Adaptamos el alcance de analítica, marketing e IA al tamaño y la etapa de cada empresa."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000004",
+      "locale": "es",
+      "status": "published",
+      "sort": 4,
+      "area": "general",
+      "question": "¿Cómo los contacto?",
+      "answer": "Por WhatsApp del área correspondiente o mediante el formulario de contacto."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000101",
+      "locale": "en",
+      "status": "published",
+      "sort": 1,
+      "area": "legal",
+      "question": "Do you take cases outside Colombia?",
+      "answer": "No. Legal services are provided exclusively in Colombia."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000102",
+      "locale": "en",
+      "status": "published",
+      "sort": 2,
+      "area": "legal",
+      "question": "What is the first conversation like?",
+      "answer": "We review your situation in general terms to tell you whether we can help and what the next step would be."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000103",
+      "locale": "en",
+      "status": "published",
+      "sort": 3,
+      "area": "data",
+      "question": "Do you work with small businesses?",
+      "answer": "Yes. We adapt the scope of analytics, marketing and AI to each company's size and stage."
+    },
+    {
+      "id": "f4a90000-0000-4000-8000-000000000104",
+      "locale": "en",
+      "status": "published",
+      "sort": 4,
+      "area": "general",
+      "question": "How do I contact you?",
+      "answer": "Through the WhatsApp of the relevant area or the contact form."
+    }
+  ],
+  "website_steps": [
+    {
+      "id": "57e90000-0000-4000-8000-000000000001",
+      "locale": "es",
+      "status": "published",
+      "sort": 1,
+      "title": "Nos cuentas tu situación",
+      "description": "Por WhatsApp o mediante el formulario."
+    },
+    {
+      "id": "57e90000-0000-4000-8000-000000000002",
+      "locale": "es",
+      "status": "published",
+      "sort": 2,
+      "title": "Revisamos y proponemos",
+      "description": "Analizamos tu caso y te explicamos el siguiente paso."
+    },
+    {
+      "id": "57e90000-0000-4000-8000-000000000003",
+      "locale": "es",
+      "status": "published",
+      "sort": 3,
+      "title": "Trabajamos contigo",
+      "description": "Acompañamiento claro durante todo el proceso."
+    },
+    {
+      "id": "57e90000-0000-4000-8000-000000000101",
+      "locale": "en",
+      "status": "published",
+      "sort": 1,
+      "title": "Tell us your situation",
+      "description": "On WhatsApp or through the form."
+    },
+    {
+      "id": "57e90000-0000-4000-8000-000000000102",
+      "locale": "en",
+      "status": "published",
+      "sort": 2,
+      "title": "We review and propose",
+      "description": "We analyze your case and explain the next step."
+    },
+    {
+      "id": "57e90000-0000-4000-8000-000000000103",
+      "locale": "en",
+      "status": "published",
+      "sort": 3,
+      "title": "We work with you",
+      "description": "Clear support throughout the process."
+    }
+  ],
+  "website_testimonials": []
 }

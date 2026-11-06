@@ -1,0 +1,114 @@
+/* Landing de captación: usa solo tokens --roma-*. Complementa roma.css. */
+.hero{display:block;min-height:0;padding-block:64px 56px}
+.hero-copy{max-width:760px}
+.hero h1{margin-bottom:20px}
+.hero-intro{margin-bottom:28px}
+.hero-ctas{list-style:none;margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:720px}
+.hero-ctas li{display:flex;flex-direction:column;gap:8px}
+.hero-ctas small{color:var(--roma-pizarra);font-size:13px;line-height:1.4}
+.hero-ctas .roma-btn{white-space:normal;text-align:center;min-height:52px;font-size:16px}
+.hero-territory{margin:0}
+@media(max-width:639px){
+ .hero{padding-block:24px 32px}
+ .hero h1{font-size:34px;margin:8px 0 12px}
+ .hero .eyebrow{margin-bottom:0}
+ .hero-intro{font-size:16px;line-height:1.5;margin-bottom:16px}
+ .hero-ctas{grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+ .hero-ctas li{gap:4px}
+}
+.roma-btn:focus-visible,.consent-banner a:focus-visible,.wa-fab summary:focus-visible{outline:2px solid var(--roma-pompeya);outline-offset:3px}
+.practice-audience{font-size:14px}
+.practice-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;margin-top:20px}
+.practice-actions .roma-btn{white-space:normal;text-align:center;min-height:48px}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;counter-reset:step}
+.steps li{counter-increment:step;border-top:2px solid var(--roma-bronce);padding-top:20px}
+.steps li::before{content:counter(step);display:block;font:500 14px/1 var(--roma-font-mono);color:var(--roma-bronce-texto);margin-bottom:12px}
+.steps h3{font-size:22px;margin:0 0 8px}
+.steps p{color:var(--roma-pizarra);margin:0}
+.person-photo{display:grid;place-items:center;width:96px;height:96px;border-radius:50%;object-fit:cover;margin-bottom:20px;background:var(--roma-travertino);border:1px solid var(--roma-linea);font:600 32px/1 var(--roma-font-serif)}
+.person-initials.legal{color:var(--roma-pompeya)}
+.person-initials.data{color:var(--roma-cipres)}
+.person-credential{font-size:13px;color:var(--roma-pizarra);margin:-8px 0 16px}
+.testimonial-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px}
+.testimonial{margin:0;border-top:2px solid var(--roma-bronce);padding-top:20px}
+.testimonial blockquote{margin:0 0 16px;font:italic 400 22px/1.4 var(--roma-font-serif)}
+.testimonial blockquote p{margin:0}
+.testimonial figcaption{display:flex;flex-direction:column;font-size:14px;color:var(--roma-pizarra)}
+.faq-wrap{max-width:820px}
+.faq-item{border-bottom:1px solid var(--roma-linea)}
+.faq-item summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:56px;padding:12px 0;font:600 18px/1.35 var(--roma-font-serif)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font:400 24px/1 var(--roma-font-mono);color:var(--roma-pompeya);flex:none}
+.faq-item[open] summary::after{content:"\2212"}
+.faq-item p{color:var(--roma-pizarra);margin:0 0 20px;max-width:680px}
+.contact-section{align-items:start}
+.contact-section .contact-actions{margin-top:24px;max-width:420px}
+.contact-section .contact-actions .roma-btn{white-space:normal;text-align:center;min-height:48px}
+.contact-email{margin-top:20px;font-size:14px}
+.contact-email span{display:block;color:var(--roma-pizarra)}
+.contact-form-card{background:var(--roma-travertino);border:1px solid var(--roma-linea);border-top:2px solid var(--roma-pompeya);padding:28px;min-width:0}
+.contact-form-card h3{margin-top:0;font-size:24px}
+.roma-section--alt .contact-form-card{background:var(--roma-marmol)}
+.lead-form{display:grid;gap:20px}
+.lead-form .field{display:flex;flex-direction:column;gap:6px;border:0;padding:0;margin:0;min-width:0}
+.lead-form label,.lead-form legend{font:500 14px/1.4 var(--roma-font-sans);padding:0}
+.lead-form input[type=text],.lead-form input[type=tel],.lead-form input[type=email],.lead-form textarea{width:100%;min-height:48px;padding:12px;border:1px solid var(--roma-pizarra);border-radius:var(--roma-radio-sm);background:var(--roma-marmol);color:var(--roma-tinta);font:400 16px/1.4 var(--roma-font-sans)}
+.lead-form textarea{resize:vertical;min-height:112px}
+.lead-form input:focus-visible,.lead-form textarea:focus-visible{outline:2px solid var(--roma-pompeya);outline-offset:1px}
+.lead-form [aria-invalid=true]{border-color:var(--roma-error)}
+.area-options{display:flex;flex-wrap:wrap;gap:8px}
+.area-option{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:8px 14px;border:1px solid var(--roma-pizarra);border-radius:var(--roma-radio-sm);cursor:pointer;background:var(--roma-marmol)}
+.area-option:has(input:checked){border-color:var(--roma-pompeya);box-shadow:inset 0 0 0 1px var(--roma-pompeya)}
+.area-option:has(input:focus-visible){outline:2px solid var(--roma-pompeya);outline-offset:2px}
+.area-option input,.consent-label input{width:20px;height:20px;margin:0;accent-color:var(--roma-pompeya);flex:none}
+.field-pair{display:grid;gap:16px}
+.field-hint{margin:0;font-size:14px;color:var(--roma-pizarra)}
+.field-error,.form-status{margin:0;font-size:14px;color:var(--roma-error);min-height:0}
+.field-error:empty,.form-status:empty{display:none}
+.field-error::before{content:"\26A0\00a0"}
+.consent-label{display:flex!important;align-items:flex-start;gap:12px;font-weight:400!important;font-size:14px!important}
+.consent-label a{color:var(--roma-pompeya);text-underline-offset:3px}
+.lead-form button[type=submit]{min-height:52px;font-size:16px;background:var(--roma-pompeya);color:var(--roma-sobre-pompeya);border:1px solid var(--roma-pompeya)}
+.lead-form button[type=submit]:hover{background:var(--roma-pompeya-hondo)}
+.lead-form button[disabled]{opacity:.6;cursor:progress}
+.hp-field{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+/* No-JS errors: /api/lead redirects to #lead-error-<field|code>; only the targeted block shows. With JS (.js) the script reports errors instead. */
+.nojs-error{display:none;margin:0;font-size:14px;color:var(--roma-error)}
+.nojs-error:target{display:block;scroll-margin-top:96px}
+.nojs-error::before{content:"\26A0\00a0"}
+.lead-form.js .nojs-error{display:none}
+.form-fallback{margin:0}
+.form-fallback[hidden]{display:none}
+.service-problems{list-style:disc}
+.service-audience{color:var(--roma-pizarra)}
+.thanks .contact-actions{max-width:420px;margin:32px 0}
+.thanks .contact-actions [hidden]{display:none}
+.footer-bottom a{color:var(--roma-sobre-senado-suave);text-underline-offset:4px;min-height:44px;display:inline-flex;align-items:center}
+.footer-consent-link{background:none;border:0;padding:0;color:var(--roma-sobre-senado-suave);font:inherit;text-decoration:underline;text-underline-offset:4px;min-height:44px;display:inline-flex;align-items:center;cursor:pointer}
+.privacy .prose-content{margin-top:16px}
+/* WhatsApp flotante */
+.wa-fab{position:fixed;right:16px;bottom:calc(16px + var(--consent-height,0px));z-index:70;transition:opacity .15s}
+.wa-fab.is-away{opacity:0;pointer-events:none;visibility:hidden}
+.wa-fab__toggle{list-style:none;display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:0 18px;border-radius:24px;background:var(--roma-cipres);color:var(--roma-marmol);font:500 15px/1 var(--roma-font-sans);cursor:pointer;box-shadow:var(--roma-sombra-2)}
+[data-theme=dark] .wa-fab__toggle{color:var(--roma-senado)}
+.wa-fab__toggle::-webkit-details-marker{display:none}
+.wa-fab__panel{list-style:none;margin:0;padding:12px;display:grid;gap:8px;position:absolute;right:0;bottom:calc(100% + 8px);width:min(280px,calc(100vw - 32px));background:var(--roma-marmol);border:1px solid var(--roma-linea);box-shadow:var(--roma-sombra-2)}
+.wa-fab__panel .roma-btn{white-space:normal;text-align:center;min-height:48px;background:var(--roma-marmol);border-color:var(--roma-tinta);color:var(--roma-tinta)}
+.wa-fab__panel .roma-btn:hover{background:var(--roma-tinta);color:var(--roma-marmol)}
+/* Consentimiento */
+.consent-banner{position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--roma-senado);color:var(--roma-sobre-senado);padding:16px max(16px,env(safe-area-inset-left));display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px 24px;font-size:14px;line-height:1.5}
+.consent-banner[hidden]{display:none}
+.consent-banner p{margin:0;max-width:720px}
+.consent-banner a{color:var(--roma-sobre-senado);text-underline-offset:3px}
+.consent-banner__actions{display:flex;gap:12px}
+.consent-banner .roma-btn{min-height:44px;white-space:nowrap}
+.consent-banner .roma-btn--secundario{color:var(--roma-sobre-senado);border-color:var(--roma-sobre-senado)}
+.consent-banner .roma-btn--secundario:hover{background:var(--roma-sobre-senado);color:var(--roma-senado)}
+.consent-banner .roma-btn--primario{background:var(--roma-sobre-senado);color:var(--roma-senado);border-color:var(--roma-sobre-senado)}
+@media(max-width:1023px){.steps{grid-template-columns:1fr;gap:24px}.testimonial-grid{grid-template-columns:1fr}.contact-section{grid-template-columns:1fr}}
+@media(max-width:639px){.area-options{flex-direction:column}.area-option{width:100%}.contact-form-card{padding:20px 16px}.consent-banner__actions{width:100%}.consent-banner__actions .roma-btn{flex:1}.person-photo{width:80px;height:80px}}
+@media(prefers-reduced-motion:reduce){.wa-fab{transition:none}}
+.service-detail .roma-t-lead{margin:16px 0 20px}
+.service-detail .contact-actions{margin:24px 0 32px}
+.service-detail ul{margin:0 0 24px}
+.service-detail .contact-actions .roma-btn{min-height:48px;white-space:normal;text-align:center}

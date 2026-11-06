@@ -3,6 +3,8 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import ts from 'typescript';
 import { resolveWebsiteContent } from '../src/lib/website-model.mjs';
+import { buildGraph, serializeJsonLd } from '../src/lib/seo.mjs';
+import { areaContact, contactEmailHref } from '../src/lib/landing.mjs';
 import { safeExternalUrl, sanitizeArticleHtml } from '../src/lib/rich-text.mjs';
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
@@ -34,6 +36,7 @@ test('Home resolves its hero title from approved website content', async () => {
       assert.equal(locale, 'es');
       return content;
     },
+    areaContact, contactEmailHref,
   });
   assert.equal(title, 'Titular de prueba');
 });
@@ -49,7 +52,7 @@ test('archive resolves each localized heading and description without translatin
     for (const kind of ['blog', 'project']) {
       const result = await frontmatter('src/components/roma/Archive.astro', '({title,description,site,projects})', {
         locale, kind, projects,
-      }, { getWebsiteContent: async () => content });
+      }, { getWebsiteContent: async () => content, areaContact, contactEmailHref });
       assert.equal(result.title, kind === 'blog' ? content.common.blog_title : content.common.projects_title);
       assert.equal(result.description, kind === 'blog' ? content.common.blog_description : content.common.projects_description);
       assert.equal(result.site, content);
@@ -68,7 +71,7 @@ test('service pages resolve native editorial item arrays for both practices and 
       });
       const result = await frontmatter('src/pages/[locale]/servicios/[practice].astro', '({title,intro,items,area,site})', {
         locale, practice,
-      }, { getWebsiteContent: async () => content });
+      }, { getWebsiteContent: async () => content, areaContact, contactEmailHref });
       assert.equal(result.title, content.practices[practice].page_title);
       assert.equal(result.intro, content.practices[practice].page_description);
       assert.equal(result.items, content.practices[practice].page_items);
@@ -97,7 +100,7 @@ test('article keeps the original full body, sanitizer and canonical URL while re
   assert.doesNotMatch(result.body, /script|alert/);
   assert.ok(!result.repo);
   assert.equal(result.demo, 'https://example.com/project');
-  assert.equal(result.canonicalPath, 'https://portfolio.romahomestore.com/project/original/');
+  assert.equal(result.canonicalPath, '/es/blog/original/');
 });
 
 test('layout reuses supplied content and binds identity, social image and JSON-LD without altering canonical logic', async () => {
@@ -108,6 +111,7 @@ test('layout reuses supplied content and binds identity, social image and JSON-L
   content.people.tatiana.name = 'Abogada editorial';
   const navigationCalls = [];
   const boundaries = {
+    buildGraph, serializeJsonLd,
     getWebsiteContent: async () => { throw new Error('Content should be reused'); },
     navigationHref: (item, locale) => {
       navigationCalls.push([item, locale]);
@@ -117,19 +121,21 @@ test('layout reuses supplied content and binds identity, social image and JSON-L
   for (const article of [false, true]) {
     const result = await frontmatter('src/layouts/RomaLayout.astro', '({site,schema,canonical,ogImage,nav})', {
       locale: 'es', title: 'Título', description: 'Descripción', content, article,
-      canonicalPath: '/project/original/', pubDate: '2026-01-01',
+      canonicalPath: '/es/blog/original/', pubDate: '2026-01-01',
     }, boundaries);
     assert.equal(result.site, content);
-    assert.equal(result.canonical, 'https://portfolio.romahomestore.com/project/original/');
+    assert.equal(result.canonical, 'https://portfolio.romahomestore.com/es/blog/original/');
     assert.equal(result.ogImage, 'https://portfolio.romahomestore.com/editorial-social.png');
     assert.equal(result.schema['@context'], 'https://schema.org');
+    const graph = result.schema['@graph'];
+    const byType = (type) => graph.filter((node) => node['@type'] === type);
+    assert.deepEqual(byType('Person').map(person => person.name), ['Abogada editorial', 'Autor editorial']);
+    assert.equal(byType('ProfessionalService')[0].name, content.globals.full_name);
     if (article) {
-      assert.equal(result.schema.author.name, 'Autor editorial');
-      assert.equal(result.schema.publisher.name, 'Marca editorial');
-      assert.equal(result.schema.datePublished, '2026-01-01');
+      assert.equal(byType('BlogPosting')[0].datePublished, '2026-01-01');
+      assert.equal(byType('BlogPosting')[0].author['@id'], byType('Person')[1]['@id']);
     } else {
-      assert.equal(result.schema.name, 'Marca editorial');
-      assert.deepEqual(result.schema.member.map(person => person.name), ['Abogada editorial', 'Autor editorial']);
+      assert.equal(byType('WebPage').length, 1);
     }
     assert.deepEqual(result.nav.map(item => item.label), content.common.navigation.map(item => item.label));
   }
@@ -138,7 +144,7 @@ test('layout reuses supplied content and binds identity, social image and JSON-L
   let calls = 0;
   const loaded = await frontmatter('src/layouts/RomaLayout.astro', 'site', {
     locale: 'es', title: 'Título', description: 'Descripción',
-  }, { ...boundaries, getWebsiteContent: async (locale) => {
+  }, { ...boundaries, buildGraph, serializeJsonLd, getWebsiteContent: async (locale) => {
     assert.equal(locale, 'es');
     calls++;
     return content;

@@ -163,22 +163,23 @@ test('patches reject unknown aliases, unknown records, identity changes and unkn
   for (const patch of [null, [], 'title']) assert.throws(() => model.validateContentPatch('home', 'es', patch), TypeError);
 });
 
-test('collection descriptors expose the actual five baseline collections with Spanish editorial metadata', () => {
+test('collection descriptors expose the five fixed and three repeatable collections with Spanish editorial metadata', () => {
   assert.ok(Array.isArray(model.websiteCollections));
-  assert.deepEqual(model.websiteCollections.map(item => item.alias), ['globals', 'common', 'home', 'practices', 'people']);
-  const metadata = ['id', 'status', 'locale', 'key', 'record_label'];
+  assert.deepEqual(model.websiteCollections.map(item => item.alias), ['globals', 'common', 'home', 'practices', 'people', 'faq', 'steps', 'testimonials']);
+  const metadata = ['id', 'status', 'locale', 'key', 'record_label', 'sort'];
   for (const definition of model.websiteCollections) {
-    assert.deepEqual(Object.keys(definition).sort(), ['alias', 'collection', 'fields', 'label', 'records', 'singleton']);
+    assert.deepEqual(Object.keys(definition).sort(), ['alias', 'collection', 'fields', 'label', 'records', 'repeatable', 'singleton']);
     assert.equal(definition.collection, `website_${definition.alias}`);
     assert.deepEqual(definition.records, model.websiteDefaults[definition.collection]);
     assert.equal(definition.singleton, definition.alias === 'globals');
-    assert.deepEqual(definition.fields.map(field => field.key).sort(), [...new Set(definition.records.flatMap(Object.keys))].filter(key => !metadata.includes(key)).sort());
+    assert.equal(definition.repeatable, ['faq', 'steps', 'testimonials'].includes(definition.alias));
+    if (definition.records.length) assert.deepEqual(definition.fields.map(field => field.key).sort(), [...new Set(definition.records.flatMap(Object.keys))].filter(key => !metadata.includes(key)).sort());
     for (const field of definition.fields) {
       assert.ok(['string', 'list'].includes(field.type));
       assert.equal(typeof field.required, 'boolean');
       assert.ok(field.label && field.label !== field.key);
       assert.ok(field.group && !field.group.includes('_'));
-      if (field.type === 'string') assert.ok(field.maxLength <= 20000);
+      if (field.type === 'string') assert.ok(field.maxLength <= (field.format === 'markdown' ? 50000 : 20000));
       else {
         assert.ok(field.maxItems > 0);
         assert.ok(field.itemFields.every(item => item.type === 'string'));

@@ -1,0 +1,39 @@
+---
+import { areaContact, hasWhatsapp } from '../../lib/landing.mjs';
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent }
+const { site } = Astro.props;
+const { home } = site;
+const links = [
+  { area: 'legal', label: home.hero_legal_cta, ...areaContact(site, 'legal') },
+  { area: 'data', label: home.hero_data_cta, ...areaContact(site, 'data') },
+].filter((link) => link.whatsapp);
+---
+{hasWhatsapp(site) && (
+ <details class="wa-fab" data-wa-fab>
+  <summary class="wa-fab__toggle"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .5l-.4.6-.3.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l2 1c.3.1.4.2.5.3.1.2.1.8-.1 1.5Z"/></svg><span>WhatsApp</span></summary>
+  <ul class="wa-fab__panel" role="list">
+   {links.map((link) => (
+    <li><a class="roma-btn roma-btn--bloque" href={link.href} target="_blank" rel="noopener noreferrer" data-track="whatsapp_click" data-area={link.area} data-location="fab">{link.label}</a></li>
+   ))}
+  </ul>
+ </details>
+)}
+<script>
+ const fab = document.querySelector<HTMLDetailsElement>('[data-wa-fab]');
+ if (fab) {
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && fab.open) { fab.open = false; fab.querySelector('summary')?.focus(); } });
+  document.addEventListener('click', (event) => { if (fab.open && !fab.contains(event.target as Node)) fab.open = false; });
+  // Never cover the form's submit button: step aside while a lead form is on screen.
+  const forms = document.querySelectorAll('form[data-track-form]');
+  if (forms.length && 'IntersectionObserver' in window) {
+   const visible = new Set<Element>();
+   const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => (entry.isIntersecting ? visible.add(entry.target) : visible.delete(entry.target)));
+    fab.classList.toggle('is-away', visible.size > 0);
+    if (visible.size) fab.open = false;
+   });
+   forms.forEach((form) => observer.observe(form));
+  }
+ }
+</script>

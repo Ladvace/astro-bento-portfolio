@@ -1,0 +1,18 @@
+---
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent }
+const { site } = Astro.props;
+const { home, faq } = site;
+---
+{faq.length > 0 && (
+ <section id="faq" class="roma-section roma-section--alt" aria-labelledby="faq-title">
+  <div class="roma-container faq-wrap">
+   <div class="section-heading"><h2 id="faq-title">{home.faq_title}</h2></div>
+   <div class="faq-list">
+    {faq.map((item) => (
+     <details class="faq-item"><summary>{item.question}</summary><p>{item.answer}</p></details>
+    ))}
+   </div>
+  </div>
+ </section>
+)}

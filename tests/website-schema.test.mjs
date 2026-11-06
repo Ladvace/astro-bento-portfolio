@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { websiteCollections } from '../src/lib/website-model.mjs';
+import { websiteCollections as allCollections } from '../src/lib/website-model.mjs';
+
+// Fixed (stable-ID) collections; repeatable ones are covered in directus-schema.test.mjs.
+const websiteCollections = allCollections.filter(definition => !definition.repeatable);
 import { createCollectionSchema, websiteSchemas, publicReadPermission } from '../scripts/website-schema.mjs';
 
 const field = (schema, key) => schema.fields.find(item => item.field === key);
 
-test('all five collection payloads preserve model identity and native Spanish admin metadata', () => {
-  assert.equal(websiteSchemas.length, 5);
+test('all five fixed collection payloads preserve model identity and native Spanish admin metadata', () => {
+  assert.equal(websiteSchemas.length, 8);
   websiteCollections.forEach((definition, index) => {
     const schema = websiteSchemas[index];
     assert.equal(schema.collection, definition.collection);
@@ -56,18 +59,29 @@ test('editorial scalars use TEXT, Spanish labels and native groups, never HTML/c
       assert.equal(group.schema, null);
       assert.equal(group.meta.interface, 'group-detail');
       assert.deepEqual(group.meta.special, ['alias', 'no-data', 'group']);
+      if (descriptor.format === 'file') {
+        assert.equal(generated.type, 'uuid');
+        assert.equal(generated.meta.interface, 'file-image');
+        assert.deepEqual(generated.meta.special, ['file']);
+        continue;
+      }
       if (descriptor.type === 'string') {
         assert.equal(generated.type, 'text');
-        assert.ok(['input', 'input-multiline', 'select-dropdown'].includes(generated.meta.interface));
-        if (descriptor.format) {
-          assert.equal(generated.meta.interface, 'input');
-          assert.match(generated.meta.note, /URL/);
+        if (descriptor.format === 'markdown') {
+          // The only formatted editor: Markdown (no HTML), sanitized by the site when rendered.
+          assert.equal(generated.meta.interface, 'input-rich-text-md');
+          continue;
         }
+        assert.ok(['input', 'input-multiline', 'select-dropdown'].includes(generated.meta.interface));
+        if (descriptor.format) assert.equal(generated.meta.interface, 'input');
+        if (['image', 'link'].includes(descriptor.format)) assert.match(generated.meta.note, /URL/);
+        if (descriptor.format === 'phone') assert.match(generated.meta.note, /E\.164/);
         if (descriptor.format === 'image') assert.match(generated.meta.note, /Files/);
       }
     }
     assert.ok(!JSON.stringify(schema).includes('input-code'));
-    assert.ok(!JSON.stringify(schema).includes('input-rich-text'));
+    assert.ok(!JSON.stringify(schema).replaceAll('input-rich-text-md', '').includes('input-rich-text'));
+    assert.ok(!JSON.stringify(schema).includes('input-rich-text-html'));
   });
 });
 
@@ -120,6 +134,7 @@ test('public policy grants ONLY published reads and explicit editorial fields', 
       permissions: { status: { _eq: 'published' } },
       fields: ['id', 'status', ...(definition.records.some(r => Object.hasOwn(r, 'locale')) ? ['locale'] : []), ...definition.fields.map(f => f.key)],
     });
+    assert.ok(!permission.fields.includes('record_label'));
     assert.ok(!permission.fields.includes('record_label'));
     assert.ok(!permission.fields.includes('key'));
   }

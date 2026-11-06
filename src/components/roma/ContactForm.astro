@@ -1,0 +1,189 @@
+---
+import { consentParts } from '../../lib/landing.mjs';
+import { registerConsentText } from '../../lib/consent-texts.mjs';
+import { whatsappHref } from '../../lib/website-model.mjs';
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent; locale: 'es' | 'en'; area?: 'legal' | 'data'; location?: 'contact' | 'service_page'; formId?: string }
+const { site, locale, area, location = 'contact', formId = 'lead-form' } = Astro.props;
+const { home, globals } = site;
+// Optional model keys (may not exist yet in the CMS/snapshot): non-empty string or undefined.
+const opt = (record: unknown, key: string): string | undefined => {
+ const value = (record as Record<string, unknown> | undefined)?.[key];
+ return typeof value === 'string' && value.trim() ? value : undefined;
+};
+const messageHint = opt(home, 'form_message_hint');
+const msg = {
+ generic: home.form_error_message,
+ name: opt(home, 'form_error_name') ?? home.form_error_message,
+ message: opt(home, 'form_error_message_length') ?? home.form_error_message,
+ contactFormat: opt(home, 'form_error_contact') ?? home.form_error_message,
+ contactMissing: opt(home, 'form_error_contact') ?? home.form_contact_hint,
+};
+const consent = consentParts(home.consent_label, home.consent_privacy_link_label);
+// Build-time version of the exact consent text shown here; /api/lead maps it back to the text.
+const consentVersion = registerConsentText(locale, home.consent_label, opt(globals, 'consent_version'));
+const fallbackWhatsapp = whatsappHref(area === 'data' ? globals.data_whatsapp : globals.legal_whatsapp);
+const areaOptions = [{ value: 'legal', label: home.form_area_legal_option }, { value: 'data', label: home.form_area_data_option }];
+const id = (name: string) => `${formId}-${name}`;
+// No-JS error blocks: /api/lead redirects to ?error=<code>[&field=<name>]#lead-error-<field|code>, and
+// CSS :target reveals the matching block (one form per page, so these ids are fixed). With JS the
+// form gets the `js` class, these stay hidden and the script shows the per-field message instead.
+const noJsErrors: [string, string][] = [
+ ['lead-error', msg.generic], ['lead-error-name', msg.name], ['lead-error-area', msg.generic], ['lead-error-message', msg.message],
+ ['lead-error-contact_whatsapp', msg.contactFormat], ['lead-error-contact_email', msg.contactFormat], ['lead-error-contact', msg.contactMissing],
+ ['lead-error-consent', msg.generic], ['lead-error-rate_limited', msg.generic], ['lead-error-busy', msg.generic],
+];
+---
+<!-- No `novalidate` in the HTML: without JS the browser enforces required/minlength itself; the script sets noValidate to show its own messages. -->
+<form id={formId} class="lead-form" method="post" action="/api/lead" data-track-form={location} data-area={area} data-thanks={`/${locale}/gracias/`}>
+ <div class="nojs-errors">
+  {noJsErrors.map(([anchor, text]) => <p class="nojs-error" id={anchor}>{text}</p>)}
+ </div>
+ <div class="field">
+  <label for={id('name')}>{home.form_name_label}</label>
+  <input id={id('name')} name="name" type="text" autocomplete="name" required minlength="2" maxlength="120" data-msg={msg.name} aria-describedby={id('name-error')} />
+  <p class="field-error" id={id('name-error')} data-error-for="name"></p>
+ </div>
+ <fieldset class="field field-area" aria-describedby={id('area-error')}>
+  <legend>{home.form_area_label}</legend>
+  <div class="area-options">
+   {areaOptions.map((option) => (
+    <label class="area-option"><input type="radio" name="area" value={option.value} required checked={area === option.value} /><span>{option.label}</span></label>
+   ))}
+  </div>
+  <p class="field-error" id={id('area-error')} data-error-for="area"></p>
+ </fieldset>
+ <div class="field">
+  <label for={id('message')}>{home.form_message_label}</label>
+  <textarea id={id('message')} name="message" rows="4" required minlength="10" maxlength="1500" data-msg={msg.message} aria-describedby={messageHint ? `${id('message-hint')} ${id('message-error')}` : id('message-error')}></textarea>
+  {messageHint && <p class="field-hint" id={id('message-hint')}>{messageHint}</p>}
+  <p class="field-error" id={id('message-error')} data-error-for="message"></p>
+ </div>
+ <div class="field-pair" role="group" aria-labelledby={id('contact-hint')}>
+  <p class="field-hint" id={id('contact-hint')}>{home.form_contact_hint}</p>
+  <div class="field">
+   <label for={id('whatsapp')}>{home.form_whatsapp_label}</label>
+   <input id={id('whatsapp')} name="contact_whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" data-either="contact" data-msg={msg.contactFormat} aria-describedby={`${id('contact-hint')} ${id('whatsapp-error')}`} />
+   <p class="field-error" id={id('whatsapp-error')} data-error-for="contact_whatsapp"></p>
+  </div>
+  <div class="field">
+   <label for={id('email')}>{home.form_email_label}</label>
+   <input id={id('email')} name="contact_email" type="email" inputmode="email" autocomplete="email" maxlength="254" data-either="contact" data-msg={msg.contactFormat} aria-describedby={`${id('contact-hint')} ${id('email-error')}`} />
+   <p class="field-error" id={id('email-error')} data-error-for="contact_email"></p>
+  </div>
+ </div>
+ <div class="field field-consent">
+  <label class="consent-label">
+   <input type="checkbox" name="consent" value="yes" required aria-describedby={id('consent-error')} />
+   <span>{consent.before}<a href={`/${locale}/privacidad/`} target="_blank" rel="noopener">{consent.link}</a>{consent.after}</span>
+  </label>
+  <p class="field-error" id={id('consent-error')} data-error-for="consent"></p>
+ </div>
+ <!-- Honeypot: neutral name (no autofill heuristics match it), autocomplete off, not focusable, hidden from AT and off-screen. Filled => silent fake success. -->
+ <div class="hp-field" aria-hidden="true"><input type="text" name="hp_field" tabindex="-1" autocomplete="off" /></div>
+ <input type="hidden" name="locale" value={locale} />
+ <input type="hidden" name="page" value={Astro.url.pathname} />
+ <input type="hidden" name="consent_version" value={consentVersion} />
+ <input type="hidden" name="elapsed_ms" value="" />
+ <input type="hidden" name="utm_source" value="" />
+ <input type="hidden" name="utm_medium" value="" />
+ <input type="hidden" name="utm_campaign" value="" />
+ <input type="hidden" name="ga_client_id" value="" />
+ <button class="roma-btn roma-btn--primario roma-btn--bloque" type="submit">{home.form_submit_label}</button>
+ <p class="form-status" role="alert" aria-live="assertive" data-form-status data-message={msg.generic} data-contact-message={msg.contactMissing}></p>
+ {fallbackWhatsapp && <p class="form-fallback" data-form-fallback hidden><a class="roma-btn roma-btn--bloque" href={fallbackWhatsapp} target="_blank" rel="noopener" data-track="whatsapp">WhatsApp</a></p>}
+</form>
+<script>
+ // Must mirror PHONE in src/lib/lead.mjs (E.164 or local, 7-15 digits, no extensions).
+ const PHONE = /^(?:\+[1-9]\d{6,14}|\d{7,15})$/;
+ document.querySelectorAll<HTMLFormElement>('form[data-track-form]').forEach((form) => {
+  form.noValidate = true;
+  form.classList.add('js');
+  const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | null;
+  const status = form.querySelector<HTMLElement>('[data-form-status]');
+  const fallback = form.querySelector<HTMLElement>('[data-form-fallback]');
+  const button = form.querySelector<HTMLButtonElement>('button[type=submit]');
+  const elapsed = field('elapsed_ms');
+  const params = new URLSearchParams(location.search);
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) { const input = field(key); if (input) input.value = (params.get(key) || '').slice(0, 100); }
+  const either = [...form.querySelectorAll<HTMLInputElement>('[data-either]')];
+  const missingContact = status?.dataset.contactMessage || '';
+  // At least one contact channel; WhatsApp must be a plausible E.164/local number.
+  const syncContact = () => {
+   const empty = either.every((input) => !input.value.trim());
+   either.forEach((input) => {
+    input.required = empty;
+    const phone = input.name === 'contact_whatsapp' ? input.value.trim().replace(/[\s().-]/g, '') : '';
+    input.setCustomValidity(empty ? missingContact : phone && !PHONE.test(phone) ? (input.dataset.msg || '') : '');
+   });
+  };
+  either.forEach((input) => input.addEventListener('input', syncContact));
+  syncContact();
+  const errorFor = (name: string) => form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+  const messageOf = (input: HTMLInputElement) => (input.validity.customError ? input.validationMessage : input.dataset.msg || input.validationMessage);
+  const showErrors = () => {
+   let first: HTMLElement | null = null;
+   const names = new Set([...form.querySelectorAll<HTMLInputElement>('input:not([type=hidden]),textarea')].map((input) => input.name));
+   names.forEach((name) => {
+    const slot = errorFor(name);
+    if (!slot) return;
+    const controls = [...form.querySelectorAll<HTMLInputElement>(`[name="${name}"]`)];
+    const bad = controls.find((input) => !input.validity.valid);
+    // Both contact channels empty share one message: show it once, on the first.
+    const duplicate = bad && bad.dataset.either && bad !== either[0] && !either[0].validity.valid && either[0].validationMessage === bad.validationMessage;
+    slot.textContent = bad && !duplicate ? messageOf(bad) : '';
+    controls.forEach((input) => input.setAttribute('aria-invalid', String(!input.validity.valid)));
+    if (bad && !first) first = bad;
+   });
+   return first as HTMLElement | null;
+  };
+  form.addEventListener('input', (event) => {
+   const target = event.target as HTMLInputElement;
+   const slot = errorFor(target.name);
+   if (slot && target.validity.valid) { slot.textContent = ''; target.setAttribute('aria-invalid', 'false'); }
+   if (target.dataset.either) either.forEach((input) => { const other = errorFor(input.name); if (other && input.validity.valid) { other.textContent = ''; input.setAttribute('aria-invalid', 'false'); } });
+  });
+  // Server contract: { ok:false, error, field? }. error: invalid|consent|contact|forbidden|too_large|
+  // unsupported|rate_limited|busy|unavailable|server; field (with invalid): name|area|message|contact_whatsapp|contact_email.
+  const reportError = (code: string, fieldName = '') => {
+   if (!status) return;
+   const control = fieldName ? form.querySelector<HTMLInputElement>(`[name="${fieldName}"]:not([type=hidden])`) : null;
+   const slot = fieldName ? errorFor(fieldName) : null;
+   if (control && slot) {
+    slot.textContent = control.dataset.msg || status.dataset.message || '';
+    control.setAttribute('aria-invalid', 'true');
+    status.textContent = '';
+    control.focus();
+   } else {
+    status.textContent = (code === 'contact' ? status.dataset.contactMessage : status.dataset.message) || '';
+    if (code === 'contact') field('contact_whatsapp')?.focus();
+    if (code === 'consent') field('consent')?.focus();
+   }
+   if (fallback) fallback.hidden = !['rate_limited', 'busy', 'server', 'unavailable'].includes(code);
+  };
+  // No-JS-fetch fallback redirects back with ?error=<code>[&field=<name>]#lead-error-….
+  const queryError = params.get('error');
+  const queryField = params.get('field') || '';
+  if (queryError && /^[a-z_]+$/.test(queryError)) reportError(queryError, /^[a-z_]+$/.test(queryField) ? queryField : '');
+  form.addEventListener('submit', async (event) => {
+   if (status) status.textContent = '';
+   if (fallback) fallback.hidden = true;
+   if (!form.checkValidity()) { event.preventDefault(); showErrors()?.focus(); return; }
+   // Relative fill time (performance.now() since navigation): immune to a wrong client clock.
+   if (elapsed) elapsed.value = String(Math.round(performance.now()));
+   if (!window.fetch) return;
+   event.preventDefault();
+   button?.setAttribute('disabled', ''); form.setAttribute('aria-busy', 'true');
+   try {
+    const response = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new URLSearchParams(new FormData(form) as unknown as Record<string, string>) });
+    const result = await response.json();
+    if (!response.ok || !result?.ok) throw Object.assign(new Error(result?.error || 'lead'), { field: typeof result?.field === 'string' ? result.field : '' });
+    const area = (form.querySelector<HTMLInputElement>('input[name=area]:checked')?.value) || '';
+    location.assign(typeof result.redirect === 'string' && result.redirect.startsWith('/') ? result.redirect : `${form.dataset.thanks}?area=${encodeURIComponent(area)}`);
+   } catch (error) {
+    reportError(error instanceof Error ? error.message : '', (error as { field?: string })?.field || '');
+    button?.removeAttribute('disabled'); form.removeAttribute('aria-busy');
+   }
+  });
+ });
+</script>

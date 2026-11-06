@@ -1,0 +1,5532 @@
+{
+ "_note": "Fixture sintética del estado de Directus ANTES de feat/directus-schema (generada desde el modelo de 5 colecciones). No contiene secretos.",
+ "collections": [
+  {
+   "collection": "website_globals",
+   "meta": {
+    "singleton": true,
+    "icon": "public",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identidad y enlaces"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identidad y enlaces"
+     }
+    ],
+    "display_template": "{{record_label}}",
+    "note": "Contenido editorial: diseño protegido. Código, estructura, tipografías, CSS y rutas válidas no se editan aquí. Publicación estática tras compilación y despliegue aprobados.",
+    "sort": 1
+   },
+   "schema": {
+    "name": "website_globals"
+   }
+  },
+  {
+   "collection": "website_common",
+   "meta": {
+    "singleton": false,
+    "icon": "translate",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Textos comunes"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Textos comunes"
+     }
+    ],
+    "display_template": "{{record_label}}",
+    "note": "Contenido editorial: diseño protegido. Código, estructura, tipografías, CSS y rutas válidas no se editan aquí. Publicación estática tras compilación y despliegue aprobados.",
+    "sort": 2
+   },
+   "schema": {
+    "name": "website_common"
+   }
+  },
+  {
+   "collection": "website_home",
+   "meta": {
+    "singleton": false,
+    "icon": "home",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Inicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Inicio"
+     }
+    ],
+    "display_template": "{{record_label}}",
+    "note": "Contenido editorial: diseño protegido. Código, estructura, tipografías, CSS y rutas válidas no se editan aquí. Publicación estática tras compilación y despliegue aprobados.",
+    "sort": 3
+   },
+   "schema": {
+    "name": "website_home"
+   }
+  },
+  {
+   "collection": "website_practices",
+   "meta": {
+    "singleton": false,
+    "icon": "work",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Servicios"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Servicios"
+     }
+    ],
+    "display_template": "{{record_label}}",
+    "note": "Contenido editorial: diseño protegido. Código, estructura, tipografías, CSS y rutas válidas no se editan aquí. Publicación estática tras compilación y despliegue aprobados.",
+    "sort": 4
+   },
+   "schema": {
+    "name": "website_practices"
+   }
+  },
+  {
+   "collection": "website_people",
+   "meta": {
+    "singleton": false,
+    "icon": "groups",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Personas"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Personas"
+     }
+    ],
+    "display_template": "{{record_label}}",
+    "note": "Contenido editorial: diseño protegido. Código, estructura, tipografías, CSS y rutas válidas no se editan aquí. Publicación estática tras compilación y despliegue aprobados.",
+    "sort": 5
+   },
+   "schema": {
+    "name": "website_people"
+   }
+  },
+  {
+   "collection": "projects",
+   "meta": {
+    "icon": "folder"
+   },
+   "schema": {
+    "name": "projects"
+   }
+  },
+  {
+   "collection": "experience",
+   "meta": {
+    "icon": "folder"
+   },
+   "schema": {
+    "name": "experience"
+   }
+  }
+ ],
+ "fields": [
+  {
+   "collection": "website_globals",
+   "field": "id",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "hidden": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identificador estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identificador estable"
+     }
+    ],
+    "note": "ID del registro aprobado; no generar ni modificar.",
+    "sort": 1
+   },
+   "schema": {
+    "is_primary_key": true,
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "record_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre editorial del registro"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre editorial del registro"
+     }
+    ],
+    "note": "Nombre para identificar el registro en el administrador; no se muestra en la web.",
+    "sort": 2
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "status",
+   "type": "string",
+   "meta": {
+    "interface": "select-dropdown",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Estado de publicación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Estado de publicación"
+     }
+    ],
+    "options": {
+     "choices": [
+      {
+       "text": "Borrador",
+       "value": "draft"
+      },
+      {
+       "text": "Publicado",
+       "value": "published"
+      }
+     ]
+    },
+    "note": "Solo los registros publicados podrán leerse públicamente. La web estática requiere una nueva compilación.",
+    "sort": 3
+   },
+   "schema": {
+    "default_value": "draft",
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "editorial_group_1",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identidad de marca"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identidad de marca"
+     }
+    ],
+    "sort": 4
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_globals",
+   "field": "brand_name",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre de marca"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre de marca"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 5
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "full_name",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre completo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre completo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 6
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "brand_eyebrow",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identificador de marca"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identificador de marca"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 7
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "header_logo",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Logotipo de cabecera"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Logotipo de cabecera"
+     }
+    ],
+    "note": "URL pública de imagen, sin HTML. Suba el archivo a Files y pegue su URL pública; también puede conservar la ruta del recurso existente.",
+    "group": "editorial_group_1",
+    "sort": 8
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "footer_logo",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Logotipo de pie"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Logotipo de pie"
+     }
+    ],
+    "note": "URL pública de imagen, sin HTML. Suba el archivo a Files y pegue su URL pública; también puede conservar la ruta del recurso existente.",
+    "group": "editorial_group_1",
+    "sort": 9
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "symbol_image",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Símbolo de marca"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Símbolo de marca"
+     }
+    ],
+    "note": "URL pública de imagen, sin HTML. Suba el archivo a Files y pegue su URL pública; también puede conservar la ruta del recurso existente.",
+    "group": "editorial_group_1",
+    "sort": 10
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "logo_alt",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Texto alternativo del logotipo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Texto alternativo del logotipo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 11
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "home_link_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Etiqueta del enlace a inicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Etiqueta del enlace a inicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 12
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "symbol_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Etiqueta del símbolo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Etiqueta del símbolo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 13
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "editorial_group_2",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Buscadores y difusión"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Buscadores y difusión"
+     }
+    ],
+    "sort": 14
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_globals",
+   "field": "social_image",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Imagen para redes sociales"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Imagen para redes sociales"
+     }
+    ],
+    "note": "URL pública de imagen, sin HTML. Suba el archivo a Files y pegue su URL pública; también puede conservar la ruta del recurso existente.",
+    "group": "editorial_group_2",
+    "sort": 15
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "seo_suffix",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Sufijo del título SEO"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Sufijo del título SEO"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 16
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "rss_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título del canal RSS"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título del canal RSS"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 17
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "editorial_group_3",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Contacto"
+     }
+    ],
+    "sort": 18
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_globals",
+   "field": "data_contact_url",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace de contacto de datos e IA"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace de contacto de datos e IA"
+     }
+    ],
+    "note": "URL del enlace como texto, sin HTML. Use una ruta o un protocolo permitido; no cambia las rutas del sitio.",
+    "group": "editorial_group_3",
+    "sort": 19
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_globals",
+   "field": "legal_contact_url",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace de contacto jurídico"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace de contacto jurídico"
+     }
+    ],
+    "note": "URL del enlace como texto, sin HTML. Use una ruta o un protocolo permitido; no cambia las rutas del sitio.",
+    "group": "editorial_group_3",
+    "sort": 20
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "id",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "hidden": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identificador estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identificador estable"
+     }
+    ],
+    "note": "ID del registro aprobado; no generar ni modificar.",
+    "sort": 1
+   },
+   "schema": {
+    "is_primary_key": true,
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "record_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre editorial del registro"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre editorial del registro"
+     }
+    ],
+    "note": "Nombre para identificar el registro en el administrador; no se muestra en la web.",
+    "sort": 2
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "status",
+   "type": "string",
+   "meta": {
+    "interface": "select-dropdown",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Estado de publicación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Estado de publicación"
+     }
+    ],
+    "options": {
+     "choices": [
+      {
+       "text": "Borrador",
+       "value": "draft"
+      },
+      {
+       "text": "Publicado",
+       "value": "published"
+      }
+     ]
+    },
+    "note": "Solo los registros publicados podrán leerse públicamente. La web estática requiere una nueva compilación.",
+    "sort": 3
+   },
+   "schema": {
+    "default_value": "draft",
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "locale",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Idioma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Idioma"
+     }
+    ],
+    "note": "Metadato del registro aprobado; no modificar.",
+    "sort": 4
+   },
+   "schema": {
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "editorial_group_1",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Navegación y accesibilidad"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Navegación y accesibilidad"
+     }
+    ],
+    "sort": 5
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_common",
+   "field": "navigation",
+   "type": "json",
+   "meta": {
+    "interface": "list",
+    "special": [
+     "cast-json"
+    ],
+    "required": false,
+    "group": "editorial_group_1",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlaces de navegación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlaces de navegación"
+     }
+    ],
+    "note": "Añada o edite elementos mediante sus campos. Sin HTML ni editor de código JSON; el diseño permanece protegido.",
+    "options": {
+     "limit": 10,
+     "template": "{{label}}",
+     "fields": [
+      {
+       "field": "target",
+       "name": "Destino",
+       "type": "string",
+       "meta": {
+        "interface": "select-dropdown",
+        "options": {
+         "choices": [
+          {
+           "text": "Inicio",
+           "value": "home"
+          },
+          {
+           "text": "Servicios",
+           "value": "services"
+          },
+          {
+           "text": "Nosotros",
+           "value": "about"
+          },
+          {
+           "text": "Blog",
+           "value": "blog"
+          },
+          {
+           "text": "Contacto",
+           "value": "contact"
+          }
+         ]
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Destino"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Destino"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      },
+      {
+       "field": "label",
+       "name": "Texto del enlace",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Texto del enlace"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Texto del enlace"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      },
+      {
+       "field": "url",
+       "name": "URL alternativa",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 2048
+        },
+        "required": false,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "URL alternativa"
+         },
+         {
+          "language": "es-ES",
+          "translation": "URL alternativa"
+         }
+        ],
+        "note": "URL del enlace como texto, sin HTML. Use una ruta o un protocolo permitido; no cambia las rutas del sitio."
+       }
+      }
+     ]
+    },
+    "sort": 6
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "skip_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Salto al contenido"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Salto al contenido"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 7
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "navigation_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre accesible de navegación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre accesible de navegación"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 8
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "language_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Selector de idioma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Selector de idioma"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 9
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "menu_open_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Abrir menú"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Abrir menú"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 10
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "menu_close_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Cerrar menú"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Cerrar menú"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 11
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "back_home_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Volver al inicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Volver al inicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 12
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "editorial_group_2",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Pie de página"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Pie de página"
+     }
+    ],
+    "sort": 13
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_tagline",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Lema del pie"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Lema del pie"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 14
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_scope_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Encabezado del ámbito de trabajo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Encabezado del ámbito de trabajo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 15
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_data_scope",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Ámbito de datos e IA"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Ámbito de datos e IA"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 16
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_legal_scope",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Ámbito jurídico"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Ámbito jurídico"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 17
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_blog_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace al blog en el pie"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace al blog en el pie"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 18
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_contact_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Contacto en el pie"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Contacto en el pie"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 19
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_disclaimer",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Aviso del pie"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Aviso del pie"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 20
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "footer_rss_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Etiqueta del canal RSS"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Etiqueta del canal RSS"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 21
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "editorial_group_3",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Archivo y proyectos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Archivo y proyectos"
+     }
+    ],
+    "sort": 22
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_common",
+   "field": "blog_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título del blog"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título del blog"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 23
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "projects_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de proyectos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de proyectos"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 24
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "blog_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción del blog"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción del blog"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 25
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "projects_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción de proyectos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción de proyectos"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 26
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_eyebrow",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo del archivo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo del archivo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 27
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_projects_link",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace a la vista de proyectos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace a la vista de proyectos"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 28
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_blog_link",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace a la vista de artículos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace a la vista de artículos"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 29
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_entry_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Tipo de entrada del archivo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Tipo de entrada del archivo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 30
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_read_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace de lectura"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace de lectura"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 31
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_empty",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Mensaje de archivo vacío"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Mensaje de archivo vacío"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 32
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "archive_note",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nota sobre el idioma original"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nota sobre el idioma original"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 33
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "editorial_group_4",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Artículos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Artículos"
+     }
+    ],
+    "sort": 34
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_common",
+   "field": "article_description_default",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción predeterminada del artículo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción predeterminada del artículo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 35
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_back_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Volver al archivo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Volver al archivo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 36
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_eyebrow",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo del artículo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo del artículo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 37
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_by_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Prefijo de autoría"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Prefijo de autoría"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 38
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_empty_note",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Aviso de texto ampliado ausente"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Aviso de texto ampliado ausente"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 39
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_resources_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Encabezado de recursos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Encabezado de recursos"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 40
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_resource_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace de recurso"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace de recurso"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 41
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_demo_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace al proyecto en línea"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace al proyecto en línea"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 42
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_projects_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace a otros proyectos"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace a otros proyectos"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 43
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_contact_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Invitación de contacto del artículo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Invitación de contacto del artículo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 44
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "article_original_note",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nota de idioma del artículo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nota de idioma del artículo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 45
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "editorial_group_5",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Páginas de servicios"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Páginas de servicios"
+     }
+    ],
+    "sort": 46
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_common",
+   "field": "practice_process_note",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nota sobre el proceso de trabajo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nota sobre el proceso de trabajo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_5",
+    "sort": 47
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_common",
+   "field": "practice_contact_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Invitación de contacto del servicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Invitación de contacto del servicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_5",
+    "sort": 48
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "id",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "hidden": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identificador estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identificador estable"
+     }
+    ],
+    "note": "ID del registro aprobado; no generar ni modificar.",
+    "sort": 1
+   },
+   "schema": {
+    "is_primary_key": true,
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "record_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre editorial del registro"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre editorial del registro"
+     }
+    ],
+    "note": "Nombre para identificar el registro en el administrador; no se muestra en la web.",
+    "sort": 2
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "status",
+   "type": "string",
+   "meta": {
+    "interface": "select-dropdown",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Estado de publicación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Estado de publicación"
+     }
+    ],
+    "options": {
+     "choices": [
+      {
+       "text": "Borrador",
+       "value": "draft"
+      },
+      {
+       "text": "Publicado",
+       "value": "published"
+      }
+     ]
+    },
+    "note": "Solo los registros publicados podrán leerse públicamente. La web estática requiere una nueva compilación.",
+    "sort": 3
+   },
+   "schema": {
+    "default_value": "draft",
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "locale",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Idioma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Idioma"
+     }
+    ],
+    "note": "Metadato del registro aprobado; no modificar.",
+    "sort": 4
+   },
+   "schema": {
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_1",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Buscadores"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Buscadores"
+     }
+    ],
+    "sort": 5
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "seo_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título SEO de inicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título SEO de inicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 6
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "seo_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción SEO de inicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción SEO de inicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 7
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_2",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Índice de página"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Índice de página"
+     }
+    ],
+    "sort": 8
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "rail_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre del índice"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre del índice"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 9
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "rail_services",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace a servicios"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace a servicios"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 10
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "rail_team",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace al equipo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace al equipo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 11
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "rail_contact",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace a contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace a contacto"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 12
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_3",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Presentación principal"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Presentación principal"
+     }
+    ],
+    "sort": 13
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "hero_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título principal"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título principal"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 14
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "hero_accent",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Texto destacado principal"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Texto destacado principal"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 15
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "hero_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción principal"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción principal"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 16
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "hero_primary_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Acción principal"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Acción principal"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 17
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "hero_secondary_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Acción secundaria"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Acción secundaria"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 18
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "hero_territory",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Ámbito de la presentación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Ámbito de la presentación"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 19
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_4",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Firma de marca"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Firma de marca"
+     }
+    ],
+    "sort": 20
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "signature_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de la firma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de la firma"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 21
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "signature_accent",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Texto destacado de la firma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Texto destacado de la firma"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 22
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "signature_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Etiqueta de la firma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Etiqueta de la firma"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_4",
+    "sort": 23
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_5",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Servicios"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Servicios"
+     }
+    ],
+    "sort": 24
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "services_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo de servicios"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo de servicios"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_5",
+    "sort": 25
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "services_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de servicios"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de servicios"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_5",
+    "sort": 26
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_6",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Equipo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Equipo"
+     }
+    ],
+    "sort": 27
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "team_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo del equipo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo del equipo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_6",
+    "sort": 28
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "team_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título del equipo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título del equipo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_6",
+    "sort": 29
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "team_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción del equipo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción del equipo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_6",
+    "sort": 30
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_7",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Publicaciones"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Publicaciones"
+     }
+    ],
+    "sort": 31
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "publications_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo de publicaciones"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo de publicaciones"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_7",
+    "sort": 32
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "publications_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de publicaciones"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de publicaciones"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_7",
+    "sort": 33
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "archive_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace al archivo completo"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace al archivo completo"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_7",
+    "sort": 34
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "entry_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Tipo de publicación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Tipo de publicación"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_7",
+    "sort": 35
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "entry_link_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace al contenido original"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace al contenido original"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_7",
+    "sort": 36
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "original_note",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nota sobre los idiomas originales"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nota sobre los idiomas originales"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_7",
+    "sort": 37
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "editorial_group_8",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Contacto"
+     }
+    ],
+    "sort": 38
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_home",
+   "field": "contact_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo de contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo de contacto"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_8",
+    "sort": 39
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "contact_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de contacto"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_8",
+    "sort": 40
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "contact_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción de contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción de contacto"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_8",
+    "sort": 41
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "data_contact_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Acción de consulta de datos e IA"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Acción de consulta de datos e IA"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_8",
+    "sort": 42
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "legal_contact_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Acción de consulta jurídica"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Acción de consulta jurídica"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_8",
+    "sort": 43
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_home",
+   "field": "contact_note",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nota de coordinación de contacto"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nota de coordinación de contacto"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_8",
+    "sort": 44
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "id",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "hidden": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identificador estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identificador estable"
+     }
+    ],
+    "note": "ID del registro aprobado; no generar ni modificar.",
+    "sort": 1
+   },
+   "schema": {
+    "is_primary_key": true,
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "record_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre editorial del registro"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre editorial del registro"
+     }
+    ],
+    "note": "Nombre para identificar el registro en el administrador; no se muestra en la web.",
+    "sort": 2
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "status",
+   "type": "string",
+   "meta": {
+    "interface": "select-dropdown",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Estado de publicación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Estado de publicación"
+     }
+    ],
+    "options": {
+     "choices": [
+      {
+       "text": "Borrador",
+       "value": "draft"
+      },
+      {
+       "text": "Publicado",
+       "value": "published"
+      }
+     ]
+    },
+    "note": "Solo los registros publicados podrán leerse públicamente. La web estática requiere una nueva compilación.",
+    "sort": 3
+   },
+   "schema": {
+    "default_value": "draft",
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "locale",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Idioma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Idioma"
+     }
+    ],
+    "note": "Metadato del registro aprobado; no modificar.",
+    "sort": 4
+   },
+   "schema": {
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "key",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Clave estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Clave estable"
+     }
+    ],
+    "note": "Metadato del registro aprobado; no modificar.",
+    "sort": 5
+   },
+   "schema": {
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "editorial_group_1",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Tarjeta de servicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Tarjeta de servicio"
+     }
+    ],
+    "sort": 6
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_practices",
+   "field": "card_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Antetítulo de tarjeta"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Antetítulo de tarjeta"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 7
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "card_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de tarjeta"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de tarjeta"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 8
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "card_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción de tarjeta"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción de tarjeta"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 9
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "card_items",
+   "type": "json",
+   "meta": {
+    "interface": "list",
+    "special": [
+     "cast-json"
+    ],
+    "required": false,
+    "group": "editorial_group_1",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Servicios de la tarjeta"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Servicios de la tarjeta"
+     }
+    ],
+    "note": "Añada o edite elementos mediante sus campos. Sin HTML ni editor de código JSON; el diseño permanece protegido.",
+    "options": {
+     "limit": 30,
+     "template": "{{label}}",
+     "fields": [
+      {
+       "field": "label",
+       "name": "Nombre del servicio",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Nombre del servicio"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Nombre del servicio"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      }
+     ]
+    },
+    "sort": 10
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "card_link_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace de la tarjeta"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace de la tarjeta"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 11
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "editorial_group_2",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Página de servicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Página de servicio"
+     }
+    ],
+    "sort": 12
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_practices",
+   "field": "territory",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Ámbito de prestación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Ámbito de prestación"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 13
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "page_title",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Título de la página"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Título de la página"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 14
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "page_description",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Descripción de la página"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Descripción de la página"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 15
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "disclaimer",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Aviso del servicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Aviso del servicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 16
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "page_items",
+   "type": "json",
+   "meta": {
+    "interface": "list",
+    "special": [
+     "cast-json"
+    ],
+    "required": false,
+    "group": "editorial_group_2",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Servicios de la página"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Servicios de la página"
+     }
+    ],
+    "note": "Añada o edite elementos mediante sus campos. Sin HTML ni editor de código JSON; el diseño permanece protegido.",
+    "options": {
+     "limit": 30,
+     "template": "{{label}}",
+     "fields": [
+      {
+       "field": "label",
+       "name": "Nombre del servicio",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Nombre del servicio"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Nombre del servicio"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      }
+     ]
+    },
+    "sort": 17
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "projects_link_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace a proyectos del servicio"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace a proyectos del servicio"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 18
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_practices",
+   "field": "page_territory",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Territorio de la página"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Territorio de la página"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 19
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "id",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "hidden": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Identificador estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Identificador estable"
+     }
+    ],
+    "note": "ID del registro aprobado; no generar ni modificar.",
+    "sort": 1
+   },
+   "schema": {
+    "is_primary_key": true,
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "record_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre editorial del registro"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre editorial del registro"
+     }
+    ],
+    "note": "Nombre para identificar el registro en el administrador; no se muestra en la web.",
+    "sort": 2
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "status",
+   "type": "string",
+   "meta": {
+    "interface": "select-dropdown",
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Estado de publicación"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Estado de publicación"
+     }
+    ],
+    "options": {
+     "choices": [
+      {
+       "text": "Borrador",
+       "value": "draft"
+      },
+      {
+       "text": "Publicado",
+       "value": "published"
+      }
+     ]
+    },
+    "note": "Solo los registros publicados podrán leerse públicamente. La web estática requiere una nueva compilación.",
+    "sort": 3
+   },
+   "schema": {
+    "default_value": "draft",
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "locale",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Idioma"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Idioma"
+     }
+    ],
+    "note": "Metadato del registro aprobado; no modificar.",
+    "sort": 4
+   },
+   "schema": {
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "key",
+   "type": "string",
+   "meta": {
+    "interface": "input",
+    "readonly": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Clave estable"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Clave estable"
+     }
+    ],
+    "note": "Metadato del registro aprobado; no modificar.",
+    "sort": 5
+   },
+   "schema": {
+    "is_nullable": false,
+    "max_length": 64
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "editorial_group_1",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Perfil profesional"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Perfil profesional"
+     }
+    ],
+    "sort": 6
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_people",
+   "field": "label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Área profesional"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Área profesional"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 7
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "role",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Cargo y especialidad"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Cargo y especialidad"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 8
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "bio",
+   "type": "text",
+   "meta": {
+    "interface": "input-multiline",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Biografía"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Biografía"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 9
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "name",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Nombre de la persona"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Nombre de la persona"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_1",
+    "sort": 10
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "editorial_group_2",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlaces profesionales"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlaces profesionales"
+     }
+    ],
+    "sort": 11
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_people",
+   "field": "linkedin_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": true,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Etiqueta de LinkedIn"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Etiqueta de LinkedIn"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_2",
+    "sort": 12
+   },
+   "schema": {
+    "is_nullable": false
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "linkedin_url",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 2048
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Enlace de LinkedIn"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Enlace de LinkedIn"
+     }
+    ],
+    "note": "URL del enlace como texto, sin HTML. Use una ruta o un protocolo permitido; no cambia las rutas del sitio.",
+    "group": "editorial_group_2",
+    "sort": 13
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "editorial_group_3",
+   "type": "alias",
+   "meta": {
+    "interface": "group-detail",
+    "special": [
+     "alias",
+     "no-data",
+     "group"
+    ],
+    "options": {
+     "start": "open"
+    },
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Experiencia y herramientas"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Experiencia y herramientas"
+     }
+    ],
+    "sort": 14
+   },
+   "schema": null
+  },
+  {
+   "collection": "website_people",
+   "field": "experience_label",
+   "type": "text",
+   "meta": {
+    "interface": "input",
+    "options": {
+     "maxLength": 20000
+    },
+    "required": false,
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Encabezado de trayectoria"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Encabezado de trayectoria"
+     }
+    ],
+    "note": "Texto plano, sin HTML. El diseño permanece protegido.",
+    "group": "editorial_group_3",
+    "sort": 15
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "jobs",
+   "type": "json",
+   "meta": {
+    "interface": "list",
+    "special": [
+     "cast-json"
+    ],
+    "required": false,
+    "group": "editorial_group_3",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Trayectoria laboral"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Trayectoria laboral"
+     }
+    ],
+    "note": "Añada o edite elementos mediante sus campos. Sin HTML ni editor de código JSON; el diseño permanece protegido.",
+    "options": {
+     "limit": 30,
+     "template": "{{company}}",
+     "fields": [
+      {
+       "field": "company",
+       "name": "Empresa",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Empresa"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Empresa"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      },
+      {
+       "field": "role",
+       "name": "Cargo",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Cargo"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Cargo"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      },
+      {
+       "field": "year",
+       "name": "Año",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Año"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Año"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      }
+     ]
+    },
+    "sort": 16
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "website_people",
+   "field": "tools",
+   "type": "json",
+   "meta": {
+    "interface": "list",
+    "special": [
+     "cast-json"
+    ],
+    "required": false,
+    "group": "editorial_group_3",
+    "translations": [
+     {
+      "language": "en-US",
+      "translation": "Herramientas profesionales"
+     },
+     {
+      "language": "es-ES",
+      "translation": "Herramientas profesionales"
+     }
+    ],
+    "note": "Añada o edite elementos mediante sus campos. Sin HTML ni editor de código JSON; el diseño permanece protegido.",
+    "options": {
+     "limit": 50,
+     "template": "{{name}}",
+     "fields": [
+      {
+       "field": "name",
+       "name": "Nombre de herramienta",
+       "type": "string",
+       "meta": {
+        "interface": "input",
+        "options": {
+         "maxLength": 20000
+        },
+        "required": true,
+        "translations": [
+         {
+          "language": "en-US",
+          "translation": "Nombre de herramienta"
+         },
+         {
+          "language": "es-ES",
+          "translation": "Nombre de herramienta"
+         }
+        ],
+        "note": "Texto plano, sin HTML. El diseño permanece protegido."
+       }
+      }
+     ]
+    },
+    "sort": 17
+   },
+   "schema": {
+    "is_nullable": true
+   }
+  },
+  {
+   "collection": "projects",
+   "field": "id",
+   "type": "integer",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "status",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "slug",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "title",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "description",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "content",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "image",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "url",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "repo_link",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "projects",
+   "field": "date_created",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "id",
+   "type": "integer",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "status",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "company",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "role",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "description",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "start_date",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  },
+  {
+   "collection": "experience",
+   "field": "end_date",
+   "type": "string",
+   "meta": {},
+   "schema": {}
+  }
+ ],
+ "relations": [],
+ "policies": [
+  {
+   "id": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "name": "$t:public_label",
+   "admin_access": false,
+   "app_access": false
+  },
+  {
+   "id": "2f1b6c4e-0000-4000-8000-000000000001",
+   "name": "Administrator",
+   "admin_access": true,
+   "app_access": true
+  }
+ ],
+ "roles": [
+  {
+   "id": "2f1b6c4e-0000-4000-8000-0000000000a1",
+   "name": "Administrator"
+  }
+ ],
+ "access": [
+  {
+   "id": "a0000000-0000-4000-8000-000000000001",
+   "role": null,
+   "user": null,
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17"
+  },
+  {
+   "id": "a0000000-0000-4000-8000-000000000002",
+   "role": "2f1b6c4e-0000-4000-8000-0000000000a1",
+   "user": null,
+   "policy": "2f1b6c4e-0000-4000-8000-000000000001"
+  }
+ ],
+ "permissions": [
+  {
+   "id": 1,
+   "collection": "website_globals",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {
+    "status": {
+     "_eq": "published"
+    }
+   },
+   "fields": [
+    "id",
+    "status",
+    "brand_name",
+    "full_name",
+    "brand_eyebrow",
+    "header_logo",
+    "footer_logo",
+    "symbol_image",
+    "logo_alt",
+    "home_link_label",
+    "symbol_label",
+    "social_image",
+    "seo_suffix",
+    "rss_title",
+    "data_contact_url",
+    "legal_contact_url"
+   ],
+   "validation": null,
+   "presets": null
+  },
+  {
+   "id": 2,
+   "collection": "website_common",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {
+    "status": {
+     "_eq": "published"
+    }
+   },
+   "fields": [
+    "id",
+    "status",
+    "locale",
+    "navigation",
+    "skip_label",
+    "navigation_label",
+    "language_label",
+    "menu_open_label",
+    "menu_close_label",
+    "back_home_label",
+    "footer_tagline",
+    "footer_scope_label",
+    "footer_data_scope",
+    "footer_legal_scope",
+    "footer_blog_label",
+    "footer_contact_label",
+    "footer_disclaimer",
+    "footer_rss_label",
+    "blog_title",
+    "projects_title",
+    "blog_description",
+    "projects_description",
+    "archive_eyebrow",
+    "archive_projects_link",
+    "archive_blog_link",
+    "archive_entry_label",
+    "archive_read_label",
+    "archive_empty",
+    "archive_note",
+    "article_description_default",
+    "article_back_label",
+    "article_eyebrow",
+    "article_by_label",
+    "article_empty_note",
+    "article_resources_label",
+    "article_resource_label",
+    "article_demo_label",
+    "article_projects_label",
+    "article_contact_label",
+    "article_original_note",
+    "practice_process_note",
+    "practice_contact_label"
+   ],
+   "validation": null,
+   "presets": null
+  },
+  {
+   "id": 3,
+   "collection": "website_home",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {
+    "status": {
+     "_eq": "published"
+    }
+   },
+   "fields": [
+    "id",
+    "status",
+    "locale",
+    "seo_title",
+    "seo_description",
+    "rail_label",
+    "rail_services",
+    "rail_team",
+    "rail_contact",
+    "hero_title",
+    "hero_accent",
+    "hero_description",
+    "hero_primary_label",
+    "hero_secondary_label",
+    "hero_territory",
+    "signature_title",
+    "signature_accent",
+    "signature_label",
+    "services_label",
+    "services_title",
+    "team_label",
+    "team_title",
+    "team_description",
+    "publications_label",
+    "publications_title",
+    "archive_label",
+    "entry_label",
+    "entry_link_label",
+    "original_note",
+    "contact_label",
+    "contact_title",
+    "contact_description",
+    "data_contact_label",
+    "legal_contact_label",
+    "contact_note"
+   ],
+   "validation": null,
+   "presets": null
+  },
+  {
+   "id": 4,
+   "collection": "website_practices",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {
+    "status": {
+     "_eq": "published"
+    }
+   },
+   "fields": [
+    "id",
+    "status",
+    "locale",
+    "card_label",
+    "card_title",
+    "card_description",
+    "card_items",
+    "card_link_label",
+    "territory",
+    "page_title",
+    "page_description",
+    "disclaimer",
+    "page_items",
+    "projects_link_label",
+    "page_territory"
+   ],
+   "validation": null,
+   "presets": null
+  },
+  {
+   "id": 5,
+   "collection": "website_people",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {
+    "status": {
+     "_eq": "published"
+    }
+   },
+   "fields": [
+    "id",
+    "status",
+    "locale",
+    "label",
+    "role",
+    "bio",
+    "name",
+    "linkedin_label",
+    "linkedin_url",
+    "experience_label",
+    "jobs",
+    "tools"
+   ],
+   "validation": null,
+   "presets": null
+  },
+  {
+   "id": 6,
+   "collection": "projects",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {
+    "status": {
+     "_eq": "published"
+    }
+   },
+   "fields": [
+    "*"
+   ],
+   "validation": null,
+   "presets": null
+  },
+  {
+   "id": 7,
+   "collection": "experience",
+   "policy": "abf8a154-5b1c-4a46-ac9c-7300570f4f17",
+   "action": "read",
+   "permissions": {},
+   "fields": [
+    "*"
+   ],
+   "validation": null,
+   "presets": null
+  }
+ ],
+ "flows": [
+  {
+   "id": "f0000000-0000-4000-8000-000000000001",
+   "name": "Trigger Coolify Build",
+   "status": "active",
+   "trigger": "event",
+   "options": {
+    "type": "action",
+    "scope": [
+     "items.create",
+     "items.update",
+     "items.delete"
+    ],
+    "collections": [
+     "projects",
+     "website_globals",
+     "website_common",
+     "website_home",
+     "website_practices",
+     "website_people"
+    ]
+   }
+  }
+ ],
+ "items": {
+  "website_globals": [
+   {
+    "id": "global",
+    "status": "published",
+    "record_label": "Identidad y enlaces",
+    "brand_name": "ROMA",
+    "full_name": "ROMA — Rodríguez Mariño Consulting",
+    "brand_eyebrow": "RODRÍGUEZ MARIÑO CONSULTING",
+    "header_logo": "/roma/assets/logo/roma-logo-horizontal.svg",
+    "footer_logo": "/roma/assets/logo/roma-logo-horizontal-negativo.svg",
+    "symbol_image": "/roma/assets/logo/roma-simbolo-tinta.svg",
+    "social_image": "/roma/assets/social/og-image.png",
+    "logo_alt": "ROMA — Rodríguez Mariño Consulting",
+    "home_link_label": "ROMA — Home",
+    "symbol_label": "ROMA",
+    "seo_suffix": "Roma Consulting",
+    "rss_title": "ROMA — Articles & projects",
+    "data_contact_url": "mailto:henrymarinho90@gmail.com?subject=ROMA%20-%20Datos%20e%20IA",
+    "legal_contact_url": "mailto:henrymarinho90@gmail.com?subject=ROMA%20-%20Coordinacion%20de%20consulta%20juridica"
+   }
+  ],
+  "website_common": [
+   {
+    "id": "es",
+    "locale": "es",
+    "status": "published",
+    "record_label": "Español · Textos comunes",
+    "navigation": [
+     {
+      "target": "home",
+      "label": "Inicio",
+      "url": ""
+     },
+     {
+      "target": "services",
+      "label": "Servicios",
+      "url": ""
+     },
+     {
+      "target": "about",
+      "label": "Nosotros",
+      "url": ""
+     },
+     {
+      "target": "blog",
+      "label": "Blog",
+      "url": ""
+     },
+     {
+      "target": "contact",
+      "label": "Contacto",
+      "url": ""
+     }
+    ],
+    "skip_label": "Ir al contenido",
+    "navigation_label": "Navegación principal",
+    "language_label": "Idioma",
+    "menu_open_label": "Menú",
+    "menu_close_label": "Cerrar",
+    "footer_tagline": "Rigor jurídico. Precisión analítica.",
+    "footer_scope_label": "Ámbito de trabajo",
+    "footer_data_scope": "Datos e IA: Latinoamérica.",
+    "footer_legal_scope": "Servicios jurídicos: Colombia únicamente.",
+    "footer_blog_label": "Blog & proyectos",
+    "footer_contact_label": "Contacto",
+    "footer_disclaimer": "La información general no sustituye asesoría jurídica individual.",
+    "blog_title": "Artículos y casos de estudio",
+    "projects_title": "Proyectos",
+    "blog_description": "Artículos y casos de estudio publicados por Henry Mariño sobre analítica, automatización y desarrollo asistido por IA.",
+    "projects_description": "Proyectos reales de analítica de datos, inteligencia de negocios y automatización de Henry Mariño.",
+    "archive_eyebrow": "Conocimiento aplicado",
+    "archive_projects_link": "Ver como proyectos",
+    "archive_blog_link": "Ver artículos y casos de estudio",
+    "archive_entry_label": "Artículo / caso de estudio",
+    "archive_read_label": "Leer caso de estudio",
+    "archive_empty": "Todavía no hay publicaciones disponibles.",
+    "article_description_default": "Proyecto y caso de estudio de Henry Mariño.",
+    "article_back_label": "Todos los artículos y casos de estudio",
+    "article_eyebrow": "Datos · Artículos y casos de estudio",
+    "article_by_label": "Por",
+    "article_empty_note": "El CMS no incluye un texto ampliado para este proyecto.",
+    "article_resources_label": "Recursos del proyecto",
+    "article_resource_label": "Ver recurso del proyecto",
+    "article_demo_label": "Ver proyecto en línea",
+    "article_projects_label": "Explorar proyectos",
+    "article_contact_label": "Hablemos de tu proyecto",
+    "back_home_label": "Volver a inicio",
+    "practice_process_note": "Partimos de una conversación para entender tu situación y definir el alcance antes de proponer el trabajo.",
+    "practice_contact_label": "Conversemos",
+    "footer_rss_label": "RSS",
+    "archive_note": "Los títulos y contenidos originales se conservan en inglés. Este archivo reúne los proyectos y artículos ya publicados, sin traducciones automáticas.",
+    "article_original_note": "Contenido original en inglés. La interfaz está en español; el artículo conserva su idioma y texto originales."
+   },
+   {
+    "id": "en",
+    "locale": "en",
+    "status": "published",
+    "record_label": "English · Textos comunes",
+    "navigation": [
+     {
+      "target": "home",
+      "label": "Home",
+      "url": ""
+     },
+     {
+      "target": "services",
+      "label": "Services",
+      "url": ""
+     },
+     {
+      "target": "about",
+      "label": "About",
+      "url": ""
+     },
+     {
+      "target": "blog",
+      "label": "Blog",
+      "url": ""
+     },
+     {
+      "target": "contact",
+      "label": "Contact",
+      "url": ""
+     }
+    ],
+    "skip_label": "Skip to content",
+    "navigation_label": "Main navigation",
+    "language_label": "Language",
+    "menu_open_label": "Menu",
+    "menu_close_label": "Close",
+    "footer_tagline": "Legal rigor. Analytical precision.",
+    "footer_scope_label": "Where we work",
+    "footer_data_scope": "Data & AI: Latin America.",
+    "footer_legal_scope": "Legal services: Colombia only.",
+    "footer_blog_label": "Blog & projects",
+    "footer_contact_label": "Contact",
+    "footer_disclaimer": "General information is not a substitute for individual legal advice.",
+    "blog_title": "Articles and case studies",
+    "projects_title": "Projects",
+    "blog_description": "Published articles and case studies by Henry Mariño on analytics, automation and AI-assisted development.",
+    "projects_description": "Real data analytics, business intelligence and automation projects by Henry Mariño.",
+    "archive_eyebrow": "Applied knowledge",
+    "archive_projects_link": "Browse as projects",
+    "archive_blog_link": "Browse articles and case studies",
+    "archive_entry_label": "Article / case study",
+    "archive_read_label": "Read case study",
+    "archive_empty": "No published entries are available yet.",
+    "article_description_default": "Project and case study by Henry Mariño.",
+    "article_back_label": "All articles and case studies",
+    "article_eyebrow": "Data · Articles and case studies",
+    "article_by_label": "By",
+    "article_empty_note": "The CMS does not include a longer body for this project.",
+    "article_resources_label": "Project resources",
+    "article_resource_label": "View project resource",
+    "article_demo_label": "View live project",
+    "article_projects_label": "Explore projects",
+    "article_contact_label": "Let’s discuss your project",
+    "back_home_label": "Back to home",
+    "practice_process_note": "We start with a conversation to understand your situation and define the scope before proposing the work.",
+    "practice_contact_label": "Let’s talk",
+    "footer_rss_label": "RSS",
+    "archive_note": "",
+    "article_original_note": ""
+   }
+  ],
+  "website_home": [
+   {
+    "id": "es",
+    "locale": "es",
+    "status": "published",
+    "record_label": "Español · Inicio",
+    "seo_title": "ROMA — Asesoría jurídica, datos e inteligencia artificial",
+    "seo_description": "Tatiana Rodriguez y Henry Mariño. Servicios jurídicos en Colombia y consultoría de datos e IA para Latinoamérica.",
+    "rail_label": "En esta página",
+    "rail_services": "Servicios",
+    "rail_team": "Equipo",
+    "rail_contact": "Contacto",
+    "hero_title": "Rigor jurídico.",
+    "hero_accent": "Precisión analítica.",
+    "hero_description": "Dos disciplinas. Una forma de trabajar: entender tu situación, ordenar la información y acompañarte en decisiones bien fundamentadas.",
+    "hero_primary_label": "Conoce nuestros servicios",
+    "hero_secondary_label": "Quiénes somos",
+    "hero_territory": "Datos e IA · Latinoamérica / Legal · Colombia",
+    "signature_title": "Todos los datos",
+    "signature_accent": "llevan a ROMA.",
+    "signature_label": "Derecho + datos",
+    "services_label": "Servicios",
+    "services_title": "El punto de partida es tu necesidad.",
+    "team_label": "Quiénes somos",
+    "team_title": "Dos perspectivas. Trabajo con criterio.",
+    "team_description": "ROMA reúne nuestras prácticas profesionales sin confundir sus responsabilidades: cada área tiene su enfoque y su profesional a cargo.",
+    "publications_label": "Blog & proyectos",
+    "publications_title": "Trabajo que puedes explorar.",
+    "archive_label": "Ver el archivo completo",
+    "entry_label": "Datos · Caso y artículo",
+    "entry_link_label": "Leer el contenido original",
+    "original_note": "Conservamos los artículos y proyectos existentes en su idioma original; algunos están en inglés.",
+    "contact_label": "Contacto",
+    "contact_title": "Conversemos sobre tu situación.",
+    "contact_description": "Cuéntanos el área de tu consulta y qué necesitas resolver. No envíes expedientes, documentos de identidad ni información sensible en el primer mensaje.",
+    "data_contact_label": "Consultar sobre Datos e IA",
+    "legal_contact_label": "Coordinar consulta jurídica",
+    "contact_note": "Coordinación inicial con Henry. El canal directo de Tatiana se añadirá cuando esté confirmado. Asesoría jurídica solo en Colombia."
+   },
+   {
+    "id": "en",
+    "locale": "en",
+    "status": "published",
+    "record_label": "English · Inicio",
+    "seo_title": "ROMA — Legal advice, data & artificial intelligence",
+    "seo_description": "Tatiana Rodriguez and Henry Mariño. Legal services in Colombia. Data and AI consulting across Latin America.",
+    "rail_label": "On this page",
+    "rail_services": "Services",
+    "rail_team": "Team",
+    "rail_contact": "Contact",
+    "hero_title": "Legal rigor.",
+    "hero_accent": "Analytical precision.",
+    "hero_description": "Two disciplines. One approach: understand your situation, organize the information, and help you make well-grounded decisions.",
+    "hero_primary_label": "Explore our services",
+    "hero_secondary_label": "Meet the team",
+    "hero_territory": "Data & AI · Latin America / Legal · Colombia",
+    "signature_title": "All data",
+    "signature_accent": "leads to ROMA.",
+    "signature_label": "Law + data",
+    "services_label": "Services",
+    "services_title": "Your needs are the starting point.",
+    "team_label": "Who we are",
+    "team_title": "Two perspectives. Thoughtful work.",
+    "team_description": "ROMA brings our professional practices together while keeping responsibilities clear: each area has its own focus and lead professional.",
+    "publications_label": "Blog & projects",
+    "publications_title": "Work you can explore.",
+    "archive_label": "Browse the full archive",
+    "entry_label": "Data · Case study & article",
+    "entry_link_label": "Read the original",
+    "original_note": "Existing articles and projects are preserved in their original language, including English.",
+    "contact_label": "Contact",
+    "contact_title": "Let’s talk about your situation.",
+    "contact_description": "Tell us which practice you need and what you are trying to resolve. Please do not include case files, identity documents or sensitive information in your first message.",
+    "data_contact_label": "Data & AI inquiry",
+    "legal_contact_label": "Coordinate a legal inquiry",
+    "contact_note": "Initial coordination with Henry. Tatiana’s direct contact will be added once confirmed. Legal advice is available only in Colombia."
+   }
+  ],
+  "website_practices": [
+   {
+    "id": "es-legal",
+    "locale": "es",
+    "key": "legal",
+    "status": "published",
+    "record_label": "Español · Servicios · legal",
+    "card_label": "Legal · Colombia",
+    "card_title": "Asesoría jurídica",
+    "card_description": "Acompañamiento en asuntos civiles, de tierras y de familia. Una revisión clara de tu situación para definir el siguiente paso.",
+    "card_items": [
+     {
+      "label": "Derecho civil"
+     },
+     {
+      "label": "Tierras e inmuebles"
+     },
+     {
+      "label": "Derecho de familia"
+     }
+    ],
+    "card_link_label": "Ver el área jurídica",
+    "territory": "Servicios jurídicos exclusivamente en Colombia.",
+    "page_title": "Servicios jurídicos en Colombia",
+    "page_description": "Acompañamiento en asuntos civiles, de tierras y de familia, exclusivamente en Colombia.",
+    "disclaimer": "La información de este sitio es general. La atención de una consulta no supone prometer resultados ni sustituye una revisión individual.",
+    "page_items": [
+     {
+      "label": "Derecho civil"
+     },
+     {
+      "label": "Tierras e inmuebles"
+     },
+     {
+      "label": "Derecho de familia"
+     }
+    ],
+    "projects_link_label": "",
+    "page_territory": "Colombia"
+   },
+   {
+    "id": "es-data",
+    "locale": "es",
+    "key": "data",
+    "status": "published",
+    "record_label": "Español · Servicios · data",
+    "card_label": "Datos e IA · Latinoamérica",
+    "card_title": "De la información a la decisión",
+    "card_description": "Analítica, ingeniería de datos e inteligencia artificial para conectar tus fuentes de información con las decisiones de tu negocio.",
+    "card_items": [
+     {
+      "label": "Analítica y business intelligence"
+     },
+     {
+      "label": "Ingeniería y calidad de datos"
+     },
+     {
+      "label": "Automatización, IA y data science"
+     }
+    ],
+    "card_link_label": "Ver el área de datos",
+    "territory": "Colombia y otros países de Latinoamérica.",
+    "page_title": "Datos e inteligencia artificial",
+    "page_description": "Analítica, ingeniería de datos y automatización para organizaciones en Colombia y Latinoamérica.",
+    "page_territory": "Latinoamérica",
+    "projects_link_label": "Explorar proyectos reales",
+    "page_items": [
+     {
+      "label": "Analítica y business intelligence"
+     },
+     {
+      "label": "Ingeniería y calidad de datos"
+     },
+     {
+      "label": "Automatización e inteligencia artificial"
+     },
+     {
+      "label": "Data science"
+     }
+    ],
+    "disclaimer": ""
+   },
+   {
+    "id": "en-legal",
+    "locale": "en",
+    "key": "legal",
+    "status": "published",
+    "record_label": "English · Servicios · legal",
+    "card_label": "Legal · Colombia",
+    "card_title": "Legal advice",
+    "card_description": "Guidance on civil, land and family matters. A clear review of your situation to determine the next step.",
+    "card_items": [
+     {
+      "label": "Civil law"
+     },
+     {
+      "label": "Land and property"
+     },
+     {
+      "label": "Family law"
+     }
+    ],
+    "card_link_label": "Explore legal services",
+    "territory": "Legal services exclusively in Colombia.",
+    "page_title": "Legal services in Colombia",
+    "page_description": "Guidance on civil, land and family matters, exclusively in Colombia.",
+    "disclaimer": "The information on this site is general. An inquiry does not imply guaranteed results or replace an individual review.",
+    "page_items": [
+     {
+      "label": "Civil law"
+     },
+     {
+      "label": "Land and property"
+     },
+     {
+      "label": "Family law"
+     }
+    ],
+    "projects_link_label": "",
+    "page_territory": "Colombia"
+   },
+   {
+    "id": "en-data",
+    "locale": "en",
+    "key": "data",
+    "status": "published",
+    "record_label": "English · Servicios · data",
+    "card_label": "Data & AI · Latin America",
+    "card_title": "From information to decisions",
+    "card_description": "Analytics, data engineering and artificial intelligence that connect your information sources to business decisions.",
+    "card_items": [
+     {
+      "label": "Analytics and business intelligence"
+     },
+     {
+      "label": "Data engineering and quality"
+     },
+     {
+      "label": "Automation, AI and data science"
+     }
+    ],
+    "card_link_label": "Explore data services",
+    "territory": "Colombia and other Latin American countries.",
+    "page_title": "Data & artificial intelligence",
+    "page_description": "Analytics, data engineering and automation for organizations in Colombia and Latin America.",
+    "page_territory": "Latin America",
+    "projects_link_label": "Explore real projects",
+    "page_items": [
+     {
+      "label": "Analytics and business intelligence"
+     },
+     {
+      "label": "Data engineering and quality"
+     },
+     {
+      "label": "Automation and artificial intelligence"
+     },
+     {
+      "label": "Data science"
+     }
+    ],
+    "disclaimer": ""
+   }
+  ],
+  "website_people": [
+   {
+    "id": "es-tatiana",
+    "locale": "es",
+    "key": "tatiana",
+    "status": "published",
+    "record_label": "Español · Personas · tatiana",
+    "label": "Área jurídica",
+    "role": "Abogada · Civil, tierras y familia",
+    "bio": "Acompañamiento jurídico en Colombia, con atención al contexto y a las necesidades de cada consulta.",
+    "name": "Tatiana Rodriguez",
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "",
+    "experience_label": "",
+    "jobs": [],
+    "tools": []
+   },
+   {
+    "id": "es-henry",
+    "locale": "es",
+    "key": "henry",
+    "status": "published",
+    "record_label": "Español · Personas · henry",
+    "label": "Datos e inteligencia artificial",
+    "role": "Ingeniero industrial · Analítica, IA y datos",
+    "bio": "Análisis de datos, ingeniería de datos, data science y automatización. Experiencia liderando equipos de analítica y conectando indicadores con decisiones de negocio.",
+    "experience_label": "Trayectoria y herramientas de Henry",
+    "name": "Henry Mariño",
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "https://linkedin.com/in/henrymarinho90/",
+    "jobs": [
+     {
+      "company": "Fountain Forward",
+      "role": "Analytics Director",
+      "year": "2025"
+     },
+     {
+      "company": "Fountain Forward",
+      "role": "Senior Analyst",
+      "year": "2022"
+     },
+     {
+      "company": "Conduent",
+      "role": "Workforce Development Manager",
+      "year": "2022"
+     },
+     {
+      "company": "Teleperformance",
+      "role": "WFM Junior Analyst",
+      "year": "2021"
+     }
+    ],
+    "tools": [
+     {
+      "name": "SQL"
+     },
+     {
+      "name": "Python"
+     },
+     {
+      "name": "Power BI"
+     },
+     {
+      "name": "Tableau"
+     },
+     {
+      "name": "Directus"
+     },
+     {
+      "name": "Astro"
+     },
+     {
+      "name": "Git"
+     },
+     {
+      "name": "Metabase"
+     },
+     {
+      "name": "Vibe Coding"
+     },
+     {
+      "name": "Excel"
+     },
+     {
+      "name": "Google/Meta Ads"
+     }
+    ]
+   },
+   {
+    "id": "en-tatiana",
+    "locale": "en",
+    "key": "tatiana",
+    "status": "published",
+    "record_label": "English · Personas · tatiana",
+    "label": "Legal practice",
+    "role": "Lawyer · Civil, land and family matters",
+    "bio": "Legal guidance in Colombia, with attention to the context and needs of each inquiry.",
+    "name": "Tatiana Rodriguez",
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "",
+    "experience_label": "",
+    "jobs": [],
+    "tools": []
+   },
+   {
+    "id": "en-henry",
+    "locale": "en",
+    "key": "henry",
+    "status": "published",
+    "record_label": "English · Personas · henry",
+    "label": "Data & artificial intelligence",
+    "role": "Industrial engineer · Analytics, AI and data",
+    "bio": "Data analysis, data engineering, data science and automation. Experience leading analytics teams and connecting performance indicators with business decisions.",
+    "experience_label": "Henry’s experience and toolkit",
+    "name": "Henry Mariño",
+    "linkedin_label": "LinkedIn",
+    "linkedin_url": "https://linkedin.com/in/henrymarinho90/",
+    "jobs": [
+     {
+      "company": "Fountain Forward",
+      "role": "Analytics Director",
+      "year": "2025"
+     },
+     {
+      "company": "Fountain Forward",
+      "role": "Senior Analyst",
+      "year": "2022"
+     },
+     {
+      "company": "Conduent",
+      "role": "Workforce Development Manager",
+      "year": "2022"
+     },
+     {
+      "company": "Teleperformance",
+      "role": "WFM Junior Analyst",
+      "year": "2021"
+     }
+    ],
+    "tools": [
+     {
+      "name": "SQL"
+     },
+     {
+      "name": "Python"
+     },
+     {
+      "name": "Power BI"
+     },
+     {
+      "name": "Tableau"
+     },
+     {
+      "name": "Directus"
+     },
+     {
+      "name": "Astro"
+     },
+     {
+      "name": "Git"
+     },
+     {
+      "name": "Metabase"
+     },
+     {
+      "name": "Vibe Coding"
+     },
+     {
+      "name": "Excel"
+     },
+     {
+      "name": "Google/Meta Ads"
+     }
+    ]
+   }
+  ]
+ }
+}

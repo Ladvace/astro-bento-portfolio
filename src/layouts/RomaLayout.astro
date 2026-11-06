@@ -1,43 +1,43 @@
 ---
+import Analytics from '../components/roma/Analytics.astro';
 import { localizedEquivalent } from '../lib/i18n.mjs';
 import { getWebsiteContent } from '../lib/website-content';
 import { navigationHref } from '../lib/website-model.mjs';
+import { buildGraph, serializeJsonLd } from '../lib/seo.mjs';
+import WhatsAppFab from '../components/roma/WhatsAppFab.astro';
+import ConsentBanner from '../components/roma/ConsentBanner.astro';
 import '../styles/roma.css';
-interface Props { locale:'es'|'en'; title:string; description:string; canonicalPath?:string; article?:boolean; pubDate?:string; image?:string; content?:Awaited<ReturnType<typeof getWebsiteContent>> }
-const {locale,title,description,canonicalPath,article=false,pubDate,image,content} = Astro.props;
+import '../styles/landing.css';
+interface Props { locale:'es'|'en'; title:string; description:string; canonicalPath?:string; noindex?:boolean; article?:boolean; pubDate?:string; image?:string; crumbs?:{name:string;path:string}[]; content?:Awaited<ReturnType<typeof getWebsiteContent>> }
+const {locale,title,description,canonicalPath,noindex=false,article=false,pubDate,image,crumbs,content} = Astro.props;
 const site = content ?? await getWebsiteContent(locale);
 const {globals,common,people} = site;
+const preferencesLabel=(site.home as {consent_preferences_label?:string}).consent_preferences_label;
 const es=locale==='es';
 const origin=Astro.site || new URL('https://portfolio.romahomestore.com');
 const canonical = new URL(canonicalPath || Astro.url.pathname, origin).href;
 const ogImage = new URL(image || globals.social_image, origin).href;
 const nav = common.navigation.map(item=>({...item,path:navigationHref(item,locale)}));
-const schema = article ? {
- '@context':'https://schema.org','@type':'BlogPosting',headline:title,description,
- mainEntityOfPage:canonical, author:{'@type':'Person',name:people.henry.name},
- ...(pubDate && !isNaN(Date.parse(pubDate)) ? {datePublished:pubDate} : {}),
- publisher:{'@type':'Organization',name:globals.brand_name,url:origin.href},
-} : {'@context':'https://schema.org','@type':'Organization',name:globals.brand_name,url:origin.href,description,
- member:[{'@type':'Person',name:people.tatiana.name},{'@type':'Person',name:people.henry.name}]};
+const schema = buildGraph({locale,origin,site:site as any,title,description,canonical,article,pubDate,image:image?ogImage:undefined,crumbs,isHome:Astro.url.pathname===`/${locale}/`});
 ---
 <!doctype html>
 <html lang={locale}>
  <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title><meta name="description" content={description} />
-  {import.meta.env.PUBLIC_NOINDEX==='true' && <meta name="robots" content="noindex,nofollow" />}
+  {(noindex || import.meta.env.PUBLIC_NOINDEX==='true') && <meta name="robots" content="noindex,nofollow" />}
   <link rel="canonical" href={canonical} />
-  {!article && <><link rel="alternate" hreflang="es" href={new URL(localizedEquivalent(Astro.url.pathname,'es'),origin).href} /><link rel="alternate" hreflang="en" href={new URL(localizedEquivalent(Astro.url.pathname,'en'),origin).href} /><link rel="alternate" hreflang="x-default" href={new URL('/',origin).href} /></>}
+  <><link rel="alternate" hreflang="es" href={new URL(localizedEquivalent(Astro.url.pathname,'es'),origin).href} /><link rel="alternate" hreflang="en" href={new URL(localizedEquivalent(Astro.url.pathname,'en'),origin).href} /><link rel="alternate" hreflang="x-default" href={new URL(localizedEquivalent(Astro.url.pathname,'es'),origin).href} /></>
   <meta property="og:type" content={article?'article':'website'} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} /><meta property="og:image" content={ogImage} /><meta property="og:site_name" content={globals.brand_name} /><meta property="og:locale" content={es?'es_CO':'en_US'} />
   <meta name="twitter:card" content="summary_large_image" /><meta name="theme-color" content="#fbf9f5" />
   <link rel="icon" type="image/svg+xml" href="/roma/assets/favicon/favicon.svg" /><link rel="icon" href="/roma/assets/favicon/favicon.ico" /><link rel="apple-touch-icon" href="/roma/assets/favicon/apple-touch-icon.png" />
   <link rel="alternate" type="application/rss+xml" title={globals.rss_title} href="/rss.xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" />
+  <link rel="preload" href="/roma/fonts/ibm-plex-sans-var.woff2" as="font" type="font/woff2" crossorigin />
+  <style is:inline>@font-face{font-family:"IBM Plex Sans";font-style:normal;font-weight:100 700;font-display:swap;src:url(/roma/fonts/ibm-plex-sans-var.woff2) format("woff2")}@font-face{font-family:"Source Serif 4";font-style:normal;font-weight:200 900;font-display:swap;src:url(/roma/fonts/source-serif-4-var.woff2) format("woff2")}@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:400;font-display:swap;src:url(/roma/fonts/ibm-plex-mono-400.woff2) format("woff2")}@font-face{font-family:"IBM Plex Mono";font-style:normal;font-weight:500;font-display:swap;src:url(/roma/fonts/ibm-plex-mono-500.woff2) format("woff2")}</style>
   <link rel="stylesheet" href="/roma/tokens/roma-tokens.css" /><link rel="stylesheet" href="/roma/components/roma-components.css" />
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g,'\\u003c')} />
+  <script is:inline type="application/ld+json" set:html={serializeJsonLd(schema)} />
   <!-- Preserve the existing analytics property. Preview does not send analytics. -->
-  {import.meta.env.PROD && import.meta.env.PUBLIC_NOINDEX!=='true' && <><script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BQD50XSC22"></script><script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-BQD50XSC22');</script></>}
+  <Analytics ga4Id={globals.ga4_id} />
  </head>
  <body class="roma-body">
   <a class="skip-link" href="#main-content">{common.skip_label}</a>
@@ -49,7 +49,9 @@ const schema = article ? {
    </div>
   </header>
   <main id="main-content" tabindex="-1"><slot /></main>
-  <footer class="site-footer"><div class="roma-container footer-grid"><div><a href={`/${locale}/`}><img src={globals.footer_logo} alt={globals.brand_name} width="260" height="45" /></a><p>{common.footer_tagline}</p><p>{people.tatiana.name} · {people.henry.name}</p></div><div><p class="footer-title">{common.footer_scope_label}</p><p>{common.footer_data_scope}<br />{common.footer_legal_scope}</p><a href={`/${locale}/blog/`}>{common.footer_blog_label}</a><a href={`/${locale}/#contacto`}>{common.footer_contact_label}</a><a href="/rss.xml">{common.footer_rss_label}</a></div></div><div class="roma-container footer-bottom"><span>{globals.full_name}</span><span>{common.footer_disclaimer}</span></div></footer>
+  <footer class="site-footer"><div class="roma-container footer-grid"><div><a href={`/${locale}/`}><img src={globals.footer_logo} alt={globals.brand_name} width="260" height="45" /></a><p>{common.footer_tagline}</p><p>{people.tatiana.name} · {people.henry.name}</p></div><div><p class="footer-title">{common.footer_scope_label}</p><p>{common.footer_data_scope}<br />{common.footer_legal_scope}</p><a href={`/${locale}/blog/`}>{common.footer_blog_label}</a><a href={`/${locale}/#contacto`}>{common.footer_contact_label}</a><a href="/rss.xml">{common.footer_rss_label}</a></div></div><div class="roma-container footer-bottom"><span>{globals.full_name}</span><span>{common.footer_disclaimer}</span><a href={`/${locale}/privacidad/`}>{site.home.consent_privacy_link_label}</a>{preferencesLabel&&<button type="button" class="footer-consent-link" data-consent-open>{preferencesLabel}</button>}</div></footer>
+  <WhatsAppFab site={site} />
+  <ConsentBanner site={site} locale={locale} />
   <script>
    const header=document.querySelector<HTMLElement>('[data-roma-header]');
    const toggle=header?.querySelector<HTMLButtonElement>('.menu-toggle');
