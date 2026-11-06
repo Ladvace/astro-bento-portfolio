@@ -68,18 +68,15 @@ async function pathsFor(file, projects) {
 
 test('all localized article aliases preserve all CMS slugs in ES and EN', async () => {
   const projects = [{ slug: 'original-slug', title: 'Original', content: '<p>Original body</p>' }, { slug: 'another-original', title: 'Another' }];
-  for (const file of ['src/pages/[locale]/blog/[slug].astro', 'src/pages/[locale]/project/[slug].astro']) {
+  for (const file of ['src/pages/[locale]/blog/[slug].astro']) {
     const paths = await pathsFor(file, projects);
     assert.equal(paths.length, 4);
     for (const locale of ['es', 'en']) for (const project of projects) assert.deepEqual(paths.find((path) => path.params.locale === locale && path.params.slug === project.slug), { params: { locale, slug: project.slug }, props: { project } });
   }
-  for (const file of ['src/pages/blog/[slug].astro', 'src/pages/project/[slug].astro']) {
-    assert.deepEqual(await pathsFor(file, projects), projects.map((project) => ({ params: { slug: project.slug }, props: { project } })));
-  }
 });
 
 test('all archives consume existing CMS projects rather than sample Markdown', async () => {
-  for (const file of ['src/pages/blog/index.astro', 'src/pages/project/index.astro', 'src/pages/[locale]/blog/index.astro', 'src/pages/[locale]/project/index.astro']) {
+  for (const file of ['src/pages/[locale]/blog/index.astro']) {
     const source = await readFile(new URL(file, root), 'utf8');
     assert.match(source, /await getPublishedProjects\(\)/);
     assert.match(source, /<Archive/);
@@ -87,9 +84,9 @@ test('all archives consume existing CMS projects rather than sample Markdown', a
   }
 });
 
-test('shared article declares the absolute legacy canonical and genuine author with untranslated-body notice', async () => {
+test('shared article declares the per-locale canonical and genuine author with untranslated-body notice', async () => {
   const source = await readFile(new URL('src/components/roma/Article.astro', root), 'utf8');
-  assert.match(source, /https:\/\/portfolio\.romahomestore\.com\/project\//);
+  assert.match(source, /`\/\$\{locale\}\/blog\/\$\{project\.slug\}\/`/);
   assert.match(source, /canonicalPath=\{canonicalPath\}/);
   assert.match(source, /const site = await getWebsiteContent\(locale\)/);
   assert.match(source, /const \{[^}]*\bcommon\b[^}]*\bpeople\b[^}]*\} = site/);

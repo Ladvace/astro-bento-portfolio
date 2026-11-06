@@ -20,7 +20,8 @@ const { locale, project } = Astro.props;
 const site = await getWebsiteContent(locale);
 const {globals, common, people} = site;
 const es = locale === 'es';
-const canonicalPath = `https://portfolio.romahomestore.com/project/${project.slug}/`;
+const canonicalPath = `/${locale}/blog/${project.slug}/`;
+const crumbs = [{ name: globals.brand_name, path: `/${locale}/` }, { name: common.blog_title, path: `/${locale}/blog/` }, { name: project.title, path: canonicalPath }];
 const image = project.image ? `https://cms.romahomestore.com/assets/${project.image}?width=1200&height=630&fit=cover&format=webp&quality=80` : undefined;
 const body = sanitizeArticleHtml(project.content);
 const repo = safeExternalUrl(project.repo_link);
@@ -28,7 +29,7 @@ const demo = safeExternalUrl(project.url);
 const date = project.date_created ? new Date(project.date_created) : null;
 const validDate = date && !Number.isNaN(date.valueOf()) ? date : null;
 ---
-<RomaLayout locale={locale} content={site} title={`${project.title} — ${globals.seo_suffix}`} description={project.description || common.article_description_default} canonicalPath={canonicalPath} article={true} pubDate={validDate?.toISOString()} image={image}>
+<RomaLayout locale={locale} content={site} title={`${project.title} — ${globals.seo_suffix}`} description={project.description || common.article_description_default} canonicalPath={canonicalPath} article={true} crumbs={crumbs} pubDate={validDate?.toISOString()} image={image}>
   <section class="roma-container roma-section">
     <article>
       <header class="article-head">
