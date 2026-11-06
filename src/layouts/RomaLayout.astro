@@ -1,4 +1,5 @@
 ---
+import Analytics from '../components/roma/Analytics.astro';
 import { localizedEquivalent } from '../lib/i18n.mjs';
 import { getWebsiteContent } from '../lib/website-content';
 import { navigationHref } from '../lib/website-model.mjs';
@@ -32,7 +33,7 @@ const schema = buildGraph({locale,origin,site:site as any,title,description,cano
   <link rel="stylesheet" href="/roma/tokens/roma-tokens.css" /><link rel="stylesheet" href="/roma/components/roma-components.css" />
   <script is:inline type="application/ld+json" set:html={serializeJsonLd(schema)} />
   <!-- Preserve the existing analytics property. Preview does not send analytics. -->
-  {import.meta.env.PROD && import.meta.env.PUBLIC_NOINDEX!=='true' && <><script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BQD50XSC22"></script><script is:inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-BQD50XSC22');</script></>}
+  <Analytics ga4Id={globals.ga4_id} />
  </head>
  <body class="roma-body">
   <a class="skip-link" href="#main-content">{common.skip_label}</a>

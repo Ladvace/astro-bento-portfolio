@@ -1,0 +1,150 @@
+---
+/**
+ * Consent-aware measurement: PostHog (first-party /ingest proxy) + optional GA4.
+ * - PostHog loads only with PUBLIC_POSTHOG_KEY and never in noindex previews. Before consent it keeps
+ *   everything in memory (no cookies/localStorage) and session recording stays off.
+ * - GA4 loads only in production, with a ga4_id from website_globals and after explicit consent.
+ * - No personal data: custom events carry only area/location/locale; autocapture never reads input
+ *   values (posthog-js only does so with capture_value_css_selector_allowlist, which is not set).
+ */
+interface Props { ga4Id?: string }
+const { ga4Id = '' } = Astro.props;
+const noindex = import.meta.env.PUBLIC_NOINDEX === 'true';
+const posthogKey = noindex ? '' : (import.meta.env.PUBLIC_POSTHOG_KEY || '');
+const ga4 = import.meta.env.PROD && !noindex && /^G-[A-Z0-9]{4,16}$/.test(ga4Id) ? ga4Id : '';
+const config = { posthogKey, ga4 };
+---
+{(posthogKey || ga4) && <>
+ <script is:inline type="application/json" id="roma-analytics-config" set:html={JSON.stringify(config).replace(/</g, '\\u003c')} />
+ <script>
+  type Consent = 'granted' | 'denied' | null;
+  type Config = { posthogKey: string; ga4: string };
+  type PostHog = typeof import('posthog-js').default;
+  const TRACKED = new Set(['cta_click', 'whatsapp_click', 'email_click']);
+
+  const config: Config = (() => {
+   try { return JSON.parse(document.getElementById('roma-analytics-config')?.textContent || '{}'); } catch { return { posthogKey: '', ga4: '' }; }
+  })();
+  const readConsent = (): Consent => {
+   try { const value = localStorage.getItem('roma_consent'); return value === 'granted' || value === 'denied' ? value : null; } catch { return null; }
+  };
+  const pageLocale = () => (document.documentElement.lang === 'en' ? 'en' : 'es');
+  let consent = readConsent();
+
+  // ---------------------------------------------------------------- GA4 (only after consent)
+  let ga4Loaded = false;
+  function loadGa4() {
+   if (!config.ga4 || ga4Loaded) return;
+   ga4Loaded = true;
+   const w = window as unknown as { dataLayer: unknown[]; gtag: (...args: unknown[]) => void } & Record<string, unknown>;
+   w[`ga-disable-${config.ga4}`] = false;
+   w.dataLayer = w.dataLayer || [];
+   w.gtag = function gtag() { w.dataLayer.push(arguments); };
+   w.gtag('js', new Date());
+   w.gtag('config', config.ga4, { anonymize_ip: true });
+   const script = document.createElement('script');
+   script.async = true;
+   script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(config.ga4)}`;
+   document.head.appendChild(script);
+  }
+  function disableGa4() {
+   if (!config.ga4) return;
+   (window as unknown as Record<string, unknown>)[`ga-disable-${config.ga4}`] = true;
+  }
+
+  // ---------------------------------------------------------------- PostHog
+  let posthog: PostHog | null = null;
+  const queue: [string, Record<string, unknown>][] = [];
+  function capture(event: string, properties: Record<string, unknown>) {
+   if (posthog) posthog.capture(event, properties); else if (config.posthogKey && queue.length < 50) queue.push([event, properties]);
+  }
+  function clearPosthogStorage() {
+   try { Object.keys(localStorage).filter(key => key.startsWith('ph_')).forEach(key => localStorage.removeItem(key)); } catch { /* storage blocked */ }
+   document.cookie.split(';').map(part => part.split('=')[0].trim()).filter(name => name.startsWith('ph_'))
+    .forEach(name => { document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`; });
+  }
+  function fillDistinctId() {
+   if (!posthog) return;
+   const id = posthog.get_distinct_id();
+   document.querySelectorAll<HTMLInputElement>('input[name="posthog_distinct_id"]').forEach(input => { input.value = id; });
+  }
+  async function initPosthog() {
+   if (!config.posthogKey) return;
+   const { default: ph } = await import('posthog-js');
+   const granted = consent === 'granted';
+   ph.init(config.posthogKey, {
+    api_host: '/ingest',
+    ui_host: 'https://eu.posthog.com',
+    persistence: granted ? 'localStorage+cookie' : 'memory',
+    autocapture: true,
+    capture_pageview: true,
+    capture_pageleave: true,
+    disable_session_recording: !granted,
+    session_recording: { maskAllInputs: true },
+    person_profiles: 'identified_only',
+   });
+   posthog = ph;
+   queue.splice(0).forEach(([event, properties]) => ph.capture(event, properties));
+   fillDistinctId();
+  }
+
+  function applyConsent(value: Consent) {
+   consent = value;
+   if (value === 'granted') {
+    loadGa4();
+    if (posthog) {
+     posthog.set_config({ persistence: 'localStorage+cookie' });
+     posthog.opt_in_capturing();
+     posthog.startSessionRecording();
+    }
+   } else if (value === 'denied') {
+    disableGa4();
+    if (posthog) {
+     posthog.stopSessionRecording();
+     posthog.set_config({ persistence: 'memory' });
+    }
+    clearPosthogStorage();
+   }
+  }
+
+  window.addEventListener('roma:consent', event => {
+   const detail = (event as CustomEvent).detail;
+   if (detail === 'granted' || detail === 'denied') applyConsent(detail);
+  });
+
+  // ---------------------------------------------------------------- Funnel events (no PII)
+  document.addEventListener('click', event => {
+   const target = event.target as Element | null;
+   const tracked = target?.closest<HTMLElement>('[data-track]');
+   if (tracked && TRACKED.has(tracked.dataset.track || '')) {
+    capture(tracked.dataset.track as string, { area: tracked.dataset.area || null, location: tracked.dataset.location || null, locale: pageLocale() });
+   }
+   const lang = target?.closest<HTMLElement>('[data-locale]');
+   if (lang && (lang.dataset.locale === 'es' || lang.dataset.locale === 'en')) {
+    capture('lang_switch', { from: pageLocale(), to: lang.dataset.locale });
+   }
+  }, { capture: true });
+
+  const startedForms = new WeakSet<HTMLFormElement>();
+  document.addEventListener('input', event => {
+   const form = (event.target as Element | null)?.closest<HTMLFormElement>('form[data-track-form]');
+   if (!form || startedForms.has(form)) return;
+   startedForms.add(form);
+   capture('form_started', { area: areaOf(form), locale: pageLocale() });
+  }, { capture: true });
+
+  function areaOf(form: HTMLFormElement) {
+   const area = new FormData(form).get('area');
+   return area === 'legal' || area === 'data' ? area : null;
+  }
+  document.addEventListener('submit', event => {
+   const form = (event.target as Element | null)?.closest<HTMLFormElement>('form[data-track-form]');
+   if (!form) return;
+   fillDistinctId();
+   capture('form_submitted', { area: areaOf(form), locale: pageLocale() });
+  }, { capture: true });
+
+  if (consent === 'granted') loadGa4();
+  initPosthog().catch(() => { /* analytics must never break the page */ });
+ </script>
+</>}
