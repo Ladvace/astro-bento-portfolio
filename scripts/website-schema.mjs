@@ -243,7 +243,8 @@ export const leadsSchema = (() => {
     leadField('crm_status', 'string', 'Estado en Twenty CRM', { maxLength: 16, required: true, choices: crmStatusChoices, defaultValue: 'pending', readonly: true }),
     leadField('twenty_person_id', 'string', 'Twenty: persona', { maxLength: 64, readonly: true }),
     leadField('twenty_opportunity_id', 'string', 'Twenty: oportunidad', { maxLength: 64, readonly: true }),
-    leadField('crm_error', 'text', 'Error de sincronización CRM', { readonly: true, width: 'full' }),
+    leadField('crm_error', 'text', 'Error de sincronización CRM', { readonly: true, width: 'full', note: 'Solo paso, estado HTTP y código de error (p. ej. «ensure_opp: HTTP 500 InternalServerErrorException»). Nunca texto libre del CRM.' }),
+    leadField('twenty_note_id', 'string', 'Twenty: nota', { maxLength: 64, readonly: true, note: 'Lo rellena el Flow; los reintentos reutilizan esta nota en lugar de crear otra.' }),
   ];
   fields[0].schema = { is_primary_key: true, is_nullable: false };
   fields.forEach((field, sort) => { field.meta.sort = sort + 1; });
@@ -286,14 +287,39 @@ export function leadWriterPermissions(policyId) {
   }];
 }
 
+/**
+ * Media folder for public website files (team photos). Reused BY NAME at the root when it exists;
+ * the stable id is only used to create it. Files outside it are never readable anonymously.
+ */
+export const websiteFolder = Object.freeze({ id: '6c1f3b0e-2a51-4c3e-9f0a-1d7e5b2c4a05', name: 'website', parent: null });
+
+/** File metadata the build/site needs for an asset; nothing else (no uploader, no storage path). */
+export const publicFileFields = ['id', 'type', 'filename_download', 'width', 'height', 'title'];
+
+/** Anonymous read of files in the "website" folder only (photos rendered through /assets/<id>). */
+export function publicFilesPermission(policyId, folderId) {
+  if (typeof policyId !== 'string' || !policyId.trim()) throw new TypeError('Se requiere el ID de la política pública');
+  if (typeof folderId !== 'string' || !folderId.trim()) throw new TypeError('Se requiere el ID de la carpeta website');
+  return { collection: 'directus_files', policy: policyId, action: 'read', permissions: { folder: { _eq: folderId } }, fields: [...publicFileFields], validation: null, presets: null };
+}
+
 /** Least privilege for the legal editor. Henry keeps the Administrator role. */
-export function editorLegalPermissions(policyId) {
+export function editorLegalPermissions(policyId, folderId = websiteFolder.id) {
   const def = alias => websiteCollections.find(item => item.alias === alias);
   const editorial = alias => def(alias).fields.map(field => field.key);
   const rowFields = alias => ['locale', 'status', 'sort', ...editorial(alias)];
   const legal = { area: { _eq: 'legal' } };
+  // Testimonials of a law practice (Ley 1123/2007, secreto profesional): the editor drafts, an
+  // administrator reviews and publishes. She can neither publish nor edit an already published one.
+  const legalDraft = { _and: [{ area: { _eq: 'legal' } }, { status: { _eq: 'draft' } }] };
   const p = (collection, action, fields, permissions = {}, validation = null) => ({ collection, policy: policyId, action, fields, permissions, validation, presets: null });
   const readAll = collection => p(collection, 'read', ['*']);
+  const repeatable = (alias, rowFilter) => [
+    readAll(`website_${alias}`),
+    p(`website_${alias}`, 'create', rowFields(alias), {}, rowFilter),
+    p(`website_${alias}`, 'update', rowFields(alias), rowFilter, rowFilter),
+    p(`website_${alias}`, 'delete', ['*'], legal),
+  ];
   return [
     readAll('website_globals'), p('website_globals', 'update', ['legal_whatsapp']),
     readAll('website_common'),
@@ -301,16 +327,13 @@ export function editorLegalPermissions(policyId) {
     readAll('website_practices'), p('website_practices', 'update', ['status', ...editorial('practices')], { key: { _eq: 'legal' } }),
     readAll('website_people'), p('website_people', 'update', ['status', ...editorial('people')], { key: { _eq: 'tatiana' } }),
     readAll('website_steps'),
-    ...['faq', 'testimonials'].flatMap(alias => [
-      readAll(`website_${alias}`),
-      p(`website_${alias}`, 'create', rowFields(alias), {}, legal),
-      p(`website_${alias}`, 'update', rowFields(alias), legal, legal),
-      p(`website_${alias}`, 'delete', ['*'], legal),
-    ]),
+    ...repeatable('faq', legal),
+    ...repeatable('testimonials', legalDraft),
     p('leads', 'read', ['*'], legal),
     p('leads', 'update', ['status'], legal),
-    // Photo upload for her own profile. Files stay private unless the public policy reads them.
-    readAll('directus_files'),
+    // Files: she sees the public "website" folder and her own uploads, nothing else (client documents
+    // uploaded by others stay invisible). Photos must be placed in the "website" folder to be public.
+    p('directus_files', 'read', ['*'], { _or: [{ folder: { _eq: folderId } }, { uploaded_by: { _eq: '$CURRENT_USER' } }] }),
     p('directus_files', 'create', ['*']),
     p('directus_files', 'update', ['*'], { uploaded_by: { _eq: '$CURRENT_USER' } }),
   ];

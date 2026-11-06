@@ -226,6 +226,10 @@
       "form_contact_hint": "Déjanos tu WhatsApp o tu correo para responderte.",
       "form_submit_label": "Enviar consulta",
       "form_error_message": "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.",
+      "form_message_hint": "No incluyas datos sensibles (salud, antecedentes, documentos). Te pediremos lo necesario después.",
+      "form_error_name": "Escribe tu nombre (mínimo 2 caracteres).",
+      "form_error_message_length": "Tu mensaje debe tener entre 10 y 1500 caracteres.",
+      "form_error_contact": "Déjanos un WhatsApp o un correo válido para responderte.",
       "thanks_title": "Gracias, recibimos tu mensaje",
       "thanks_description": "Te responderemos pronto por el medio de contacto que indicaste.",
       "thanks_back_label": "Volver al inicio",
@@ -233,7 +237,8 @@
       "consent_privacy_link_label": "Política de privacidad",
       "consent_banner_text": "Usamos analítica para entender cómo se usa el sitio. ¿Aceptas cookies de medición?",
       "consent_banner_accept_label": "Aceptar",
-      "consent_banner_reject_label": "Rechazar"
+      "consent_banner_reject_label": "Rechazar",
+      "consent_preferences_label": "Preferencias de cookies"
     },
     {
       "id": "en",
@@ -288,6 +293,10 @@
       "form_contact_hint": "Leave your WhatsApp or email so we can reply.",
       "form_submit_label": "Send request",
       "form_error_message": "We could not send your message. Please try again or write to us on WhatsApp.",
+      "form_message_hint": "Do not include sensitive data (health, criminal records, documents). We will ask for what we need later.",
+      "form_error_name": "Please enter your name (at least 2 characters).",
+      "form_error_message_length": "Your message must be between 10 and 1500 characters.",
+      "form_error_contact": "Please leave a valid WhatsApp number or email so we can reply.",
       "thanks_title": "Thank you, we received your message",
       "thanks_description": "We will reply soon through the contact method you provided.",
       "thanks_back_label": "Back to home",
@@ -295,7 +304,8 @@
       "consent_privacy_link_label": "Privacy policy",
       "consent_banner_text": "We use analytics to understand how the site is used. Do you accept measurement cookies?",
       "consent_banner_accept_label": "Accept",
-      "consent_banner_reject_label": "Decline"
+      "consent_banner_reject_label": "Decline",
+      "consent_preferences_label": "Cookie preferences"
     }
   ],
   "website_practices": [
