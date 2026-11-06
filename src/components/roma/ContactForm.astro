@@ -57,7 +57,7 @@ const id = (name: string) => `${formId}-${name}`;
  <input type="hidden" name="utm_campaign" value="" />
  <input type="hidden" name="posthog_distinct_id" value="" />
  <button class="roma-btn roma-btn--primario roma-btn--bloque" type="submit">{home.form_submit_label}</button>
- <p class="form-status" role="alert" aria-live="assertive" data-form-status data-message={home.form_error_message}></p>
+ <p class="form-status" role="alert" aria-live="assertive" data-form-status data-message={home.form_error_message} data-contact-message={home.form_contact_hint}></p>
 </form>
 <script>
  document.querySelectorAll<HTMLFormElement>('form[data-track-form]').forEach((form) => {
@@ -100,6 +100,17 @@ const id = (name: string) => `${formId}-${name}`;
    if (slot && target.validity.valid) { slot.textContent = ''; target.setAttribute('aria-invalid', 'false'); }
    if (target.dataset.either) either.forEach((input) => { const other = errorFor(input.name); if (other && input.validity.valid) { other.textContent = ''; input.setAttribute('aria-invalid', 'false'); } });
   });
+  // Server codes: invalid|consent|contact|forbidden|too_large|unsupported|rate_limited|unavailable|server.
+  // Only `contact` has its own text (the contact hint); the rest share the generic form error.
+  const reportError = (code: string) => {
+   if (!status) return;
+   status.textContent = (code === 'contact' ? status.dataset.contactMessage : status.dataset.message) || '';
+   if (code === 'contact') field('contact_whatsapp')?.focus();
+   if (code === 'consent') field('consent')?.focus();
+  };
+  // No-JS fallback redirects back with ?error=<code>#contacto.
+  const queryError = params.get('error');
+  if (queryError && /^[a-z_]+$/.test(queryError)) reportError(queryError);
   form.addEventListener('submit', async (event) => {
    if (status) status.textContent = '';
    if (!form.checkValidity()) { event.preventDefault(); showErrors()?.focus(); return; }
@@ -112,8 +123,8 @@ const id = (name: string) => `${formId}-${name}`;
     if (!response.ok || !result?.ok) throw new Error(result?.error || 'lead');
     const area = (form.querySelector<HTMLInputElement>('input[name=area]:checked')?.value) || '';
     location.assign(typeof result.redirect === 'string' && result.redirect.startsWith('/') ? result.redirect : `${form.dataset.thanks}?area=${encodeURIComponent(area)}`);
-   } catch {
-    if (status) status.textContent = status.dataset.message || '';
+   } catch (error) {
+    reportError(error instanceof Error ? error.message : '');
     button?.removeAttribute('disabled'); form.removeAttribute('aria-busy');
    }
   });
