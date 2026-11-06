@@ -20,7 +20,7 @@ test('team shows a Directus photo when present, initials otherwise, and both Lin
  assert.match(team, /data-professional=\{key\}/);
  for (const locale of ['es', 'en']) {
   const { people } = resolveWebsiteContent({}, locale);
-  assert.equal(people.tatiana.name, 'Tatiana Rodriguez');
+  assert.equal(people.tatiana.name, 'Tatiana Rodríguez');
   assert.equal(people.henry.name, 'Henry Mariño');
  }
 });

@@ -112,7 +112,7 @@ test('new landing keys exist in ES/EN defaults, are optional and publicly readab
   }
   const es = home.records.find(r => r.locale === 'es');
   const en = home.records.find(r => r.locale === 'en');
-  assert.equal(es.form_message_hint, 'No incluyas datos sensibles (salud, antecedentes, documentos). Te pediremos lo necesario después.');
+  assert.equal(es.form_message_hint, 'Máximo 1500 caracteres. No incluyas números de documento, datos de salud ni detalles sensibles; los revisaremos en la conversación.');
   assert.equal(es.consent_preferences_label, 'Preferencias de cookies');
   assert.equal(en.consent_preferences_label, 'Cookie preferences');
 });
@@ -154,7 +154,7 @@ test('applying the plan in memory converges: the second run plans 0 changes and 
     assert.equal(memory.requests.filter(r => !['GET', 'POST', 'PATCH'].includes(r.method)).length, 0);
     assert.ok(memory.state.collections.some(c => c.collection === 'experience'));
     assert.ok(!memory.state.permissions.some(p => p.collection === 'leads' && p.policy === 'abf8a154-5b1c-4a46-ac9c-7300570f4f17'));
-    if (seed) assert.equal(memory.state.items.website_faq.length, 8);
+    if (seed) assert.equal(memory.state.items.website_faq.length, 12);
   }
 });
 
