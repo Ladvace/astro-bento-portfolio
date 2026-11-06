@@ -100,3 +100,62 @@ Guardar en Directus no cambia al instante la web pública. Mientras esta rama no
 Estas pruebas no equivalen a un despliegue de producción: la activación y el flujo de publicación siguen siendo un paso separado.
 
 PostHog, SEO/Meta y OpenCode quedan como integraciones futuras: **no se han instalado** en este trabajo. Esto no elimina ni modifica las etiquetas o textos SEO ya existentes.
+
+## Panel de la landing y bandeja de leads
+
+Esta sección describe el esquema que añade `scripts/directus-schema.mjs` (rama `feat/directus-schema`). **Aún no se ha aplicado en producción.**
+
+### Quién edita qué
+
+| Persona | Rol/política Directus | Puede |
+| --- | --- | --- |
+| Henry | Administrator (sin cambios) | Todo: textos compartidos, área de datos, pasos, GA4, permisos y Flows. |
+| Tatiana | `editor-legal` (app access, sin admin) | Leer todas las colecciones `website_*`; editar `website_practices` con `key = legal`, su perfil `website_people` con `key = tatiana` (foto, credencial, LinkedIn), `legal_whatsapp` en `website_globals`, `hero_legal_cta` y `form_area_legal_option` en `website_home`; crear/editar/borrar FAQ y testimonios **solo con `area = legal`**; ver leads con `area = legal` y cambiar únicamente su `status`. Puede subir archivos (Files) y editar solo los suyos. |
+| Endpoint web `/api/lead` | `website-lead-writer` (sin app access) | Solo `create` en `leads`, con los campos `name, area, message, contact_whatsapp, contact_email, locale, consent, consent_text, page, utm_source, utm_medium, utm_campaign, posthog_distinct_id`. Validación: `consent = true` y `area ∈ {legal, data}`. Sin lectura: Directus responde `204` al crear. |
+| Público | Política pública existente | Solo lectura de `website_*` con `status = published` y la lista explícita de campos que lee la compilación. **Nunca `leads`.** |
+
+El usuario de Tatiana se asigna al rol `editor-legal` a mano. El token estático de `website-lead-writer` lo crea el orquestador y se guarda como `DIRECTUS_LEADS_TOKEN` en Coolify (variable de servidor, nunca `PUBLIC_*`).
+
+### Campos y colecciones nuevas
+
+- `website_globals`: `legal_whatsapp`, `data_whatsapp` (E.164, p. ej. `+573001234567`; vacío oculta el botón), `contact_email`, `ga4_id` (vacío desactiva GA4).
+- `website_common` (por idioma): `privacy_title`, `privacy_policy` (Markdown; la web lo sanea al renderizar).
+- `website_home`: `hero_legal_cta`, `hero_data_cta`, `steps_title`, `faq_title`, `testimonials_title`, `form_*` (título, etiquetas, opciones de área, ayuda, botón y error), `thanks_*`, `consent_label`, `consent_privacy_link_label`, `consent_banner_text`, `consent_banner_accept_label`, `consent_banner_reject_label`. El hero orientado a problema reutiliza `hero_title`, `hero_accent` y `hero_description`.
+- `website_practices`: `problems` (lista), `audience`, `whatsapp_message` (texto prellenado de WhatsApp).
+- `website_people`: `photo` (archivo de Files), `credential`. `linkedin_url` ya existía.
+- `website_faq` (`area`: legal|data|general, `question`, `answer`), `website_steps` (`title`, `description`), `website_testimonials` (`area`: legal|data, `quote`, `author`, `role`). Todas con `id` UUID automático, `locale`, `status` y `sort` (arrastrar para ordenar). Los registros publicados de un idioma **sustituyen** a la copia de respaldo de ese idioma; si no hay ninguno publicado se usa la copia del repositorio. Los testimonios no tienen copia de respaldo: la sección se oculta mientras no haya testimonios publicados.
+- `leads` (privada): `name, area, message, contact_whatsapp, contact_email, locale, consent, consent_text, page, utm_*, posthog_distinct_id, status` (nuevo|contactado|descartado, por defecto `nuevo`), `crm_status` (pending|synced|error, por defecto `pending`), `twenty_person_id`, `twenty_opportunity_id`, `crm_error`, `date_created`. Archivar = `status = descartado`.
+
+Todos los campos nuevos son opcionales: las filas existentes quedan en `NULL` y la web usa la copia de respaldo hasta que se rellenen (o se ejecute `--seed`).
+
+El Flow **Trigger Coolify Build** pasa a incluir `website_faq`, `website_steps` y `website_testimonials`. `leads` nunca dispara compilaciones.
+
+### Cómo correr el script
+
+Sin red, contra el estado de referencia del repositorio (antes de la migración):
+
+```sh
+node scripts/directus-schema.mjs --fixture tests/fixtures/directus-state.json            # plan
+node scripts/directus-schema.mjs --fixture tests/fixtures/directus-state.json --apply    # simula y muestra la segunda corrida (debe ser 0)
+```
+
+Contra un Directus real, **dry-run por defecto** (solo GET):
+
+```sh
+export DIRECTUS_URL=https://cms.romahomestore.com
+export DIRECTUS_ADMIN_TOKEN=…            # desde el gestor de secretos; nunca en argumentos ni en el repo
+node scripts/directus-schema.mjs [--seed] [--json]
+```
+
+Aplicar (solo con confirmación explícita y tras `directus schema snapshot` + dump de la base):
+
+```sh
+node scripts/directus-schema.mjs --apply --backup-done [--seed]
+```
+
+- Idempotente: compara con el estado actual y crea solo lo que falta. Al terminar vuelve a planificar e imprime `Segunda corrida: 0 cambio(s)`.
+- Nunca borra ni estrecha: las listas de campos de permisos existentes se amplían por unión; filtros o validaciones distintos de lo esperado, un Flow ausente o permisos públicos sobre `leads` se informan como avisos `!` para revisión manual.
+- Políticas y roles se buscan por nombre (`website-lead-writer`, `editor-legal`); la política pública por `$t:public_label` o `DIRECTUS_PUBLIC_POLICY_ID`.
+- `--seed` crea los registros que falten de `website-defaults.json` y rellena solo campos `NULL`. Cada escritura en colecciones ya vinculadas al Flow dispara una compilación: ejecútelo en una ventana tranquila.
+- **Orden de despliegue:** aplicar el script **antes** de desplegar el código que lee los campos nuevos. Si la compilación pide un campo que la política pública no puede leer, Directus responde 403 y la compilación falla (no publica una web vacía).
+- La colección `experience` no se toca. Solo aparece tipada en `src/lib/directus.ts`; ningún componente la consulta.

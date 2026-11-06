@@ -4,15 +4,15 @@ import { websiteCollections, validateContentPatch } from '../src/lib/website-mod
 const usage = 'Uso: content.mjs list [MODULE] | get MODULE RECORD FIELD | set MODULE RECORD FIELD VALUE [--apply]';
 const defaultCmsUrl = 'https://cms.romahomestore.com';
 
-function cmsBase(value) {
+export function cmsBase(value, label = 'CONTENT_CMS_URL') {
   let url;
   try {
     if (typeof value !== 'string' || /[\s\\\p{Cc}]/u.test(value)) throw new Error();
     url = new URL(value);
-  } catch { throw new TypeError('CONTENT_CMS_URL inválida'); }
+  } catch { throw new TypeError(`${label} inválida`); }
   const local = ['localhost', '127.0.0.1', '[::1]'].includes(url.hostname);
   if ((url.protocol !== 'https:' && !(url.protocol === 'http:' && local)) || url.username || url.password || url.search || url.hash) {
-    throw new TypeError('CONTENT_CMS_URL requiere HTTPS o HTTP localhost, sin credenciales, consulta ni fragmento');
+    throw new TypeError(`${label} requiere HTTPS o HTTP localhost, sin credenciales, consulta ni fragmento`);
   }
   return url.href.replace(/\/+$/, '');
 }
