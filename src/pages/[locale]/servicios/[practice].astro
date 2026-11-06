@@ -1,16 +1,47 @@
 ---
 import RomaLayout from '../../../layouts/RomaLayout.astro';
+import ContactForm from '../../../components/roma/ContactForm.astro';
+import { areaContact, contactEmailHref } from '../../../lib/landing.mjs';
 import { getWebsiteContent } from '../../../lib/website-content';
 export function getStaticPaths(){return ['es','en'].flatMap(locale=>['legal','data'].map(practice=>({params:{locale,practice},props:{locale,practice}})));}
 const {locale,practice}=Astro.props as {locale:'es'|'en';practice:'legal'|'data'};
 const site = await getWebsiteContent(locale);
-const {globals, common, practices, people} = site;
+const {globals, home, common, practices, people} = site;
 const legal=practice==='legal';
 const area=practices[practice];
 const title=area.page_title;
 const intro=area.page_description;
 const items=area.page_items;
+const contact=areaContact(site,practice,'#contacto');
+const email=contactEmailHref(site);
 ---
 <RomaLayout locale={locale} content={site} title={`${title} — ${globals.brand_name}`} description={intro}>
- <section class="roma-section roma-container"><div class="service-detail"><a class="text-link" href={`/${locale}/`}>{common.back_home_label}</a><p class:list={['eyebrow',legal?'legal':'data']}>{area.page_territory}</p><h1 class="roma-t-h1">{title}</h1><p class="roma-t-lead">{intro}</p><p>{legal?people.tatiana.name:people.henry.name}</p><ul>{items.map(item=><li>{item.label}</li>)}</ul><p>{common.practice_process_note}</p>{legal&&<p class="article-note">{area.disclaimer}</p>}<div class="contact-actions"><a class="roma-btn roma-btn--primario" href={`/${locale}/#contacto`}>{common.practice_contact_label}</a>{!legal&&<a class="text-link" href={`/${locale}/project/`}>{area.projects_link_label}</a>}</div></div></section>
+ <section class="roma-section roma-container service-page">
+  <div class="service-detail">
+   <a class="text-link" href={`/${locale}/`}>{common.back_home_label}</a>
+   <p class:list={['eyebrow',legal?'legal':'data']}>{area.page_territory}</p>
+   <h1 class="roma-t-h1">{title}</h1>
+   <p class="roma-t-lead">{intro}</p>
+   <p class="practice-person">{legal?people.tatiana.name:people.henry.name}</p>
+   <div class="contact-actions">
+    <a class="roma-btn roma-btn--primario" href={contact.href} data-track={contact.track} data-area={practice} data-location="service_page" {...(contact.whatsapp?{target:'_blank',rel:'noopener noreferrer'}:{})}>{common.practice_contact_label}</a>
+    {!legal&&<a class="text-link" href={`/${locale}/project/`}>{area.projects_link_label}</a>}
+   </div>
+   {area.problems.length>0&&<ul class="service-problems">{area.problems.map(item=><li>{item.label}</li>)}</ul>}
+   {area.audience&&<p class="service-audience">{area.audience}</p>}
+   <ul>{items.map(item=><li>{item.label}</li>)}</ul>
+   <p>{common.practice_process_note}</p>
+   {legal&&area.disclaimer&&<p class="article-note">{area.disclaimer}</p>}
+  </div>
+ </section>
+ <section id="contacto" class="roma-section roma-section--alt" aria-labelledby="service-form-title">
+  <div class="roma-container contact-section">
+   <div class="contact-intro">
+    <h2 id="service-form-title">{home.form_title}</h2>
+    <p>{home.contact_description}</p>
+    {email&&<p class="contact-email"><span>{home.form_email_label}</span> <a class="text-link" href={email} data-track="email_click" data-location="service_page">{globals.contact_email}</a></p>}
+   </div>
+   <div class="contact-form-card"><ContactForm site={site} locale={locale} area={practice} location="service_page" /></div>
+  </div>
+ </section>
 </RomaLayout>

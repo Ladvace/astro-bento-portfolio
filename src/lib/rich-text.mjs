@@ -88,3 +88,46 @@ export function sanitizeArticleHtml(content) {
     },
   });
 }
+
+const escapeHtml = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function inlineMarkdown(text) {
+  return escapeHtml(text)
+    .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, (_m, label, href) => `<a href="${href}">${label}</a>`)
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+
+/**
+ * Minimal Markdown for CMS-authored policies: ##/### headings, paragraphs, - / 1. lists, **bold**, *italic*, [links](url).
+ * Input is HTML-escaped first and the result is sanitized again, so editors cannot inject markup.
+ */
+export function renderMarkdown(source) {
+  const lines = String(source ?? '').replace(/\r\n?/g, '\n').split('\n');
+  const html = [];
+  let paragraph = [];
+  let list = null;
+  const flushParagraph = () => { if (paragraph.length) html.push(`<p>${inlineMarkdown(paragraph.join(' '))}</p>`); paragraph = []; };
+  const flushList = () => { if (list) html.push(`<${list.tag}>${list.items.map((item) => `<li>${inlineMarkdown(item)}</li>`).join('')}</${list.tag}>`); list = null; };
+  for (const raw of lines) {
+    const line = raw.trim();
+    const heading = line.match(/^(#{1,4})\s+(.*)$/);
+    const item = line.match(/^(?:([-+])|(\d+)[.)])\s+(.*)$/);
+    if (!line) { flushParagraph(); flushList(); continue; }
+    if (heading) {
+      flushParagraph(); flushList();
+      const level = Math.min(Math.max(heading[1].length, 2), 4);
+      html.push(`<h${level}>${inlineMarkdown(heading[2])}</h${level}>`);
+    } else if (item) {
+      flushParagraph();
+      const tag = item[1] ? 'ul' : 'ol';
+      if (list && list.tag !== tag) flushList();
+      list ??= { tag, items: [] };
+      list.items.push(item[3]);
+    } else {
+      flushList();
+      paragraph.push(line);
+    }
+  }
+  flushParagraph(); flushList();
+  return sanitizeArticleHtml(html.join('\n'));
+}

@@ -1,0 +1,29 @@
+---
+import { initials, personPhoto } from '../../lib/landing.mjs';
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent }
+const { site } = Astro.props;
+const { home, people } = site;
+const team = [{ key: 'tatiana', area: 'legal' }, { key: 'henry', area: 'data' }].map(({ key, area }) => {
+  const person = people[key as 'tatiana' | 'henry'];
+  return { key, area, person, photo: personPhoto(person) };
+});
+---
+<section id="nosotros" class="roma-section roma-container" aria-labelledby="team-title">
+ <div class="section-heading"><p class="eyebrow">{home.team_label}</p><h2 id="team-title">{home.team_title}</h2><p>{home.team_description}</p></div>
+ <div class="team-grid">
+  {team.map(({ key, area, person, photo }) => (
+   <article class="person" data-professional={key}>
+    {photo
+     ? <img class="person-photo" src={photo} alt={person.name} width="96" height="96" loading="lazy" decoding="async" />
+     : <span class={`person-photo person-initials ${area}`} aria-hidden="true">{initials(person.name)}</span>}
+    <p class={`eyebrow ${area}`}>{person.label}</p>
+    <h3>{person.name}</h3>
+    <p class="person-role">{person.role}</p>
+    {person.credential && <p class="person-credential">{person.credential}</p>}
+    <p>{person.bio}</p>
+    {person.linkedin_url && <a class="text-link" href={person.linkedin_url} target="_blank" rel="noopener noreferrer">{person.linkedin_label} <span aria-hidden="true">↗</span></a>}
+   </article>
+  ))}
+ </div>
+</section>

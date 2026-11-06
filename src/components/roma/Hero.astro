@@ -1,0 +1,28 @@
+---
+import { areaContact } from '../../lib/landing.mjs';
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent }
+const { site } = Astro.props;
+const { globals, home, practices } = site;
+const ctas = [
+  { area: 'legal', label: home.hero_legal_cta, hint: practices.legal.territory, variant: 'primario' },
+  { area: 'data', label: home.hero_data_cta, hint: practices.data.territory, variant: 'secundario' },
+].map((cta) => ({ ...cta, ...areaContact(site, cta.area) }));
+---
+<section class="hero roma-container" aria-labelledby="hero-title">
+ <div class="hero-copy">
+  <p class="eyebrow">{globals.brand_eyebrow}</p>
+  <h1 id="hero-title">{home.hero_title}<br /><em>{home.hero_accent}</em></h1>
+  <p class="hero-intro">{home.hero_description}</p>
+  <ul class="hero-ctas" role="list">
+   {ctas.map((cta) => (
+    <li>
+     <a class={`roma-btn roma-btn--${cta.variant} roma-btn--bloque`} href={cta.href} data-track={cta.track} data-area={cta.area} data-location="hero"
+      {...(cta.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{cta.label}</a>
+     <small>{cta.hint}</small>
+    </li>
+   ))}
+  </ul>
+  <p class="hero-territory">{home.hero_territory}</p>
+ </div>
+</section>

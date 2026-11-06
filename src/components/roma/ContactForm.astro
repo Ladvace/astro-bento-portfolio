@@ -1,0 +1,121 @@
+---
+import { consentParts } from '../../lib/landing.mjs';
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent; locale: 'es' | 'en'; area?: 'legal' | 'data'; location?: 'contact' | 'service_page'; formId?: string }
+const { site, locale, area, location = 'contact', formId = 'lead-form' } = Astro.props;
+const { home } = site;
+const consent = consentParts(home.consent_label, home.consent_privacy_link_label);
+const areaOptions = [{ value: 'legal', label: home.form_area_legal_option }, { value: 'data', label: home.form_area_data_option }];
+const id = (name: string) => `${formId}-${name}`;
+---
+<form id={formId} class="lead-form" method="post" action="/api/lead" novalidate data-track-form={location} data-area={area} data-thanks={`/${locale}/gracias/`}>
+ <div class="field">
+  <label for={id('name')}>{home.form_name_label}</label>
+  <input id={id('name')} name="name" type="text" autocomplete="name" required maxlength="120" aria-describedby={id('name-error')} />
+  <p class="field-error" id={id('name-error')} data-error-for="name"></p>
+ </div>
+ <fieldset class="field field-area" aria-describedby={id('area-error')}>
+  <legend>{home.form_area_label}</legend>
+  <div class="area-options">
+   {areaOptions.map((option) => (
+    <label class="area-option"><input type="radio" name="area" value={option.value} required checked={area === option.value} /><span>{option.label}</span></label>
+   ))}
+  </div>
+  <p class="field-error" id={id('area-error')} data-error-for="area"></p>
+ </fieldset>
+ <div class="field">
+  <label for={id('message')}>{home.form_message_label}</label>
+  <textarea id={id('message')} name="message" rows="4" maxlength="1500" aria-describedby={id('message-error')}></textarea>
+  <p class="field-error" id={id('message-error')} data-error-for="message"></p>
+ </div>
+ <div class="field-pair" role="group" aria-labelledby={id('contact-hint')}>
+  <p class="field-hint" id={id('contact-hint')}>{home.form_contact_hint}</p>
+  <div class="field">
+   <label for={id('whatsapp')}>{home.form_whatsapp_label}</label>
+   <input id={id('whatsapp')} name="contact_whatsapp" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" data-either="contact" aria-describedby={`${id('contact-hint')} ${id('whatsapp-error')}`} />
+   <p class="field-error" id={id('whatsapp-error')} data-error-for="contact_whatsapp"></p>
+  </div>
+  <div class="field">
+   <label for={id('email')}>{home.form_email_label}</label>
+   <input id={id('email')} name="contact_email" type="email" inputmode="email" autocomplete="email" maxlength="254" data-either="contact" aria-describedby={`${id('contact-hint')} ${id('email-error')}`} />
+   <p class="field-error" id={id('email-error')} data-error-for="contact_email"></p>
+  </div>
+ </div>
+ <div class="field field-consent">
+  <label class="consent-label">
+   <input type="checkbox" name="consent" value="yes" required aria-describedby={id('consent-error')} />
+   <span>{consent.before}<a href={`/${locale}/privacidad/`} target="_blank" rel="noopener">{consent.link}</a>{consent.after}</span>
+  </label>
+  <p class="field-error" id={id('consent-error')} data-error-for="consent"></p>
+ </div>
+ <div class="hp-field" aria-hidden="true"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
+ <input type="hidden" name="locale" value={locale} />
+ <input type="hidden" name="page" value={Astro.url.pathname} />
+ <input type="hidden" name="started_at" value="" />
+ <input type="hidden" name="utm_source" value="" />
+ <input type="hidden" name="utm_medium" value="" />
+ <input type="hidden" name="utm_campaign" value="" />
+ <input type="hidden" name="posthog_distinct_id" value="" />
+ <button class="roma-btn roma-btn--primario roma-btn--bloque" type="submit">{home.form_submit_label}</button>
+ <p class="form-status" role="alert" aria-live="assertive" data-form-status data-message={home.form_error_message}></p>
+</form>
+<script>
+ document.querySelectorAll<HTMLFormElement>('form[data-track-form]').forEach((form) => {
+  const field = (name: string) => form.elements.namedItem(name) as HTMLInputElement | null;
+  const status = form.querySelector<HTMLElement>('[data-form-status]');
+  const button = form.querySelector<HTMLButtonElement>('button[type=submit]');
+  const loadedAt = Date.now();
+  const startedAt = field('started_at'); if (startedAt) startedAt.value = String(loadedAt);
+  const params = new URLSearchParams(location.search);
+  for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) { const input = field(key); if (input) input.value = (params.get(key) || '').slice(0, 100); }
+  const either = [...form.querySelectorAll<HTMLInputElement>('[data-either]')];
+  // At least one contact channel: the native validation message is the page's own hint text.
+  const hint = form.querySelector('.field-hint')?.textContent || '';
+  const syncEither = () => {
+   const empty = either.every((input) => !input.value.trim());
+   either.forEach((input) => { input.required = empty; input.setCustomValidity(empty ? hint : ''); });
+  };
+  either.forEach((input) => input.addEventListener('input', syncEither));
+  syncEither();
+  const errorFor = (name: string) => form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+  const showErrors = () => {
+   let first: HTMLElement | null = null;
+   const names = new Set([...form.querySelectorAll<HTMLInputElement>('input:not([type=hidden]),textarea')].map((input) => input.name));
+   names.forEach((name) => {
+    const slot = errorFor(name);
+    if (!slot) return;
+    const controls = [...form.querySelectorAll<HTMLInputElement>(`[name="${name}"]`)];
+    const bad = controls.find((input) => !input.validity.valid);
+    // Both contact channels empty share one message: show it once, on the first.
+    const duplicate = bad && bad.dataset.either && bad !== either[0] && !either[0].validity.valid && either[0].validationMessage === bad.validationMessage;
+    slot.textContent = bad && !duplicate ? bad.validationMessage : '';
+    controls.forEach((input) => input.setAttribute('aria-invalid', String(!input.validity.valid)));
+    if (bad && !first) first = bad;
+   });
+   return first as HTMLElement | null;
+  };
+  form.addEventListener('input', (event) => {
+   const target = event.target as HTMLInputElement;
+   const slot = errorFor(target.name);
+   if (slot && target.validity.valid) { slot.textContent = ''; target.setAttribute('aria-invalid', 'false'); }
+   if (target.dataset.either) either.forEach((input) => { const other = errorFor(input.name); if (other && input.validity.valid) { other.textContent = ''; input.setAttribute('aria-invalid', 'false'); } });
+  });
+  form.addEventListener('submit', async (event) => {
+   if (status) status.textContent = '';
+   if (!form.checkValidity()) { event.preventDefault(); showErrors()?.focus(); return; }
+   if (!window.fetch) return;
+   event.preventDefault();
+   button?.setAttribute('disabled', ''); form.setAttribute('aria-busy', 'true');
+   try {
+    const response = await fetch(form.action, { method: 'POST', headers: { Accept: 'application/json' }, body: new URLSearchParams(new FormData(form) as unknown as Record<string, string>) });
+    const result = await response.json();
+    if (!response.ok || !result?.ok) throw new Error(result?.error || 'lead');
+    const area = (form.querySelector<HTMLInputElement>('input[name=area]:checked')?.value) || '';
+    location.assign(typeof result.redirect === 'string' && result.redirect.startsWith('/') ? result.redirect : `${form.dataset.thanks}?area=${encodeURIComponent(area)}`);
+   } catch {
+    if (status) status.textContent = status.dataset.message || '';
+    button?.removeAttribute('disabled'); form.removeAttribute('aria-busy');
+   }
+  });
+ });
+</script>

@@ -1,0 +1,14 @@
+---
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent }
+const { site } = Astro.props;
+const { home, steps } = site;
+---
+{steps.length > 0 && (
+ <section id="como-trabajamos" class="roma-section roma-container" aria-labelledby="steps-title">
+  <div class="section-heading"><h2 id="steps-title">{home.steps_title}</h2></div>
+  <ol class="steps" role="list">
+   {steps.map((step) => <li><h3>{step.title}</h3><p>{step.description}</p></li>)}
+  </ol>
+ </section>
+)}

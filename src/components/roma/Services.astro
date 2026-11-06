@@ -1,0 +1,38 @@
+---
+import { areaContact } from '../../lib/landing.mjs';
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent; locale: 'es' | 'en' }
+const { site, locale } = Astro.props;
+const { home, practices, people } = site;
+const cards = [
+  { area: 'legal', person: people.tatiana },
+  { area: 'data', person: people.henry },
+].map(({ area, person }) => {
+  const practice = practices[area as 'legal' | 'data'];
+  const bullets = practice.problems?.length ? practice.problems : practice.card_items;
+  return { area, practice, person, bullets, contact: areaContact(site, area), cta: area === 'legal' ? home.hero_legal_cta : home.hero_data_cta };
+});
+---
+<section id="servicios" class="roma-section roma-section--alt" aria-labelledby="services-title">
+ <div class="roma-container">
+  <div class="section-heading"><p class="eyebrow">{home.services_label}</p><h2 id="services-title">{home.services_title}</h2></div>
+  <div class="practice-grid">
+   {cards.map(({ area, practice, person, bullets, contact, cta }) => (
+    <article class={`practice practice-${area}`}>
+     <p class={`eyebrow ${area}`}>{practice.card_label}</p>
+     <h3>{practice.card_title}</h3>
+     <p>{practice.card_description}</p>
+     {bullets.length > 0 && <ul>{bullets.map((item) => <li>{item.label}</li>)}</ul>}
+     {practice.audience && <p class="practice-audience">{practice.audience}</p>}
+     <p class="practice-person">{person.name}</p>
+     <div class="practice-actions">
+      <a class="roma-btn roma-btn--primario" href={contact.href} data-track={contact.track} data-area={area} data-location="services"
+       {...(contact.whatsapp ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{cta}</a>
+      <a class="text-link" href={`/${locale}/servicios/${area}/`} data-track="cta_click" data-area={area} data-location="services">{practice.card_link_label} <span aria-hidden="true">↗</span></a>
+     </div>
+     <small>{practice.territory}</small>
+    </article>
+   ))}
+  </div>
+ </div>
+</section>
