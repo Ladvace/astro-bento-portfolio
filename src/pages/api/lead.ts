@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import { createLeadHandler } from '../../lib/lead.mjs';
-import { createLeadTracker, DEFAULT_POSTHOG_HOST } from '../../lib/posthog-server.mjs';
 import { getWebsiteContent } from '../../lib/website-content';
 import { resolveWebsiteContent } from '../../lib/website-model.mjs';
 
@@ -22,10 +21,6 @@ const handleLead = createLeadHandler({
   env,
   consentText,
   siteOrigin: (import.meta.env.SITE ? new URL(import.meta.env.SITE).origin : undefined),
-  track: createLeadTracker({
-    apiKey: env.PUBLIC_POSTHOG_KEY || import.meta.env.PUBLIC_POSTHOG_KEY,
-    host: env.POSTHOG_HOST || DEFAULT_POSTHOG_HOST,
-  }),
 });
 
 export const POST: APIRoute = ({ request, clientAddress }) => handleLead(request, { clientAddress });

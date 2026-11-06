@@ -21,7 +21,7 @@ Archivo de datos: `content/copy-v1.json`. Está agrupado por colección de Direc
 
 **Gracias.** El texto cambia según `?area=`, recuerda no enviar documentos y ofrece WhatsApp para lo urgente.
 
-**Cookies.** Usa un modelo opt-in coherente con PostHog en `persistence: 'memory'` hasta que el visitante acepte.
+**Cookies.** Usa un modelo opt-in con Google Consent Mode v2: `analytics_storage` queda denegado hasta que el visitante acepte.
 
 **Privacidad.** Es una política base conforme a la Ley 1581 de 2012 y al Decreto 1377 de 2013 (Decreto 1074 de 2015). Incluye el responsable, los datos que se recogen, las finalidades, los encargados y transferencias, los derechos (conocer, actualizar, rectificar, suprimir, revocar y presentar quejas ante la SIC) y los plazos legales: 10 días hábiles para consultas, 15 días hábiles para reclamos y 5 días para subsanar. Está en Markdown dentro de `privacy_body`. **Debe revisarla Tatiana antes de publicarla.**
 
@@ -51,7 +51,7 @@ Las longitudes se revisaron con un script: 80 campos comprobados y 0 infraccione
 1. WhatsApp de Tatiana y de Henry (`website_globals.shared`).
 2. Correo de contacto visible y correo de habeas data.
 3. Responsable del tratamiento: nombre o razón social, NIT o cédula, dirección y teléfono. También la fecha de vigencia de la política.
-4. Lista de proveedores tecnológicos y países donde guardan datos (Directus/OVH, PostHog EU, GA4, Twenty).
+4. Lista de proveedores tecnológicos y países donde guardan datos (Directus/OVH, GA4, Twenty).
 5. Costo y duración de la primera conversación (FAQ 1).
 6. Tiempo de respuesta a mensajes (FAQ 3 y página de gracias).
 7. Ciudad o ciudades para atención presencial jurídica (FAQ 6).

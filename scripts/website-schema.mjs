@@ -239,7 +239,7 @@ export const leadsSchema = (() => {
     leadField('utm_source', 'string', 'utm_source', { maxLength: 255, readonly: true }),
     leadField('utm_medium', 'string', 'utm_medium', { maxLength: 255, readonly: true }),
     leadField('utm_campaign', 'string', 'utm_campaign', { maxLength: 255, readonly: true }),
-    leadField('posthog_distinct_id', 'string', 'PostHog distinct_id', { maxLength: 200, readonly: true }),
+    leadField('ga_client_id', 'string', 'GA4 client_id', { maxLength: 64, readonly: true }),
     leadField('crm_status', 'string', 'Estado en Twenty CRM', { maxLength: 16, required: true, choices: crmStatusChoices, defaultValue: 'pending', readonly: true }),
     leadField('twenty_person_id', 'string', 'Twenty: persona', { maxLength: 64, readonly: true }),
     leadField('twenty_opportunity_id', 'string', 'Twenty: oportunidad', { maxLength: 64, readonly: true }),
@@ -263,7 +263,7 @@ export const leadsSchema = (() => {
 })();
 
 /** Fields the public website endpoint may set. Never status, crm_*, twenty_* or system fields. */
-export const leadWriterFields = ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'locale', 'consent', 'consent_text', 'page', 'utm_source', 'utm_medium', 'utm_campaign', 'posthog_distinct_id'];
+export const leadWriterFields = ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'locale', 'consent', 'consent_text', 'page', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id'];
 
 // Stable IDs used only if the policy/role does not already exist BY NAME. Existing IDs always win.
 export const accessModel = {

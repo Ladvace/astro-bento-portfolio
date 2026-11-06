@@ -37,7 +37,7 @@ test('every CTA carries tracking attributes and the lead form posts to /api/lead
  const form = read('src/components/roma/ContactForm.astro');
  assert.match(form, /method="post" action="\/api\/lead"/);
  assert.match(form, /data-track-form/);
- for (const name of ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'consent', 'website', 'locale', 'page', 'started_at', 'utm_source', 'utm_medium', 'utm_campaign', 'posthog_distinct_id']) assert.match(form, new RegExp(`name="${name}"`), name);
+ for (const name of ['name', 'area', 'message', 'contact_whatsapp', 'contact_email', 'consent', 'website', 'locale', 'page', 'started_at', 'utm_source', 'utm_medium', 'utm_campaign', 'ga_client_id']) assert.match(form, new RegExp(`name="${name}"`), name);
  assert.match(form, /maxlength="1500"/);
  assert.match(form, /name="website" tabindex="-1" autocomplete="off"/);
  assert.match(read('src/components/roma/ConsentBanner.astro'), /roma_consent[\s\S]*roma:consent/);

@@ -155,7 +155,7 @@ Simulación local sin red: `node scripts/directus-flows.mjs --fixture tests/fixt
 ## Verificación manual
 
 1. Flows creados: en Directus → Settings → Flows aparecen los 4; "CRM · Sincronizar lead" muestra una cadena lineal y debajo los `Error · <paso>`. Abrir una operación `exec` y comprobar que el código empieza por `// Generado por scripts/directus-flows.mjs`.
-2. Lead de prueba (ambas áreas): crear un lead desde la web o en Directus con un email de prueba → en segundos `crm_status = synced`, `twenty_person_id` y `twenty_opportunity_id` rellenos. En Twenty: persona con nombre partido, email y teléfono; oportunidad "Web · Legal · …" en etapa NEW con Área/Origen/Idioma; nota con mensaje, página, UTM e idioma, visible desde la persona y desde la oportunidad.
+2. Lead de prueba (ambas áreas): crear un lead desde la web o en Directus con un email de prueba → en segundos `crm_status = synced`, `twenty_person_id` y `twenty_opportunity_id` rellenos. En Twenty: persona con nombre partido, email y teléfono; oportunidad "Web · Legal · …" en etapa NEW con Área/Origen/Idioma; nota con mensaje, página, UTM, GA4 client_id (si hubo consentimiento) e idioma, visible desde la persona y desde la oportunidad.
 3. Persona duplicada: segundo lead con el mismo email → no aparece persona nueva; la oportunidad nueva apunta a la persona existente.
 4. Fallo de CRM: parar el contenedor de Twenty (o poner una `TWENTY_API_KEY` inválida en una ventana controlada) → nuevo lead con `crm_status = error` y `crm_error` del tipo `find_person: HTTP 401 — …` sin correos/teléfonos. Restaurar → en el lead, botón **Reintentar sync CRM** → `synced`, sin duplicados.
 5. Aviso: el usuario del área recibe la notificación interna (campana de Directus) también en el caso 4.

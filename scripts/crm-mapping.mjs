@@ -144,6 +144,7 @@ export function buildLeadSync(lead, config) {
     [
       line('Página', cleanText(lead.page, 2048)),
       line('UTM', utm),
+      line('GA4 client_id', /^[A-Za-z0-9.]{1,64}$/.test(String(lead.ga_client_id ?? '')) ? lead.ga_client_id : ''),
       line('Idioma', locale),
       line('Consentimiento', lead.consent === true ? 'sí (Ley 1581/2012)' : 'no registrado'),
       line('Recibido', cleanText(lead.date_created, 40)),

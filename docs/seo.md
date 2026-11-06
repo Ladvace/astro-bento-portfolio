@@ -8,7 +8,7 @@
 - Un slug inexistente redirige igual y la canónica responde 404.
 
 ## Sitemap, robots, llms.txt
-- `@astrojs/sitemap` con i18n (es -> es-CO, en) y `sitemapFilter` (solo `/{locale}/...`, sin `/project/`, `/gracias`, `/api`, `/ingest`). Índice: `/sitemap-index.xml`.
+- `@astrojs/sitemap` con i18n (es -> es-CO, en) y `sitemapFilter` (solo `/{locale}/...`, sin `/project/`, `/gracias`, `/api`). Índice: `/sitemap-index.xml`.
 - `/robots.txt` (estático): `Disallow: /` si `PUBLIC_NOINDEX=true` en build.
 - `/llms.txt` generado en build desde `getWebsiteContent` y los artículos.
 - Nota: hreflang en `<head>` usa `es`/`en`; el sitemap emite `es-CO`/`en`.
