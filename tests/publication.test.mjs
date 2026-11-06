@@ -98,6 +98,6 @@ test('homepage requests the three newest published projects with deterministic t
   assert.deepEqual(requests[0].params.filter, { status: { _eq: 'published' } });
   assert.equal(requests[0].params.limit, 3);
   assert.deepEqual(requests[0].params.sort, ['-date_created', '-id']);
-  const home = await readFile(new URL('src/components/roma/Home.astro', root), 'utf8');
-  assert.match(home, /archive-grid/);
+  const cases = await readFile(new URL('src/components/roma/Cases.astro', root), 'utf8');
+  assert.match(cases, /archive-grid/);
 });

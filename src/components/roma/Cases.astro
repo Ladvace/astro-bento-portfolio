@@ -1,0 +1,19 @@
+---
+import type { WebsiteContent } from '../../lib/website-content';
+interface Props { site: WebsiteContent; locale: 'es' | 'en'; projects: { slug: string; title: string; description?: string }[] }
+const { site, locale, projects } = Astro.props;
+const { home } = site;
+const base = `/${locale}`;
+---
+{projects.length > 0 && (
+ <section id="publicaciones" class="roma-section roma-section--alt" aria-labelledby="cases-title">
+  <div class="roma-container">
+   <div class="section-heading section-heading--split"><div><p class="eyebrow">{home.publications_label}</p><h2 id="cases-title">{home.publications_title}</h2></div><a class="text-link" href={`${base}/blog/`}>{home.archive_label} <span aria-hidden="true">↗</span></a></div>
+   <div class="archive-grid">
+    {projects.map((project) => (
+     <article class="entry-card"><p class="eyebrow data">{home.entry_label}</p><h3><a href={`${base}/blog/${project.slug}/`}>{project.title}</a></h3><p>{project.description}</p><a class="text-link" href={`${base}/blog/${project.slug}/`}>{home.entry_link_label} <span aria-hidden="true">↗</span></a></article>
+    ))}
+   </div>
+  </div>
+ </section>
+)}

@@ -1,0 +1,28 @@
+---
+import RomaLayout from '../../layouts/RomaLayout.astro';
+import { areaContact } from '../../lib/landing.mjs';
+import { getWebsiteContent } from '../../lib/website-content';
+export function getStaticPaths(){return ['es','en'].map(locale=>({params:{locale},props:{locale}}));}
+const {locale}=Astro.props as {locale:'es'|'en'};
+const site = await getWebsiteContent(locale);
+const {globals, home}=site;
+const links=[
+ {area:'legal',label:home.legal_contact_label,...areaContact(site,'legal',`/${locale}/#contacto`)},
+ {area:'data',label:home.data_contact_label,...areaContact(site,'data',`/${locale}/#contacto`)},
+].filter(link=>link.whatsapp);
+---
+<RomaLayout locale={locale} content={site} title={`${home.thanks_title} — ${globals.seo_suffix}`} description={home.thanks_description} noindex>
+ <section class="roma-section roma-container thanks">
+  <h1 class="roma-t-h1">{home.thanks_title}</h1>
+  <p class="roma-t-lead">{home.thanks_description}</p>
+  {links.length>0&&<div class="contact-actions" data-thanks-links>{links.map(link=><a class="roma-btn roma-btn--primario" href={link.href} target="_blank" rel="noopener noreferrer" data-track="whatsapp_click" data-area={link.area} data-location="thanks">{link.label}</a>)}</div>}
+  <p><a class="text-link" href={`/${locale}/`}>{home.thanks_back_label}</a></p>
+ </section>
+</RomaLayout>
+<script>
+ // ?area=legal|data keeps only that practice's WhatsApp; without it (or without JS) both are shown.
+ const area = new URLSearchParams(location.search).get('area');
+ if (area === 'legal' || area === 'data') {
+  document.querySelectorAll<HTMLElement>('[data-thanks-links] [data-area]').forEach((link) => { link.hidden = link.dataset.area !== area; });
+ }
+</script>

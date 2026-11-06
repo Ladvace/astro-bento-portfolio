@@ -4,6 +4,7 @@ import test from 'node:test';
 import ts from 'typescript';
 import { resolveWebsiteContent } from '../src/lib/website-model.mjs';
 import { buildGraph, serializeJsonLd } from '../src/lib/seo.mjs';
+import { areaContact, contactEmailHref } from '../src/lib/landing.mjs';
 import { safeExternalUrl, sanitizeArticleHtml } from '../src/lib/rich-text.mjs';
 
 const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor;
@@ -35,6 +36,7 @@ test('Home resolves its hero title from approved website content', async () => {
       assert.equal(locale, 'es');
       return content;
     },
+    areaContact, contactEmailHref,
   });
   assert.equal(title, 'Titular de prueba');
 });
@@ -50,7 +52,7 @@ test('archive resolves each localized heading and description without translatin
     for (const kind of ['blog', 'project']) {
       const result = await frontmatter('src/components/roma/Archive.astro', '({title,description,site,projects})', {
         locale, kind, projects,
-      }, { getWebsiteContent: async () => content });
+      }, { getWebsiteContent: async () => content, areaContact, contactEmailHref });
       assert.equal(result.title, kind === 'blog' ? content.common.blog_title : content.common.projects_title);
       assert.equal(result.description, kind === 'blog' ? content.common.blog_description : content.common.projects_description);
       assert.equal(result.site, content);
@@ -69,7 +71,7 @@ test('service pages resolve native editorial item arrays for both practices and 
       });
       const result = await frontmatter('src/pages/[locale]/servicios/[practice].astro', '({title,intro,items,area,site})', {
         locale, practice,
-      }, { getWebsiteContent: async () => content });
+      }, { getWebsiteContent: async () => content, areaContact, contactEmailHref });
       assert.equal(result.title, content.practices[practice].page_title);
       assert.equal(result.intro, content.practices[practice].page_description);
       assert.equal(result.items, content.practices[practice].page_items);

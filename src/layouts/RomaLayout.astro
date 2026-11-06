@@ -4,9 +4,12 @@ import { localizedEquivalent } from '../lib/i18n.mjs';
 import { getWebsiteContent } from '../lib/website-content';
 import { navigationHref } from '../lib/website-model.mjs';
 import { buildGraph, serializeJsonLd } from '../lib/seo.mjs';
+import WhatsAppFab from '../components/roma/WhatsAppFab.astro';
+import ConsentBanner from '../components/roma/ConsentBanner.astro';
 import '../styles/roma.css';
-interface Props { locale:'es'|'en'; title:string; description:string; canonicalPath?:string; article?:boolean; pubDate?:string; image?:string; crumbs?:{name:string;path:string}[]; content?:Awaited<ReturnType<typeof getWebsiteContent>> }
-const {locale,title,description,canonicalPath,article=false,pubDate,image,crumbs,content} = Astro.props;
+import '../styles/landing.css';
+interface Props { locale:'es'|'en'; title:string; description:string; canonicalPath?:string; noindex?:boolean; article?:boolean; pubDate?:string; image?:string; crumbs?:{name:string;path:string}[]; content?:Awaited<ReturnType<typeof getWebsiteContent>> }
+const {locale,title,description,canonicalPath,noindex=false,article=false,pubDate,image,crumbs,content} = Astro.props;
 const site = content ?? await getWebsiteContent(locale);
 const {globals,common,people} = site;
 const es=locale==='es';
@@ -21,7 +24,7 @@ const schema = buildGraph({locale,origin,site:site as any,title,description,cano
  <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title><meta name="description" content={description} />
-  {import.meta.env.PUBLIC_NOINDEX==='true' && <meta name="robots" content="noindex,nofollow" />}
+  {(noindex || import.meta.env.PUBLIC_NOINDEX==='true') && <meta name="robots" content="noindex,nofollow" />}
   <link rel="canonical" href={canonical} />
   <><link rel="alternate" hreflang="es" href={new URL(localizedEquivalent(Astro.url.pathname,'es'),origin).href} /><link rel="alternate" hreflang="en" href={new URL(localizedEquivalent(Astro.url.pathname,'en'),origin).href} /><link rel="alternate" hreflang="x-default" href={new URL(localizedEquivalent(Astro.url.pathname,'es'),origin).href} /></>
   <meta property="og:type" content={article?'article':'website'} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={canonical} /><meta property="og:image" content={ogImage} /><meta property="og:site_name" content={globals.brand_name} /><meta property="og:locale" content={es?'es_CO':'en_US'} />
@@ -45,7 +48,9 @@ const schema = buildGraph({locale,origin,site:site as any,title,description,cano
    </div>
   </header>
   <main id="main-content" tabindex="-1"><slot /></main>
-  <footer class="site-footer"><div class="roma-container footer-grid"><div><a href={`/${locale}/`}><img src={globals.footer_logo} alt={globals.brand_name} width="260" height="45" /></a><p>{common.footer_tagline}</p><p>{people.tatiana.name} · {people.henry.name}</p></div><div><p class="footer-title">{common.footer_scope_label}</p><p>{common.footer_data_scope}<br />{common.footer_legal_scope}</p><a href={`/${locale}/blog/`}>{common.footer_blog_label}</a><a href={`/${locale}/#contacto`}>{common.footer_contact_label}</a><a href="/rss.xml">{common.footer_rss_label}</a></div></div><div class="roma-container footer-bottom"><span>{globals.full_name}</span><span>{common.footer_disclaimer}</span></div></footer>
+  <footer class="site-footer"><div class="roma-container footer-grid"><div><a href={`/${locale}/`}><img src={globals.footer_logo} alt={globals.brand_name} width="260" height="45" /></a><p>{common.footer_tagline}</p><p>{people.tatiana.name} · {people.henry.name}</p></div><div><p class="footer-title">{common.footer_scope_label}</p><p>{common.footer_data_scope}<br />{common.footer_legal_scope}</p><a href={`/${locale}/blog/`}>{common.footer_blog_label}</a><a href={`/${locale}/#contacto`}>{common.footer_contact_label}</a><a href="/rss.xml">{common.footer_rss_label}</a></div></div><div class="roma-container footer-bottom"><span>{globals.full_name}</span><span>{common.footer_disclaimer}</span><a href={`/${locale}/privacidad/`}>{site.home.consent_privacy_link_label}</a></div></footer>
+  <WhatsAppFab site={site} />
+  <ConsentBanner site={site} locale={locale} />
   <script>
    const header=document.querySelector<HTMLElement>('[data-roma-header]');
    const toggle=header?.querySelector<HTMLButtonElement>('.menu-toggle');
