@@ -4,8 +4,8 @@ import test from 'node:test';
 test('snapshot mode renders approved content without any network access', async () => {
   const { createWebsiteLoader } = await import('../src/lib/website-loader.mjs');
   const load = createWebsiteLoader({ source: 'snapshot', fetcher: () => { throw new Error('Network must not run'); } });
-  assert.equal((await load('es')).home.hero_title, 'Rigor jurídico.');
-  assert.equal((await load('en')).home.hero_title, 'Legal rigor.');
+  assert.equal((await load('es')).home.hero_title, 'Tu asunto legal, en orden.');
+  assert.equal((await load('en')).home.hero_title, 'Your legal matter, in order.');
 });
 
 test('CMS mode projects published editorial fields without sending credentials', async () => {
@@ -51,7 +51,7 @@ test('transient network failures receive bounded retries', async () => {
     if (calls < 3) throw new Error('Temporary network timeout');
     return Response.json({ data: [] });
   } });
-  assert.equal((await load('es')).home.hero_title, 'Rigor jurídico.');
+  assert.equal((await load('es')).home.hero_title, 'Tu asunto legal, en orden.');
   assert.equal(calls, 3);
 });
 

@@ -8,7 +8,7 @@ const faqRow = (id, fields = {}) => ({ id, status: 'published', locale: 'es', so
 test('snapshot provides FAQ and steps per locale and never invents testimonials', () => {
   for (const locale of ['es', 'en']) {
     const site = model.resolveWebsiteContent({}, locale);
-    assert.equal(site.faq.length, 4);
+    assert.equal(site.faq.length, 6);
     assert.equal(site.steps.length, 3);
     assert.deepEqual(site.testimonials, []);
     assert.ok(site.faq.every(row => row.locale === locale && ['legal', 'data', 'general'].includes(row.area)));
@@ -29,7 +29,7 @@ test('published CMS rows replace the snapshot for that locale, ordered by sort; 
   const en = model.resolveWebsiteContent(records, 'en');
   assert.deepEqual(en.faq.map(row => row.question), ['English only']);
   // A locale with only invalid CMS rows keeps the approved snapshot.
-  assert.equal(model.resolveWebsiteContent({ website_faq: [faqRow('x', { area: 'nope' })] }, 'es').faq.length, 4);
+  assert.equal(model.resolveWebsiteContent({ website_faq: [faqRow('x', { area: 'nope' })] }, 'es').faq.length, 6);
 });
 
 test('testimonials appear only when published and valid', () => {

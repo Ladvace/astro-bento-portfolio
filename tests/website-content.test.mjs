@@ -49,7 +49,7 @@ test('editorial workflow accepts draft/published status and record labels withou
   for (const status of ['archived', '', null, 1]) assert.throws(() => model.validateContentPatch('home', 'es', { status }), TypeError);
   for (const record_label of [null, {}, 'x'.repeat(20001)]) assert.throws(() => model.validateContentPatch('home', 'es', { record_label }), TypeError);
   const patch = model.validateContentPatch('home', 'es', { status: 'draft', record_label: 'Borrador', hero_title: 'No visible' });
-  assert.equal(model.resolveWebsiteContent({ website_home: [{ id: 'es', ...patch }] }, 'es').home.hero_title, 'Rigor jurídico.');
+  assert.equal(model.resolveWebsiteContent({ website_home: [{ id: 'es', ...patch }] }, 'es').home.hero_title, 'Tu asunto legal, en orden.');
 });
 
 test('published record labels are validated without changing record identity', () => {
@@ -147,7 +147,7 @@ test('tiny scalar patches preserve literal text while rejecting invalid scalar o
   for (const value of [null, 42, {}, [], '', '  ', 'x'.repeat(20001)]) {
     assert.throws(() => model.validateContentPatch('home', 'es', { hero_title: value }), TypeError);
     const site = model.resolveWebsiteContent({ website_home: [published('es', { hero_title: value, hero_accent: 'Válido' })] }, 'es');
-    assert.equal(site.home.hero_title, 'Rigor jurídico.');
+    assert.equal(site.home.hero_title, 'Tu asunto legal, en orden.');
     assert.equal(site.home.hero_accent, 'Válido');
   }
 });
@@ -194,7 +194,7 @@ test('collection descriptors expose the five fixed and three repeatable collecti
 test('drafts and snapshots without published status never override the baseline', () => {
   for (const status of ['draft', undefined, 'archived']) {
     const records = { website_home: [{ id: 'es', status, hero_title: 'No publicar' }] };
-    assert.equal(model.resolveWebsiteContent(records, 'es').home.hero_title, 'Rigor jurídico.');
+    assert.equal(model.resolveWebsiteContent(records, 'es').home.hero_title, 'Tu asunto legal, en orden.');
   }
   const records = { website_home: [{ id: 'es', status: 'draft', hero_title: 'Draft' }, published('es', { hero_title: 'Visible' })] };
   assert.equal(model.resolveWebsiteContent(records, 'es').home.hero_title, 'Visible');
@@ -205,7 +205,7 @@ test('Spanish and English overrides are isolated by ID and declared locale', () 
     website_home: [published('en', { locale: 'en', hero_title: 'English edit' }), published('es', { locale: 'en', hero_title: 'Foreign locale' })],
     website_people: [published('es-henry', { locale: 'es', name: 'Henry editado' }), published('xx-henry', { name: 'Unknown' })],
   };
-  assert.equal(model.resolveWebsiteContent(records, 'es').home.hero_title, 'Rigor jurídico.');
+  assert.equal(model.resolveWebsiteContent(records, 'es').home.hero_title, 'Tu asunto legal, en orden.');
   assert.equal(model.resolveWebsiteContent(records, 'en').home.hero_title, 'English edit');
   assert.equal(model.resolveWebsiteContent(records, 'es').people.henry.name, 'Henry editado');
   assert.equal(model.resolveWebsiteContent(records, 'en').people.henry.name, 'Henry Mariño');
@@ -217,16 +217,16 @@ test('published snapshots override only known fields and preserve missing source
   const records = { website_home: [published('es', { hero_title: 'Nuevo titular', unknown: 'ignored' })] };
   const site = model.resolveWebsiteContent(records, 'es');
   assert.equal(site.home.hero_title, 'Nuevo titular');
-  assert.equal(site.home.hero_accent, 'Precisión analítica.');
-  assert.equal(site.home.contact_title, 'Conversemos sobre tu situación.');
+  assert.equal(site.home.hero_accent, 'Tu negocio, guiado por datos.');
+  assert.equal(site.home.contact_title, 'Cuéntanos qué necesitas resolver.');
   assert.equal(Object.hasOwn(site.home, 'unknown'), false);
 });
 
 test('approved Spanish home content is available independently of templates', async () => {
   const { resolveWebsiteContent } = await import('../src/lib/website-model.mjs');
   const site = resolveWebsiteContent({}, 'es');
-  assert.equal(site.home.hero_title, 'Rigor jurídico.');
-  assert.equal(site.home.hero_accent, 'Precisión analítica.');
+  assert.equal(site.home.hero_title, 'Tu asunto legal, en orden.');
+  assert.equal(site.home.hero_accent, 'Tu negocio, guiado por datos.');
   assert.equal(site.people.henry.name, 'Henry Mariño');
   assert.equal(site.practices.legal.card_title, 'Asesoría jurídica');
 });
