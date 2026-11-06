@@ -1,0 +1,654 @@
+{
+  "_meta": {
+    "version": "copy-v1",
+    "date": "2026-11-06",
+    "notes": "Textos ES/EN para cargar en Directus. Las claves existentes en src/content/website-defaults.json conservan su nombre; las nuevas se marcan en content/copy-v1.md. Todo texto con [PENDIENTE: ...] debe completarse antes de publicar. {max} y {area} son variables que reemplaza el código."
+  },
+
+  "website_globals": {
+    "shared": {
+      "brand_name": "ROMA",
+      "full_name": "ROMA — Rodríguez Mariño Consulting",
+      "whatsapp_legal_number": "[PENDIENTE: WhatsApp de Tatiana en formato internacional sin +, ej. 57XXXXXXXXXX]",
+      "whatsapp_data_number": "[PENDIENTE: WhatsApp de Henry en formato internacional sin +]",
+      "contact_email": "[PENDIENTE: correo de contacto visible]",
+      "privacy_email": "[PENDIENTE: correo para habeas data, puede ser el mismo de contacto]"
+    },
+    "es": {
+      "seo_suffix": "ROMA",
+      "rss_title": "ROMA — Artículos y casos",
+      "logo_alt": "ROMA — Rodríguez Mariño Consulting",
+      "home_link_label": "ROMA — Inicio"
+    },
+    "en": {
+      "seo_suffix": "ROMA",
+      "rss_title": "ROMA — Articles & case studies",
+      "logo_alt": "ROMA — Rodríguez Mariño Consulting",
+      "home_link_label": "ROMA — Home"
+    }
+  },
+
+  "website_home": {
+    "es": {
+      "seo_title": "Abogada en Colombia y marketing con datos e IA | ROMA",
+      "seo_description": "Asesoría jurídica en Colombia en herencias, inmuebles, tierras y familia. Marketing digital, analítica e IA para negocios en Latinoamérica.",
+      "hero_eyebrow": "Rigor jurídico. Precisión analítica.",
+      "hero_title": "Tu asunto legal, en orden.",
+      "hero_accent": "Tu negocio, guiado por datos.",
+      "hero_description": "Asesoría jurídica para personas y familias en Colombia —herencias, inmuebles, tierras y familia— y marketing digital, analítica e IA para negocios en Latinoamérica. Cuéntanos qué necesitas resolver y te respondemos con claridad.",
+      "hero_legal_label": "Tengo una consulta legal",
+      "hero_legal_hint": "Tatiana Rodríguez · Solo Colombia",
+      "hero_data_label": "Quiero crecer con marketing, datos e IA",
+      "hero_data_hint": "Henry Mariño · Latinoamérica",
+      "hero_territory": "Legal · Colombia  /  Marketing, datos e IA · Latinoamérica",
+      "services_label": "Servicios",
+      "services_title": "Elige por dónde empezar.",
+      "services_description": "Dos áreas independientes, cada una con su profesional a cargo. Escribe directamente a quien puede ayudarte.",
+      "steps_label": "Cómo trabajamos",
+      "steps_title": "Tres pasos, sin compromiso de entrada.",
+      "team_label": "Quiénes somos",
+      "team_title": "Dos profesionales. Cada uno responde por su área.",
+      "team_description": "ROMA reúne dos prácticas que no se mezclan: Tatiana atiende los asuntos jurídicos en Colombia y Henry los proyectos de marketing digital, datos e IA.",
+      "publications_label": "Casos",
+      "publications_title": "Proyectos de datos que puedes revisar.",
+      "publications_description": "Ejemplos reales del trabajo de Henry con analítica, automatización e IA, explicados paso a paso.",
+      "archive_label": "Ver todos los artículos y casos",
+      "entry_label": "Datos · Caso",
+      "entry_link_label": "Leer el caso",
+      "faq_label": "Preguntas frecuentes",
+      "faq_title": "Antes de escribirnos.",
+      "contact_label": "Contacto",
+      "contact_title": "Cuéntanos qué necesitas resolver.",
+      "contact_description": "Escríbenos por WhatsApp al área que corresponde o deja un mensaje corto en el formulario. No envíes documentos ni datos sensibles en el primer mensaje.",
+      "legal_contact_label": "WhatsApp · Consulta legal",
+      "data_contact_label": "WhatsApp · Marketing, datos e IA",
+      "email_contact_label": "Prefiero escribir por correo",
+      "contact_note": "La asesoría jurídica se presta únicamente en Colombia. Marketing, datos e IA: Colombia y Latinoamérica, en modalidad remota.",
+      "cases": [
+        {
+          "slug": "ecommerce-returns-profitability-analytics",
+          "title": "Rentabilidad y devoluciones de una tienda en línea",
+          "summary": "Qué productos y canales dejan margen y cuáles se pierden en devoluciones: modelo en PostgreSQL, análisis en Python y tablero en Metabase validado contra SQL."
+        },
+        {
+          "slug": "google-sheets-cleaning-algorithm",
+          "title": "Limpieza automática de bases de CRM en Google Sheets",
+          "summary": "Tres exportaciones de CRM con formatos distintos convertidas en un archivo limpio y estándar en segundos, con Apps Script desarrollado con ayuda de IA."
+        },
+        {
+          "slug": "analisis-autos-usa",
+          "title": "Análisis del mercado de autos usados en EE. UU.",
+          "summary": "Revisión analítica del abastecimiento de vehículos usados para apoyar decisiones de compra en el sector automotor."
+        },
+        {
+          "slug": "vibe-coding-a-portfolio-for-data-analytics",
+          "title": "Un sitio con CMS, tableros e IA construido en semanas",
+          "summary": "Cómo se integraron Astro, Directus y Metabase con desarrollo asistido por IA. Es la base técnica de este mismo sitio."
+        }
+      ]
+    },
+    "en": {
+      "seo_title": "Colombian legal advice & data-driven marketing | ROMA",
+      "seo_description": "Legal advice in Colombia on inheritance, real estate, land and family law. Digital marketing, analytics and AI for businesses in Latin America.",
+      "hero_eyebrow": "Legal rigor. Analytical precision.",
+      "hero_title": "Your legal matter, in order.",
+      "hero_accent": "Your business, driven by data.",
+      "hero_description": "Legal advice for individuals and families in Colombia —inheritance, real estate, land and family matters— and digital marketing, analytics and AI for businesses across Latin America. Tell us what you need to solve and we will give you a clear answer.",
+      "hero_legal_label": "I have a legal question",
+      "hero_legal_hint": "Tatiana Rodríguez · Colombia only",
+      "hero_data_label": "Grow with marketing, data & AI",
+      "hero_data_hint": "Henry Mariño · Latin America",
+      "hero_territory": "Legal · Colombia  /  Marketing, data & AI · Latin America",
+      "services_label": "Services",
+      "services_title": "Choose where to start.",
+      "services_description": "Two independent practices, each led by its own professional. Reach out directly to the person who can help you.",
+      "steps_label": "How we work",
+      "steps_title": "Three steps, no commitment upfront.",
+      "team_label": "About us",
+      "team_title": "Two professionals. Each accountable for their practice.",
+      "team_description": "ROMA brings together two practices that stay separate: Tatiana handles legal matters in Colombia and Henry leads digital marketing, data and AI projects.",
+      "publications_label": "Case studies",
+      "publications_title": "Data projects you can review.",
+      "publications_description": "Real examples of Henry's work with analytics, automation and AI, explained step by step.",
+      "archive_label": "See all articles and case studies",
+      "entry_label": "Data · Case study",
+      "entry_link_label": "Read the case study",
+      "faq_label": "FAQ",
+      "faq_title": "Before you reach out.",
+      "contact_label": "Contact",
+      "contact_title": "Tell us what you need to solve.",
+      "contact_description": "Message the right practice on WhatsApp or leave a short note in the form. Please do not send documents or sensitive data in your first message.",
+      "legal_contact_label": "WhatsApp · Legal question",
+      "data_contact_label": "WhatsApp · Marketing, data & AI",
+      "email_contact_label": "I prefer email",
+      "contact_note": "Legal services are provided in Colombia only. Marketing, data and AI: Colombia and Latin America, remotely.",
+      "cases": [
+        {
+          "slug": "ecommerce-returns-profitability-analytics",
+          "title": "Ecommerce returns and profitability",
+          "summary": "Which products and channels make margin and which leak through returns: PostgreSQL model, Python analysis and a Metabase dashboard reconciled against SQL."
+        },
+        {
+          "slug": "google-sheets-cleaning-algorithm",
+          "title": "Automated CRM data cleaning in Google Sheets",
+          "summary": "Three CRM exports with different layouts turned into one clean, standard file in seconds, using Apps Script built with AI assistance."
+        },
+        {
+          "slug": "analisis-autos-usa",
+          "title": "US used-car market analysis",
+          "summary": "Analytical review of used-vehicle sourcing to support purchasing decisions in the automotive sector."
+        },
+        {
+          "slug": "vibe-coding-a-portfolio-for-data-analytics",
+          "title": "A site with CMS, dashboards and AI, built in weeks",
+          "summary": "How Astro, Directus and Metabase were integrated through AI-assisted development. It is the technical foundation of this very site."
+        }
+      ]
+    }
+  },
+
+  "website_practices": {
+    "es": {
+      "legal": {
+        "card_label": "Personas y familias · Colombia",
+        "card_title": "Asesoría jurídica",
+        "card_description": "Herencias, compraventa y papeles de inmuebles, tierras y asuntos de familia. Revisamos tu caso y te explicamos tus opciones con claridad.",
+        "card_items": [
+          { "label": "Derecho civil y contratos" },
+          { "label": "Tierras e inmuebles" },
+          { "label": "Derecho de familia" }
+        ],
+        "card_link_label": "Ver asesoría jurídica",
+        "cta_label": "Tengo una consulta legal",
+        "whatsapp_label": "Escribir a Tatiana por WhatsApp",
+        "whatsapp_message": "Hola, Tatiana. Vi la web de ROMA y tengo una consulta legal en Colombia. ¿Podemos conversar?",
+        "territory": "Servicios jurídicos exclusivamente en Colombia.",
+        "page_territory": "Colombia",
+        "seo_title": "Abogada en Colombia: herencias, inmuebles y familia | ROMA",
+        "seo_description": "Asesoría jurídica en Colombia para personas y familias: sucesiones, compraventa y títulos de inmuebles, tierras, divorcio y cuota alimentaria.",
+        "page_title": "Asesoría jurídica en Colombia para personas y familias",
+        "page_description": "Te ayudamos a entender tu situación legal y a decidir el siguiente paso en asuntos civiles, de inmuebles y tierras, y de familia. Atención exclusivamente en Colombia.",
+        "problems_title": "Situaciones en las que te podemos acompañar",
+        "problems": [
+          "Falleció un familiar y no saben cómo hacer la sucesión ni repartir los bienes.",
+          "Vas a comprar o vender una casa, apartamento o finca y quieres revisar los papeles antes de firmar.",
+          "Tienes un predio sin escritura, con falsa tradición o con problemas en el certificado de tradición y libertad.",
+          "Hay un conflicto por linderos, servidumbres o un bien que comparten varios dueños.",
+          "Necesitas tramitar un divorcio, la liquidación de bienes de la pareja o el reconocimiento de una unión marital de hecho.",
+          "Debes definir o revisar cuota alimentaria, custodia o régimen de visitas."
+        ],
+        "audience_title": "Para quién es",
+        "audience": "Personas y familias con un asunto civil, de inmuebles, tierras o familia en Colombia, incluidos colombianos que viven en el exterior y necesitan resolver algo en el país.",
+        "page_items": [
+          { "label": "Derecho civil y contratos" },
+          { "label": "Tierras e inmuebles" },
+          { "label": "Derecho de familia" }
+        ],
+        "projects_link_label": "",
+        "form_title": "Cuéntanos tu consulta",
+        "disclaimer": "La información de este sitio es general y no constituye asesoría jurídica. Cada caso requiere una revisión individual y no se prometen resultados."
+      },
+      "data": {
+        "card_label": "Negocios · Latinoamérica",
+        "card_title": "Marketing digital, datos e IA",
+        "card_description": "Mide qué campañas venden, ten tus cifras en un tablero y automatiza el trabajo repetitivo con IA aplicada.",
+        "card_items": [
+          { "label": "Analítica web y medición de campañas" },
+          { "label": "Tableros y reportes automáticos" },
+          { "label": "Automatización e IA aplicada" }
+        ],
+        "card_link_label": "Ver marketing, datos e IA",
+        "cta_label": "Quiero crecer con marketing, datos e IA",
+        "whatsapp_label": "Escribir a Henry por WhatsApp",
+        "whatsapp_message": "Hola, Henry. Vi la web de ROMA y quiero mejorar mi negocio con marketing, datos o IA. ¿Podemos conversar?",
+        "territory": "Colombia y otros países de Latinoamérica, en modalidad remota.",
+        "page_territory": "Latinoamérica",
+        "seo_title": "Marketing digital, analítica e IA para negocios | ROMA",
+        "seo_description": "Analítica web, medición de campañas en Google y Meta Ads, tableros, automatización e IA aplicada para PYMEs y negocios en Latinoamérica.",
+        "page_title": "Marketing digital, datos e IA para tu negocio",
+        "page_description": "Conectamos tu web, tus campañas y tus ventas para que sepas qué funciona, dejes de armar reportes a mano y uses la IA donde de verdad ahorra tiempo.",
+        "problems_title": "Problemas que resolvemos",
+        "problems": [
+          "Inviertes en Google o Meta Ads y no sabes qué campaña trae clientes y cuál solo gasta presupuesto.",
+          "Tu web o tienda en línea recibe visitas, pero la analítica (GA4, eventos, conversiones) no está bien configurada.",
+          "Cada semana pierdes horas armando reportes en Excel con datos copiados de varias plataformas.",
+          "Tus cifras están dispersas entre CRM, hojas de cálculo y plataformas, y no cuadran entre sí.",
+          "No tienes claro qué productos, canales o clientes te dejan margen después de devoluciones y costos.",
+          "Quieres usar IA para automatizar tareas o atender mejor a tus clientes, pero no sabes por dónde empezar."
+        ],
+        "audience_title": "Para quién es",
+        "audience": "PYMEs, emprendedores, tiendas en línea y equipos comerciales en Latinoamérica que ya invierten en marketing o acumulan datos y necesitan saber qué está funcionando.",
+        "page_items": [
+          { "label": "Analítica web y medición de campañas (GA4, Google Ads, Meta Ads)" },
+          { "label": "Tableros de ventas y marketing (Power BI, Looker Studio, Metabase)" },
+          { "label": "Limpieza e integración de datos (CRM, hojas de cálculo, bases de datos)" },
+          { "label": "Automatización de procesos e IA aplicada" }
+        ],
+        "projects_link_label": "Ver casos reales",
+        "form_title": "Cuéntanos sobre tu negocio",
+        "disclaimer": ""
+      }
+    },
+    "en": {
+      "legal": {
+        "card_label": "Individuals & families · Colombia",
+        "card_title": "Legal advice",
+        "card_description": "Inheritance, property purchases and title issues, land and family matters. We review your case and explain your options clearly.",
+        "card_items": [
+          { "label": "Civil law and contracts" },
+          { "label": "Land and real estate" },
+          { "label": "Family law" }
+        ],
+        "card_link_label": "See legal services",
+        "cta_label": "I have a legal question",
+        "whatsapp_label": "Message Tatiana on WhatsApp",
+        "whatsapp_message": "Hi Tatiana, I found ROMA's website and have a legal question in Colombia. Can we talk?",
+        "territory": "Legal services in Colombia only.",
+        "page_territory": "Colombia",
+        "seo_title": "Lawyer in Colombia: inheritance, property & family | ROMA",
+        "seo_description": "Legal advice in Colombia for individuals and families: estates, property purchases and titles, land, divorce and child support.",
+        "page_title": "Legal advice in Colombia for individuals and families",
+        "page_description": "We help you understand your legal situation and decide your next step in civil, real estate, land and family matters. Services provided in Colombia only.",
+        "problems_title": "Situations where we can help",
+        "problems": [
+          "A family member passed away and you are unsure how to handle the estate and divide the assets.",
+          "You are buying or selling a house, apartment or rural property and want the paperwork reviewed before signing.",
+          "You have a property without a deed, with a defective chain of title or issues in its registry certificate.",
+          "There is a dispute over boundaries, easements or a property shared by several owners.",
+          "You need a divorce, the division of marital property or recognition of a common-law marriage.",
+          "You need to set or review child support, custody or visitation arrangements."
+        ],
+        "audience_title": "Who it is for",
+        "audience": "Individuals and families with a civil, real estate, land or family matter in Colombia, including Colombians living abroad who need to resolve something back home.",
+        "page_items": [
+          { "label": "Civil law and contracts" },
+          { "label": "Land and real estate" },
+          { "label": "Family law" }
+        ],
+        "projects_link_label": "",
+        "form_title": "Tell us about your question",
+        "disclaimer": "The information on this site is general and is not legal advice. Every case requires individual review and no outcomes are promised."
+      },
+      "data": {
+        "card_label": "Businesses · Latin America",
+        "card_title": "Digital marketing, data & AI",
+        "card_description": "Measure which campaigns sell, keep your numbers in one dashboard and automate repetitive work with applied AI.",
+        "card_items": [
+          { "label": "Web analytics and campaign tracking" },
+          { "label": "Dashboards and automated reports" },
+          { "label": "Automation and applied AI" }
+        ],
+        "card_link_label": "See marketing, data & AI",
+        "cta_label": "Grow with marketing, data & AI",
+        "whatsapp_label": "Message Henry on WhatsApp",
+        "whatsapp_message": "Hi Henry, I found ROMA's website and want to improve my business with marketing, data or AI. Can we talk?",
+        "territory": "Colombia and other Latin American countries, remotely.",
+        "page_territory": "Latin America",
+        "seo_title": "Digital marketing, analytics & AI for business | ROMA",
+        "seo_description": "Web analytics, Google and Meta Ads tracking, dashboards, automation and applied AI for small and mid-sized businesses in Latin America.",
+        "page_title": "Digital marketing, data & AI for your business",
+        "page_description": "We connect your website, campaigns and sales so you know what works, stop building reports by hand and use AI where it actually saves time.",
+        "problems_title": "Problems we solve",
+        "problems": [
+          "You spend on Google or Meta Ads but cannot tell which campaign brings customers and which only burns budget.",
+          "Your website or online store gets traffic, but analytics (GA4, events, conversions) is not set up properly.",
+          "You lose hours every week building Excel reports with data copied from several platforms.",
+          "Your numbers are scattered across CRM, spreadsheets and platforms, and they do not match.",
+          "You are not sure which products, channels or customers are profitable after returns and costs.",
+          "You want to use AI to automate tasks or serve customers better, but do not know where to start."
+        ],
+        "audience_title": "Who it is for",
+        "audience": "Small and mid-sized businesses, founders, online stores and sales teams in Latin America that already invest in marketing or collect data and need to know what is working.",
+        "page_items": [
+          { "label": "Web analytics and campaign tracking (GA4, Google Ads, Meta Ads)" },
+          { "label": "Sales and marketing dashboards (Power BI, Looker Studio, Metabase)" },
+          { "label": "Data cleaning and integration (CRM, spreadsheets, databases)" },
+          { "label": "Process automation and applied AI" }
+        ],
+        "projects_link_label": "See real case studies",
+        "form_title": "Tell us about your business",
+        "disclaimer": ""
+      }
+    }
+  },
+
+  "website_people": {
+    "es": {
+      "tatiana": {
+        "name": "Tatiana Rodríguez",
+        "label": "Área jurídica · Colombia",
+        "role": "Abogada · Civil, tierras e inmuebles, familia",
+        "credential": "Abogada de [PENDIENTE: universidad] · T. P. [PENDIENTE: número de tarjeta profesional]",
+        "bio": "Acompaña a personas y familias en Colombia en sucesiones, compraventa y títulos de inmuebles y tierras, y asuntos de familia. Explica cada opción en lenguaje claro —qué implica, qué documentos se necesitan y qué riesgos tiene— para que decidas con información. [PENDIENTE: años de ejercicio].",
+        "contact_label": "Escribir a Tatiana",
+        "linkedin_label": "LinkedIn",
+        "linkedin_url": "[PENDIENTE: URL de LinkedIn de Tatiana]",
+        "photo_alt": "Retrato de Tatiana Rodríguez, abogada"
+      },
+      "henry": {
+        "name": "Henry Mariño",
+        "label": "Marketing digital, datos e IA · Latinoamérica",
+        "role": "Ingeniero industrial · Analítica, marketing digital e IA",
+        "credential": "Ingeniero industrial (UIS) · Analytics Director en Fountain Forward",
+        "bio": "Ha liderado analítica y planeación operativa en Fountain Forward, Conduent y Teleperformance. Conecta campañas, web y ventas en tableros que muestran qué funciona, y automatiza el trabajo repetitivo con IA aplicada. Trabaja con SQL, Python, Power BI, Google y Meta Ads. [PENDIENTE: años de experiencia].",
+        "contact_label": "Escribir a Henry",
+        "linkedin_label": "LinkedIn",
+        "linkedin_url": "https://linkedin.com/in/henrymarinho90/",
+        "photo_alt": "Retrato de Henry Mariño, ingeniero industrial"
+      }
+    },
+    "en": {
+      "tatiana": {
+        "name": "Tatiana Rodríguez",
+        "label": "Legal practice · Colombia",
+        "role": "Lawyer · Civil, land & real estate, family",
+        "credential": "Law degree, [PENDIENTE: university] · Colombian bar card no. [PENDIENTE: number]",
+        "bio": "She advises individuals and families in Colombia on estates, property purchases and titles, land and family matters. She explains each option in plain language —what it involves, which documents are needed and what the risks are— so you can decide with full information. [PENDIENTE: years in practice].",
+        "contact_label": "Message Tatiana",
+        "linkedin_label": "LinkedIn",
+        "linkedin_url": "[PENDIENTE: Tatiana's LinkedIn URL]",
+        "photo_alt": "Portrait of Tatiana Rodríguez, lawyer"
+      },
+      "henry": {
+        "name": "Henry Mariño",
+        "label": "Digital marketing, data & AI · Latin America",
+        "role": "Industrial engineer · Analytics, digital marketing & AI",
+        "credential": "Industrial engineer (UIS) · Analytics Director at Fountain Forward",
+        "bio": "He has led analytics and workforce planning at Fountain Forward, Conduent and Teleperformance. He connects campaigns, websites and sales in dashboards that show what works, and automates repetitive work with applied AI. Works with SQL, Python, Power BI, Google and Meta Ads. [PENDIENTE: years of experience].",
+        "contact_label": "Message Henry",
+        "linkedin_label": "LinkedIn",
+        "linkedin_url": "https://linkedin.com/in/henrymarinho90/",
+        "photo_alt": "Portrait of Henry Mariño, industrial engineer"
+      }
+    }
+  },
+
+  "website_steps": {
+    "es": [
+      {
+        "sort": 1,
+        "title": "Cuéntanos tu caso",
+        "description": "Escríbenos por WhatsApp o en el formulario con un resumen breve. Llega directamente a la persona del área que corresponde."
+      },
+      {
+        "sort": 2,
+        "title": "Conversación inicial",
+        "description": "Revisamos tu situación, te decimos con honestidad si podemos ayudarte y cuál sería el camino. Si no es algo que atendemos, te lo decimos de inmediato."
+      },
+      {
+        "sort": 3,
+        "title": "Propuesta clara y trabajo",
+        "description": "Recibes por escrito el alcance, los tiempos estimados y los honorarios antes de empezar. Solo arrancamos cuando estés de acuerdo."
+      }
+    ],
+    "en": [
+      {
+        "sort": 1,
+        "title": "Tell us about your case",
+        "description": "Reach out on WhatsApp or through the form with a short summary. It goes straight to the professional in charge of that practice."
+      },
+      {
+        "sort": 2,
+        "title": "First conversation",
+        "description": "We review your situation and tell you honestly whether we can help and what the path looks like. If it is outside what we do, we tell you right away."
+      },
+      {
+        "sort": 3,
+        "title": "Clear proposal, then the work",
+        "description": "You get the scope, estimated timeline and fees in writing before anything starts. We only begin once you agree."
+      }
+    ]
+  },
+
+  "website_faq": {
+    "es": [
+      {
+        "sort": 1,
+        "area": "all",
+        "question": "¿Cuánto cuesta la primera conversación?",
+        "answer": "[PENDIENTE: indicar si la primera conversación es sin costo o tiene un valor, y su duración]. En cualquier caso, antes de iniciar cualquier trabajo recibes por escrito el alcance y los honorarios, y decides si continuar."
+      },
+      {
+        "sort": 2,
+        "area": "all",
+        "question": "¿En qué países atienden?",
+        "answer": "La asesoría jurídica se presta únicamente sobre asuntos en Colombia; también atendemos a colombianos que viven en el exterior. Los servicios de marketing digital, datos e IA se prestan de forma remota en Colombia y el resto de Latinoamérica."
+      },
+      {
+        "sort": 3,
+        "area": "all",
+        "question": "¿Cuánto tiempo toma?",
+        "answer": "Depende de cada caso. En lo jurídico, muchos trámites dependen de notarías, oficinas de registro o juzgados, por eso damos tiempos estimados y no fechas garantizadas. En datos y marketing, el plazo se define en la propuesta según el alcance. Respondemos los mensajes en [PENDIENTE: tiempo de respuesta, ej. 1 día hábil]."
+      },
+      {
+        "sort": 4,
+        "area": "all",
+        "question": "¿Mi información es confidencial?",
+        "answer": "Sí. La información de las consultas jurídicas está protegida por el secreto profesional que rige la abogacía en Colombia. En proyectos de datos firmamos un acuerdo de confidencialidad si lo necesitas. Tratamos tus datos personales según la Ley 1581 de 2012 y nuestra Política de privacidad."
+      },
+      {
+        "sort": 5,
+        "area": "all",
+        "question": "¿Qué debo preparar para la primera conversación?",
+        "answer": "Para un asunto legal: un resumen de lo ocurrido, fechas importantes y una lista de los documentos que tienes (escrituras, certificado de tradición, registros civiles, contratos). Para marketing y datos: tu objetivo, las herramientas que usas (Google Analytics, Ads, CRM, Excel) y un ejemplo del reporte o problema actual. No envíes documentos en el primer mensaje; te diremos cómo compartirlos de forma segura."
+      },
+      {
+        "sort": 6,
+        "area": "all",
+        "question": "¿La atención es virtual o presencial?",
+        "answer": "Trabajamos principalmente por videollamada, llamada y WhatsApp, lo que permite atenderte desde cualquier ciudad. Para asuntos jurídicos que lo requieran, la atención presencial es posible en [PENDIENTE: ciudad o ciudades]."
+      }
+    ],
+    "en": [
+      {
+        "sort": 1,
+        "area": "all",
+        "question": "How much does the first conversation cost?",
+        "answer": "[PENDIENTE: state whether the first conversation is free or paid, and how long it lasts]. Either way, before any work starts you receive the scope and fees in writing and decide whether to move forward."
+      },
+      {
+        "sort": 2,
+        "area": "all",
+        "question": "Which countries do you serve?",
+        "answer": "Legal advice covers matters in Colombia only; we also assist Colombians living abroad. Digital marketing, data and AI services are delivered remotely in Colombia and across Latin America."
+      },
+      {
+        "sort": 3,
+        "area": "all",
+        "question": "How long does it take?",
+        "answer": "It depends on the case. On the legal side, many procedures depend on notaries, registry offices or courts, so we give estimated timelines rather than guaranteed dates. For data and marketing, the timeline is set in the proposal based on scope. We reply to messages within [PENDIENTE: response time, e.g. 1 business day]."
+      },
+      {
+        "sort": 4,
+        "area": "all",
+        "question": "Is my information confidential?",
+        "answer": "Yes. Information shared in legal consultations is protected by attorney professional secrecy under Colombian law. For data projects we sign a non-disclosure agreement if you need one. We process your personal data under Colombian Law 1581 of 2012 and our Privacy policy."
+      },
+      {
+        "sort": 5,
+        "area": "all",
+        "question": "What should I prepare for the first conversation?",
+        "answer": "For a legal matter: a summary of what happened, key dates and a list of the documents you have (deeds, property registry certificate, civil records, contracts). For marketing and data: your goal, the tools you use (Google Analytics, Ads, CRM, Excel) and an example of your current report or problem. Do not send documents in your first message; we will tell you how to share them securely."
+      },
+      {
+        "sort": 6,
+        "area": "all",
+        "question": "Do you work remotely or in person?",
+        "answer": "We mainly work by video call, phone and WhatsApp, so we can help you from any city. For legal matters that require it, in-person meetings are possible in [PENDIENTE: city or cities]."
+      }
+    ]
+  },
+
+  "website_common": {
+    "es": {
+      "footer_tagline": "Rigor jurídico. Precisión analítica.",
+      "footer_scope_label": "Ámbito de trabajo",
+      "footer_legal_scope": "Servicios jurídicos: Colombia únicamente.",
+      "footer_data_scope": "Marketing digital, datos e IA: Latinoamérica.",
+      "footer_disclaimer": "La información de este sitio es general y no sustituye una asesoría jurídica individual.",
+      "footer_privacy_label": "Política de privacidad",
+      "blog_seo_title": "Casos de analítica, marketing e IA aplicada | ROMA",
+      "blog_seo_description": "Casos reales de analítica de datos, automatización e IA aplicada: rentabilidad en ecommerce, limpieza de CRM, tableros y más.",
+      "blog_title": "Artículos y casos",
+      "blog_description": "Casos reales de Henry Mariño sobre analítica de datos, automatización, marketing e IA aplicada, explicados paso a paso.",
+      "archive_note": "Algunos casos están publicados en inglés.",
+      "article_contact_label": "¿Tienes un reto parecido? Hablemos",
+      "practice_process_note": "Partimos de una conversación para entender tu situación. Antes de empezar recibes por escrito el alcance, los tiempos y los honorarios.",
+      "practice_contact_label": "Conversemos",
+
+      "whatsapp_float_label": "Escríbenos por WhatsApp",
+      "whatsapp_float_title": "¿Sobre qué quieres hablar?",
+      "whatsapp_float_legal": "Consulta legal (Colombia)",
+      "whatsapp_float_data": "Marketing, datos e IA",
+      "whatsapp_float_close": "Cerrar",
+
+      "form_title": "Déjanos un mensaje",
+      "form_description": "Te respondemos por el medio que prefieras. Toma menos de un minuto.",
+      "form_name_label": "Nombre",
+      "form_name_placeholder": "Cómo te llamas",
+      "form_area_label": "¿En qué te podemos ayudar?",
+      "form_area_placeholder": "Elige un área",
+      "form_area_legal": "Consulta legal (solo Colombia)",
+      "form_area_data": "Marketing digital, datos e IA",
+      "form_message_label": "Cuéntanos brevemente tu situación",
+      "form_message_placeholder_legal": "Ej.: Quiero vender un lote heredado y no sé si la sucesión está terminada.",
+      "form_message_placeholder_data": "Ej.: Invertimos en Meta Ads y no sabemos qué campañas generan ventas.",
+      "form_message_help": "Máximo {max} caracteres. No incluyas números de documento, datos de salud ni detalles sensibles; los revisaremos en la conversación.",
+      "form_contact_method_label": "¿Cómo prefieres que te contactemos?",
+      "form_contact_whatsapp": "WhatsApp",
+      "form_contact_email": "Correo",
+      "form_phone_label": "Número de WhatsApp",
+      "form_phone_placeholder": "+57 300 000 0000",
+      "form_phone_help": "Incluye el indicativo del país.",
+      "form_email_label": "Correo electrónico",
+      "form_email_placeholder": "nombre@correo.com",
+      "form_consent_label": "Autorizo a ROMA — Rodríguez Mariño Consulting a tratar mis datos personales para responder esta solicitud, conforme a la Ley 1581 de 2012 y a la {privacy_link}.",
+      "form_consent_link_label": "Política de privacidad",
+      "form_honeypot_label": "No completes este campo",
+      "form_submit_label": "Enviar mensaje",
+      "form_submitting_label": "Enviando…",
+      "form_required_note": "Todos los campos son obligatorios.",
+      "form_error_required": "Completa este campo.",
+      "form_error_name": "Escribe tu nombre (mínimo 2 caracteres).",
+      "form_error_area": "Elige el área de tu consulta.",
+      "form_error_message_short": "Cuéntanos un poco más (mínimo 10 caracteres).",
+      "form_error_message_long": "El mensaje supera los {max} caracteres. Resúmelo un poco.",
+      "form_error_email": "Revisa el correo; parece incompleto.",
+      "form_error_phone": "Revisa el número; incluye el indicativo del país.",
+      "form_error_consent": "Para responderte necesitamos tu autorización de tratamiento de datos.",
+      "form_error_rate_limit": "Recibimos varios envíos seguidos. Intenta de nuevo en unos minutos o escríbenos por WhatsApp.",
+      "form_error_generic": "No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.",
+
+      "thanks_seo_title": "Mensaje recibido | ROMA",
+      "thanks_title": "Recibimos tu mensaje.",
+      "thanks_description_legal": "Tatiana revisará tu consulta y te contactará por el medio que elegiste en [PENDIENTE: tiempo de respuesta]. Si es urgente, escríbele por WhatsApp.",
+      "thanks_description_data": "Henry revisará tu mensaje y te contactará por el medio que elegiste en [PENDIENTE: tiempo de respuesta]. Si quieres adelantar, escríbele por WhatsApp.",
+      "thanks_description_default": "Te contactaremos por el medio que elegiste en [PENDIENTE: tiempo de respuesta].",
+      "thanks_reminder": "Mientras tanto, no envíes documentos por correo ni WhatsApp: te indicaremos cómo compartirlos de forma segura si hacen falta.",
+      "thanks_whatsapp_label": "Escribir por WhatsApp",
+      "thanks_cases_label": "Ver casos de datos",
+      "thanks_back_label": "Volver al inicio",
+
+      "cookie_title": "Analítica del sitio",
+      "cookie_text": "Usamos herramientas de analítica para saber qué páginas son útiles y mejorar el sitio. Solo activamos cookies de medición si las aceptas; puedes cambiar tu decisión cuando quieras.",
+      "cookie_accept_label": "Aceptar analítica",
+      "cookie_reject_label": "Solo lo esencial",
+      "cookie_more_label": "Más información",
+      "cookie_settings_label": "Preferencias de cookies",
+
+      "privacy_seo_title": "Política de privacidad y tratamiento de datos | ROMA",
+      "privacy_seo_description": "Cómo ROMA — Rodríguez Mariño Consulting trata tus datos personales conforme a la Ley 1581 de 2012 y cómo ejercer tus derechos.",
+      "privacy_title": "Política de tratamiento de datos personales",
+      "privacy_updated_label": "Última actualización: [PENDIENTE: fecha]",
+      "privacy_body": "## 1. Responsable del tratamiento\n\n[PENDIENTE: nombre o razón social del responsable], identificado con [PENDIENTE: NIT o cédula], con domicilio en [PENDIENTE: ciudad y dirección], Colombia. Correo para asuntos de datos personales: [PENDIENTE: correo]. Teléfono: [PENDIENTE: teléfono].\n\nROMA — Rodríguez Mariño Consulting reúne la práctica jurídica de Tatiana Rodríguez y la práctica de marketing digital, datos e IA de Henry Mariño.\n\n## 2. Marco legal\n\nEsta política se rige por la Ley 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015) y demás normas colombianas sobre protección de datos personales.\n\n## 3. Datos que recogemos\n\n- Los que nos das en el formulario o por WhatsApp o correo: nombre, área de interés, mensaje, número de WhatsApp y/o correo.\n- Datos técnicos de navegación (páginas visitadas, dispositivo, origen de la visita) solo si aceptas la analítica en el banner de cookies.\n\nNo solicitamos datos sensibles en el formulario. Si al conversar sobre tu caso compartes información sensible o de menores de edad, la trataremos solo para atender tu solicitud, con la reserva debida y respetando el interés superior de los niños, niñas y adolescentes. No estás obligado a responder preguntas sobre datos sensibles.\n\n## 4. Finalidades\n\n- Responder tu solicitud y agendar la conversación inicial.\n- Preparar y enviar propuestas de servicio y, si contratas, ejecutar y administrar la relación profesional.\n- Llevar un registro interno de solicitudes para hacerles seguimiento.\n- Medir de forma agregada el uso del sitio para mejorarlo, solo con tu consentimiento.\n- Cumplir obligaciones legales.\n\nNo vendemos ni cedemos tus datos. Solo te enviaremos información comercial si lo autorizas expresamente.\n\n## 5. Encargados y transferencias\n\nUsamos proveedores tecnológicos para alojar el sitio, gestionar los mensajes y medir el uso (por ejemplo, servicios de alojamiento, gestión de contenidos, CRM y analítica). Algunos pueden almacenar información fuera de Colombia; en esos casos exigimos condiciones de seguridad y confidencialidad acordes con la ley colombiana. [PENDIENTE: confirmar lista de proveedores y países].\n\n## 6. Tus derechos\n\nComo titular puedes:\n\n- Conocer, actualizar y rectificar tus datos.\n- Solicitar prueba de la autorización que nos diste.\n- Ser informado sobre el uso que damos a tus datos.\n- Revocar la autorización y pedir la supresión de tus datos, cuando no exista un deber legal o contractual de conservarlos.\n- Acceder gratuitamente a tus datos.\n- Presentar quejas ante la Superintendencia de Industria y Comercio, después de haber agotado el trámite de consulta o reclamo con nosotros.\n\n## 7. Cómo ejercer tus derechos\n\nEscribe a [PENDIENTE: correo] indicando tu nombre, tu solicitud y un medio de contacto. Atendemos las consultas en un máximo de diez (10) días hábiles y los reclamos en un máximo de quince (15) días hábiles, prorrogables en los términos de la Ley 1581 de 2012. Si el reclamo está incompleto, te pediremos completarlo dentro de los cinco (5) días hábiles siguientes.\n\n## 8. Conservación y seguridad\n\nConservamos tus datos el tiempo necesario para las finalidades descritas y para cumplir obligaciones legales. Aplicamos medidas técnicas y organizativas razonables para protegerlos contra acceso no autorizado, pérdida o alteración.\n\n## 9. Cookies y analítica\n\nEl sitio funciona sin cookies de medición. Solo si aceptas en el banner activamos herramientas de analítica que usan cookies o almacenamiento local. Puedes cambiar tu decisión en cualquier momento desde «Preferencias de cookies».\n\n## 10. Vigencia y cambios\n\nEsta política rige desde [PENDIENTE: fecha]. Si la modificamos de forma sustancial, lo informaremos en este sitio.",
+
+      "lead_area_legal": "Legal",
+      "lead_area_data": "Marketing, datos e IA"
+    },
+    "en": {
+      "footer_tagline": "Legal rigor. Analytical precision.",
+      "footer_scope_label": "Where we work",
+      "footer_legal_scope": "Legal services: Colombia only.",
+      "footer_data_scope": "Digital marketing, data & AI: Latin America.",
+      "footer_disclaimer": "The information on this site is general and is not a substitute for individual legal advice.",
+      "footer_privacy_label": "Privacy policy",
+      "blog_seo_title": "Analytics, marketing & applied AI case studies | ROMA",
+      "blog_seo_description": "Real case studies in data analytics, automation and applied AI: ecommerce profitability, CRM data cleaning, dashboards and more.",
+      "blog_title": "Articles and case studies",
+      "blog_description": "Real case studies by Henry Mariño on data analytics, automation, marketing and applied AI, explained step by step.",
+      "archive_note": "",
+      "article_contact_label": "Facing a similar challenge? Let's talk",
+      "practice_process_note": "We start with a conversation to understand your situation. Before any work begins you get the scope, timeline and fees in writing.",
+      "practice_contact_label": "Let's talk",
+
+      "whatsapp_float_label": "Message us on WhatsApp",
+      "whatsapp_float_title": "What would you like to discuss?",
+      "whatsapp_float_legal": "Legal question (Colombia)",
+      "whatsapp_float_data": "Marketing, data & AI",
+      "whatsapp_float_close": "Close",
+
+      "form_title": "Send us a message",
+      "form_description": "We will reply through the channel you prefer. It takes less than a minute.",
+      "form_name_label": "Name",
+      "form_name_placeholder": "Your name",
+      "form_area_label": "How can we help?",
+      "form_area_placeholder": "Choose a practice",
+      "form_area_legal": "Legal question (Colombia only)",
+      "form_area_data": "Digital marketing, data & AI",
+      "form_message_label": "Briefly describe your situation",
+      "form_message_placeholder_legal": "E.g. I want to sell an inherited lot in Colombia and I am not sure the estate is settled.",
+      "form_message_placeholder_data": "E.g. We run Meta Ads and cannot tell which campaigns drive sales.",
+      "form_message_help": "Up to {max} characters. Do not include ID numbers, health data or sensitive details; we will cover them in the conversation.",
+      "form_contact_method_label": "How should we contact you?",
+      "form_contact_whatsapp": "WhatsApp",
+      "form_contact_email": "Email",
+      "form_phone_label": "WhatsApp number",
+      "form_phone_placeholder": "+1 555 000 0000",
+      "form_phone_help": "Include your country code.",
+      "form_email_label": "Email",
+      "form_email_placeholder": "name@email.com",
+      "form_consent_label": "I authorize ROMA — Rodríguez Mariño Consulting to process my personal data to answer this request, in accordance with Colombian Law 1581 of 2012 and the {privacy_link}.",
+      "form_consent_link_label": "Privacy policy",
+      "form_honeypot_label": "Leave this field empty",
+      "form_submit_label": "Send message",
+      "form_submitting_label": "Sending…",
+      "form_required_note": "All fields are required.",
+      "form_error_required": "Please fill in this field.",
+      "form_error_name": "Please enter your name (at least 2 characters).",
+      "form_error_area": "Please choose a practice.",
+      "form_error_message_short": "Tell us a bit more (at least 10 characters).",
+      "form_error_message_long": "Your message is over {max} characters. Please shorten it.",
+      "form_error_email": "Please check your email; it looks incomplete.",
+      "form_error_phone": "Please check the number and include your country code.",
+      "form_error_consent": "We need your consent to process your data in order to reply.",
+      "form_error_rate_limit": "We received several submissions in a row. Please try again in a few minutes or message us on WhatsApp.",
+      "form_error_generic": "We could not send your message. Please try again or message us on WhatsApp.",
+
+      "thanks_seo_title": "Message received | ROMA",
+      "thanks_title": "We got your message.",
+      "thanks_description_legal": "Tatiana will review your question and contact you through your chosen channel within [PENDIENTE: response time]. If it is urgent, message her on WhatsApp.",
+      "thanks_description_data": "Henry will review your message and contact you through your chosen channel within [PENDIENTE: response time]. If you want to move faster, message him on WhatsApp.",
+      "thanks_description_default": "We will contact you through your chosen channel within [PENDIENTE: response time].",
+      "thanks_reminder": "In the meantime, please do not send documents by email or WhatsApp: we will tell you how to share them securely if needed.",
+      "thanks_whatsapp_label": "Message on WhatsApp",
+      "thanks_cases_label": "See data case studies",
+      "thanks_back_label": "Back to home",
+
+      "cookie_title": "Site analytics",
+      "cookie_text": "We use analytics tools to learn which pages are useful and improve the site. Measurement cookies are only enabled if you accept; you can change your choice at any time.",
+      "cookie_accept_label": "Accept analytics",
+      "cookie_reject_label": "Essential only",
+      "cookie_more_label": "Learn more",
+      "cookie_settings_label": "Cookie preferences",
+
+      "privacy_seo_title": "Privacy and personal data policy | ROMA",
+      "privacy_seo_description": "How ROMA — Rodríguez Mariño Consulting processes your personal data under Colombian Law 1581 of 2012 and how to exercise your rights.",
+      "privacy_title": "Personal data processing policy",
+      "privacy_updated_label": "Last updated: [PENDIENTE: date]",
+      "privacy_body": "## 1. Data controller\n\n[PENDIENTE: name or legal name of the controller], identified with [PENDIENTE: NIT or ID number], domiciled at [PENDIENTE: city and address], Colombia. Email for personal data matters: [PENDIENTE: email]. Phone: [PENDIENTE: phone].\n\nROMA — Rodríguez Mariño Consulting brings together Tatiana Rodríguez's legal practice and Henry Mariño's digital marketing, data and AI practice.\n\n## 2. Legal framework\n\nThis policy is governed by Colombian Law 1581 of 2012, Decree 1377 of 2013 (compiled in Decree 1074 of 2015) and other Colombian data protection rules.\n\n## 3. Data we collect\n\n- Data you give us through the form, WhatsApp or email: name, area of interest, message, WhatsApp number and/or email.\n- Technical browsing data (pages visited, device, traffic source) only if you accept analytics in the cookie banner.\n\nWe do not request sensitive data in the form. If you share sensitive information or information about minors while discussing your case, we will use it only to handle your request, with due confidentiality and respecting the best interests of children and adolescents. You are not required to answer questions about sensitive data.\n\n## 4. Purposes\n\n- Answer your request and schedule the first conversation.\n- Prepare and send service proposals and, if you hire us, perform and manage the professional relationship.\n- Keep an internal record of requests to follow up on them.\n- Measure site usage in aggregate to improve it, only with your consent.\n- Comply with legal obligations.\n\nWe do not sell or share your data. We will only send you marketing communications if you expressly authorize it.\n\n## 5. Processors and transfers\n\nWe use technology providers to host the site, manage messages and measure usage (for example hosting, content management, CRM and analytics services). Some may store information outside Colombia; in those cases we require security and confidentiality conditions consistent with Colombian law. [PENDIENTE: confirm list of providers and countries].\n\n## 6. Your rights\n\nAs the data subject you may:\n\n- Access, update and correct your data.\n- Request proof of the authorization you gave us.\n- Be informed about how we use your data.\n- Revoke your authorization and request deletion of your data, unless there is a legal or contractual duty to keep it.\n- Access your data free of charge.\n- File complaints with the Superintendence of Industry and Commerce (SIC) after completing the inquiry or claim process with us.\n\n## 7. How to exercise your rights\n\nEmail [PENDIENTE: email] with your name, your request and a contact method. We answer inquiries within ten (10) business days and claims within fifteen (15) business days, extendable under Law 1581 of 2012. If a claim is incomplete, we will ask you to complete it within five (5) business days.\n\n## 8. Retention and security\n\nWe keep your data for as long as needed for the purposes above and to meet legal obligations. We apply reasonable technical and organizational measures to protect it against unauthorized access, loss or alteration.\n\n## 9. Cookies and analytics\n\nThe site works without measurement cookies. Only if you accept in the banner do we enable analytics tools that use cookies or local storage. You can change your choice at any time from Cookie preferences.\n\n## 10. Effective date and changes\n\nThis policy is effective from [PENDIENTE: date]. If we change it substantially, we will announce it on this site. The Spanish version prevails in case of discrepancy.",
+
+      "lead_area_legal": "Legal",
+      "lead_area_data": "Marketing, data & AI"
+    }
+  }
+}
