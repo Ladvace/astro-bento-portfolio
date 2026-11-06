@@ -1,5 +1,5 @@
 ---
-// Legacy template route: permanent redirect to the home page (SSR, node adapter).
+// Legacy template route: permanent redirect straight to the Spanish home (no 301 -> 302 chain).
 export const prerender = false;
-return Astro.redirect('/', 301);
+return Astro.redirect('/es/', 301);
 ---

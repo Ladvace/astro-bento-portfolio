@@ -28,6 +28,7 @@ export function sitemapFilter(page) {
   const segments = path.split('/').filter(Boolean);
   if (!isLocale(segments[0])) return false; // unprefixed = legacy or redirect
   if (segments[1] === 'project') return false;
+  if (segments[1] === 'gracias') return false; // noindex thank-you page, per locale
   return true;
 }
 

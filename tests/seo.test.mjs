@@ -29,7 +29,7 @@ test('legacy redirect table', () => {
 test('sitemap filter keeps only canonical indexable pages', () => {
   const u = (p) => `https://portfolio.romahomestore.com${p}`;
   for (const p of ['/es/', '/en/', '/es/blog/', '/en/blog/x/', '/es/servicios/legal/', '/en/servicios/data/', '/es/privacidad/']) assert.equal(sitemapFilter(u(p)), true, p);
-  for (const p of ['/blog/', '/blog/x/', '/project/x/', '/es/project/', '/en/project/x/', '/gracias/', '/es/gracias/'.replace('/es', ''), '/api/lead']) assert.equal(sitemapFilter(u(p)), false, p);
+  for (const p of ['/blog/', '/blog/x/', '/project/x/', '/es/project/', '/en/project/x/', '/gracias/', '/es/gracias/', '/en/gracias/', '/api/lead']) assert.equal(sitemapFilter(u(p)), false, p);
 });
 
 test('built sitemap has no duplicates and covers es and en services', { skip: !safeRead('dist/client/sitemap-0.xml') }, () => {
