@@ -10,7 +10,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "eslint": "eslint 'src/**/*.{js,astro}'",
-    "check": "astro check"
+    "check": "astro check",
+    "test:dist": "node --test tests/dist/*.test.mjs",
+    "verify": "npm run build && npm test && npm run test:dist"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
