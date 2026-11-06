@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 import Unocss from '@unocss/astro';
 import sitemap from '@astrojs/sitemap';
+import { sitemapFilter } from './src/lib/seo.mjs';
 
 export default defineConfig({
   // 👇 ESTA LÍNEA ES LA LLAVE. SIN ELLA, NO HAY WEB.
@@ -14,6 +15,9 @@ export default defineConfig({
 
   integrations: [
     Unocss({ injectReset: true }),
-    sitemap(),
+    sitemap({
+      filter: sitemapFilter,
+      i18n: { defaultLocale: 'es', locales: { es: 'es-CO', en: 'en' } },
+    }),
   ],
 });

@@ -1,0 +1,11 @@
+Fonts self-hosted here (latin subset, woff2, obtained from Google Fonts):
+
+- IBM Plex Sans and IBM Plex Mono. Copyright 2017 IBM Corp. (https://github.com/IBM/plex)
+- Source Serif 4. Copyright 2014-2021 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. (https://github.com/adobe-fonts/source-serif)
+
+All are licensed under the SIL Open Font License, Version 1.1.
+Full text: https://openfontlicense.org/open-font-license-official-text/
+
+The OFL permits use, study, copying, embedding, redistribution and self-hosting
+of the fonts, provided this notice and the license are kept with them and the
+fonts are not sold on their own.

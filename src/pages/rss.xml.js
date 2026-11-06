@@ -13,7 +13,7 @@ export async function GET(context) {
       pubDate: project.date_created ? new Date(project.date_created) : undefined,
       description: project.description,
       content: sanitizeHtml(project.content || ''),
-      link: `/project/${project.slug}/`,
+      link: `/es/blog/${project.slug}/`,
     })),
   });
 }

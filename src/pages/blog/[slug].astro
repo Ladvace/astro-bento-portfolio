@@ -1,14 +1,7 @@
 ---
-import Article from '../../components/roma/Article.astro';
-import { getPublishedProjects } from '../../lib/directus';
-export const prerender = true;
-export async function getStaticPaths() {
-  const projects = await getPublishedProjects();
-  return projects.map((project) => ({
-    params: { slug: project.slug },
-    props: { project },
-  }));
-}
-const { project } = Astro.props;
+import { legacyRedirect } from '../../lib/seo.mjs';
+export const prerender = false;
+
+const target = legacyRedirect(Astro.url.pathname);
+return target ? Astro.redirect(target, 301) : new Response(null, { status: 404 });
 ---
-<Article locale="en" project={project} />

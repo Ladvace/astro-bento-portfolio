@@ -10,7 +10,8 @@ const area=practices[practice];
 const title=area.page_title;
 const intro=area.page_description;
 const items=area.page_items;
+const crumbs=[{name:globals.brand_name,path:`/${locale}/`},{name:title,path:`/${locale}/servicios/${practice}/`}];
 ---
-<RomaLayout locale={locale} content={site} title={`${title} — ${globals.brand_name}`} description={intro}>
+<RomaLayout locale={locale} content={site} title={`${title} — ${globals.brand_name}`} description={intro} crumbs={crumbs}>
  <section class="roma-section roma-container"><div class="service-detail"><a class="text-link" href={`/${locale}/`}>{common.back_home_label}</a><p class:list={['eyebrow',legal?'legal':'data']}>{area.page_territory}</p><h1 class="roma-t-h1">{title}</h1><p class="roma-t-lead">{intro}</p><p>{legal?people.tatiana.name:people.henry.name}</p><ul>{items.map(item=><li>{item.label}</li>)}</ul><p>{common.practice_process_note}</p>{legal&&<p class="article-note">{area.disclaimer}</p>}<div class="contact-actions"><a class="roma-btn roma-btn--primario" href={`/${locale}/#contacto`}>{common.practice_contact_label}</a>{!legal&&<a class="text-link" href={`/${locale}/project/`}>{area.projects_link_label}</a>}</div></div></section>
 </RomaLayout>
