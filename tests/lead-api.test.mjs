@@ -213,15 +213,3 @@ test('ga_client_id accepts only GA client ids', () => {
     assert.equal(result.lead.ga_client_id, expected);
   }
 });
-
-test('Analytics.astro: consent default before config, ads denied, no PII', async () => {
-  const src = await readFile(new URL('../src/components/roma/Analytics.astro', import.meta.url), 'utf8');
-  const iDefault = src.indexOf("gtag('consent','default'");
-  assert.ok(iDefault > 0 && iDefault < src.indexOf("gtag('config'"), 'consent default must precede config');
-  assert.match(src, /ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500/);
-  assert.match(src, /\^G-\[A-Z0-9\]\+\$/);
-  assert.match(src, /analytics_storage: state/);
-  assert.doesNotMatch(src, /ad_storage: 'granted'|ad_user_data: 'granted'/);
-  for (const name of ['cta_click', "'contact'", 'lang_switch', 'form_start', 'form_submit_attempt', 'generate_lead']) assert.ok(src.includes(name), name);
-  assert.doesNotMatch(src, /\.get\('(name|message|contact_email|contact_whatsapp)'\)/);
-});

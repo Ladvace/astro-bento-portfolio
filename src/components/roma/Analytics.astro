@@ -1,22 +1,18 @@
 ---
 /**
- * GA4 only (gtag.js) with Consent Mode v2. See docs/analytics.md.
- * - Loads whenever there is a valid ga4_id, in production and outside noindex previews.
- * - Consent defaults to denied BEFORE gtag.js loads: GA4 receives cookieless pings (modelled data) until the
- *   visitor accepts the banner; 'roma:consent' then updates analytics_storage only (ads stay denied).
+ * GA4 only (gtag.js) with Consent Mode v2 in BASIC mode. See docs/analytics.md.
+ * - Nothing Google-related is in the HTML or requested until the visitor grants consent: gtag.js is injected
+ *   dynamically after 'roma:consent' = 'granted'. Denied/undecided = no request, no cookie, no data.
+ * - On grant: consent default (ads denied, analytics granted), gtag.js, config (sends page_view).
+ * - On revoke: consent update analytics_storage denied, ga-disable flag, _ga* cookies deleted.
  * - No personal data in any event parameter (never name, email, phone or message).
  */
 interface Props { ga4Id?: string }
 const { ga4Id = '' } = Astro.props;
 const noindex = import.meta.env.PUBLIC_NOINDEX === 'true';
 const ga4 = import.meta.env.PROD && !noindex && /^G-[A-Z0-9]+$/.test(ga4Id) ? ga4Id : '';
-const bootstrap = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;`
-  + `gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'denied',wait_for_update:500});`
-  + `gtag('js',new Date());gtag('config',${JSON.stringify(ga4)},{allow_google_signals:false,allow_ad_personalization_signals:false});`;
 ---
 {ga4 && <>
- <script is:inline set:html={bootstrap} />
- <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`}></script>
  <script is:inline type="application/json" id="roma-analytics-config" set:html={JSON.stringify({ ga4 }).replace(/</g, '\\u003c')} />
  <script>
   type Gtag = (...args: unknown[]) => void;
@@ -35,7 +31,10 @@ const bootstrap = `window.dataLayer=window.dataLayer||[];function gtag(){dataLay
 
   // ---------------------------------------------------------------- consent (idempotent)
   let applied: string | null = null;
+  let loaded = false;
   let clientId = '';
+  const disableKey = `ga-disable-${ga4}`;
+  const flagDisabled = (off: boolean) => { (window as unknown as Record<string, unknown>)[disableKey] = off; };
   function fillClientId() {
    if (applied !== 'granted' || !ga4) return;
    gtag('get', ga4, 'client_id', (id: unknown) => {
@@ -44,14 +43,44 @@ const bootstrap = `window.dataLayer=window.dataLayer||[];function gtag(){dataLay
     document.querySelectorAll<HTMLInputElement>('input[name="ga_client_id"]').forEach(input => { input.value = id; });
    });
   }
+  function loadGtag() {
+   const w = window as unknown as { dataLayer?: unknown[]; gtag?: Gtag };
+   w.dataLayer = w.dataLayer || [];
+   w.gtag = function () { (w.dataLayer as unknown[]).push(arguments); };
+   gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'granted' });
+   gtag('js', new Date());
+   gtag('config', ga4, { allow_google_signals: false, allow_ad_personalization_signals: false });
+   const script = document.createElement('script');
+   script.async = true;
+   script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4)}`;
+   document.head.appendChild(script);
+   loaded = true;
+  }
+  function deleteGaCookies() {
+   const parts = location.hostname.split('.');
+   const domains = ['', location.hostname];
+   for (let i = 1; i < parts.length - 1; i++) domains.push('.' + parts.slice(i).join('.'));
+   const names = document.cookie.split(';').map(c => c.split('=')[0].trim()).filter(n => n === '_ga' || n.startsWith('_ga_') || n === '_gid' || n.startsWith('_gat'));
+   for (const name of names) for (const d of domains) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ''}`;
+   }
+  }
   function applyConsent(state: 'granted' | 'denied') {
    if (applied === state) return;
    applied = state;
-   gtag('consent', 'update', { analytics_storage: state });
-   if (state === 'granted') fillClientId();
-   else {
+   if (state === 'granted') {
+    flagDisabled(false);
+    if (loaded) gtag('consent', 'update', { analytics_storage: 'granted' });
+    else loadGtag();
+    fillClientId();
+   } else {
     clientId = '';
     document.querySelectorAll<HTMLInputElement>('input[name="ga_client_id"]').forEach(input => { input.value = ''; });
+    if (loaded) {
+     gtag('consent', 'update', { analytics_storage: 'denied' });
+     flagDisabled(true);
+     deleteGaCookies();
+    }
    }
   }
   window.addEventListener('roma:consent', event => {
@@ -80,7 +109,7 @@ const bootstrap = `window.dataLayer=window.dataLayer||[];function gtag(){dataLay
    const form = (event.target as Element | null)?.closest<HTMLFormElement>('form[data-track-form]');
    if (!form || startedForms.has(form)) return;
    startedForms.add(form);
-   gtag('event', 'form_start', { area: areaOf(form), location: form.dataset.trackForm || 'none' });
+   gtag('event', 'lead_form_start', { area: areaOf(form), location: form.dataset.trackForm || 'none' });
   }, { capture: true });
 
   document.addEventListener('submit', event => {
@@ -91,7 +120,7 @@ const bootstrap = `window.dataLayer=window.dataLayer||[];function gtag(){dataLay
     const input = form.elements.namedItem('ga_client_id') as HTMLInputElement | null;
     if (input) input.value = clientId;
    }
-   gtag('event', 'form_submit_attempt', { area, location: form.dataset.trackForm || 'none', transport_type: 'beacon' });
+   gtag('event', 'lead_form_submit', { area, location: form.dataset.trackForm || 'none', transport_type: 'beacon' });
    try { sessionStorage.setItem(PENDING_KEY, JSON.stringify({ area, at: Date.now() })); } catch { /* storage blocked */ }
   }, { capture: true });
 

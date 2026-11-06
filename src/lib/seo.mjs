@@ -5,9 +5,10 @@ const isLocale = (value) => locales.includes(value);
 
 /**
  * Legacy article/archive URLs -> canonical /{locale}/blog/... (single hop, no chains).
- * Returns null when the path is not a legacy route.
+ * Returns null when the path is not a legacy route, or (when `hasArticle` is given) when the slug is not a
+ * published article, so the page answers 404 instead of redirecting to a 404.
  */
-export function legacyRedirect(pathname) {
+export function legacyRedirect(pathname, { hasArticle } = {}) {
   const parts = String(pathname).split(/[?#]/, 1)[0].split('/').filter(Boolean);
   const prefixed = isLocale(parts[0]);
   const locale = prefixed ? parts.shift() : 'es';
@@ -16,7 +17,9 @@ export function legacyRedirect(pathname) {
   // Canonical: /{locale}/blog/... Legacy: any /project/..., and unprefixed /blog/...
   const legacy = section === 'project' || (!prefixed && section === 'blog');
   if (!legacy) return null;
-  return slug ? `/${locale}/blog/${slug}/` : `/${locale}/blog/`;
+  if (!slug) return `/${locale}/blog/`;
+  if (hasArticle && !hasArticle(slug)) return null;
+  return `/${locale}/blog/${slug}/`;
 }
 
 const EXCLUDED_PREFIXES = ['/gracias', '/api'];

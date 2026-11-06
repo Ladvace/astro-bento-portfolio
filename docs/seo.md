@@ -5,6 +5,8 @@
 - Legado con 301 directo (sin cadenas), implementado como rutas SSR en `src/pages/{blog,project,[locale]/project}/` con `legacyRedirect()` de `src/lib/seo.mjs`:
   `/blog/*`, `/project/*`, `/es/project/*` -> `/es/blog/*`; `/en/project/*` -> `/en/blog/*`; índices `/blog/`, `/project/` -> `/es/blog/`; `/{locale}/project/` -> `/{locale}/blog/`.
 - No se generan HTML para esas rutas. `/travel` -> `/` (301).
+- **Slug validado:** el 301 solo se emite si el artículo existe. `src/lib/legacy-slugs.mjs` comprueba que exista `dist/client/es/blog/<slug>/index.html` (los artículos se prerenderizan en build, así que ese archivo es la lista de publicados); si no existe responde 404 directo. Busca `dist/client` por `ROMA_CLIENT_DIR`, `cwd/dist/client` y rutas relativas al servidor. En `astro dev` (sin dist) no valida. Un artículo nuevo publicado requiere rebuild para que su URL legacy redirija (igual que su URL canónica).
+- Tests: `npm test` es hermético; `npm run test:dist` (tras build, falla si no hay `dist/`) y `npm run verify` (build + test + test:dist).
 - Un slug inexistente redirige igual y la canónica responde 404.
 
 ## Sitemap, robots, llms.txt

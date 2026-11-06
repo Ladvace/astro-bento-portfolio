@@ -77,6 +77,7 @@
 .thanks .contact-actions{max-width:420px;margin:32px 0}
 .thanks .contact-actions [hidden]{display:none}
 .footer-bottom a{color:var(--roma-sobre-senado-suave);text-underline-offset:4px;min-height:44px;display:inline-flex;align-items:center}
+.footer-consent-link{background:none;border:0;padding:0;color:var(--roma-sobre-senado-suave);font:inherit;text-decoration:underline;text-underline-offset:4px;min-height:44px;display:inline-flex;align-items:center;cursor:pointer}
 .privacy .prose-content{margin-top:16px}
 /* WhatsApp flotante */
 .wa-fab{position:fixed;right:16px;bottom:calc(16px + var(--consent-height,0px));z-index:70;transition:opacity .15s}

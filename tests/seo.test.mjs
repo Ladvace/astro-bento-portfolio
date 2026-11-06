@@ -32,14 +32,6 @@ test('sitemap filter keeps only canonical indexable pages', () => {
   for (const p of ['/blog/', '/blog/x/', '/project/x/', '/es/project/', '/en/project/x/', '/gracias/', '/es/gracias/', '/en/gracias/', '/api/lead']) assert.equal(sitemapFilter(u(p)), false, p);
 });
 
-test('built sitemap has no duplicates and covers es and en services', { skip: !safeRead('dist/client/sitemap-0.xml') }, () => {
-  const locs = [...safeRead('dist/client/sitemap-0.xml').matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
-  assert.equal(new Set(locs).size, locs.length);
-  assert.ok(locs.every(sitemapFilter));
-  for (const l of ['es', 'en']) for (const s of ['legal', 'data']) assert.ok(locs.includes(`${origin.origin}/${l}/servicios/${s}/`));
-});
-function safeRead(p) { try { return readFileSync(new URL(`../${p}`, import.meta.url), 'utf8'); } catch { return null; } }
-
 test('robots.txt', () => {
   const open = robotsTxt({ origin });
   assert.match(open, /Allow: \//); assert.match(open, /Disallow: \/api\//);
@@ -77,14 +69,17 @@ test('layout emits hreflang for articles too and no Google Fonts', () => {
   const layout = readFileSync(new URL('../src/layouts/RomaLayout.astro', import.meta.url), 'utf8');
   assert.ok(!/!article\s*&&\s*<>\s*<link rel="alternate"/.test(layout));
   assert.ok(!layout.includes('fonts.googleapis') && !layout.includes('fonts.gstatic'));
-  const built = safeRead('dist/client/en/blog/analisis-autos-usa/index.html');
-  if (built) {
-    for (const l of ['es', 'en', 'x-default']) assert.ok(built.includes(`hreflang="${l}"`), l);
-    assert.ok(built.includes('rel="canonical" href="https://portfolio.romahomestore.com/en/blog/analisis-autos-usa/"'));
-  }
 });
 
 test('llms.txt lists services and blog per language', () => {
   const txt = llmsTxt({ origin, locales: { es: site('es'), en: site('en') }, articles: { es: [{ slug: 'a', title: 'A' }], en: [{ slug: 'a', title: 'A' }] } });
   for (const u of ['/es/servicios/legal/', '/en/servicios/data/', '/es/blog/a/', '/en/blog/']) assert.ok(txt.includes(origin.origin + u), u);
+});
+
+test('legacyRedirect validates the slug against published articles', () => {
+  const hasArticle = (slug) => slug === 'analisis-autos-usa';
+  assert.equal(legacyRedirect('/blog/analisis-autos-usa/', { hasArticle }), '/es/blog/analisis-autos-usa/');
+  assert.equal(legacyRedirect('/en/project/analisis-autos-usa/', { hasArticle }), '/en/blog/analisis-autos-usa/');
+  assert.equal(legacyRedirect('/blog/slug-inexistente/', { hasArticle }), null);
+  assert.equal(legacyRedirect('/project/', { hasArticle }), '/es/blog/');
 });
