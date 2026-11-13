@@ -13,6 +13,7 @@ import { SHEET_BY_THEME } from "../lib/avatar-sprite.mjs";
 const buttonFrameVars = `:root{${cssVars(BUTTON_FRAME)}}`;
 
 const showsAvatar = Astro.url.pathname.replace(/\/+$/, "") === "";
+const onEvolution = Astro.url.pathname.replace(/\/+$/, "") === "/evolution";
 
 const headBootstrap = `
   try {
@@ -220,6 +221,16 @@ const schema =
     {
       (!hideSoundToggle || !hideCompanion) && (
         <div class="fixed bottom-4 right-4 md:bottom-6 z-50 flex flex-col items-center gap-2">
+          {!onEvolution && (
+            <a
+              href="/evolution"
+              aria-label="See how this site evolved"
+              title="See how this site evolved"
+              class="chrome--ns w-9 h-9 flex items-center justify-center rounded-lg bg-darkslate-500 border border-darkslate-400 hover:border-primary-500 transition-all duration-200 text-white shadow-lg"
+            >
+              <Icon name="pixel-history" class="w-4 h-4" />
+            </a>
+          )}
           {!hideSoundToggle && <StylePanel />}
           {!hideCompanion && <AvatarCompanion />}
           {!hideSoundToggle && (
