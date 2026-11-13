@@ -1,0 +1,58 @@
+---
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import BackLink from "../components/BackLink.astro";
+import { SITE } from "../site-config";
+import V1 from "../assets/evolution/v1-desktop.png";
+import V1_1 from "../assets/evolution/v1-1-desktop.png";
+import V2 from "../assets/evolution/v2-desktop.png";
+import V3 from "../assets/evolution/v3-desktop.png";
+
+export const prerender = true;
+
+const versions = [
+  { version: "v1", title: "The first bento", period: "Aug 2023 – Dec 2023", src: V1 },
+  { version: "v1.1", title: "Small things", period: "Jan 2024 – Mar 2026", src: V1_1 },
+  { version: "v2", title: "The redesign", period: "Apr 2026 – Jul 2026", src: V2 },
+  { version: "v3", title: "Pixels", period: "Aug 2026 – now", src: V3 },
+];
+---
+
+<Layout
+  title={`${SITE.author.fullName} - Evolution`}
+  description="How this portfolio changed from its first version in 2023 to today."
+>
+  <main class="w-full max-w-5xl mx-auto px-6 py-10 text-white">
+    <BackLink href="/" class="mb-8" />
+
+    <h1 class="text-4xl font-bold mb-2">Evolution</h1>
+    <p class="text-darkslate-300 text-sm mb-10">
+      How this site has changed since 2023.
+    </p>
+
+    <ol class="flex flex-col gap-12">
+      {
+        versions.map(({ version, title, period, src }) => (
+          <li>
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class="text-3xs font-semibold tracking-widest text-primary-500">
+                {version}
+              </span>
+              <h2 class="font-semibold text-lg text-darkslate-50">{title}</h2>
+              <span class="ml-auto text-3xs tabular-nums tracking-widest text-darkslate-400">
+                {period}
+              </span>
+            </div>
+            <Image
+              src={src}
+              alt={`Home page in ${version}`}
+              widths={[720, 1440]}
+              sizes="(min-width: 1024px) 976px, 100vw"
+              class="w-full h-auto rounded-lg border border-darkslate-400"
+            />
+          </li>
+        ))
+      }
+    </ol>
+  </main>
+</Layout>
