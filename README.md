@@ -4,7 +4,7 @@ A modern, bento-style personal portfolio built with **[Astro](https://astro.buil
 
 ![astro-bento-portfolio — a bento-like personal portfolio template](public/preview.webp)
 
-**Live:** [gianmarcocavallo.com](https://gianmarcocavallo.com/)
+**Live:** [gianmarcocavallo.com](https://gianmarcocavallo.com/) · **Demo:** [demo.gianmarcocavallo.com](https://demo.gianmarcocavallo.com/)
 
 ---
 
@@ -14,6 +14,7 @@ A modern, bento-style personal portfolio built with **[Astro](https://astro.buil
 - <img src=".github/readme/icons/palette.svg" width="16" height="16" alt="" /> **Switchable UI themes** — glass, sharp, neon and paper styles, with color variants
 - <img src=".github/readme/icons/phone.svg" width="16" height="16" alt="" /> **Fully responsive**
 - <img src=".github/readme/icons/pencil.svg" width="16" height="16" alt="" /> **Blog** with Markdown content, reading-time estimates and **RSS** (`/rss.xml`)
+- <img src=".github/readme/icons/puzzle.svg" width="16" height="16" alt="" /> **Works** — Markdown case studies for your projects (`/works`)
 - <img src=".github/readme/icons/speech.svg" width="16" height="16" alt="" /> **Guestbook** — visitors can leave messages and reactions (backed by libSQL)
 - <img src=".github/readme/icons/globe.svg" width="16" height="16" alt="" /> **Interactive 3D globe** and a **travel map** of visited countries
 - <img src=".github/readme/icons/flask.svg" width="16" height="16" alt="" /> **Playground** — a collection of animation/interaction experiments (GSAP morphs, Rive, WebGL-ish effects, scroll animations, and more)
@@ -67,11 +68,45 @@ A few things the script **doesn't** cover:
 - Swap the avatar/memoji images — replace `src/assets/me-dither*.webp` with your own.
 - Remove (or replace with your own ID) the **Umami analytics** script tag in `src/layouts/BasicLayout.astro`.
 
+### Works or Blog on the home grid
+
+The home grid has one tile shared by **Works** and **Blog**, picked by what you've written: it links to whichever has entries, and splits into two half tiles when both do. With neither, it shows Blog.
+
+To add a project, drop a Markdown file in `src/data/works/`. Two options under `works` in `src/site-config.ts` control how much each card shows: `descriptions: true` adds the description to the card, and `detailPages: true` turns each file's body into a case study page at `/works/<file-name>`:
+
+```md
+---
+title: My project
+description: One-line summary (shown when works.descriptions is on).
+year: 2026
+role: Design & development # optional
+stack: [Astro, TypeScript]
+cover: ../../assets/works/my-project.webp # optional
+url: https://example.com # optional
+repo: https://github.com/you/my-project # optional
+current: true # optional, still ongoing: shows "2026 – Now"
+endYear: 2027 # optional, finished: shows "2026 – 2027" (use one or the other)
+personal: true # optional, Personal instead of Professional badge
+order: 1 # optional, breaks ties within a year
+---
+
+## Overview
+
+What it is, what you did, how it turned out.
+```
+
+### Demo mode
+
+Building with `DEMO=true` reads content from `src/data/demo/` instead of `src/data/`: sample blog posts and no works, so the home grid shows the Blog tile and `/works` redirects home. Demo pages are also marked `noindex` so they don't compete with your real site in search results. Preview it locally with `pnpm dev:demo`.
+
+To host a demo next to your real site, create a second Netlify site from the same repo, set the `DEMO=true` environment variable on it, and give it its own domain (e.g. `demo.yourdomain.com`).
+
 ## Scripts
 
 | Command           | Description                          |
 | ----------------- | ------------------------------------ |
 | `pnpm dev`        | Start the dev server                 |
+| `pnpm dev:demo`   | Start the dev server in demo mode    |
 | `pnpm build`      | Production build                     |
 | `pnpm preview`    | Preview the production build locally |
 | `pnpm check`      | Type-check with `astro check`        |
@@ -79,9 +114,9 @@ A few things the script **doesn't** cover:
 | `pnpm format`     | Format with Prettier                 |
 | `pnpm site-setup` | Interactive personalization          |
 
-## Database (Guestbook)
+## Database (Guestbook) (optional)
 
-The guestbook uses [Drizzle ORM](https://orm.drizzle.team/) over a remote **libSQL** database (e.g. [Turso](https://turso.tech/)). Provide your database credentials as environment variables:
+The guestbook uses [Drizzle ORM](https://orm.drizzle.team/) over a remote **libSQL** database (e.g. [Turso](https://turso.tech/)). The rest of the site builds and runs without it; only the guestbook page needs it. Provide your database credentials as environment variables:
 
 ```bash
 TURSO_DATABASE_URL=libsql://<your-database>.turso.io
@@ -111,7 +146,7 @@ The client and schema live in `src/lib/db.ts`. `createdAt` is stored as an ISO 8
 
 ## Deploy on Netlify <img src=".github/readme/icons/rocket.svg" width="24" height="24" alt="" />
 
-Deploying on Netlify is optional but recommended for the quickest setup. Fork this repo and link it to your Netlify account — or use the one-click button below. Remember to set the database environment variables (above) in your Netlify site settings.
+Deploying on Netlify is optional but recommended for the quickest setup. Fork this repo and link it to your Netlify account — or use the one-click button below. If you use the guestbook, set the database environment variables (above) in your Netlify site settings.
 
 [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ladvace/astro-bento-portfolio)
 
