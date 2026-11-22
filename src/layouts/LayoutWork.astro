@@ -1,0 +1,129 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import BackLink from "../components/BackLink.astro";
+import { formatWorkYears } from "../lib/helpers";
+import BasicLayout from "./BasicLayout.astro";
+
+type Props = {
+  title: string;
+  work: CollectionEntry<"works">["data"];
+};
+
+const { title, work } = Astro.props;
+
+const CHIP =
+  "text-2xs px-2 py-0.5 rounded-full border border-darkslate-400 text-darkslate-100";
+const LINK =
+  "text-sm text-darkslate-100 underline underline-offset-4 hover:text-white";
+---
+
+<BasicLayout description={work.description} page="work" title={title}>
+  <main class="mx-auto max-w-3xl w-full p-8 text-neutral-100">
+    <BackLink href="/works" class="mb-8" />
+    <header class="my-10 flex flex-col gap-4">
+      <h1 class="text-5xl font-semibold m-0">{work.title}</h1>
+      <p class="text-darkslate-100 m-0">{work.description}</p>
+      <div
+        class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500"
+      >
+        <span>{formatWorkYears(work)}</span>
+        {work.role && <span>{work.role}</span>}
+        {
+          work.url && (
+            <a href={work.url} target="_blank" rel="noopener" class={LINK}>
+              Live ↗
+            </a>
+          )
+        }
+        {
+          work.repo && (
+            <a href={work.repo} target="_blank" rel="noopener" class={LINK}>
+              Source ↗
+            </a>
+          )
+        }
+      </div>
+      {
+        work.stack.length > 0 && (
+          <div class="flex flex-wrap gap-1.5">
+            {work.stack.map((label) => (
+              <span class={CHIP}>{label}</span>
+            ))}
+          </div>
+        )
+      }
+    </header>
+    {
+      work.cover && (
+        <Image
+          src={work.cover}
+          alt=""
+          class="w-full h-auto rounded-xl border border-darkslate-400 mb-10"
+          widths={[768, 1200, 1600]}
+          sizes="(min-width: 768px) 768px, 100vw"
+          loading="eager"
+        />
+      )
+    }
+    <article class="work-body">
+      <slot />
+    </article>
+  </main>
+</BasicLayout>
+
+<style>
+  .work-body :global(h2) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 2rem 0 0.75rem;
+  }
+
+  .work-body :global(h3) {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .work-body :global(p),
+  .work-body :global(li) {
+    color: var(--darkslate-100);
+    line-height: 1.7;
+  }
+
+  .work-body :global(p) {
+    margin: 0 0 1rem;
+  }
+
+  .work-body :global(ul),
+  .work-body :global(ol) {
+    margin: 0 0 1rem 1.25rem;
+  }
+
+  .work-body :global(ul) {
+    list-style: disc;
+  }
+
+  .work-body :global(ol) {
+    list-style: decimal;
+  }
+
+  .work-body :global(a) {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .work-body :global(code) {
+    font-size: 0.9em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .work-body :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+  }
+</style>

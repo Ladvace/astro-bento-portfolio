@@ -1,0 +1,31 @@
+---
+import { getCollection, getEntry, render } from "astro:content";
+import LayoutWork from "../../layouts/LayoutWork.astro";
+import { SITE } from "../../site-config";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  if (!SITE.works.detailPages) return [];
+  return (await getCollection("works")).map(({ id }) => ({
+    params: { id },
+  }));
+}
+
+const { id } = Astro.params;
+
+const entry = id ? await getEntry("works", id) : undefined;
+
+if (!entry) {
+  return Astro.redirect("/404");
+}
+
+const { Content } = await render(entry);
+---
+
+<LayoutWork
+  title={`${entry.data.title} | ${SITE.author.fullName}`}
+  work={entry.data}
+>
+  <Content />
+</LayoutWork>

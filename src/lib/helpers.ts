@@ -19,3 +19,14 @@ export function formatDate(date: Date): string {
     day: "numeric",
   });
 }
+
+export function formatWorkYears(work: {
+  year: number;
+  endYear?: number;
+  current?: boolean;
+}): string {
+  if (work.current) return `${work.year} – Now`;
+  if (work.endYear && work.endYear !== work.year)
+    return `${work.year} – ${work.endYear}`;
+  return String(work.year);
+}

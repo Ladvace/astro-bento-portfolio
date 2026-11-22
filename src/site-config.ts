@@ -45,4 +45,8 @@ export const SITE = {
     "Belgium",
     "Spain",
   ],
+  works: {
+    detailPages: false, // case study page per work at /works/<id>
+    descriptions: false,
+  },
 };

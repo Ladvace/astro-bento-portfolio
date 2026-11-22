@@ -52,7 +52,9 @@ const defaults = {
     "Belgium",
     "Spain",
   ],
+  works: { detailPages: false, descriptions: false },
 };
+
 
 function toCsvArray(value) {
   if (!value?.trim()) return [];
@@ -152,6 +154,7 @@ async function main() {
     defaults.visitedCountries.join(", "),
   );
 
+
   const siteConfig = {
     site: { url: siteUrl },
     author: {
@@ -181,6 +184,7 @@ async function main() {
       origin: defaults.cal.origin,
     },
     visitedCountries: toCsvArray(visitedCountriesCsv),
+    works: defaults.works,
   };
 
   const siteConfigPath = path.join(repoRoot, "src", "site-config.ts");

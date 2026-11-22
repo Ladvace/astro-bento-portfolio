@@ -11,9 +11,15 @@ import Globe from "../components/Globe";
 import DesignWorksCard from "../components/DesignWorksCard.astro";
 import PixelHeart from "../components/PixelHeart.astro";
 import GithubStarHint from "../components/GithubStarHint.astro";
+import { getCollection } from "astro:content";
 import { SITE } from "../site-config";
 
 export const prerender = true;
+
+const hasWorks = (await getCollection("works")).length > 0;
+const hasBlog = (await getCollection("blog")).length > 0;
+const showWorks = hasWorks;
+const showBlog = hasBlog || !hasWorks;
 ---
 
 <script>
@@ -64,18 +70,45 @@ export const prerender = true;
         <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">Guestbook</h2>
       </div>
     </Card>
-    <Card href="/blog" colSpan="md:col-span-1" rowSpan="md:row-span-1">
-      <div
-        slot="background"
-        id="blog-bg"
-        class="absolute inset-0 overflow-hidden pointer-events-none"
-        aria-hidden="true"
-      >
-      </div>
-      <div class="flex-1 flex items-center">
-        <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">Blog</h2>
-      </div>
-    </Card>
+    <div
+      class:list={[
+        "grid gap-2 md:col-span-1 md:row-span-1",
+        showWorks && showBlog && "grid-cols-2",
+      ]}
+    >
+      {
+        showWorks && (
+          <Card href="/works" colSpan="col-span-1" class="h-full">
+            <div
+              slot="background"
+              id="works-bg"
+              class="absolute inset-0 overflow-hidden pointer-events-none"
+              aria-hidden="true"
+            />
+            <div class="flex-1 flex items-center">
+              <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">
+                Works
+              </h2>
+            </div>
+          </Card>
+        )
+      }
+      {
+        showBlog && (
+          <Card href="/blog" colSpan="col-span-1" class="h-full">
+            <div
+              slot="background"
+              id="blog-bg"
+              class="absolute inset-0 overflow-hidden pointer-events-none"
+              aria-hidden="true"
+            />
+            <div class="flex-1 flex items-center">
+              <h2 class="text-xl md:text-2xl lg:text-xl font-bold m-0">Blog</h2>
+            </div>
+          </Card>
+        )
+      }
+    </div>
     <Card colSpan="md:col-span-1" href="travel" rowSpan="md:row-span-1">
       <div class="flex items-center">
         <div class="w-13 h-13 flex-shrink-0 relative z-0">

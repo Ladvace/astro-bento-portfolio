@@ -1,0 +1,202 @@
+---
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import Layout from "../../layouts/Layout.astro";
+import BackLink from "../../components/BackLink.astro";
+import { formatWorkYears } from "../../lib/helpers";
+import { SITE } from "../../site-config";
+
+export const prerender = true;
+
+const CHIP =
+  "text-3xs px-1.5 py-0.5 rounded-full border border-darkslate-400 text-darkslate-100";
+const LINK = "text-darkslate-100 underline underline-offset-4 hover:text-white";
+
+const works = (await getCollection("works")).sort(
+  (a, b) =>
+    b.data.year - a.data.year ||
+    (a.data.order ?? Infinity) - (b.data.order ?? Infinity),
+);
+
+if (works.length === 0) return Astro.redirect("/");
+---
+
+<Layout
+  title={`${SITE.author.fullName} - Works`}
+  description="Selected projects I've designed and built"
+>
+  <main class="w-full max-w-3xl mx-auto px-6 py-10 text-white">
+    <BackLink href="/" class="mb-8" />
+
+    <h1 class="text-4xl font-bold mb-2">Works</h1>
+    <p class="text-darkslate-300 text-sm mb-2">
+      Selected projects I've designed and built.
+    </p>
+    <p class="text-darkslate-300 text-xs italic mb-10">
+      Some projects and details may have been left out for NDA reasons or to
+      keep things simple. I also love exploring and building side projects and
+      experiments, and most of those aren't listed here either. If you'd like my
+      full CV, <a
+        href={`mailto:${SITE.links.email}`}
+        class="underline underline-offset-4 hover:text-white">reach out</a
+      >.
+    </p>
+
+    <ul class="flex flex-col gap-3">
+      {
+        works.map(({ id, data }) => (
+          <li
+            class:list={[
+              "work-card relative flex items-center gap-4 overflow-hidden rounded-xl border border-darkslate-400 bg-darkslate-500 p-3 transition-colors duration-150",
+              SITE.works.detailPages &&
+                "work-card--link hover:border-primary-500",
+            ]}
+          >
+            <div class="hidden sm:block w-32 aspect-[16/10] shrink-0 overflow-hidden rounded-lg border border-darkslate-400">
+              {data.logo ? (
+                <div
+                  class:list={[
+                    "work-placeholder w-full h-full flex items-center justify-center p-3",
+                    data.logoBg && "work-placeholder--solid",
+                  ]}
+                  style={data.logoBg && `background:${data.logoBg}`}
+                >
+                  <Image
+                    src={data.logo}
+                    alt={`${data.title} logo`}
+                    class="max-w-full max-h-full w-auto h-auto object-contain"
+                    width={208}
+                  />
+                </div>
+              ) : data.cover ? (
+                <Image
+                  src={data.cover}
+                  alt=""
+                  class="w-full h-full object-cover object-top"
+                  widths={[256, 512]}
+                  sizes="128px"
+                />
+              ) : (
+                <div class="work-placeholder w-full h-full flex items-center justify-center">
+                  <span class="text-2xl font-bold text-darkslate-100">
+                    {data.title.charAt(0)}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div class="flex min-w-0 flex-1 flex-col gap-1.5">
+              <div class="flex items-baseline justify-between gap-4">
+                <div class="flex min-w-0 items-center gap-2">
+                  <h2 class="text-base font-bold m-0 truncate">
+                    {SITE.works.detailPages ? (
+                      <a
+                        href={`/works/${id}`}
+                        class="after:absolute after:inset-0 after:content-['']"
+                      >
+                        {data.title}
+                      </a>
+                    ) : (
+                      data.title
+                    )}
+                  </h2>
+                  <span
+                    class:list={[
+                      "shrink-0 text-3xs uppercase tracking-wider px-1.5 py-0.5 rounded border",
+                      data.personal
+                        ? "border-primary-500 text-primary-500"
+                        : "border-darkslate-400 text-darkslate-300",
+                    ]}
+                  >
+                    {data.personal ? "Personal" : "Professional"}
+                  </span>
+                </div>
+                <span class="text-xs text-darkslate-300 shrink-0">
+                  {formatWorkYears(data)}
+                </span>
+              </div>
+              {SITE.works.descriptions ? (
+                <p class="text-xs text-darkslate-100 m-0 line-clamp-2">
+                  {data.role && (
+                    <span class="text-darkslate-300">{data.role} · </span>
+                  )}
+                  {data.description}
+                </p>
+              ) : (
+                data.role && (
+                  <p class="text-xs text-darkslate-300 m-0">{data.role}</p>
+                )
+              )}
+              <div class="flex flex-wrap items-center gap-1.5">
+                {data.stack.map((label) => (
+                  <span class={CHIP}>{label}</span>
+                ))}
+                {(data.url || data.repo) && (
+                  <span class="relative z-10 ml-auto flex gap-3 text-xs">
+                    {data.url && (
+                      <a
+                        href={data.url}
+                        target="_blank"
+                        rel="noopener"
+                        class={LINK}
+                      >
+                        Live ↗
+                      </a>
+                    )}
+                    {data.repo && (
+                      <a
+                        href={data.repo}
+                        target="_blank"
+                        rel="noopener"
+                        class={LINK}
+                      >
+                        Source ↗
+                      </a>
+                    )}
+                  </span>
+                )}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</Layout>
+
+<style>
+  .work-card img,
+  .work-placeholder {
+    transition: transform 0.4s ease;
+  }
+
+  .work-card--link:hover img,
+  .work-card--link:hover .work-placeholder {
+    transform: scale(1.05);
+  }
+
+  .work-placeholder {
+    --grid-line: color-mix(in srgb, var(--darkslate-400) 70%, transparent);
+    position: relative;
+    background-color: var(--darkslate-600);
+  }
+
+  .work-placeholder::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 16px 16px;
+    background-position: center;
+    mask-image: radial-gradient(ellipse at center, #000 35%, transparent 95%);
+  }
+
+  .work-placeholder--solid::before {
+    display: none;
+  }
+
+  .work-placeholder > :global(*) {
+    position: relative;
+  }
+</style>

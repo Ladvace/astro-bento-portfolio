@@ -391,6 +391,29 @@ function initBlogGrid() {
   disposers.push(runWhileVisible(container, animate));
 }
 
+function initWorksGrid() {
+  const container = document.getElementById("works-bg");
+  if (!container) return;
+
+  const { cols, rows, cells } = buildFixedGrid(
+    container,
+    16,
+    "margin:3px;border-radius:2px;box-sizing:border-box;background:var(--primary-500);opacity:0;",
+  );
+
+  const span = cols + rows;
+  const animate = (timestamp: number) => {
+    const head = ((timestamp * 0.004) % (span + 8)) - 4;
+    for (let i = 0; i < cells.length; i++) {
+      const diagonal = (i % cols) + Math.floor(i / cols);
+      const dist = Math.abs(diagonal - head);
+      cells[i].style.opacity = Math.max(0, 0.4 - dist * 0.12).toFixed(3);
+    }
+  };
+
+  disposers.push(runWhileVisible(container, animate));
+}
+
 function teardown() {
   disposers.forEach((dispose) => dispose());
   disposers = [];
@@ -408,6 +431,7 @@ export function initCardGrids(): void {
     initPlaygroundGrid();
     initGuestbookGrid();
     initBlogGrid();
+    initWorksGrid();
   });
 
   document.addEventListener("astro:before-swap", teardown);
