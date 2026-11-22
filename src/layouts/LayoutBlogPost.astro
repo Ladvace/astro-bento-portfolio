@@ -2,6 +2,7 @@
 import { formatDate } from "../lib/helpers";
 import BackLink from "../components/BackLink.astro";
 import BasicLayout from "./BasicLayout.astro";
+import { SITE } from "../site-config";
 
 type Props = {
   title: string;
@@ -13,18 +14,137 @@ type Props = {
 const { title, description, pubDate, minutesRead } = Astro.props;
 ---
 
-<BasicLayout description={description} page="blog" title={title}>
-  <main class="mx-auto max-w-3xl w-full h-screen p-8 text-neutral-100">
+<BasicLayout
+  description={description}
+  page="blog"
+  title={`${title} | ${SITE.author.fullName}`}
+>
+  <main class="mx-auto max-w-3xl w-full min-h-screen p-8 text-neutral-100">
     <BackLink href="/blog" class="mb-8" />
     <div class="my-10">
-      <h1 class="text-5xl font-semibold">{title}</h1>
-      <div class="flex justify-between pt-4 text-gray-500 text-sm">
-        <p>{formatDate(pubDate)}</p>
-        <p>{minutesRead}</p>
+      <h1 class="text-5xl font-semibold m-0">{title}</h1>
+      <div class="flex justify-between pt-4 text-darkslate-300 text-sm">
+        <p class="m-0">{formatDate(pubDate)}</p>
+        <p class="m-0">{minutesRead}</p>
       </div>
     </div>
-    <article class="prose prose-p:text-red-500 prose-slate prose-invert">
+    <article class="post-body">
       <slot />
     </article>
   </main>
 </BasicLayout>
+
+<style>
+  .post-body :global(h2) {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 2.5rem 0 0.75rem;
+  }
+
+  .post-body :global(h3) {
+    font-size: 1.375rem;
+    font-weight: 700;
+    margin: 2rem 0 0.5rem;
+  }
+
+  .post-body :global(h4) {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  .post-body :global(p),
+  .post-body :global(li) {
+    color: var(--darkslate-100);
+    line-height: 1.75;
+  }
+
+  .post-body :global(p) {
+    margin: 0 0 1.25rem;
+  }
+
+  .post-body :global(ul),
+  .post-body :global(ol) {
+    margin: 0 0 1.25rem 1.25rem;
+  }
+
+  .post-body :global(ul) {
+    list-style: disc;
+  }
+
+  .post-body :global(ol) {
+    list-style: decimal;
+  }
+
+  .post-body :global(li) {
+    margin-bottom: 0.25rem;
+  }
+
+  .post-body :global(a) {
+    color: var(--primary-500);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .post-body :global(a:hover) {
+    color: white;
+  }
+
+  .post-body :global(blockquote) {
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid var(--primary-500);
+  }
+
+  .post-body :global(blockquote p) {
+    color: var(--darkslate-300);
+    font-style: italic;
+  }
+
+  .post-body :global(code) {
+    font-size: 0.875em;
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .post-body :global(pre) {
+    margin: 0 0 1.25rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--darkslate-400);
+    overflow-x: auto;
+    line-height: 1.6;
+  }
+
+  .post-body :global(pre code) {
+    padding: 0;
+    background: none;
+    font-size: 0.875rem;
+  }
+
+  .post-body :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+  }
+
+  .post-body :global(hr) {
+    margin: 2rem 0;
+    border: 0;
+    border-top: 1px solid var(--darkslate-400);
+  }
+
+  .post-body :global(table) {
+    width: 100%;
+    margin: 0 0 1.25rem;
+    border-collapse: collapse;
+  }
+
+  .post-body :global(th),
+  .post-body :global(td) {
+    text-align: left;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--darkslate-400);
+  }
+</style>

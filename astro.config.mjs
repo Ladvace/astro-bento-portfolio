@@ -76,9 +76,11 @@ export default defineConfig({
     icon(),
     svelte(),
   ],
-  markdown: unified({
-    remarkPlugins: [remarkReadingTime],
-  }),
+  markdown: {
+    processor: unified({
+      remarkPlugins: [remarkReadingTime],
+    }),
+  },
   prefetch: {
     prefetchAll: true,
     defaultStrategy: "hover",

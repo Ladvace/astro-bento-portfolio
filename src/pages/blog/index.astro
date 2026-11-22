@@ -1,9 +1,15 @@
 ---
+import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import BackLink from "../../components/BackLink.astro";
+import { formatDate } from "../../lib/helpers";
 import { SITE } from "../../site-config";
 
 export const prerender = true;
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => (b.data.pubDate?.valueOf() ?? 0) - (a.data.pubDate?.valueOf() ?? 0),
+);
 ---
 
 <Layout
@@ -11,12 +17,39 @@ export const prerender = true;
   title={`${SITE.author.fullName} - Blog`}
 >
   <main
-    class="w-screen h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
+    class="w-screen min-h-screen flex flex-col justify-start items-start max-w-3xl mx-auto p-8"
   >
     <BackLink href="/" class="mb-8" />
     <h1 class="text-4xl font-bold mb-4 text-neutral-100">Posts</h1>
-    <p class="text-darkslate-300 text-sm">
-      Nothing to say right now... check back later (or don't, no pressure 🙃)
-    </p>
+    {
+      posts.length === 0 ? (
+        <p class="text-darkslate-300 text-sm">
+          Nothing to say right now... check back later (or don't, no pressure
+          🙃)
+        </p>
+      ) : (
+        <ul class="w-full flex flex-col divide-y divide-darkslate-400">
+          {posts.map(({ id, data }) => (
+            <li class="py-5">
+              <a href={`/blog/${id}`} class="group flex flex-col gap-1">
+                <span class="text-xl font-semibold text-neutral-100 group-hover:text-primary-500 transition-colors duration-150">
+                  {data.title}
+                </span>
+                {data.pubDate && (
+                  <span class="text-xs text-darkslate-300">
+                    {formatDate(data.pubDate)}
+                  </span>
+                )}
+                {data.description && (
+                  <span class="text-sm text-darkslate-100">
+                    {data.description}
+                  </span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </main>
 </Layout>
