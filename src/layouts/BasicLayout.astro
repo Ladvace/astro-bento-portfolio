@@ -45,7 +45,7 @@ const headBootstrap = `
 interface Props {
   title: string;
   description: string;
-  page?: "travel" | "blog";
+  page?: "travel" | "blog" | "work";
   pubDate?: string;
   hideSoundToggle?: boolean;
   hideCompanion?: boolean;
@@ -150,7 +150,9 @@ const schema =
     <title>{title}</title>
     <meta content={description} name="description" />
     <meta
-      content={noindex ? "noindex, nofollow" : "index, follow"}
+      content={noindex || process.env.DEMO === "true"
+        ? "noindex, nofollow"
+        : "index, follow"}
       name="robots"
     />
     <meta name="theme-color" content="#171717" />
